@@ -1,6 +1,16 @@
 # Catatan Implementasi & Backlog Project BMN Idle Interactive Dashboard (idleDps)
 
-Dokumen ini mencatat **histori diskusi, fitur yang telah diimplementasikan, serta daftar pekerjaan tertunda (backlog)** untuk persiapan Presentasi BMN Idle KPKNL Denpasar pada hari Jumat.
+Dokumen ini mencatat **histori diskusi, fitur yang telah diimplementasikan, timeline kerja, serta daftar pekerjaan tertunda (backlog)** untuk persiapan Presentasi BMN Idle KPKNL Denpasar pada hari Jumat.
+
+---
+
+## ⏰ Target Timeline Kerja
+
+| Hari | Target & Milestones |
+| :--- | :--- |
+| **Rabu** | **Aplikasi & Data 100% Selesai** (Perapihan Layout UI Spacious, Integrasi Layer GeoJSON Tata Ruang Bali, Sync Data Sheets, & Ekspor PPT). |
+| **Kamis** | **Internal Review & Final Feedback Pimpinan** (Batas waktu paling lambat mendapatkan feedback & revisi akhir sebelum WFH). |
+| **Jumat** | **Presentasi BMN Idle KPKNL** (Mode WFH - Seluruh sistem & slide sudah terkunci dan siap dipresentasikan secara live). |
 
 ---
 
@@ -52,10 +62,10 @@ Membangun **Single-Page Application (SPA) Interactive Presentation Dashboard** u
 ## ⏳ PENDING / BACKLOG (Belum Diimplementasikan / Perlu Dibenahi)
 
 > [!IMPORTANT]
-> Catatan pekerjaan tertunda yang perlu diselesaikan sebelum/saat persiapan lanjutan:
+> Catatan pekerjaan tertunda yang harus selesai di hari Rabu:
 
 ### 1. 🎨 Perapihan Layout UI (Tampilan Terlalu Cramped)
-- **Problem**: Pengguna menyampaikan tampilan dashboard saat ini terasa *too cramped* (terlalu padat/sempit).
+- **Problem**: Tampilan dashboard saat ini terasa *too cramped* (terlalu padat/sempit).
 - **Rencana Perbaikan**:
   - [ ] Implementasi **Collapsible Sidebar** (tombol toggle untuk menyembunyikan/menampilkan sidebar daftar aset agar area peta bisa *full screen*).
   - [ ] Memperluas *padding*, *margin*, dan *line-height* pada Slide-over Detail Drawer Panel agar lebih lega (*spacious*).
@@ -82,7 +92,7 @@ Membangun **Single-Page Application (SPA) Interactive Presentation Dashboard** u
 /Users/putuharjaya/Desktop/repo/idleDps/
 ├── Code.gs                    # Backend Script Google Apps Script, Sheet Sync, & Google Slides Exporter
 ├── index.html                 # Single-Page Application Layout (Soft Pastel Theme & PptxGenJS)
-├── implementation.md          # Dokumen Histori & Backlog Project ini
+├── implementation.md          # Dokumen Histori, Timeline, & Backlog Project ini
 ├── css/
 │   └── styles.css             # System Style Soft Pastel Palette & Responsive Layout
 └── js/
