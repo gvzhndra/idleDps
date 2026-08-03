@@ -117,18 +117,37 @@ const App = {
     MapEngine.renderBMNMarkers(this.filteredAssets, (asset) => this.selectAsset(asset.id));
   },
 
+  toggleSidebar() {
+    const sidebar = document.getElementById('asset-sidebar');
+    const toggleBtn = document.getElementById('sidebar-toggle-btn');
+    if (!sidebar) return;
+
+    sidebar.classList.toggle('collapsed');
+    const isCollapsed = sidebar.classList.contains('collapsed');
+
+    if (toggleBtn) {
+      toggleBtn.innerHTML = isCollapsed 
+        ? '<i class="fa-solid fa-chevron-right"></i>' 
+        : '<i class="fa-solid fa-chevron-left"></i>';
+    }
+
+    setTimeout(() => {
+      if (MapEngine.map) {
+        MapEngine.map.invalidateSize();
+      }
+    }, 300);
+  },
+
   updateKPIStats() {
     const totalUnit = this.filteredAssets.length;
     const totalLuasTanah = this.filteredAssets.reduce((sum, a) => sum + (a.luasTanah || 0), 0);
     const totalLuasBangunan = this.filteredAssets.reduce((sum, a) => sum + (a.luasBangunan || 0), 0);
     const totalNilaiAset = this.filteredAssets.reduce((sum, a) => sum + (a.nilaiAset || 0), 0);
-    const totalPotensiPnbp = this.filteredAssets.reduce((sum, a) => sum + (a.potensiPnbpTahun || 0), 0);
 
     document.getElementById('stat-total-unit').textContent = totalUnit;
     document.getElementById('stat-luas-tanah').textContent = SpatialEngine.formatLuas(totalLuasTanah);
     document.getElementById('stat-luas-bangunan').textContent = SpatialEngine.formatLuas(totalLuasBangunan);
     document.getElementById('stat-nilai-aset').textContent = SpatialEngine.formatRupiah(totalNilaiAset);
-    document.getElementById('stat-potensi-pnbp').textContent = SpatialEngine.formatRupiah(totalPotensiPnbp) + ' /thn';
   },
 
   renderAssetListSidebar() {
@@ -207,6 +226,9 @@ const App = {
     if (!container) return;
 
     const distData = SpatialEngine.getDistanceToKPKNL(asset.lat, asset.lng);
+    const multiDist = SpatialEngine.getMultiLevelDistances(
+      asset.lat, asset.lng, asset.kabupaten, asset.kecamatan, asset.kelurahan
+    );
 
     const photoSlides = asset.fotoList.map((url, idx) => `
       <div class="photo-slide ${idx === 0 ? 'active' : ''}" style="background-image: url('${url}');">
@@ -224,6 +246,20 @@ const App = {
       </div>
     `).join('');
 
+    let hubBadge = '';
+    if (multiDist.isUbudArea) {
+      hubBadge = `
+        <div class="p-2 mb-2 border-radius" style="background:#fef5e7; border:1px solid #f39c12; border-radius:8px;">
+          <small style="font-size:11px; font-weight:700; color:#e67e22; display:block;">
+            <i class="fa-solid fa-fire"></i> Hub Pariwisata & Komersial Utama (Ubud Context):
+          </small>
+          <span style="font-size:11.5px; color:#1e293b; font-weight:600;">
+            Area Desa Ubud / Peliatan memiliki tingkat keramaian & nilai ekonomi jauh lebih tinggi melampaui Pusat Kota Gianyar.
+          </span>
+        </div>
+      `;
+    }
+
     container.innerHTML = `
       <div class="photo-carousel-container">
         ${photoSlides}
@@ -235,7 +271,7 @@ const App = {
         <p style="font-size:12px; color:var(--text-muted);"><i class="fa-solid fa-map-location-dot"></i> ${asset.alamat}</p>
       </div>
 
-      <div class="detail-metrics-grid mb-3">
+      <div class="detail-metrics-grid mb-3" style="grid-template-columns: repeat(3, 1fr);">
         <div class="metric-box">
           <label>NUP / Kode Barang</label>
           <strong>NUP ${asset.nup} &bull; ${asset.kodeBarang}</strong>
@@ -248,26 +284,32 @@ const App = {
           <label>Estimasi Nilai Wajar Aset</label>
           <strong style="color:var(--pastel-blue);">${SpatialEngine.formatRupiah(asset.nilaiAset)}</strong>
         </div>
-        <div class="metric-box">
-          <label>Potensi PNBP / Tahun</label>
-          <strong style="color:var(--pastel-mint);">${SpatialEngine.formatRupiah(asset.potensiPnbpTahun)} / thn</strong>
-        </div>
       </div>
 
       <div class="detail-section-card mb-3">
-        <h4 class="section-title"><i class="fa-solid fa-route" style="color:var(--pastel-blue);"></i> Jarak Spasial ke KPKNL Denpasar</h4>
-        <div class="kpknl-distance-banner">
-          <div class="dist-icon"><i class="fa-solid fa-building-columns"></i></div>
-          <div class="dist-info">
-            <div class="office-name" style="font-size:12px; font-weight:700;">KPKNL Denpasar</div>
-            <div class="dist-value" style="font-size:13px;">Jarak Antar Koordinat: <strong>${distData.distanceKm} km</strong></div>
+        <h4 class="section-title"><i class="fa-solid fa-route" style="color:var(--pastel-blue);"></i> Analisis Jarak Spasial Multilevel</h4>
+        
+        ${hubBadge}
+
+        <div class="d-flex flex-column gap-2 mt-2" style="font-size:12px;">
+          <div class="d-flex justify-content-between align-items-center p-2 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
+            <span><i class="fa-solid fa-building-flag text-primary"></i> <strong>Jarak ke Ibukota Provinsi (Denpasar):</strong></span>
+            <span class="badge badge-pastel-blue">${multiDist.provincialCapital.distanceKm} km</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center p-2 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
+            <span><i class="fa-solid fa-landmark text-secondary"></i> <strong>Jarak ke Ibukota Kab. (${asset.kabupaten}):</strong></span>
+            <span class="badge badge-pastel-purple">${multiDist.regencyCapital.distanceKm} km</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center p-2 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
+            <span><i class="fa-solid fa-house-user text-warning"></i> <strong>Jarak ke Pusat Desa / Kel. (${asset.kelurahan || asset.kecamatan || '-'}):</strong></span>
+            <span class="badge badge-pastel-orange">${distData.distanceKm <= 5 ? distData.distanceKm + ' km' : 'Pusat Lokal'}</span>
           </div>
         </div>
       </div>
 
       <div class="detail-section-card recommendation-card mb-3">
         <div class="d-flex justify-content-between align-items-center mb-2">
-          <span class="badge ${recommendation.type.badgeClass}"><i class="fa-solid fa-user-check"></i> REKOMENDASI RESMI TIM</span>
+          <span class="badge ${recommendation.type.badgeClass}"><i class="fa-solid fa-user-check"></i> REKOMENDASI TIM</span>
         </div>
         <h4 class="rec-title">${recommendation.officialTitle}</h4>
         
@@ -356,7 +398,7 @@ const App = {
       const slide = pptx.addSlide();
       slide.background = { color: 'FFFFFF' };
 
-      const distData = SpatialEngine.getDistanceToKPKNL(asset.lat, asset.lng);
+      const multiDist = SpatialEngine.getMultiLevelDistances(asset.lat, asset.lng, asset.kabupaten, asset.kecamatan, asset.kelurahan);
       const rec = RecommendationEngine.generateRecommendation(asset, []);
 
       // Slide Header Bar
@@ -377,8 +419,8 @@ const App = {
         `Luas Tanah            : ${SpatialEngine.formatLuas(asset.luasTanah)}`,
         `Luas Bangunan      : ${asset.luasBangunan} m²`,
         `Estimasi Nilai Aset  : ${SpatialEngine.formatRupiah(asset.nilaiAset)}`,
-        `Potensi PNBP         : ${SpatialEngine.formatRupiah(asset.potensiPnbpTahun)} / tahun`,
-        `Jarak ke KPKNL      : ${distData.distanceKm} km (Kantor Denpasar)`,
+        `Jarak ke Ibukota Prov: ${multiDist.provincialCapital.distanceKm} km (Denpasar)`,
+        `Jarak ke Ibukota Kab : ${multiDist.regencyCapital.distanceKm} km (${multiDist.regencyCapital.name})`,
         `Zonasi Tata Ruang : ${asset.zoningName} (${asset.zoningCode})`,
         `Status Legalitas      : ${asset.statusPenguasaan}`
       ].join('\n\n');
@@ -388,10 +430,10 @@ const App = {
         fontFace: 'Arial', fontSize: 10, color: '1E293B', lineSpacing: 14
       });
 
-      // Right Column Top: Official Recommendation Box
+      // Right Column Top: Recommendation Box
       slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x: 6.3, y: 1.1, w: 6.5, h: 2.6, fill: { color: 'FEF5E7' }, line: { color: 'F39C12', width: 1 } });
       
-      slide.addText('REKOMENDASI RESMI OPTIMALISASI ASET', {
+      slide.addText('REKOMENDASI OPTIMALISASI ASET', {
         x: 6.5, y: 1.25, w: 6.1, h: 0.3,
         fontFace: 'Arial', fontSize: 11, bold: true, color: 'F39C12'
       });

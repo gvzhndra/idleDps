@@ -27,17 +27,22 @@ Membangun **Single-Page Application (SPA) Interactive Presentation Dashboard** u
 
 2. **UI & Theme Aesthetic**:
    - Tampilan **Soft Pastel Palette** (lembut di mata, kontras tinggi *dark slate* `#1e293b`).
-   - Kartu statistik KPI (Total Unit, Total Luas Tanah, Total Luas Bangunan, Estimasi Nilai Aset, Potensi PNBP/tahun).
+   - Kartu statistik KPI (Total Unit, Total Luas Tanah, Total Luas Bangunan, Estimasi Nilai Wajar Aset; *Potensi PNBP disembunyikan sesuai arahan karena belum bisa diukur*).
+   - **Collapsible Sidebar**: Tombol toggle untuk menyembunyikan/menampilkan sidebar daftar aset agar area peta bisa *full screen*.
    - *Live Clock* di header.
 
-3. **Spatial GIS & Distance Engine**:
+3. **Spatial GIS & Distance Engine Multilevel**:
    - Leaflet GIS Map dengan basemap pilihan (*Soft Pastel CartoDB Voyager*, *Satelit*, dan *Street Map*).
-   - Calculation engine **Formula Haversine** untuk menghitung jarak ($km$) dari koordinat BMN Idle ke Kantor KPKNL Denpasar (Renon).
+   - Calculation engine **Formula Haversine** untuk menghitung jarak ($km$) spasial multilevel:
+     - **Ibukota Provinsi** (Denpasar - Renon)
+     - **Ibukota Kabupaten** (Mangupura, Kota Gianyar, Singaraja, Tabanan, Amlapura, Semarapura, Kota Bangli, Negara)
+     - **Pusat Desa / Hub Pariwisata Terdekat**
+   - **Konteks Khusus Hub Komersial Ubud & Pariwisata Bali**: Memasukkan pembobotan aktivitas spasial di mana area **Desa Ubud / Peliatan** memiliki keramaian & aktivitas ekonomi pariwisata yang jauh lebih tinggi dibanding Kota Gianyar.
    - Line connector (*dashed polyline*) dan label jarak spasial.
    - Proksimitas Fasilitas Publik / Pemerintahan (POI: Kantor Desa, Polsek, Koramil, Pasar).
 
-4. **Sistem Rekomendasi Ganda (Official Input + Backend Helper)**:
-   - Menampilkan **Rekomendasi Resmi Tim** dari input Google Sheets (Kolom W `rekomendasiUser`).
+4. **Sistem Rekomendasi Ganda (Input Tim + Backend Helper)**:
+   - Menampilkan **Rekomendasi Tim** dari input Google Sheets (Kolom W `rekomendasiUser`).
    - Menampilkan **Smart Recommendation Engine (Backend Helper)** berbasis aturan spasial zonasi (K-1 Perdagangan, K-2 Pariwisata, K-3 Pemerintahan, K-4 Permukiman, K-5 RTH) tanpa membutuhkan Token API AI eksternal.
 
 5. **Modul Foto Aset**:
@@ -54,7 +59,7 @@ Membangun **Single-Page Application (SPA) Interactive Presentation Dashboard** u
    - Fitur auto-fill rekomendasi otomatis untuk baris terpilih / seluruh sheet.
 
 8. **Ekspor Presentasi (1 Aset = 1 Slide)**:
-   - **Tombol Ekspor PPT (.pptx)**: Ekspor client-side menggunakan `PptxGenJS` (16:9 Widescreen) untuk mengunduh slide PowerPoint lengkap dengan tabel metadata, kotak rekomendasi, dan foto aset.
+   - **Tombol Ekspor PPT (.pptx)**: Ekspor client-side menggunakan `PptxGenJS` (16:9 Widescreen) untuk mengunduh slide PowerPoint lengkap dengan tabel metadata jarak multilevel, kotak rekomendasi tim, dan foto aset.
    - **Ekspor Google Slides (Backend `Code.gs`)**: Menu Apps Script `📊 Ekspor ke Google Slides` untuk membuat file presentasi Google Slides baru langsung di Google Drive.
 
 ---

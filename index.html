@@ -83,14 +83,6 @@
         <div class="stat-value" id="stat-nilai-aset">Rp 0</div>
       </div>
     </div>
-
-    <div class="stat-card">
-      <div class="stat-icon rose"><i class="fa-solid fa-hand-holding-dollar"></i></div>
-      <div class="stat-info">
-        <label>Potensi PNBP / Tahun</label>
-        <div class="stat-value" id="stat-potensi-pnbp">Rp 0</div>
-      </div>
-    </div>
   </section>
 
   <!-- ==========================================================================
@@ -136,10 +128,15 @@
        ========================================================================== -->
   <main class="main-workspace">
     <!-- Left Sidebar: Asset Cards List -->
-    <aside class="asset-sidebar">
+    <aside class="asset-sidebar" id="asset-sidebar">
       <div class="sidebar-header">
-        <h3><i class="fa-solid fa-list-check" style="color:var(--pastel-blue);"></i> Daftar BMN Idle KPKNL Denpasar</h3>
-        <span class="badge badge-pastel-blue" id="sidebar-count">Live Dataset</span>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <h3 style="font-size:14px; font-weight:700;"><i class="fa-solid fa-list-check" style="color:var(--pastel-blue);"></i> BMN Idle KPKNL Denpasar</h3>
+          <span class="badge badge-pastel-blue" id="sidebar-count">Live Dataset</span>
+        </div>
+        <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" onclick="App.toggleSidebar()" title="Sembunyikan / Tampilkan Sidebar">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
       </div>
 
       <div class="asset-cards-container" id="asset-list-container">

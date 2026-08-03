@@ -1,15 +1,32 @@
 /**
  * Spatial Analytics & Distance Calculator Engine
- * Khusus KPKNL Denpasar
+ * Khusus KPKNL Denpasar & Seluruh Wilayah Provinsi Bali
  */
+
+const REGENCY_CAPITALS = {
+  'Kota Denpasar': { name: 'Pusat Kota Denpasar (Renon)', lat: -8.6705, lng: 115.2260 },
+  'Kabupaten Badung': { name: 'Pusat Kab. Badung (Mangupura)', lat: -8.5833, lng: 115.1819 },
+  'Kabupaten Gianyar': { name: 'Pusat Kab. Gianyar (Kota Gianyar)', lat: -8.5398, lng: 115.3275 },
+  'Kabupaten Tabanan': { name: 'Pusat Kab. Tabanan (Kota Tabanan)', lat: -8.5412, lng: 115.1256 },
+  'Kabupaten Buleleng': { name: 'Pusat Kab. Buleleng (Singaraja)', lat: -8.1120, lng: 115.0882 },
+  'Kabupaten Karangasem': { name: 'Pusat Kab. Karangasem (Amlapura)', lat: -8.4475, lng: 115.6148 },
+  'Kabupaten Klungkung': { name: 'Pusat Kab. Klungkung (Semarapura)', lat: -8.5356, lng: 115.4039 },
+  'Kabupaten Bangli': { name: 'Pusat Kab. Bangli (Kota Bangli)', lat: -8.4559, lng: 115.3547 },
+  'Kabupaten Jembrana': { name: 'Pusat Kab. Jembrana (Negara)', lat: -8.3585, lng: 114.6295 }
+};
+
+// Major Commercial & Tourism Hubs in Bali (Activity Level Context)
+const TOURISM_COMMERCIAL_HUBS = [
+  { name: 'Pusat Tourism & Cultural Hub Ubud', district: 'Ubud', kabupaten: 'Kabupaten Gianyar', lat: -8.5069, lng: 115.2625, tier: 1, note: 'Tingkat keramaian & nilai komersial sangat tinggi (melampaui Kota Gianyar)' },
+  { name: 'Pusat Commercial & Entertainment Hub Kuta', district: 'Kuta', kabupaten: 'Kabupaten Badung', lat: -8.7180, lng: 115.1686, tier: 1, note: 'Pusat pariwisata internasional utama & bisnis logistik' },
+  { name: 'Kawasan Lifestyle & Tourism Hub Canggu', district: 'Canggu', kabupaten: 'Kabupaten Badung', lat: -8.6500, lng: 115.1380, tier: 1, note: 'Pusat pertumbuhan komersial & hospitality baru' },
+  { name: 'Kawasan Resort & Marine Hub Sanur', district: 'Sanur', kabupaten: 'Kota Denpasar', lat: -8.6782, lng: 115.2589, tier: 1, note: 'Koridor pariwisata & dermaga penyeberangan utama' },
+  { name: 'Kawasan MICE & Resort Nusa Dua', district: 'Nusa Dua', kabupaten: 'Kabupaten Badung', lat: -8.7983, lng: 115.2317, tier: 1, note: 'Kawasan konvensi & resort internasional' }
+];
 
 const SpatialEngine = {
   /**
    * Calculate Haversine distance between two sets of lat/lng coordinates
-   * @param {number} lat1 
-   * @param {number} lon1 
-   * @param {number} lat2 
-   * @param {number} lon2 
    * @returns {number} Distance in kilometers
    */
   calculateDistance(lat1, lon1, lat2, lon2) {
@@ -31,8 +48,6 @@ const SpatialEngine = {
 
   /**
    * Calculate distance to KPKNL Denpasar Office
-   * @param {number} lat 
-   * @param {number} lng 
    */
   getDistanceToKPKNL(lat, lng) {
     const office = CONFIG.KPKNL_OFFICE;
@@ -41,6 +56,46 @@ const SpatialEngine = {
     return {
       office: office,
       distanceKm: distanceKm
+    };
+  },
+
+  /**
+   * Calculate multi-level administrative distances:
+   * 1. Ibukota Provinsi (Denpasar)
+   * 2. Ibukota Kabupaten (Regency Capital)
+   * 3. Hub Komersial / Pariwisata Terdekat (e.g., Ubud vs Kota Gianyar)
+   */
+  getMultiLevelDistances(lat, lng, kabupaten, kecamatan = '', kelurahan = '') {
+    // 1. Provincial Capital (Denpasar - Renon)
+    const provCap = REGENCY_CAPITALS['Kota Denpasar'];
+    const distToProvincialCapital = this.calculateDistance(lat, lng, provCap.lat, provCap.lng);
+
+    // 2. Regency Capital
+    const regCap = REGENCY_CAPITALS[kabupaten] || provCap;
+    const distToRegencyCapital = this.calculateDistance(lat, lng, regCap.lat, regCap.lng);
+
+    // 3. Distance to nearby Commercial / Tourism Hub
+    let nearestHub = null;
+    let minHubDist = 999;
+
+    TOURISM_COMMERCIAL_HUBS.forEach(hub => {
+      const d = this.calculateDistance(lat, lng, hub.lat, hub.lng);
+      if (d < minHubDist) {
+        minHubDist = d;
+        nearestHub = { ...hub, distanceKm: d };
+      }
+    });
+
+    // Special Hub check for Ubud context
+    const isUbudArea = (kecamatan && kecamatan.toLowerCase().includes('ubud')) ||
+                       (kelurahan && kelurahan.toLowerCase().includes('ubud')) ||
+                       (kelurahan && kelurahan.toLowerCase().includes('peliatan'));
+
+    return {
+      provincialCapital: { name: 'Ibukota Provinsi (Denpasar)', distanceKm: distToProvincialCapital },
+      regencyCapital: { name: regCap.name, distanceKm: distToRegencyCapital },
+      nearestHub: nearestHub,
+      isUbudArea: isUbudArea
     };
   },
 
@@ -86,3 +141,4 @@ const SpatialEngine = {
     return `${m2.toLocaleString('id-ID')} m²`;
   }
 };
+

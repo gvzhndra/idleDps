@@ -1,6 +1,6 @@
 /**
  * Recommendation Display & Analysis Engine
- * Merges official user recommendation input from Google Sheets with
+ * Merges user recommendation input from Google Sheets with
  * the automated backend smart spatial suggestion helper.
  */
 
@@ -12,15 +12,25 @@ const RecommendationEngine = {
    * @returns {Object} Recommendation result
    */
   generateRecommendation(asset, nearbyPOIs = []) {
-    const officialRec = asset.rekomendasiUser || asset.rekomendasiPemanfaatan || '';
+    const userRec = asset.rekomendasiUser || asset.rekomendasiPemanfaatan || '';
     const smartBackendRec = asset.smartSuggestionBackend || this.calculateLocalSmartSuggestion(asset);
 
-    const zoning = asset.zoningCode || 'K-1';
     let badgeInfo = CONFIG.RECOMMENDATION_TYPES.SEWA_KOMERSIAL;
     let rationale = [];
 
     if (asset.zoningName) {
       rationale.push(`Sesuai dengan **Zonasi Tata Ruang (${asset.zoningName})**.`);
+    }
+
+    // Spatial Hub Context (e.g., Ubud vs Kota Gianyar)
+    const spatialContext = SpatialEngine.getMultiLevelDistances(
+      asset.lat, asset.lng, asset.kabupaten, asset.kecamatan, asset.kelurahan
+    );
+
+    if (spatialContext.isUbudArea) {
+      rationale.push(`Kawasan **Desa Ubud / Peliatan** Memiliki **Tingkat Keramaian & Aktivitas Komersial Pariwisata Sangat Tinggi** (Melampaui Pusat Kota Gianyar).`);
+    } else if (spatialContext.nearestHub && spatialContext.nearestHub.distanceKm <= 5) {
+      rationale.push(`Dekat dengan **${spatialContext.nearestHub.name}** (${spatialContext.nearestHub.distanceKm} km) - ${spatialContext.nearestHub.note}.`);
     }
 
     if (nearbyPOIs.length > 0) {
@@ -34,7 +44,7 @@ const RecommendationEngine = {
       rationale.push(`Kondisi Fisik: ${asset.kondisi}`);
     }
 
-    const checkText = (officialRec || smartBackendRec).toLowerCase();
+    const checkText = (userRec || smartBackendRec).toLowerCase();
     if (checkText.includes('sewa') || checkText.includes('komersial')) {
       badgeInfo = CONFIG.RECOMMENDATION_TYPES.SEWA_KOMERSIAL;
     } else if (checkText.includes('ksp') || checkText.includes('pariwisata') || checkText.includes('resort')) {
@@ -49,17 +59,24 @@ const RecommendationEngine = {
 
     return {
       type: badgeInfo,
-      officialTitle: officialRec || smartBackendRec,
+      officialTitle: userRec || smartBackendRec,
       smartSuggestion: smartBackendRec,
       rationale: rationale,
-      estimatedPnbpRange: SpatialEngine.formatRupiah(asset.potensiPnbpTahun) + ' / tahun',
-      hasOfficialInput: !!officialRec
+      hasOfficialInput: !!userRec
     };
   },
 
   calculateLocalSmartSuggestion(asset) {
     const code = String(asset.zoningCode || 'K-1').toUpperCase();
     const isTanah = asset.kategori === 'Tanah Kosong' || asset.luasBangunan === 0;
+
+    const isUbud = asset.kecamatan && asset.kecamatan.toLowerCase().includes('ubud');
+
+    if (isUbud) {
+      return isTanah 
+        ? 'Kerja Sama Pemanfaatan (KSP) Boutique Eco-Resort / Galeri Seni & Budaya Ubud'
+        : 'Sewa Komersial Restoran High-End / Galeri Seni & Boutique Cafe Ubud';
+    }
 
     switch (code) {
       case 'K-2':
@@ -80,3 +97,4 @@ const RecommendationEngine = {
     }
   }
 };
+

@@ -160,7 +160,6 @@ function createGoogleSlidesPresentation() {
                    'Alamat: ' + alamat + '\n' +
                    'Luas Tanah / Bangunan: ' + luasTanah + ' m² / ' + luasBangunan + ' m²\n' +
                    'Nilai Aset: Rp ' + Number(nilaiAset).toLocaleString('id-ID') + '\n' +
-                   'Potensi PNBP: Rp ' + Number(potensiPnbp).toLocaleString('id-ID') + ' / thn\n' +
                    'Zonasi Tata Ruang: ' + zoningName;
 
     var metaBox = slide.insertTextBox(metaText, 30, 70, 320, 300);
