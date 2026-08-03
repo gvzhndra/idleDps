@@ -140,6 +140,7 @@ const SpatialEngine = {
       return {
         ...poi,
         distanceKm: dist,
+        distanceMeters: Math.round(dist * 1000),
         categoryName: categoryInfo.name || poi.type,
         icon: categoryInfo.icon || 'fa-building',
         color: categoryInfo.color || '#8e7cc3'
@@ -149,6 +150,18 @@ const SpatialEngine = {
     return poiListWithDist
       .filter(poi => poi.distanceKm <= maxRadiusKm)
       .sort((a, b) => a.distanceKm - b.distanceKm);
+  },
+
+  getPOIsInCatchment(lat, lng, radiusMeters = 500) {
+    const maxRadiusKm = radiusMeters / 1000;
+    const nearby = this.getNearbyPOIs(lat, lng, maxRadiusKm);
+
+    return {
+      radiusMeters: radiusMeters,
+      radiusLabel: radiusMeters >= 1000 ? (radiusMeters / 1000) + ' km' : radiusMeters + ' m',
+      totalCount: nearby.length,
+      pois: nearby
+    };
   },
 
   formatRupiah(num) {

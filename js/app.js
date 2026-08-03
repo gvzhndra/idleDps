@@ -193,6 +193,18 @@ const App = {
     }).join('');
   },
 
+  currentCatchmentRadius: 500,
+
+  setCatchmentRadius(radiusMeters) {
+    this.currentCatchmentRadius = radiusMeters;
+    if (this.selectedAsset) {
+      MapEngine.drawCatchmentCircle(this.selectedAsset.lat, this.selectedAsset.lng, radiusMeters);
+      const nearbyPOIs = SpatialEngine.getNearbyPOIs(this.selectedAsset.lat, this.selectedAsset.lng, 8);
+      const recommendation = RecommendationEngine.generateRecommendation(this.selectedAsset, nearbyPOIs);
+      this.renderDetailPanel(this.selectedAsset, nearbyPOIs, recommendation);
+    }
+  },
+
   selectAsset(assetId) {
     const asset = this.assets.find(a => a.id === assetId);
     if (!asset) return;
@@ -203,6 +215,7 @@ const App = {
     this.renderAssetListSidebar();
     MapEngine.focusLocation(asset.lat, asset.lng, 15);
     MapEngine.drawKPKNLConnector(asset);
+    MapEngine.drawCatchmentCircle(asset.lat, asset.lng, this.currentCatchmentRadius);
 
     const nearbyPOIs = SpatialEngine.getNearbyPOIs(asset.lat, asset.lng, 8);
     MapEngine.renderNearbyPOIs(nearbyPOIs);
@@ -219,6 +232,7 @@ const App = {
     if (drawer) drawer.classList.remove('open');
     this.selectedAsset = null;
     MapEngine.resetView();
+    MapEngine.clearCatchmentCircle();
   },
 
   renderDetailPanel(asset, nearbyPOIs, recommendation) {
@@ -229,6 +243,7 @@ const App = {
     const multiDist = SpatialEngine.getMultiLevelDistances(
       asset.lat, asset.lng, asset.kabupaten, asset.kecamatan, asset.kelurahan
     );
+    const catchmentData = SpatialEngine.getPOIsInCatchment(asset.lat, asset.lng, this.currentCatchmentRadius);
 
     const photoSlides = asset.fotoList.map((url, idx) => `
       <div class="photo-slide ${idx === 0 ? 'active' : ''}" style="background-image: url('${url}');">
@@ -236,12 +251,12 @@ const App = {
       </div>
     `).join('');
 
-    const poiHtml = nearbyPOIs.slice(0, 4).map(poi => `
+    const catchmentPoiHtml = catchmentData.pois.map(poi => `
       <div class="poi-item">
         <div class="poi-icon" style="background:${poi.color}"><i class="fa-solid ${poi.icon}"></i></div>
         <div class="poi-details">
           <div class="poi-name" style="font-size:12px; font-weight:600;">${poi.name}</div>
-          <div class="poi-cat" style="font-size:11px; color:var(--text-muted);">${poi.categoryName} &bull; <strong>${poi.distanceKm} km</strong></div>
+          <div class="poi-cat" style="font-size:11px; color:var(--text-muted);">${poi.categoryName} &bull; <strong>${poi.distanceMeters < 1000 ? poi.distanceMeters + ' m' : poi.distanceKm + ' km'}</strong></div>
         </div>
       </div>
     `).join('');
@@ -307,6 +322,30 @@ const App = {
         </div>
       </div>
 
+      <div class="detail-section-card mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h4 class="section-title mb-0"><i class="fa-solid fa-bullseye" style="color:var(--pastel-blue);"></i> Catchment Area & Radius Buffer</h4>
+          <span class="badge badge-pastel-blue">${catchmentData.totalCount} POI Ditemukan</span>
+        </div>
+
+        <div class="d-flex align-items-center gap-1 mb-3" style="background:#f1f5f9; padding:4px; border-radius:8px;">
+          <button class="btn btn-sm ${this.currentCatchmentRadius === 500 ? 'btn-primary' : 'btn-secondary'}" style="flex:1; padding:4px 8px; font-size:11px;" onclick="App.setCatchmentRadius(500)">
+            500 Meter
+          </button>
+          <button class="btn btn-sm ${this.currentCatchmentRadius === 1000 ? 'btn-primary' : 'btn-secondary'}" style="flex:1; padding:4px 8px; font-size:11px;" onclick="App.setCatchmentRadius(1000)">
+            1.0 KM
+          </button>
+          <button class="btn btn-sm ${this.currentCatchmentRadius === 2000 ? 'btn-primary' : 'btn-secondary'}" style="flex:1; padding:4px 8px; font-size:11px;" onclick="App.setCatchmentRadius(2000)">
+            2.0 KM
+          </button>
+        </div>
+
+        <label style="font-size:11px; color:var(--text-muted); display:block;" class="mb-1">Fasilitas Publik & Instansi dalam Radius Catchment ${catchmentData.radiusLabel}:</label>
+        <div class="poi-list-container">
+          ${catchmentPoiHtml || `<p class="text-muted text-center p-3" style="font-size:11px; background:#f8fafc; border-radius:8px;"><i class="fa-solid fa-info-circle"></i> Tidak ada POI utama dalam radius ${catchmentData.radiusLabel}.</p>`}
+        </div>
+      </div>
+
       <div class="detail-section-card recommendation-card mb-3">
         <div class="d-flex justify-content-between align-items-center mb-2">
           <span class="badge ${recommendation.type.badgeClass}"><i class="fa-solid fa-user-check"></i> REKOMENDASI TIM</span>
@@ -328,13 +367,9 @@ const App = {
       </div>
 
       <div class="detail-section-card mb-3">
-        <h4 class="section-title"><i class="fa-solid fa-map" style="color:var(--pastel-purple);"></i> Zonasi Tata Ruang & Fasilitas Terdekat</h4>
+        <h4 class="section-title"><i class="fa-solid fa-map" style="color:var(--pastel-purple);"></i> Zonasi Tata Ruang (RTRW)</h4>
         <div class="mb-2">
           <span class="badge badge-pastel-purple">${asset.zoningName} (${asset.zoningCode})</span>
-        </div>
-        <label style="font-size:11px; color:var(--text-muted); display:block;" class="mb-1">Fasilitas Terdekat (POI):</label>
-        <div class="poi-list-container">
-          ${poiHtml || '<p class="text-muted" style="font-size:11px;">Tidak ada POI utama dalam radius 8 km.</p>'}
         </div>
       </div>
 

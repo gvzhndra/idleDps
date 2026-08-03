@@ -11,6 +11,7 @@ const MapEngine = {
   connectorLinesGroup: null,
   zoningGeoJsonLayer: null,
   poiLayerGroup: null,
+  catchmentCircleLayer: null,
   activeAssetId: null,
 
   init(containerId = 'map') {
@@ -222,6 +223,37 @@ const MapEngine = {
     this.activeAssetId = null;
     this.connectorLinesGroup.clearLayers();
     this.poiLayerGroup.clearLayers();
+    this.clearCatchmentCircle();
     this.map.flyTo(CONFIG.MAP.DEFAULT_CENTER, CONFIG.MAP.DEFAULT_ZOOM, { animate: true, duration: 1.2 });
+  },
+
+  drawCatchmentCircle(lat, lng, radiusMeters = 500) {
+    if (!this.map) return;
+    this.clearCatchmentCircle();
+
+    if (!lat || !lng) return;
+
+    this.catchmentCircleLayer = L.circle([lat, lng], {
+      radius: radiusMeters,
+      color: '#4a90e2',
+      fillColor: '#4a90e2',
+      fillOpacity: 0.18,
+      weight: 2,
+      dashArray: '6, 6'
+    }).addTo(this.map);
+
+    const radiusLabel = radiusMeters >= 1000 ? (radiusMeters / 1000) + ' km' : radiusMeters + ' m';
+    this.catchmentCircleLayer.bindTooltip(`<b>Radius Catchment Area: ${radiusLabel}</b>`, {
+      permanent: true,
+      direction: 'top',
+      className: 'catchment-tooltip'
+    });
+  },
+
+  clearCatchmentCircle() {
+    if (this.catchmentCircleLayer && this.map) {
+      this.map.removeLayer(this.catchmentCircleLayer);
+      this.catchmentCircleLayer = null;
+    }
   }
 };
