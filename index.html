@@ -39,6 +39,9 @@
       <button class="btn btn-secondary" onclick="App.openGoogleSheetsModal()" title="Integrasi Google Sheets & Apps Script">
         <i class="fa-solid fa-table text-success"></i> Google Sheets
       </button>
+      <button class="btn btn-secondary" onclick="App.exportToPPT()" title="Ekspor Slide PPTX (1 Aset 1 Slide)">
+        <i class="fa-solid fa-file-powerpoint text-danger"></i> Ekspor PPT (.pptx)
+      </button>
       <button class="btn btn-primary" onclick="App.startPresentationMode()">
         <i class="fa-solid fa-tv"></i> Mulai Presentasi Live
       </button>
@@ -229,6 +232,9 @@
 
   <!-- Leaflet GIS Map JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- PptxGenJS Library for PowerPoint Export -->
+  <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 
   <!-- Custom Dashboard JavaScript Modules -->
   <script src="js/config.js"></script>

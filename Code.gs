@@ -1,31 +1,26 @@
 /**
  * ============================================================================
- * GOOGLE APPS SCRIPT BACKEND & SMART RECOMMENDATION ENGINE FOR BMN IDLE
+ * GOOGLE APPS SCRIPT BACKEND & GOOGLE SLIDES EXPORTER FOR BMN IDLE
  * File: Code.gs (KPKNL Denpasar)
  * ============================================================================
- * Fitur Tambahan:
- * - Menu Khusus di Google Sheets: "💡 BMN Idle Tools"
- * - Fungsi Otomatisasi Rekomendasi untuk membantu User menentukan opsi optimalisasi.
- * - Custom Formula Sheet: =SMART_RECOMMENDATION(Zoning, LuasTanah, LuasBangunan, Kategori)
+ * Fitur:
+ * - Export ke Google Slides (1 Aset 1 Slide) langsung dari Google Sheets.
+ * - Custom Menu: "💡 BMN Idle Tools"
+ * - Web App Data API & Auto Photo Upload Handler.
  * ============================================================================
  */
 
-/**
- * Otomatis menambahkan Menu "💡 BMN Idle Tools" saat Spreadsheet dibuka
- */
 function onOpen() {
   var ui = SpreadsheetApp.getUi();
   ui.createMenu('💡 BMN Idle Tools')
     .addItem('✨ Hasilkan Smart Recommendation (Baris Dipilih)', 'generateRecommendationForSelectedRow')
     .addItem('🚀 Hasilkan Smart Recommendation (Seluruh Sheet)', 'generateRecommendationForAllRows')
     .addSeparator()
+    .addItem('📊 Ekspor ke Google Slides (1 Aset = 1 Slide)', 'createGoogleSlidesPresentation')
     .addItem('🌐 Buka Web App Dashboard', 'openDashboardDialog')
     .addToUi();
 }
 
-/**
- * Web App Entry Point
- */
 function doGet(e) {
   if (e && e.parameter && e.parameter.action === 'getData') {
     return fetchBMNDataAsJSON();
@@ -37,9 +32,6 @@ function doGet(e) {
     .addMetaTag('viewport', 'width=device-width, initial-scale=1');
 }
 
-/**
- * Membaca Data dari Sheet "Data_BMN_Idle"
- */
 function fetchBMNDataAsJSON() {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -64,7 +56,6 @@ function fetchBMNDataAsJSON() {
       var luasBangunan = parseFloat(row[12]) || 0;
       var kategori = String(row[4] || 'Tanah Kosong');
 
-      // Smart Recommendation buatan backend (sebagai pembantu / saran otomatis)
       var smartSuggestion = calculateSmartRecommendation(zoningCode, luasTanah, luasBangunan, kategori);
 
       var item = {
@@ -91,9 +82,9 @@ function fetchBMNDataAsJSON() {
         fotoList: String(row[19] || '').split(',').map(function(url) { return url.trim(); }).filter(function(url) { return url.length > 0; }),
         keterangan: String(row[20] || ''),
         isSpotlight: row[21] === true || String(row[21]).toLowerCase() === 'true',
-        rekomendasiUser: String(row[22] || ''), // Rekomendasi input resmi dari user
+        rekomendasiUser: String(row[22] || ''),
         catatanTim: String(row[23] || ''),
-        smartSuggestionBackend: smartSuggestion // Saran otomatis dari backend Apps Script
+        smartSuggestionBackend: smartSuggestion
       };
 
       result.push(item);
@@ -106,80 +97,129 @@ function fetchBMNDataAsJSON() {
 }
 
 /**
- * LOGIKA SMART RECOMMENDATION BACKEND (Rule Engine)
+ * EKSPOR KE GOOGLE SLIDES (1 ASET = 1 SLIDE)
  */
+function createGoogleSlidesPresentation() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName('Data_BMN_Idle');
+  if (!sheet) {
+    SpreadsheetApp.getUi().alert('Sheet "Data_BMN_Idle" tidak ditemukan.');
+    return;
+  }
+
+  var data = sheet.getDataRange().getValues();
+  if (data.length <= 1) {
+    SpreadsheetApp.getUi().alert('Tidak ada data BMN Idle untuk diekspor.');
+    return;
+  }
+
+  // Buat Google Slides Presentation Baru
+  var presentationTitle = 'PORTOFOLIO BMN IDLE KPKNL DENPASAR - ' + Utilities.formatDate(new Date(), 'GMT+8', 'yyyy-MM-dd');
+  var deck = SlidesApp.create(presentationTitle);
+  var slides = deck.getSlides();
+  var titleSlide = slides[0]; // Slide pertama (Judul)
+
+  titleSlide.insertShape(SlidesApp.ShapeType.RECTANGLE, 0, 0, 720, 405)
+    .getFill().setSolidFill('#F4F6FB');
+
+  var titleBox = titleSlide.insertTextBox('PORTOFOLIO BMN IDLE KPKNL DENPASAR', 50, 100, 620, 80);
+  titleBox.getText().getRuns()[0].getTextStyle().setFontSize(24).setBold(true).setForegroundColor('#1E293B');
+
+  var subtitleBox = titleSlide.insertTextBox('Kanwil DJKN Bali dan Nusa Tenggara\nPresentasi & Analisis Spasial Optimalisasi BMN', 50, 190, 620, 60);
+  subtitleBox.getText().getRuns()[0].getTextStyle().setFontSize(14).setForegroundColor('#4A90E2');
+
+  // Loop setiap baris aset BMN Idle (1 Baris = 1 Slide)
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+    if (!row[0]) continue;
+
+    var namaAset = String(row[3] || '');
+    var kodeBarang = String(row[1] || '');
+    var nup = String(row[2] || '');
+    var kategori = String(row[4] || '');
+    var kabupaten = String(row[5] || '');
+    var alamat = String(row[8] || '');
+    var luasTanah = row[11] || 0;
+    var luasBangunan = row[12] || 0;
+    var nilaiAset = row[13] || 0;
+    var potensiPnbp = row[14] || 0;
+    var zoningName = row[18] || '';
+    var rekomendasiUser = row[22] || calculateSmartRecommendation(row[17], luasTanah, luasBangunan, kategori);
+
+    var slide = deck.appendSlide(SlidesApp.PredefinedLayout.BLANK);
+
+    // Banner Header
+    var header = slide.insertShape(SlidesApp.ShapeType.RECTANGLE, 0, 0, 720, 50);
+    header.getFill().setSolidFill('#4A90E2');
+    var headerText = slide.insertTextBox('[Aset #' + i + '] ' + namaAset, 20, 10, 680, 30);
+    headerText.getText().getRuns()[0].getTextStyle().setFontSize(16).setBold(true).setForegroundColor('#FFFFFF');
+
+    // Box Metadata
+    var metaText = 'Kode Barang / NUP: ' + kodeBarang + ' (NUP ' + nup + ')\n' +
+                   'Kategori: ' + kategori + ' | Kab: ' + kabupaten + '\n' +
+                   'Alamat: ' + alamat + '\n' +
+                   'Luas Tanah / Bangunan: ' + luasTanah + ' m² / ' + luasBangunan + ' m²\n' +
+                   'Nilai Aset: Rp ' + Number(nilaiAset).toLocaleString('id-ID') + '\n' +
+                   'Potensi PNBP: Rp ' + Number(potensiPnbp).toLocaleString('id-ID') + ' / thn\n' +
+                   'Zonasi Tata Ruang: ' + zoningName;
+
+    var metaBox = slide.insertTextBox(metaText, 30, 70, 320, 300);
+    metaBox.getText().getRuns()[0].getTextStyle().setFontSize(10).setForegroundColor('#1E293B');
+
+    // Box Rekomendasi
+    var recText = 'REKOMENDASI OPTIMALISASI:\n' + rekomendasiUser;
+    var recBox = slide.insertTextBox(recText, 370, 70, 320, 120);
+    recBox.getFill().setSolidFill('#FEF5E7');
+    recBox.getText().getRuns()[0].getTextStyle().setFontSize(12).setBold(true).setForegroundColor('#F39C12');
+  }
+
+  var url = deck.getUrl();
+  SpreadsheetApp.getUi().alert('🎉 Berhasil membuat Google Slides!\n\nBuka link berikut: ' + url);
+}
+
 function calculateSmartRecommendation(zoningCode, luasTanah, luasBangunan, kategori) {
   var code = String(zoningCode).toUpperCase().trim();
   var isTanah = kategori === 'Tanah Kosong' || luasBangunan === 0;
 
   switch (code) {
-    case 'K-2': // Pariwisata
+    case 'K-2':
       return isTanah 
         ? 'Kerja Sama Pemanfaatan (KSP) Beach Club / Boutique Resort / Eco-Lodge'
-        : 'Sewa / KSP Restoran Concept / Cafe / Pusat Souvenir Pariwisata';
-
-    case 'K-3': // Pemerintahan
+        : 'Sewa / KSP Restoran Concept / Cafe Pariwisata';
+    case 'K-3':
       return 'Alih Status Penggunaan / Pinjam Pakai Satker Kemenkeu/Instansi Lain';
-
-    case 'K-1': // Perdagangan & Jasa
+    case 'K-1':
     default:
-      if (luasTanah >= 3000) {
-        return 'Sewa Lahan Depo Logistik / SPBU / Charging Station / Supermarket Modern';
-      }
-      return 'Sewa Komersial Ruko / Showroom / Perkantoran Swasta / UMKM';
-
-    case 'K-4': // Permukiman
+      return (luasTanah >= 3000) 
+        ? 'Sewa Depo Logistik / SPBU / Supermarket Modern' 
+        : 'Sewa Komersial Ruko / Showroom / Perkantoran Swasta / UMKM';
+    case 'K-4':
       return 'Rumah Dinas Pegawai / Mess Instansi / Sewa Hunian';
-
-    case 'K-5': // RTH / Pertanian
-      return 'Optimalisasi Terbatas / Agrowisata Organik / Taman Edukasi Lingkungan';
+    case 'K-5':
+      return 'Optimalisasi Terbatas / Agrowisata Organik / Taman Edukasi';
   }
 }
 
-/**
- * CUSTOM FORMULA SPREADSHEET (Bisa dipakai di cell: =SMART_RECOMMENDATION(R2, L2, M2, E2))
- */
-function SMART_RECOMMENDATION(zoningCode, luasTanah, luasBangunan, kategori) {
-  return calculateSmartRecommendation(zoningCode, luasTanah, luasBangunan, kategori);
-}
-
-/**
- * Otomatis Mengisi Kolom W (rekomendasiUser) untuk Baris yang Sedang Dipilih di Google Sheet
- */
 function generateRecommendationForSelectedRow() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName('Data_BMN_Idle');
-  if (!sheet) {
-    SpreadsheetApp.getUi().alert('Error: Sheet "Data_BMN_Idle" tidak ditemukan.');
-    return;
-  }
+  if (!sheet) return;
 
   var range = sheet.getActiveRange();
   var startRow = range.getRow();
   var numRows = range.getNumRows();
 
-  if (startRow <= 1) {
-    SpreadsheetApp.getUi().alert('Pilih baris data BMN Idle (mulai baris 2).');
-    return;
-  }
+  if (startRow <= 1) return;
 
   for (var r = startRow; r < startRow + numRows; r++) {
     var rowData = sheet.getRange(r, 1, 1, 24).getValues()[0];
-    var kategori = rowData[4];
-    var luasTanah = rowData[11];
-    var luasBangunan = rowData[12];
-    var zoningCode = rowData[17];
-
-    var suggestion = calculateSmartRecommendation(zoningCode, luasTanah, luasBangunan, kategori);
-    sheet.getRange(r, 23).setValue(suggestion); // Isi ke Col W (rekomendasiUser)
+    var suggestion = calculateSmartRecommendation(rowData[17], rowData[11], rowData[12], rowData[4]);
+    sheet.getRange(r, 23).setValue(suggestion);
   }
 
   SpreadsheetApp.getUi().alert('✨ Smart Recommendation berhasil diisikan ke Kolom W!');
 }
 
-/**
- * Otomatis Mengisi Kolom W untuk Seluruh Baris di Sheet
- */
 function generateRecommendationForAllRows() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName('Data_BMN_Idle');
@@ -192,19 +232,16 @@ function generateRecommendationForAllRows() {
     var rowData = sheet.getRange(r, 1, 1, 24).getValues()[0];
     if (!rowData[0]) continue;
 
-    var currentRec = String(rowData[22] || ''); // Col W
-    if (!currentRec) { // Hanya isi jika masih kosong
+    var currentRec = String(rowData[22] || '');
+    if (!currentRec) {
       var suggestion = calculateSmartRecommendation(rowData[17], rowData[11], rowData[12], rowData[4]);
       sheet.getRange(r, 23).setValue(suggestion);
     }
   }
 
-  SpreadsheetApp.getUi().alert('🚀 Smart Recommendation telah berhasil diisikan ke seluruh baris data yang kosong!');
+  SpreadsheetApp.getUi().alert('🚀 Smart Recommendation telah diisikan ke seluruh baris data yang kosong!');
 }
 
-/**
- * Menangani Upload Foto & Request POST
- */
 function doPost(e) {
   try {
     var contents = JSON.parse(e.postData.contents);

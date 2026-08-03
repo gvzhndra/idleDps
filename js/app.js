@@ -1,7 +1,7 @@
 /**
  * Main Application Controller
  * BMN Idle Interactive Dashboard - KPKNL Denpasar
- * Supporting Google Sheets & Apps Script Backend Smart Recommendation Integration
+ * Supporting PowerPoint (.pptx) Slide Export (1 Asset = 1 Slide)
  */
 
 const App = {
@@ -254,7 +254,6 @@ const App = {
         </div>
       </div>
 
-      <!-- Distance to KPKNL Denpasar -->
       <div class="detail-section-card mb-3">
         <h4 class="section-title"><i class="fa-solid fa-route" style="color:var(--pastel-blue);"></i> Jarak Spasial ke KPKNL Denpasar</h4>
         <div class="kpknl-distance-banner">
@@ -266,7 +265,6 @@ const App = {
         </div>
       </div>
 
-      <!-- Recommendation Card (Official User Input + Backend Smart Suggestion) -->
       <div class="detail-section-card recommendation-card mb-3">
         <div class="d-flex justify-content-between align-items-center mb-2">
           <span class="badge ${recommendation.type.badgeClass}"><i class="fa-solid fa-user-check"></i> REKOMENDASI RESMI TIM</span>
@@ -287,7 +285,6 @@ const App = {
         </ul>
       </div>
 
-      <!-- Zonasi & POI -->
       <div class="detail-section-card mb-3">
         <h4 class="section-title"><i class="fa-solid fa-map" style="color:var(--pastel-purple);"></i> Zonasi Tata Ruang & Fasilitas Terdekat</h4>
         <div class="mb-2">
@@ -299,7 +296,6 @@ const App = {
         </div>
       </div>
 
-      <!-- Legalitas -->
       <div class="detail-section-card mb-3">
         <h4 class="section-title"><i class="fa-solid fa-file-contract"></i> Legalitas & Kondisi Aset</h4>
         <p style="font-size:12px;"><strong>Status:</strong> ${asset.statusPenguasaan}</p>
@@ -313,6 +309,130 @@ const App = {
         </button>
       </div>
     `;
+  },
+
+  /**
+   * EXPORT PRESENTATION TO POWERPOINT (.pptx)
+   * 1 Slide per BMN Idle Asset
+   */
+  exportToPPT() {
+    if (typeof PptxGenJS === 'undefined') {
+      this.showToast('Library PptxGenJS belum siap. Harap muat ulang halaman.', 'warning');
+      return;
+    }
+
+    const assetsToExport = this.filteredAssets.length > 0 ? this.filteredAssets : this.assets;
+    if (assetsToExport.length === 0) {
+      this.showToast('Tidak ada data BMN Idle untuk diekspor.', 'warning');
+      return;
+    }
+
+    this.showToast('Menyiapkan file PowerPoint (.pptx)...');
+
+    const pptx = new PptxGenJS();
+    pptx.layout = 'LAYOUT_16x9';
+
+    // 1. TITLE SLIDE
+    const titleSlide = pptx.addSlide();
+    titleSlide.background = { color: 'F4F6FB' };
+
+    titleSlide.addText('PORTOFOLIO BMN IDLE KPKNL DENPASAR', {
+      x: 0.8, y: 1.5, w: '85%', h: 1.0,
+      fontFace: 'Arial', fontSize: 26, bold: true, color: '1E293B'
+    });
+
+    titleSlide.addText('Kanwil DJKN Bali dan Nusa Tenggara | Presentasi & Analisis Spasial Optimalisasi BMN', {
+      x: 0.8, y: 2.6, w: '85%', h: 0.5,
+      fontFace: 'Arial', fontSize: 14, color: '4A90E2', bold: true
+    });
+
+    titleSlide.addText(`Total Aset: ${assetsToExport.length} Unit BMN Idle  |  Tanggal Ekspor: ${new Date().toLocaleDateString('id-ID')}`, {
+      x: 0.8, y: 4.8, w: '85%', h: 0.4,
+      fontFace: 'Arial', fontSize: 11, color: '64748B'
+    });
+
+    // 2. ASSET SLIDES (1 Slide per BMN)
+    assetsToExport.forEach((asset, index) => {
+      const slide = pptx.addSlide();
+      slide.background = { color: 'FFFFFF' };
+
+      const distData = SpatialEngine.getDistanceToKPKNL(asset.lat, asset.lng);
+      const rec = RecommendationEngine.generateRecommendation(asset, []);
+
+      // Slide Header Bar
+      slide.addShape(pptx.shapes.RECTANGLE, { x: 0, y: 0, w: '100%', h: 0.9, fill: { color: '4A90E2' } });
+      slide.addText(`[Aset #${index + 1}] ${asset.namaAset}`, {
+        x: 0.5, y: 0.15, w: '90%', h: 0.6,
+        fontFace: 'Arial', fontSize: 18, bold: true, color: 'FFFFFF'
+      });
+
+      // Left Column: Metadata Table Card
+      slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x: 0.5, y: 1.1, w: 5.5, h: 5.8, fill: { color: 'F8FAFC' }, line: { color: 'E2E8F0', width: 1 } });
+
+      const metaText = [
+        `Kode Barang / NUP : ${asset.kodeBarang} (NUP ${asset.nup})`,
+        `Kategori Aset         : ${asset.kategori}`,
+        `Kabupaten / Kota     : ${asset.kabupaten} (${asset.kecamatan || '-'})`,
+        `Alamat                   : ${asset.alamat}`,
+        `Luas Tanah            : ${SpatialEngine.formatLuas(asset.luasTanah)}`,
+        `Luas Bangunan      : ${asset.luasBangunan} m²`,
+        `Estimasi Nilai Aset  : ${SpatialEngine.formatRupiah(asset.nilaiAset)}`,
+        `Potensi PNBP         : ${SpatialEngine.formatRupiah(asset.potensiPnbpTahun)} / tahun`,
+        `Jarak ke KPKNL      : ${distData.distanceKm} km (Kantor Denpasar)`,
+        `Zonasi Tata Ruang : ${asset.zoningName} (${asset.zoningCode})`,
+        `Status Legalitas      : ${asset.statusPenguasaan}`
+      ].join('\n\n');
+
+      slide.addText(metaText, {
+        x: 0.7, y: 1.3, w: 5.1, h: 5.4,
+        fontFace: 'Arial', fontSize: 10, color: '1E293B', lineSpacing: 14
+      });
+
+      // Right Column Top: Official Recommendation Box
+      slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x: 6.3, y: 1.1, w: 6.5, h: 2.6, fill: { color: 'FEF5E7' }, line: { color: 'F39C12', width: 1 } });
+      
+      slide.addText('REKOMENDASI RESMI OPTIMALISASI ASET', {
+        x: 6.5, y: 1.25, w: 6.1, h: 0.3,
+        fontFace: 'Arial', fontSize: 11, bold: true, color: 'F39C12'
+      });
+
+      slide.addText(rec.officialTitle, {
+        x: 6.5, y: 1.6, w: 6.1, h: 0.6,
+        fontFace: 'Arial', fontSize: 13, bold: true, color: '1E293B'
+      });
+
+      slide.addText(`Saran System: ${rec.smartSuggestion}\nCatatan: ${asset.keterangan || '-'}`, {
+        x: 6.5, y: 2.3, w: 6.1, h: 1.2,
+        fontFace: 'Arial', fontSize: 9.5, color: '475569'
+      });
+
+      // Right Column Bottom: Photo Box
+      if (asset.fotoList && asset.fotoList[0]) {
+        try {
+          slide.addImage({
+            path: asset.fotoList[0],
+            x: 6.3, y: 3.9, w: 6.5, h: 3.0,
+            rounding: true
+          });
+        } catch (err) {
+          slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x: 6.3, y: 3.9, w: 6.5, h: 3.0, fill: { color: 'E2E8F0' } });
+          slide.addText('Foto Aset BMN Idle', { x: 6.3, y: 5.2, w: 6.5, h: 0.5, align: 'center', fontFace: 'Arial', fontSize: 12, color: '64748B' });
+        }
+      } else {
+        slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x: 6.3, y: 3.9, w: 6.5, h: 3.0, fill: { color: 'E2E8F0' } });
+        slide.addText('Foto Aset BMN Idle', { x: 6.3, y: 5.2, w: 6.5, h: 0.5, align: 'center', fontFace: 'Arial', fontSize: 12, color: '64748B' });
+      }
+    });
+
+    // Save PPTX File
+    pptx.writeFile({ fileName: `BMN_Idle_KPKNL_Denpasar_${new Date().toISOString().slice(0, 10)}.pptx` })
+      .then(fileName => {
+        this.showToast(`Berhasil mengunduh slide presentation: ${fileName}`);
+      })
+      .catch(err => {
+        console.error(err);
+        this.showToast('Gagal membuat file PPT. Silakan coba lagi.', 'warning');
+      });
   },
 
   openGoogleSheetsModal() {
