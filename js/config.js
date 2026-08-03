@@ -36,51 +36,53 @@ const CONFIG = {
     }
   },
 
-  // Bali Spatial Planning (RTRW) Zoning Codes - Soft Pastel Palette
+  // Bali Spatial Planning (RTRW) Zoning Categories - Soft Pastel Palette
   ZONING_TYPES: {
     PERDAGANGAN_JASA: {
-      code: 'K-1',
+      code: 'Kategori 1',
       name: 'Perdagangan & Jasa',
       color: '#f6d186',
       fillColor: '#fff5c0',
-      description: 'Zona Komersial & Pertokoan'
+      description: 'Zona Komersial, Pertokoan, Ruko, & Logistik'
     },
     PARIWISATA: {
-      code: 'K-2',
+      code: 'Kategori 2',
       name: 'Kawasan Pariwisata',
       color: '#ffaaa5',
       fillColor: '#ffd3b6',
-      description: 'Zona Wisata & Hospitality'
+      description: 'Zona Wisata, Hotel, Hospitality, & Resort'
     },
     PEMERINTAHAN: {
-      code: 'K-3',
-      name: 'Fasilitas Pemerintahan',
+      code: 'Kategori 3',
+      name: 'Fasilitas Pemerintahan & Publik',
       color: '#a8d8ea',
       fillColor: '#d4f0f0',
-      description: 'Zona Perkantoran & Fasilitas Umum'
+      description: 'Zona Perkantoran, Sekolah, & Layanan Publik'
     },
     PERUMAHAN: {
-      code: 'K-4',
+      code: 'Kategori 4',
       name: 'Permukiman / Perumahan',
       color: '#a8e6cf',
       fillColor: '#dcedc1',
-      description: 'Zona Perumahan & Hunian'
+      description: 'Zona Perumahan, Mess, & Hunian Pegawai'
     },
     RTH_LINDUNG: {
-      code: 'K-5',
+      code: 'Kategori 5',
       name: 'Ruang Terbuka Hijau / Lindung',
       color: '#c7ceea',
       fillColor: '#e8dff5',
-      description: 'Zona Hijau & Konservasi'
+      description: 'Zona Hijau, Conservasi, & Agrowisata'
     }
   },
 
-  // POIs Categories in Soft Pastel Theme
+  // Extended POIs Categories in Soft Pastel Theme
   POI_CATEGORIES: {
-    KANTOR_DESA: { id: 'desa', name: 'Kantor Desa/Kelurahan', icon: 'fa-building-columns', color: '#8e7cc3' },
-    POLSEK_POLRES: { id: 'polisi', name: 'Kantor Polisi (Polsek/Polres)', icon: 'fa-user-shield', color: '#6fa8dc' },
-    KORAMIL_KODIM: { id: 'tentara', name: 'Kantor Tentara (Koramil/Kodim)', icon: 'fa-person-military-pointing', color: '#93c47d' },
-    PASAR_PASARAN: { id: 'pasar', name: 'Pasar / Pusat Bisnis', icon: 'fa-store', color: '#f6b26b' }
+    PENDIDIKAN: { id: 'pendidikan', name: 'Sekolah / Kampus (Pendidikan)', icon: 'fa-graduation-cap', color: '#e67e22' },
+    POLISI_KEAMANAN: { id: 'polisi', name: 'Kantor Polisi / TNI', icon: 'fa-user-shield', color: '#3498db' },
+    PEMERINTAHAN: { id: 'pemda', name: 'Kantor Desa / Kelurahan / Pemda', icon: 'fa-building-columns', color: '#9b59b6' },
+    KESEHATAN: { id: 'kesehatan', name: 'Rumah Sakit / Puskesmas', icon: 'fa-hospital', color: '#e74c3c' },
+    PASAR_KOMERSIAL: { id: 'pasar', name: 'Pasar / Pusat Bisnis', icon: 'fa-store', color: '#f1c40f' },
+    TRANSPORTASI: { id: 'transportasi', name: 'Bandara / Pelabuhan / Dermaga', icon: 'fa-plane-departure', color: '#1abc9c' }
   },
 
   // Utilization Recommendations Mapping

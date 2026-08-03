@@ -19,7 +19,7 @@ const RecommendationEngine = {
     let rationale = [];
 
     if (asset.zoningName) {
-      rationale.push(`Sesuai dengan **Zonasi Tata Ruang (${asset.zoningName})**.`);
+      rationale.push(`Sesuai dengan **Zonasi Tata Ruang (${asset.zoningName} - ${asset.zoningCode || 'Kategori 1'})**.`);
     }
 
     // Generalized Spatial Crowd & Activity Center Context
@@ -31,9 +31,10 @@ const RecommendationEngine = {
       rationale.push(spatialContext.crowdCenter.description);
     }
 
+    // Enrich POI Proximity Analysis
     if (nearbyPOIs.length > 0) {
-      const topPoi = nearbyPOIs[0];
-      rationale.push(`Berdekatan dengan **${topPoi.name}** (${topPoi.distanceKm} km).`);
+      const poiSummary = nearbyPOIs.slice(0, 3).map(p => `${p.name} (${p.distanceKm} km)`).join(', ');
+      rationale.push(`**Fasilitas Terdekat (POI):** Berdekatan dengan ${poiSummary}.`);
     }
 
     if (asset.catatanTim) {
@@ -65,34 +66,28 @@ const RecommendationEngine = {
   },
 
   calculateLocalSmartSuggestion(asset) {
-    const code = String(asset.zoningCode || 'K-1').toUpperCase();
+    const code = String(asset.zoningCode || 'Kategori 1').toLowerCase();
     const isTanah = asset.kategori === 'Tanah Kosong' || asset.luasBangunan === 0;
 
-    const isUbud = asset.kecamatan && asset.kecamatan.toLowerCase().includes('ubud');
-
-    if (isUbud) {
+    if (code.includes('kategori 2') || code.includes('k-2') || code.includes('pariwisata')) {
       return isTanah 
-        ? 'Kerja Sama Pemanfaatan (KSP) Boutique Eco-Resort / Galeri Seni & Budaya Ubud'
-        : 'Sewa Komersial Restoran High-End / Galeri Seni & Boutique Cafe Ubud';
+        ? 'Kerja Sama Pemanfaatan (KSP) Beach Club / Boutique Eco-Resort / Pariwisata'
+        : 'Sewa / KSP Restoran Concept / Cafe Pariwisata & Hospitality';
+    }
+    if (code.includes('kategori 3') || code.includes('k-3') || code.includes('pemerintahan')) {
+      return 'Alih Status Penggunaan / Pinjam Pakai Satker Kemenkeu / Pemda';
+    }
+    if (code.includes('kategori 4') || code.includes('k-4') || code.includes('perumahan')) {
+      return 'Rumah Dinas Pegawai / Mess Instansi / Co-Living Hunian';
+    }
+    if (code.includes('kategori 5') || code.includes('k-5') || code.includes('hijau') || code.includes('rth')) {
+      return 'Optimalisasi Terbatas / Agrowisata Organik / Taman Edukasi';
     }
 
-    switch (code) {
-      case 'K-2':
-        return isTanah 
-          ? 'Kerja Sama Pemanfaatan (KSP) Beach Club / Eco-Resort'
-          : 'Sewa / KSP Restoran Concept / Cafe Pariwisata';
-      case 'K-3':
-        return 'Alih Status Penggunaan / Pinjam Pakai Satker Kemenkeu/Instansi';
-      case 'K-1':
-      default:
-        return (asset.luasTanah >= 3000) 
-          ? 'Sewa Depo Logistik / SPBU / Supermarket Modern' 
-          : 'Sewa Komersial Ruko / Perkantoran Swasta / UMKM';
-      case 'K-4':
-        return 'Rumah Dinas Pegawai / Mess Instansi / Sewa Hunian';
-      case 'K-5':
-        return 'Optimalisasi Terbatas / Agrowisata Organik / Taman Edukasi';
-    }
+    // Default: Kategori 1 (Perdagangan & Jasa)
+    return (asset.luasTanah >= 3000) 
+      ? 'Sewa Depo Logistik / SPBU / Supermarket Modern' 
+      : 'Sewa Komersial Ruko / Perkantoran Swasta / UMKM';
   }
 };
 
