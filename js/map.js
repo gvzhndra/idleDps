@@ -26,6 +26,7 @@ const MapEngine = {
 
     // Create tile layers
     this.tileLayers.pastel = L.tileLayer(CONFIG.MAP.TILE_LAYERS.PASTEL_LIGHT.url, { attribution: CONFIG.MAP.TILE_LAYERS.PASTEL_LIGHT.attribution });
+    this.tileLayers.dark = L.tileLayer(CONFIG.MAP.TILE_LAYERS.DARK_EXECUTIVE.url, { attribution: CONFIG.MAP.TILE_LAYERS.DARK_EXECUTIVE.attribution });
     this.tileLayers.satellite = L.tileLayer(CONFIG.MAP.TILE_LAYERS.SATELLITE.url, { attribution: CONFIG.MAP.TILE_LAYERS.SATELLITE.attribution });
     this.tileLayers.streets = L.tileLayer(CONFIG.MAP.TILE_LAYERS.STREETS.url, { attribution: CONFIG.MAP.TILE_LAYERS.STREETS.attribution });
 
