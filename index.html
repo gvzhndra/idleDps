@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BMN Idle Interactive Presentation Dashboard - KPKNL Denpasar</title>
+  
+  <meta name="description" content="Dashboard Interaktif Spatial Analytics BMN Idle KPKNL Denpasar - Kanwil DJKN Bali dan Nusa Tenggara">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Leaflet GIS Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  
+  <!-- Soft Pastel Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ==========================================================================
+       1. EXECUTIVE APP HEADER
+       ========================================================================== -->
+  <header class="app-header">
+    <div class="brand-container">
+      <div class="brand-logo-icon">
+        <i class="fa-solid fa-landmark-flag"></i>
+      </div>
+      <div class="brand-text">
+        <h1>BMN IDLE INTERACTIVE DASHBOARD</h1>
+        <p>KPKNL Denpasar &bull; Kanwil DJKN Bali & Nusa Tenggara</p>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="live-clock-badge" id="live-clock">
+        <i class="fa-solid fa-clock"></i> Synchronizing...
+      </div>
+      <button class="btn btn-secondary" onclick="App.openGoogleSheetsModal()" title="Integrasi Google Sheets & Apps Script">
+        <i class="fa-solid fa-table text-success"></i> Google Sheets
+      </button>
+      <button class="btn btn-primary" onclick="App.startPresentationMode()">
+        <i class="fa-solid fa-tv"></i> Mulai Presentasi Live
+      </button>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       2. KPI SUMMARY METRICS BAR
+       ========================================================================== -->
+  <section class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-icon blue"><i class="fa-solid fa-building-circle-exclamation"></i></div>
+      <div class="stat-info">
+        <label>Total BMN Idle</label>
+        <div class="stat-value" id="stat-total-unit">0</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon mint"><i class="fa-solid fa-vector-square"></i></div>
+      <div class="stat-info">
+        <label>Total Luas Tanah</label>
+        <div class="stat-value" id="stat-luas-tanah">0 m²</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon orange"><i class="fa-solid fa-house-flag"></i></div>
+      <div class="stat-info">
+        <label>Total Luas Bangunan</label>
+        <div class="stat-value" id="stat-luas-bangunan">0 m²</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon purple"><i class="fa-solid fa-vault"></i></div>
+      <div class="stat-info">
+        <label>Estimasi Nilai Aset</label>
+        <div class="stat-value" id="stat-nilai-aset">Rp 0</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon rose"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+      <div class="stat-info">
+        <label>Potensi PNBP / Tahun</label>
+        <div class="stat-value" id="stat-potensi-pnbp">Rp 0</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       3. SEARCH & FILTER TOOLBAR
+       ========================================================================== -->
+  <section class="toolbar-bar">
+    <div class="search-box">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="search-input" placeholder="Cari Kode Barang, NUP, Nama Aset, Lokasi...">
+    </div>
+
+    <div class="filter-group">
+      <select class="filter-select" id="filter-kabupaten">
+        <option value="all">Wilayah KPKNL Denpasar (Semua Kab/Kota)</option>
+      </select>
+
+      <select class="filter-select" id="filter-kategori">
+        <option value="all">Semua Jenis Aset</option>
+        <option value="Tanah Kosong">Tanah Kosong</option>
+        <option value="Tanah & Bangunan">Tanah & Bangunan</option>
+      </select>
+    </div>
+
+    <div class="map-tools-group" style="display:flex; align-items:center; gap:8px;">
+      <label style="font-size: 11px; color: var(--text-muted); display:flex; align-items:center; gap:6px; margin-right:6px;">
+        <input type="checkbox" id="toggle-zoning-layer" checked> Layer Zonasi Bali
+      </label>
+
+      <button class="btn-tile-switch active" data-layer="pastel">
+        <i class="fa-solid fa-map-location"></i> Soft Pastel
+      </button>
+      <button class="btn-tile-switch" data-layer="satellite">
+        <i class="fa-solid fa-satellite"></i> Satelit
+      </button>
+      <button class="btn-tile-switch" data-layer="streets">
+        <i class="fa-solid fa-road"></i> Peta Jalan
+      </button>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       4. MAIN WORKSPACE (SIDEBAR + MAP + DETAIL DRAWER)
+       ========================================================================== -->
+  <main class="main-workspace">
+    <!-- Left Sidebar: Asset Cards List -->
+    <aside class="asset-sidebar">
+      <div class="sidebar-header">
+        <h3><i class="fa-solid fa-list-check" style="color:var(--pastel-blue);"></i> Daftar BMN Idle KPKNL Denpasar</h3>
+        <span class="badge badge-pastel-blue" id="sidebar-count">Live Dataset</span>
+      </div>
+
+      <div class="asset-cards-container" id="asset-list-container">
+        <!-- Asset Cards will be rendered dynamically by app.js -->
+      </div>
+    </aside>
+
+    <!-- Center/Right: Leaflet GIS Interactive Map -->
+    <section class="map-container">
+      <div id="map"></div>
+    </section>
+
+    <!-- Slide-over Right Detail Panel Drawer -->
+    <aside class="detail-drawer" id="detail-drawer">
+      <div class="detail-drawer-header">
+        <h3><i class="fa-solid fa-chart-pie" style="color:var(--pastel-blue);"></i> Detail & Spatial Analysis</h3>
+        <button class="btn btn-icon btn-secondary" onclick="App.closeDetailPanel()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="detail-drawer-body" id="detail-drawer-body">
+        <div class="empty-state p-4 text-center">
+          <i class="fa-solid fa-hand-pointer text-muted" style="font-size: 32px;"></i>
+          <p class="mt-2 text-muted">Pilih titik BMN Idle di peta atau daftar untuk melihat analisis spasial.</p>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- ==========================================================================
+       5. MODAL DIALOGS
+       ========================================================================== -->
+  <!-- Modal Upload Foto -->
+  <div class="modal-overlay" id="upload-photo-modal">
+    <div class="modal-card">
+      <div class="modal-header d-flex justify-content-between align-items-center mb-3">
+        <h3 style="font-size:16px; font-weight:700;"><i class="fa-solid fa-cloud-arrow-up" style="color:var(--pastel-blue);"></i> Upload Foto Aset Terbaru</h3>
+        <button class="btn btn-icon btn-secondary" onclick="App.closeUploadPhotoModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="upload-photo-form">
+        <input type="hidden" id="upload-asset-id">
+        <p class="mb-3 text-muted" style="font-size:12px;">Memperbarui foto fisik BMN Idle: <strong id="upload-asset-title" style="color:var(--text-main);"></strong></p>
+
+        <div class="form-group mb-3">
+          <label style="font-size:12px; color:var(--text-muted); display:block;" class="mb-1">URL Foto Aset (Google Drive / Image Link)</label>
+          <input type="url" class="form-control" id="upload-photo-url" placeholder="https://images.unsplash.com/..." required>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 mt-4">
+          <button type="button" class="btn btn-secondary" onclick="App.closeUploadPhotoModal()">Batal</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-upload"></i> Simpan Foto Aset</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Settings Google Sheets -->
+  <div class="modal-overlay" id="sheets-sync-modal">
+    <div class="modal-card">
+      <div class="modal-header d-flex justify-content-between align-items-center mb-3">
+        <h3 style="font-size:16px; font-weight:700;"><i class="fa-solid fa-table text-success"></i> Integrasi Google Sheets & Apps Script</h3>
+        <button class="btn btn-icon btn-secondary" onclick="App.closeGoogleSheetsModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p style="font-size:12px; color:var(--text-muted);" class="mb-3">
+          Masukkan <strong>URL Web App Google Apps Script</strong> dari Spreadsheet data BMN Idle Anda untuk menyinkronkan data secara otomatis & realtime.
+        </p>
+        <div class="form-group mb-3">
+          <label style="font-size:12px; color:var(--text-muted); display:block;" class="mb-1">Web App Deployment URL</label>
+          <input type="url" class="form-control" id="apps-script-url-input" placeholder="https://script.google.com/macros/s/.../exec">
+        </div>
+        <p style="font-size:11px; color:var(--pastel-blue);">
+          <i class="fa-solid fa-info-circle"></i> File script <code>Code.gs</code> siap pakai sudah tersedia di folder project!
+        </p>
+      </div>
+
+      <div class="d-flex justify-content-end gap-2 mt-4">
+        <button type="button" class="btn btn-secondary" onclick="App.closeGoogleSheetsModal()">Batal</button>
+        <button type="button" class="btn btn-primary" onclick="App.saveGoogleSheetsUrl()"><i class="fa-solid fa-rotate"></i> Simpan & Sinkronkan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaflet GIS Map JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Custom Dashboard JavaScript Modules -->
+  <script src="js/config.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/spatial.js"></script>
+  <script src="js/recommendation.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/presentation.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
