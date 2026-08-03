@@ -27,7 +27,7 @@ Membangun **Single-Page Application (SPA) Interactive Presentation Dashboard** u
 
 2. **UI & Theme Aesthetic**:
    - Tampilan **Soft Pastel Palette** (lembut di mata, kontras tinggi *dark slate* `#1e293b`).
-   - Kartu statistik KPI (Total Unit, Total Luas Tanah, Total Luas Bangunan, Estimasi Nilai Wajar Aset; *Potensi PNBP disembunyikan sesuai arahan karena belum bisa diukur*).
+   - Kartu statistik KPI (BMN Terindikasi Idle, Total Luas Tanah, Total Luas Bangunan, Estimasi Nilai Wajar Aset; *Potensi PNBP disembunyikan sesuai arahan karena belum bisa diukur*).
    - **Collapsible Sidebar**: Tombol toggle untuk menyembunyikan/menampilkan sidebar daftar aset agar area peta bisa *full screen*.
    - *Live Clock* di header.
 
