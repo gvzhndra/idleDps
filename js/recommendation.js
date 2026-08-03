@@ -22,15 +22,13 @@ const RecommendationEngine = {
       rationale.push(`Sesuai dengan **Zonasi Tata Ruang (${asset.zoningName})**.`);
     }
 
-    // Spatial Hub Context (e.g., Ubud vs Kota Gianyar)
+    // Generalized Spatial Crowd & Activity Center Context
     const spatialContext = SpatialEngine.getMultiLevelDistances(
       asset.lat, asset.lng, asset.kabupaten, asset.kecamatan, asset.kelurahan
     );
 
-    if (spatialContext.isUbudArea) {
-      rationale.push(`Kawasan **Desa Ubud / Peliatan** Memiliki **Tingkat Keramaian & Aktivitas Komersial Pariwisata Sangat Tinggi** (Melampaui Pusat Kota Gianyar).`);
-    } else if (spatialContext.nearestHub && spatialContext.nearestHub.distanceKm <= 5) {
-      rationale.push(`Dekat dengan **${spatialContext.nearestHub.name}** (${spatialContext.nearestHub.distanceKm} km) - ${spatialContext.nearestHub.note}.`);
+    if (spatialContext.crowdCenter && spatialContext.crowdCenter.description) {
+      rationale.push(spatialContext.crowdCenter.description);
     }
 
     if (nearbyPOIs.length > 0) {

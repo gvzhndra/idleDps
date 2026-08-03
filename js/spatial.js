@@ -61,20 +61,30 @@ const SpatialEngine = {
 
   /**
    * Calculate multi-level administrative distances:
-   * 1. Ibukota Provinsi (Denpasar)
-   * 2. Ibukota Kabupaten (Regency Capital)
-   * 3. Hub Komersial / Pariwisata Terdekat (e.g., Ubud vs Kota Gianyar)
+   * 1. Jarak ke Ibukota Provinsi Bali (Denpasar)
+   * 2. Jarak ke Ibukota Kabupaten Terdekat (Closest Regency Capital)
+   * 3. Jarak ke Pusat Hub Komersial / Pariwisata Terdekat
+   * 4. Analisis Orientasi Pusat Keramaian Utama (Pusat Kab vs Pusat Desa vs Hub Komersial)
    */
-  getMultiLevelDistances(lat, lng, kabupaten, kecamatan = '', kelurahan = '') {
+  getMultiLevelDistances(lat, lng, kabupaten = '', kecamatan = '', kelurahan = '') {
     // 1. Provincial Capital (Denpasar - Renon)
     const provCap = REGENCY_CAPITALS['Kota Denpasar'];
     const distToProvincialCapital = this.calculateDistance(lat, lng, provCap.lat, provCap.lng);
 
-    // 2. Regency Capital
-    const regCap = REGENCY_CAPITALS[kabupaten] || provCap;
-    const distToRegencyCapital = this.calculateDistance(lat, lng, regCap.lat, regCap.lng);
+    // 2. Find Nearest Regency Capital dynamically across Bali
+    let nearestRegCap = null;
+    let minRegCapDist = 999;
 
-    // 3. Distance to nearby Commercial / Tourism Hub
+    Object.keys(REGENCY_CAPITALS).forEach(key => {
+      const cap = REGENCY_CAPITALS[key];
+      const dist = this.calculateDistance(lat, lng, cap.lat, cap.lng);
+      if (dist < minRegCapDist) {
+        minRegCapDist = dist;
+        nearestRegCap = { ...cap, regencyKey: key, distanceKm: dist };
+      }
+    });
+
+    // 3. Find Nearest Commercial / Tourism Hub
     let nearestHub = null;
     let minHubDist = 999;
 
@@ -86,16 +96,35 @@ const SpatialEngine = {
       }
     });
 
-    // Special Hub check for Ubud context
-    const isUbudArea = (kecamatan && kecamatan.toLowerCase().includes('ubud')) ||
-                       (kelurahan && kelurahan.toLowerCase().includes('ubud')) ||
-                       (kelurahan && kelurahan.toLowerCase().includes('peliatan'));
+    // 4. Dynamic Crowd & Activity Center Determination
+    let crowdCenterType = '';
+    let crowdCenterName = '';
+    let crowdCenterDesc = '';
+
+    if (nearestHub && nearestHub.distanceKm <= 5.0) {
+      crowdCenterType = 'Hub Komersial & Pariwisata';
+      crowdCenterName = nearestHub.name;
+      crowdCenterDesc = `Pusat keramaian & aktivitas ekonomi di lokasi ini berpusat di **${nearestHub.name}** (${nearestHub.distanceKm} km), yang memiliki intensitas kegiatan ekonomi & pariwisata lebih dominan dibanding pusat administratif kabupaten.`;
+    } else if (nearestRegCap && nearestRegCap.distanceKm <= 8.0) {
+      crowdCenterType = 'Pusat Ibukota Kabupaten';
+      crowdCenterName = nearestRegCap.name;
+      crowdCenterDesc = `Pusat keramaian & pelayanan publik utama berada di **${nearestRegCap.name}** (${nearestRegCap.distanceKm} km).`;
+    } else {
+      const localName = kelurahan || kecamatan || 'Desa/Kelurahan Setempat';
+      crowdCenterType = 'Pusat Desa / Lokal';
+      crowdCenterName = `Pusat Desa ${localName}`;
+      crowdCenterDesc = `Aktivitas keramaian utama berpusat pada area **${localName}** (Skala Lokal / Lingkungan Permukiman).`;
+    }
 
     return {
       provincialCapital: { name: 'Ibukota Provinsi (Denpasar)', distanceKm: distToProvincialCapital },
-      regencyCapital: { name: regCap.name, distanceKm: distToRegencyCapital },
+      regencyCapital: nearestRegCap,
       nearestHub: nearestHub,
-      isUbudArea: isUbudArea
+      crowdCenter: {
+        type: crowdCenterType,
+        name: crowdCenterName,
+        description: crowdCenterDesc
+      }
     };
   },
 

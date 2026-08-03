@@ -247,14 +247,14 @@ const App = {
     `).join('');
 
     let hubBadge = '';
-    if (multiDist.isUbudArea) {
+    if (multiDist.crowdCenter) {
       hubBadge = `
-        <div class="p-2 mb-2 border-radius" style="background:#fef5e7; border:1px solid #f39c12; border-radius:8px;">
-          <small style="font-size:11px; font-weight:700; color:#e67e22; display:block;">
-            <i class="fa-solid fa-fire"></i> Hub Pariwisata & Komersial Utama (Ubud Context):
+        <div class="p-2 mb-2 rounded" style="background:#fef5e7; border:1px solid #f39c12; border-radius:8px;">
+          <small style="font-size:11px; font-weight:700; color:#e67e22; display:block;" class="mb-1">
+            <i class="fa-solid fa-fire"></i> Orientasi Pusat Keramaian & Ekonomi Utama:
           </small>
-          <span style="font-size:11.5px; color:#1e293b; font-weight:600;">
-            Area Desa Ubud / Peliatan memiliki tingkat keramaian & nilai ekonomi jauh lebih tinggi melampaui Pusat Kota Gianyar.
+          <span style="font-size:11.5px; color:#1e293b; font-weight:600; display:block;">
+            ${multiDist.crowdCenter.description}
           </span>
         </div>
       `;
@@ -293,15 +293,15 @@ const App = {
 
         <div class="d-flex flex-column gap-2 mt-2" style="font-size:12px;">
           <div class="d-flex justify-content-between align-items-center p-2 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
-            <span><i class="fa-solid fa-building-flag text-primary"></i> <strong>Jarak ke Ibukota Provinsi (Denpasar):</strong></span>
+            <span><i class="fa-solid fa-building-flag text-primary"></i> <strong>Jarak ke Ibukota Prov. (Denpasar):</strong></span>
             <span class="badge badge-pastel-blue">${multiDist.provincialCapital.distanceKm} km</span>
           </div>
           <div class="d-flex justify-content-between align-items-center p-2 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
-            <span><i class="fa-solid fa-landmark text-secondary"></i> <strong>Jarak ke Ibukota Kab. (${asset.kabupaten}):</strong></span>
-            <span class="badge badge-pastel-purple">${multiDist.regencyCapital.distanceKm} km</span>
+            <span><i class="fa-solid fa-landmark text-secondary"></i> <strong>Jarak ke Ibukota Kab. Terdekat (${multiDist.regencyCapital ? multiDist.regencyCapital.name : asset.kabupaten}):</strong></span>
+            <span class="badge badge-pastel-purple">${multiDist.regencyCapital ? multiDist.regencyCapital.distanceKm + ' km' : '-'}</span>
           </div>
           <div class="d-flex justify-content-between align-items-center p-2 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
-            <span><i class="fa-solid fa-house-user text-warning"></i> <strong>Jarak ke Pusat Desa / Kel. (${asset.kelurahan || asset.kecamatan || '-'}):</strong></span>
+            <span><i class="fa-solid fa-house-user text-warning"></i> <strong>Pusat Desa / Kel. (${asset.kelurahan || asset.kecamatan || '-'}):</strong></span>
             <span class="badge badge-pastel-orange">${distData.distanceKm <= 5 ? distData.distanceKm + ' km' : 'Pusat Lokal'}</span>
           </div>
         </div>
