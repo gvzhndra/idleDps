@@ -103,6 +103,10 @@ function doGet(e) {
     return fetchCentroidsAsJSON();
   }
 
+  if (e && e.parameter && e.parameter.action === 'getPhotos') {
+    return fetchPhotoMapAsJSON();
+  }
+
   return HtmlService.createHtmlOutputFromFile('index')
     .setTitle('BMN Idle Interactive Dashboard - KPKNL Denpasar')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
@@ -493,6 +497,77 @@ function createJsonResponse(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
 }
+
+/**
+ * Membaca semua URL foto permanen dari:
+ *   1. Tab BMN_Asset_Photos (log per-foto terbaru)
+ *   2. Kolom foto_urls di BMN_Idle sheet (fallback)
+ * Mengembalikan map: { assetId: ['url1', 'url2', ...] }
+ * Endpoint: ?action=getPhotos
+ */
+function fetchPhotoMapAsJSON() {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var photoMap = {};
+
+    // ── Source 1: BMN_Asset_Photos tab (most reliable) ───────────────────────
+    var photoSheet = ss.getSheetByName('BMN_Asset_Photos');
+    if (photoSheet) {
+      var pData = photoSheet.getDataRange().getValues();
+      // columns: asset_id, foto_url, uploaded_at, file_name
+      for (var p = 1; p < pData.length; p++) {
+        var pid = String(pData[p][0]).trim();
+        var purl = String(pData[p][1]).trim();
+        if (pid && purl) {
+          if (!photoMap[pid]) photoMap[pid] = [];
+          if (photoMap[pid].indexOf(purl) === -1) {
+            photoMap[pid].push(purl);
+          }
+        }
+      }
+    }
+
+    // ── Source 2: foto_urls column in BMN_Idle sheet (fallback / additional) ─
+    var bmnSheet = ss.getSheetByName('BMN_Idle') || ss.getSheetByName('denpasar saja');
+    if (bmnSheet) {
+      var bData = bmnSheet.getDataRange().getValues();
+      var bHeaders = bData[0];
+      var fotoColIdx = bHeaders.indexOf('foto_urls');
+      var idColIdx = bHeaders.indexOf('id');
+      var satkerColIdx = bHeaders.indexOf('kode_satker');
+      var barangColIdx = bHeaders.indexOf('kode_barang');
+      var nupColIdx = bHeaders.indexOf('nup');
+
+      if (fotoColIdx >= 0) {
+        for (var b = 1; b < bData.length; b++) {
+          var bRow = bData[b];
+          var cellVal = String(bRow[fotoColIdx] || '').trim();
+          if (!cellVal) continue;
+
+          // Determine asset ID
+          var bid = idColIdx >= 0 ? String(bRow[idColIdx]).trim() : '';
+          if (!bid && satkerColIdx >= 0 && barangColIdx >= 0 && nupColIdx >= 0) {
+            bid = String(bRow[satkerColIdx]).trim() + '-' +
+                  String(bRow[barangColIdx]).trim() + '-' +
+                  String(bRow[nupColIdx]).trim();
+          }
+          if (!bid) continue;
+
+          var urls = cellVal.split(',').map(function(u) { return u.trim(); }).filter(function(u) { return u.length > 0; });
+          if (!photoMap[bid]) photoMap[bid] = [];
+          urls.forEach(function(u) {
+            if (photoMap[bid].indexOf(u) === -1) photoMap[bid].push(u);
+          });
+        }
+      }
+    }
+
+    return createJsonResponse({ status: 'success', photos: photoMap });
+  } catch (err) {
+    return createJsonResponse({ status: 'error', message: err.toString() });
+  }
+}
+
 
 function openDashboardDialog() {
   var html = HtmlService.createHtmlOutputFromFile('index')

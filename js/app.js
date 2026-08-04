@@ -75,7 +75,65 @@ const App = {
 
     this.bindEvents();
     this.updateExportCountBadge();
+
+    // Load permanent photos from Google Sheet / Drive in background
+    this.loadPhotosFromSheet();
   },
+
+  /**
+   * Fetches permanent Google Drive photo URLs from Apps Script backend.
+   * Merges them into each asset's fotoList (Drive URLs take priority over placeholders).
+   * Called once on app init so photos persist across sessions even in incognito.
+   */
+  async loadPhotosFromSheet() {
+    if (!CONFIG.APPS_SCRIPT.WEB_APP_URL) return;
+    try {
+      const url = CONFIG.APPS_SCRIPT.WEB_APP_URL + '?action=getPhotos';
+      const resp = await fetch(url);
+      const json = await resp.json();
+
+      if (json && json.status === 'success' && json.photos) {
+        const photoMap = json.photos; // { assetId: ['url1', 'url2', ...] }
+        let updated = false;
+
+        const allAssets = [...(this.activeAssets || []), ...(DataEngine.activeAssets || []), ...(DataEngine.pendingAssets || [])];
+
+        allAssets.forEach(asset => {
+          if (!asset || !asset.id) return;
+          const driveUrls = photoMap[asset.id];
+          if (!driveUrls || driveUrls.length === 0) return;
+
+          // Filter out placeholder Unsplash images, keep only real Drive URLs and base64
+          const existing = (asset.fotoList || []).filter(u =>
+            !u.includes('images.unsplash.com')
+          );
+
+          // Merge: Drive URLs first, then any existing non-placeholder
+          const merged = [...driveUrls];
+          existing.forEach(u => {
+            if (!merged.includes(u)) merged.push(u);
+          });
+
+          asset.fotoList = merged;
+          updated = true;
+        });
+
+        if (updated) {
+          // Save merged photos to localStorage for instant next-load
+          this.savePhotosToLocalStorage();
+          // If an asset is currently selected, refresh its detail panel
+          if (this.selectedAsset) {
+            const refreshed = this.getAsset(this.selectedAsset.id);
+            if (refreshed) this.renderAssetDetail(refreshed);
+          }
+        }
+      }
+    } catch (err) {
+      // Silently fail — photos will still show from localStorage if available
+      console.log('Photo sync from sheet skipped:', err.message);
+    }
+  },
+
 
   bindEvents() {
     const allSearchInput = document.getElementById('all-search-input');
