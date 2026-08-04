@@ -53,6 +53,9 @@ const App = {
   },
 
   init() {
+    if (!DataEngine.activeAssets || DataEngine.activeAssets.length === 0) {
+      DataEngine.init();
+    }
     this.activeAssets = DataEngine.activeAssets || [];
 
     // Default select all active assets for PPT export
