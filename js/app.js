@@ -885,7 +885,10 @@ const App = {
     this.currentUser = null;
     localStorage.removeItem('bmn_idle_user');
     this.updateUserUI();
-    this.showToast('Berhasil logout dari sesi.');
+    this.showToast('Berhasil logout dari sesi. Mengalihkan ke halaman login...');
+    setTimeout(() => {
+      window.location.href = 'login.html';
+    }, 400);
   },
 
   updateUserUI() {

@@ -1,6 +1,6 @@
 /**
  * Auth Guard — BMN Idle Dashboard
- * Redirects to login.html if no valid session exists.
+ * Redirects to login.html if no valid session exists or if session expired (> 8 hours).
  * Runs on index.html load (placed at bottom of body).
  */
 (function () {
@@ -15,6 +15,15 @@
       window.location.replace('login.html');
       return;
     }
+
+    // Auto logout if logged in longer than 8 hours (8 * 3600 * 1000 ms)
+    const MAX_SESSION_MS = 8 * 60 * 60 * 1000;
+    if (user.loginTime && (Date.now() - user.loginTime > MAX_SESSION_MS)) {
+      localStorage.removeItem('bmn_idle_user');
+      window.location.replace('login.html?expired=1');
+      return;
+    }
+
     // Restore session into App after it initializes
     document.addEventListener('DOMContentLoaded', () => {
       if (typeof App !== 'undefined') {
