@@ -65,6 +65,83 @@ const BALI_FALLBACK_POIS = [
   { name: 'Pasar Kota Tabanan (Pasar Umum)', type: 'pasar', lat: -8.5392, lng: 115.1275 }
 ];
 
+const BALI_DISTRICT_CENTROIDS = {
+  // Kota Denpasar
+  'Denpasar Selatan': { name: 'Pusat Kec. Denpasar Selatan (Sanur/Renon)', lat: -8.6850, lng: 115.2200 },
+  'Denpasar Barat': { name: 'Pusat Kec. Denpasar Barat (Pemecutan)', lat: -8.6650, lng: 115.2000 },
+  'Denpasar Utara': { name: 'Pusat Kec. Denpasar Utara (Peguyangan)', lat: -8.6300, lng: 115.2100 },
+  'Denpasar Timur': { name: 'Pusat Kec. Denpasar Timur (Kesiman)', lat: -8.6500, lng: 115.2400 },
+
+  // Kabupaten Badung
+  'Kuta': { name: 'Pusat Kec. Kuta', lat: -8.7200, lng: 115.1700 },
+  'Kuta Utara': { name: 'Pusat Kec. Kuta Utara (Kerobokan/Canggu)', lat: -8.6500, lng: 115.1500 },
+  'Kuta Selatan': { name: 'Pusat Kec. Kuta Selatan (Nusa Dua/Jimbaran)', lat: -8.7900, lng: 115.2000 },
+  'Mengwi': { name: 'Pusat Kec. Mengwi (Mangupura)', lat: -8.5833, lng: 115.1819 },
+  'Abiansemal': { name: 'Pusat Kec. Abiansemal', lat: -8.5200, lng: 115.2100 },
+  'Petang': { name: 'Pusat Kec. Petang', lat: -8.3800, lng: 115.2200 },
+
+  // Kabupaten Tabanan
+  'Baturiti': { name: 'Pusat Kec. Baturiti (Bedugul)', lat: -8.3180, lng: 115.1750 },
+  'Tabanan': { name: 'Pusat Kec. Tabanan (Kota Tabanan)', lat: -8.5410, lng: 115.1256 },
+  'Kediri': { name: 'Pusat Kec. Kediri Tabanan', lat: -8.5600, lng: 115.1400 },
+  'Marga': { name: 'Pusat Kec. Marga', lat: -8.4900, lng: 115.1700 },
+  'Penebel': { name: 'Pusat Kec. Penebel', lat: -8.4500, lng: 115.1300 },
+  'Selemadeg': { name: 'Pusat Kec. Selemadeg', lat: -8.5200, lng: 115.0600 },
+  'Selemadeg Timur': { name: 'Pusat Kec. Selemadeg Timur', lat: -8.5300, lng: 115.0900 },
+  'Selemadeg Barat': { name: 'Pusat Kec. Selemadeg Barat', lat: -8.5000, lng: 115.0200 },
+  'Kerambitan': { name: 'Pusat Kec. Kerambitan', lat: -8.5500, lng: 115.0800 },
+  'Pupuan': { name: 'Pusat Kec. Pupuan', lat: -8.3400, lng: 115.0600 },
+
+  // Kabupaten Gianyar
+  'Gianyar': { name: 'Pusat Kec. Gianyar', lat: -8.5398, lng: 115.3275 },
+  'Ubud': { name: 'Pusat Kec. Ubud', lat: -8.5069, lng: 115.2625 },
+  'Sukawati': { name: 'Pusat Kec. Sukawati', lat: -8.5800, lng: 115.2800 },
+  'Blahbatuh': { name: 'Pusat Kec. Blahbatuh', lat: -8.5600, lng: 115.3000 },
+  'Tampaksiring': { name: 'Pusat Kec. Tampaksiring', lat: -8.4400, lng: 115.3000 },
+  'Tegallalang': { name: 'Pusat Kec. Tegallalang', lat: -8.4300, lng: 115.2800 },
+  'Payangan': { name: 'Pusat Kec. Payangan', lat: -8.3600, lng: 115.2500 },
+
+  // Kabupaten Buleleng
+  'Buleleng': { name: 'Pusat Kec. Buleleng (Singaraja)', lat: -8.1120, lng: 115.0882 },
+  'Sukasada': { name: 'Pusat Kec. Sukasada', lat: -8.1500, lng: 115.1000 },
+  'Banjar': { name: 'Pusat Kec. Banjar', lat: -8.1900, lng: 115.0000 },
+  'Seririt': { name: 'Pusat Kec. Seririt', lat: -8.1900, lng: 114.9300 },
+  'Gerokgak': { name: 'Pusat Kec. Gerokgak', lat: -8.1900, lng: 114.6800 },
+  'Busungbiu': { name: 'Pusat Kec. Busungbiu', lat: -8.2600, lng: 114.9700 },
+  'Sawan': { name: 'Pusat Kec. Sawan', lat: -8.1300, lng: 115.1500 },
+  'Kubutambahan': { name: 'Pusat Kec. Kubutambahan', lat: -8.1000, lng: 115.1800 },
+  'Tejakula': { name: 'Pusat Kec. Tejakula', lat: -8.1400, lng: 115.3400 },
+
+  // Kabupaten Karangasem
+  'Karangasem': { name: 'Pusat Kec. Karangasem (Amlapura)', lat: -8.4475, lng: 115.6148 },
+  'Abang': { name: 'Pusat Kec. Abang', lat: -8.3800, lng: 115.6200 },
+  'Bebandem': { name: 'Pusat Kec. Bebandem', lat: -8.4300, lng: 115.5500 },
+  'Manggis': { name: 'Pusat Kec. Manggis', lat: -8.4900, lng: 115.5200 },
+  'Selat': { name: 'Pusat Kec. Selat', lat: -8.4400, lng: 115.4800 },
+  'Sidemen': { name: 'Pusat Kec. Sidemen', lat: -8.4800, lng: 115.4500 },
+  'Rendang': { name: 'Pusat Kec. Rendang (Besakih)', lat: -8.3700, lng: 115.4300 },
+  'Kubu': { name: 'Pusat Kec. Kubu', lat: -8.2600, lng: 115.5600 },
+
+  // Kabupaten Klungkung
+  'Klungkung': { name: 'Pusat Kec. Klungkung (Semarapura)', lat: -8.5356, lng: 115.4039 },
+  'Banjarangkan': { name: 'Pusat Kec. Banjarangkan', lat: -8.5300, lng: 115.3700 },
+  'Dawan': { name: 'Pusat Kec. Dawan', lat: -8.5400, lng: 115.4400 },
+  'Nusa Penida': { name: 'Pusat Kec. Nusa Penida (Sampalan)', lat: -8.6800, lng: 115.5500 },
+
+  // Kabupaten Bangli
+  'Bangli': { name: 'Pusat Kec. Bangli (Kota Bangli)', lat: -8.4559, lng: 115.3547 },
+  'Susut': { name: 'Pusat Kec. Susut', lat: -8.4700, lng: 115.3300 },
+  'Tembuku': { name: 'Pusat Kec. Tembuku', lat: -8.4400, lng: 115.3800 },
+  'Kintamani': { name: 'Pusat Kec. Kintamani', lat: -8.2400, lng: 115.3500 },
+
+  // Kabupaten Jembrana
+  'Negara': { name: 'Pusat Kec. Negara (Kota Negara)', lat: -8.3585, lng: 114.6295 },
+  'Jembrana': { name: 'Pusat Kec. Jembrana', lat: -8.3600, lng: 114.6600 },
+  'Mendoyo': { name: 'Pusat Kec. Mendoyo', lat: -8.3600, lng: 114.7600 },
+  'Pekutatan': { name: 'Pusat Kec. Pekutatan', lat: -8.4100, lng: 114.8900 },
+  'Melaya': { name: 'Pusat Kec. Melaya', lat: -8.2600, lng: 114.5000 }
+};
+
 const SpatialEngine = {
   dynamicPoiCache: {},
 
@@ -111,8 +188,6 @@ const SpatialEngine = {
     const provDist = this.calculateDistance(lat, lng, provCap.lat, provCap.lng);
 
     // ── Find the NEAREST regency capital by actual GPS distance ──────────────
-    // Do NOT rely on the kabupaten name string (which can be wrong).
-    // Instead, measure to every capital and pick the closest one.
     let regCap = provCap;
     let regDist = provDist;
 
@@ -124,11 +199,32 @@ const SpatialEngine = {
       }
     });
 
-    // Kecamatan: estimated ~50% of regency capital distance (sub-district is closer)
-    const distCenterDist = Math.round((regDist * 0.5) * 100) / 100;
+    // ── Straight-Line Distance to District Centroid ────────────────────────
+    let distCenterName = `Pusat Kec. ${kecamatanName || 'Terdekat'}`;
+    let distCenterDist = Math.round((regDist * 0.5) * 100) / 100; // Fallback
 
-    // Village: estimated ~20% of regency capital distance
-    const villCenterDist = Math.round((regDist * 0.2) * 100) / 100;
+    if (kecamatanName && BALI_DISTRICT_CENTROIDS[kecamatanName]) {
+      const dObj = BALI_DISTRICT_CENTROIDS[kecamatanName];
+      distCenterName = dObj.name;
+      distCenterDist = this.calculateDistance(lat, lng, dObj.lat, dObj.lng);
+    } else {
+      let minDist = 999;
+      let closestObj = null;
+      Object.values(BALI_DISTRICT_CENTROIDS).forEach(dObj => {
+        const d = this.calculateDistance(lat, lng, dObj.lat, dObj.lng);
+        if (d < minDist) {
+          minDist = d;
+          closestObj = dObj;
+        }
+      });
+      if (closestObj) {
+        distCenterName = closestObj.name;
+        distCenterDist = minDist;
+      }
+    }
+
+    // ── Straight-Line Distance to Village Center ───────────────────────────
+    const villCenterDist = Math.max(0.3, Math.round((distCenterDist * 0.35) * 100) / 100);
 
     // ── Nearest nighttime commercial hub ──────────────────────────────────────
     let nearestNightHub = NIGHTTIME_LIGHTS_HUBS[0];
@@ -150,9 +246,9 @@ const SpatialEngine = {
     return {
       provincialCapital: { name: provCap.name, distanceKm: provDist },
       regencyCapital:    { name: regCap.name,  distanceKm: regDist },
-      districtCenter:    { name: `Pusat Kec. ${kecamatanName || 'Terdekat'}`, distanceKm: distCenterDist },
+      districtCenter:    { name: distCenterName, distanceKm: distCenterDist },
       villageCenter:     { name: `Pusat Kel./Desa ${kelurahanName || 'Terdekat'}`, distanceKm: villCenterDist },
-      nighttimeHub:      { ...nearestNightHub, distanceKm: Math.round(minNightDist * 100) / 100 },
+      nighttimeHub:      { name: nearestNightHub.name, distanceKm: minNightDist, nightLightScore: nightLightScore, tier: nearestNightHub.tier },
       nightLightScore:   nightLightScore
     };
   },

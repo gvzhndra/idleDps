@@ -141,30 +141,56 @@ const MapEngine = {
   drawKPKNLConnector(asset) {
     this.connectorLinesGroup.clearLayers();
 
-    const office = CONFIG.KPKNL_OFFICE;
-    const distData = SpatialEngine.getDistanceToKPKNL(asset.lat, asset.lng);
+    if (!asset || !asset.lat || !asset.lng) return;
 
-    const polyline = L.polyline(
+    // 1. Blue Line: Asset ➔ KPKNL Denpasar
+    const office = CONFIG.KPKNL_OFFICE;
+    const distKPKNL = SpatialEngine.getDistanceToKPKNL(asset.lat, asset.lng);
+
+    L.polyline(
       [[asset.lat, asset.lng], [office.lat, office.lng]],
-      {
-        color: office.color,
-        weight: 3,
-        opacity: 0.85,
-        dashArray: '6, 6'
-      }
+      { color: '#4a90e2', weight: 3.5, opacity: 0.85, dashArray: '6, 6' }
     ).addTo(this.connectorLinesGroup);
 
-    const midLat = (asset.lat + office.lat) / 2;
-    const midLng = (asset.lng + office.lng) / 2;
-
-    L.tooltip({
-      permanent: true,
-      direction: 'center',
-      className: 'spatial-distance-tooltip'
-    })
-      .setContent(`<i class="fa-solid fa-route"></i> <strong>${distData.distanceKm} km</strong> ke KPKNL Denpasar`)
-      .setLatLng([midLat, midLng])
+    L.tooltip({ permanent: true, direction: 'center', className: 'spatial-distance-tooltip' })
+      .setContent(`<i class="fa-solid fa-building-columns text-primary"></i> <strong>${distKPKNL.distanceKm} km</strong> ke KPKNL Denpasar`)
+      .setLatLng([(asset.lat + office.lat) / 2, (asset.lng + office.lng) / 2])
       .addTo(this.connectorLinesGroup);
+
+    // 2. Red Line: Asset ➔ Ibukota Prov. Bali (Denpasar - Renon)
+    const multiDist = SpatialEngine.getMultiLevelDistances(asset.lat, asset.lng, asset.kabupaten, asset.kecamatan, asset.kelurahan);
+    const provCap = multiDist.provincialCapital;
+
+    // Only draw Prov line if it's different enough from KPKNL (distance > 0.5km to avoid overlapping text)
+    const provDistToKPKNL = SpatialEngine.calculateDistance(office.lat, office.lng, REGENCY_CAPITALS['Kota Denpasar'].lat, REGENCY_CAPITALS['Kota Denpasar'].lng);
+    if (provDistToKPKNL > 0.8) {
+      const provCoords = [REGENCY_CAPITALS['Kota Denpasar'].lat, REGENCY_CAPITALS['Kota Denpasar'].lng];
+      L.polyline(
+        [[asset.lat, asset.lng], provCoords],
+        { color: '#e74c3c', weight: 2.5, opacity: 0.8, dashArray: '5, 5' }
+      ).addTo(this.connectorLinesGroup);
+
+      L.tooltip({ permanent: true, direction: 'center', className: 'spatial-distance-tooltip' })
+        .setContent(`<i class="fa-solid fa-building-flag text-danger"></i> <strong>${provCap.distanceKm} km</strong> ke Renon (Prov. Bali)`)
+        .setLatLng([(asset.lat + provCoords[0]) / 2, (asset.lng + provCoords[1]) / 2])
+        .addTo(this.connectorLinesGroup);
+    }
+
+    // 3. Purple Line: Asset ➔ Ibukota Kab. Terdekat (If outside Kota Denpasar)
+    if (multiDist.regencyCapital && multiDist.regencyCapital.name !== 'Pusat Kota Denpasar (Renon)') {
+      const regCapObj = Object.values(REGENCY_CAPITALS).find(c => c.name === multiDist.regencyCapital.name);
+      if (regCapObj) {
+        L.polyline(
+          [[asset.lat, asset.lng], [regCapObj.lat, regCapObj.lng]],
+          { color: '#9b59b6', weight: 3, opacity: 0.85, dashArray: '7, 7' }
+        ).addTo(this.connectorLinesGroup);
+
+        L.tooltip({ permanent: true, direction: 'center', className: 'spatial-distance-tooltip' })
+          .setContent(`<i class="fa-solid fa-landmark text-purple"></i> <strong>${multiDist.regencyCapital.distanceKm} km</strong> ke ${regCapObj.name.split('(')[1]?.replace(')', '') || regCapObj.name}`)
+          .setLatLng([(asset.lat + regCapObj.lat) / 2, (asset.lng + regCapObj.lng) / 2])
+          .addTo(this.connectorLinesGroup);
+      }
+    }
   },
 
   renderNearbyPOIs(poiList) {
