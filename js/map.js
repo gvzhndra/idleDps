@@ -9,7 +9,6 @@ const MapEngine = {
   currentTileLayer: null,
   markersLayer: null,
   connectorLinesGroup: null,
-  zoningGeoJsonLayer: null,
   poiLayerGroup: null,
   catchmentCircleLayer: null,
   activeAssetId: null,
@@ -42,9 +41,6 @@ const MapEngine = {
 
     // Render KPKNL Denpasar Office Marker
     this.renderKPKNLMarker();
-
-    // Render GeoJSON Zoning Layer
-    this.renderZoningOverlay();
   },
 
   switchTileLayer(layerKey) {
@@ -78,49 +74,18 @@ const MapEngine = {
     `);
   },
 
-  renderZoningOverlay() {
-    if (typeof BALI_ZONING_GEOJSON === 'undefined') return;
-
-    this.zoningGeoJsonLayer = L.geoJSON(BALI_ZONING_GEOJSON, {
-      style: (feature) => {
-        const code = feature.properties.zoningCode;
-        const typeInfo = CONFIG.ZONING_TYPES[Object.keys(CONFIG.ZONING_TYPES).find(key => CONFIG.ZONING_TYPES[key].code === code)] || {};
-        return {
-          color: typeInfo.color || '#4a90e2',
-          fillColor: typeInfo.fillColor || '#d4f0f0',
-          weight: 2,
-          opacity: 0.8,
-          fillOpacity: 0.25
-        };
-      },
-      onEachFeature: (feature, layer) => {
-        layer.bindTooltip(`<b>${feature.properties.name}</b> (${feature.properties.zoningCode})`, { sticky: true });
-      }
-    }).addTo(this.map);
-  },
-
-  toggleZoningOverlay(visible) {
-    if (!this.zoningGeoJsonLayer) return;
-    if (visible) {
-      this.zoningGeoJsonLayer.addTo(this.map);
-    } else {
-      this.map.removeLayer(this.zoningGeoJsonLayer);
-    }
-  },
-
   renderBMNMarkers(assetList, onSelectAsset) {
     this.markersLayer.clearLayers();
 
     assetList.forEach(asset => {
-      const isTanah = asset.kategori === 'Tanah Kosong';
+      const isTanah = asset.isTanah;
       const iconHtml = isTanah ? '<i class="fa-solid fa-vector-square"></i>' : '<i class="fa-solid fa-house-flag"></i>';
-      const isSpotlight = asset.isSpotlight ? 'spotlight-pulse' : '';
       const isSelected = asset.id === this.activeAssetId ? 'selected-marker' : '';
 
       const icon = L.divIcon({
         className: 'custom-bmn-marker-container',
         html: `
-          <div class="bmn-marker-pin ${isSpotlight} ${isSelected}" data-id="${asset.id}">
+          <div class="bmn-marker-pin ${isSelected}" data-id="${asset.id}">
             <div class="bmn-marker-inner">
               ${iconHtml}
             </div>
@@ -140,15 +105,11 @@ const MapEngine = {
             <span class="popup-category-badge">${asset.kategori}</span>
           </div>
           <div class="popup-body">
-            <h4 class="popup-title">${asset.namaAset}</h4>
-            <div class="popup-code"><i class="fa-solid fa-barcode"></i> NUP ${asset.nup}</div>
-            <div class="popup-meta">
-              <span><i class="fa-solid fa-location-dot"></i> ${asset.kabupaten}</span>
-              <span><i class="fa-solid fa-chart-area"></i> ${SpatialEngine.formatLuas(asset.luasTanah)}</span>
-            </div>
-            <div class="popup-price">
-              <label>Nilai Aset:</label>
-              <strong>${SpatialEngine.formatRupiah(asset.nilaiAset)}</strong>
+            <h4 class="popup-title">${asset.namaBarang}</h4>
+            <div class="popup-code"><i class="fa-solid fa-barcode"></i> NUP ${asset.nup} &bull; ${asset.kodeBarang}</div>
+            <div class="popup-meta mt-1">
+              <span><i class="fa-solid fa-location-dot text-danger"></i> ${asset.kabupaten}</span>
+              <span><i class="fa-solid fa-chart-area text-primary"></i> Luas: ${SpatialEngine.formatLuas(asset.luas)}</span>
             </div>
             <button class="btn btn-sm btn-primary btn-block mt-2" onclick="App.selectAsset('${asset.id}')">
               <i class="fa-solid fa-eye"></i> Detail & Analisis Spasial
@@ -196,25 +157,31 @@ const MapEngine = {
       .addTo(this.connectorLinesGroup);
   },
 
+  /* RENDER ALL POIS IN CATCHMENT ON MAP (NO SLICING / TRUNCATION) */
   renderNearbyPOIs(poiList) {
     this.poiLayerGroup.clearLayers();
 
-    poiList.slice(0, 5).forEach(poi => {
+    poiList.forEach(poi => {
       const poiIcon = L.divIcon({
-        className: 'custom-poi-marker',
-        html: `<div class="poi-pin" style="background:${poi.color}"><i class="fa-solid ${poi.icon}"></i></div>`,
-        iconSize: [26, 26],
-        iconAnchor: [13, 13]
+        className: 'custom-poi-marker-badge',
+        html: `
+          <div class="map-poi-badge" style="background:${poi.color};">
+            <i class="fa-solid ${poi.icon}"></i>
+          </div>
+        `,
+        iconSize: [28, 28],
+        iconAnchor: [14, 14]
       });
 
       const marker = L.marker([poi.lat, poi.lng], { icon: poiIcon }).addTo(this.poiLayerGroup);
-      marker.bindTooltip(`<b>${poi.name}</b><br>${poi.categoryName} (${poi.distanceKm} km)`, { sticky: true });
+      
+      const distLabel = poi.distanceMeters < 1000 ? `${poi.distanceMeters} m` : `${poi.distanceKm} km`;
+      marker.bindTooltip(`<b>${poi.name}</b><br><span style="color:#64748b; font-size:10px;">${poi.categoryName} (${distLabel})</span>`, { sticky: true });
     });
   },
 
-  focusLocation(lat, lng, zoom = 15) {
+  focusLocation(lat, lng, zoom = 16) {
     if (!this.map) return;
-    this.activeAssetId = null;
     this.map.flyTo([lat, lng], zoom, { animate: true, duration: 1.5 });
   },
 
@@ -237,13 +204,13 @@ const MapEngine = {
       radius: radiusMeters,
       color: '#4a90e2',
       fillColor: '#4a90e2',
-      fillOpacity: 0.18,
+      fillOpacity: 0.16,
       weight: 2,
       dashArray: '6, 6'
     }).addTo(this.map);
 
     const radiusLabel = radiusMeters >= 1000 ? (radiusMeters / 1000) + ' km' : radiusMeters + ' m';
-    this.catchmentCircleLayer.bindTooltip(`<b>Radius Catchment Area: ${radiusLabel}</b>`, {
+    this.catchmentCircleLayer.bindTooltip(`<b>Radius Catchment POI: ${radiusLabel}</b>`, {
       permanent: true,
       direction: 'top',
       className: 'catchment-tooltip'
