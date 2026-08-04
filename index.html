@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BMN Idle Dashboard - KPKNL Denpasar</title>
   
-  <meta name="description" content="Dashboard Spatial Analytics BMN Idle KPKNL Denpasar - Kanwil DJKN Bali dan Nusa Tenggara">
+  <meta name="description" content="Dashboard Spatial Analytics BMN Idle KPKNL Denpasar">
   
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -28,7 +28,7 @@
       </div>
       <div class="brand-text">
         <h1>BMN IDLE DASHBOARD</h1>
-        <p>KPKNL Denpasar &bull; Kanwil DJKN Bali & Nusa Tenggara</p>
+        <p>KPKNL Denpasar</p>
       </div>
     </div>
 
@@ -36,137 +36,152 @@
       <div class="live-clock-badge" id="live-clock">
         <i class="fa-solid fa-clock"></i> Synchronizing...
       </div>
+      <div id="user-status-container">
+        <button class="btn btn-secondary" onclick="App.openLoginModal()">
+          <i class="fa-solid fa-user-lock text-primary"></i> <span id="user-btn-label">Login User</span>
+        </button>
+      </div>
       <button class="btn btn-secondary" onclick="App.openGoogleSheetsModal()" title="Integrasi Google Sheets & Apps Script">
         <i class="fa-solid fa-table text-success"></i> Google Sheets
       </button>
-      <button class="btn btn-primary" onclick="App.exportToPPT()" title="Ekspor Slide PPTX (1 Aset 1 Slide)">
-        <i class="fa-solid fa-file-powerpoint text-light"></i> Ekspor PPT (.pptx)
+      <button class="btn btn-primary" onclick="App.exportSelectedToPPT()" title="Ekspor Slide PPTX untuk Aset Terpilih">
+        <i class="fa-solid fa-file-powerpoint text-light"></i> Ekspor PPT (<span id="selected-export-count">0</span> Aset)
       </button>
     </div>
   </header>
 
   <!-- ==========================================================================
-       2. KPI SUMMARY METRICS BAR
+       2. KPI SUMMARY METRICS BAR (BERDASARKAN LUAS & JENIS ASET)
        ========================================================================== -->
   <section class="stats-bar">
     <div class="stat-card">
       <div class="stat-icon blue"><i class="fa-solid fa-building-circle-exclamation"></i></div>
       <div class="stat-info">
-        <label>BMN Terindikasi Idle</label>
+        <label>BMN Terindikasi Idle (Terkoordinat)</label>
         <div class="stat-value" id="stat-total-unit">0</div>
       </div>
     </div>
 
     <div class="stat-card">
-      <div class="stat-icon mint"><i class="fa-solid fa-vector-square"></i></div>
+      <div class="stat-icon mint"><i class="fa-solid fa-chart-area"></i></div>
       <div class="stat-info">
-        <label>Total Luas Tanah</label>
-        <div class="stat-value" id="stat-luas-tanah">0 m²</div>
+        <label>Total Luas BMN</label>
+        <div class="stat-value" id="stat-total-luas">0 m²</div>
       </div>
     </div>
 
     <div class="stat-card">
-      <div class="stat-icon orange"><i class="fa-solid fa-house-flag"></i></div>
+      <div class="stat-icon orange"><i class="fa-solid fa-vector-square"></i></div>
       <div class="stat-info">
-        <label>Total Luas Bangunan</label>
-        <div class="stat-value" id="stat-luas-bangunan">0 m²</div>
+        <label>Aset Berjenis Tanah</label>
+        <div class="stat-value" id="stat-count-tanah">0 Unit</div>
       </div>
     </div>
 
     <div class="stat-card">
-      <div class="stat-icon purple"><i class="fa-solid fa-vault"></i></div>
+      <div class="stat-icon purple"><i class="fa-solid fa-house-flag"></i></div>
       <div class="stat-info">
-        <label>Estimasi Nilai Aset</label>
-        <div class="stat-value" id="stat-nilai-aset">Rp 0</div>
+        <label>Aset Berjenis Bangunan</label>
+        <div class="stat-value" id="stat-count-bangunan">0 Unit</div>
       </div>
     </div>
   </section>
 
   <!-- ==========================================================================
-       3. SEARCH & FILTER TOOLBAR
-       ========================================================================== -->
-  <section class="toolbar-bar">
-    <div class="search-box">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      <input type="text" id="search-input" placeholder="Cari Kode Barang, NUP, Nama Aset, Lokasi...">
-    </div>
-
-    <div class="filter-group">
-      <select class="filter-select" id="filter-kabupaten">
-        <option value="all">Wilayah KPKNL Denpasar (Semua Kab/Kota)</option>
-      </select>
-
-      <select class="filter-select" id="filter-kategori">
-        <option value="all">Semua Jenis Aset</option>
-        <option value="Tanah Kosong">Tanah Kosong</option>
-        <option value="Tanah & Bangunan">Tanah & Bangunan</option>
-      </select>
-    </div>
-
-    <div class="map-tools-group" style="display:flex; align-items:center; gap:8px;">
-      <label style="font-size: 11px; color: var(--text-muted); display:flex; align-items:center; gap:6px; margin-right:6px;">
-        <input type="checkbox" id="toggle-zoning-layer" checked> Layer Zonasi Bali
-      </label>
-
-      <button class="btn-tile-switch active" data-layer="pastel">
-        <i class="fa-solid fa-map-location"></i> Soft Pastel
-      </button>
-      <button class="btn-tile-switch" data-layer="dark" title="Peta Minimalis Hitam Kontras Tinggi (Hanya Garis Batas & Titik Aset)">
-        <i class="fa-solid fa-moon"></i> Minimalist Dark Mode
-      </button>
-      <button class="btn-tile-switch" data-layer="satellite">
-        <i class="fa-solid fa-satellite"></i> Satelit
-      </button>
-      <button class="btn-tile-switch" data-layer="streets">
-        <i class="fa-solid fa-road"></i> Peta Jalan
-      </button>
-    </div>
-  </section>
-
-  <!-- ==========================================================================
-       4. MAIN WORKSPACE (SIDEBAR + MAP + DETAIL DRAWER)
+       3. MAIN WORKSPACE (ALWAYS-VISIBLE MAP + LEFT TAB PANEL)
        ========================================================================== -->
   <main class="main-workspace">
-    <!-- Left Sidebar: Asset Cards List -->
-    <aside class="asset-sidebar" id="asset-sidebar">
-      <div class="sidebar-header">
-        <div style="display:flex; align-items:center; gap:8px;">
-          <h3 style="font-size:14px; font-weight:700;"><i class="fa-solid fa-list-check" style="color:var(--pastel-blue);"></i> BMN Idle KPKNL Denpasar</h3>
-          <span class="badge badge-pastel-blue" id="sidebar-count">Live Dataset</span>
-        </div>
-        <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" onclick="App.toggleSidebar()" title="Sembunyikan / Tampilkan Sidebar">
-          <i class="fa-solid fa-chevron-left"></i>
+    <!-- LEFT PANEL: TABS & CONTROLS -->
+    <aside class="left-tab-panel">
+      <!-- Nav Tabs -->
+      <nav class="nav-tabs-bar">
+        <button class="tab-btn active" data-tab="tab-cluster" onclick="App.switchTab('tab-cluster')">
+          <i class="fa-solid fa-sitemap" style="color:var(--pastel-blue);"></i> Kluster
+          <span class="tab-badge" id="badge-cluster-count">0</span>
         </button>
-      </div>
+        <button class="tab-btn" data-tab="tab-all-assets" onclick="App.switchTab('tab-all-assets')">
+          <i class="fa-solid fa-boxes-stacked" style="color:var(--pastel-mint);"></i> semua aset
+          <span class="tab-badge" id="badge-all-count">0</span>
+        </button>
+      </nav>
 
-      <div class="asset-cards-container" id="asset-list-container">
-        <!-- Asset Cards will be rendered dynamically by app.js -->
+      <!-- TAB CONTENT PANELS -->
+      <div class="tab-content-area">
+        <!-- TAB 1: KLUSTER ASET (ACCORDION) -->
+        <div class="tab-sub-panel active" id="tab-cluster">
+          <div class="cluster-toolbar mb-2">
+            <label style="font-size:12px; font-weight:700; color:var(--text-main); cursor:pointer;">
+              <input type="checkbox" class="custom-checkbox" id="cluster-select-all-cb" onchange="App.toggleSelectAll(this.checked)"> Select All untuk Ekspor PPT
+            </label>
+          </div>
+          <div id="cluster-accordion-root">
+            <!-- Accordion items rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- TAB 2: SEMUA ASET (LIST & SEARCH) -->
+        <div class="tab-sub-panel" id="tab-all-assets">
+          <div class="all-assets-toolbar mb-2">
+            <div class="search-box mb-2">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="all-search-input" placeholder="Cari Nama Barang, Kode Barang, NUP, Satker...">
+            </div>
+            <div class="d-flex align-items-center justify-content-between">
+              <select class="filter-select" id="all-filter-kabupaten" style="flex:1; margin-right:6px;">
+                <option value="all">Semua Kabupaten/Kota</option>
+              </select>
+              <label style="font-size:11px; font-weight:700; color:var(--text-main); cursor:pointer; flex-shrink:0;">
+                <input type="checkbox" class="custom-checkbox" id="all-select-all-cb" onchange="App.toggleSelectAll(this.checked)"> Select All
+              </label>
+            </div>
+          </div>
+          <div class="all-assets-list" id="all-assets-list">
+            <!-- Asset list cards rendered dynamically -->
+          </div>
+        </div>
       </div>
     </aside>
 
-    <!-- Center/Right: Leaflet GIS Interactive Map -->
+    <!-- RIGHT PANEL: LEAFLET GIS INTERACTIVE MAP (ALWAYS VISIBLE) -->
     <section class="map-container">
       <div id="map"></div>
 
-      <!-- Floating Zoning Categories Legend Card -->
+      <!-- Tile Switcher Tools -->
+      <div class="map-tools-group" style="position:absolute; top:16px; right:16px; z-index:800; display:flex; gap:6px; background:rgba(255,255,255,0.9); padding:6px; border-radius:10px; box-shadow:var(--shadow-soft);">
+        <button class="btn-tile-switch active" data-layer="pastel">
+          <i class="fa-solid fa-map-location"></i> Soft Pastel
+        </button>
+        <button class="btn-tile-switch" data-layer="dark">
+          <i class="fa-solid fa-moon"></i> Minimalist Dark
+        </button>
+        <button class="btn-tile-switch" data-layer="satellite">
+          <i class="fa-solid fa-satellite"></i> Satelit
+        </button>
+        <button class="btn-tile-switch" data-layer="streets">
+          <i class="fa-solid fa-road"></i> Peta Jalan
+        </button>
+      </div>
+
+      <!-- Floating POI Catchment Legend Card -->
       <div class="zoning-legend-card">
         <div class="legend-header">
-          <i class="fa-solid fa-layer-group" style="color:var(--pastel-blue);"></i> <strong>Legenda Zonasi Tata Ruang (RTRW)</strong>
+          <i class="fa-solid fa-bullseye" style="color:var(--pastel-blue);"></i> <strong>Legenda POI Radius 500m</strong>
         </div>
         <div class="legend-body">
-          <div class="legend-item"><span class="legend-color" style="background:#f6d186;"></span> <strong>Kategori 1:</strong> Perdagangan & Jasa (Komersial/Ruko)</div>
-          <div class="legend-item"><span class="legend-color" style="background:#ffaaa5;"></span> <strong>Kategori 2:</strong> Kawasan Pariwisata (Hotel/Resort)</div>
-          <div class="legend-item"><span class="legend-color" style="background:#a8d8ea;"></span> <strong>Kategori 3:</strong> Fasilitas Pemerintahan & Publik</div>
-          <div class="legend-item"><span class="legend-color" style="background:#a8e6cf;"></span> <strong>Kategori 4:</strong> Permukiman / Perumahan</div>
-          <div class="legend-item"><span class="legend-color" style="background:#c7ceea;"></span> <strong>Kategori 5:</strong> Ruang Terbuka Hijau (RTH / Lindung)</div>
+          <div class="legend-item"><span class="legend-color" style="background:#e67e22;"></span> Sekolah / Kampus (Pendidikan)</div>
+          <div class="legend-item"><span class="legend-color" style="background:#3498db;"></span> Polsek / TNI (Keamanan)</div>
+          <div class="legend-item"><span class="legend-color" style="background:#9b59b6;"></span> Kantor Desa / Pemda (Instansi)</div>
+          <div class="legend-item"><span class="legend-color" style="background:#e74c3c;"></span> RS / Puskesmas (Kesehatan)</div>
+          <div class="legend-item"><span class="legend-color" style="background:#f1c40f;"></span> Pasar / Pusat Bisnis (Komersial)</div>
+          <div class="legend-item"><span class="legend-color" style="background:#1abc9c;"></span> Dermaga / Bandara (Transportasi)</div>
         </div>
       </div>
     </section>
 
-    <!-- Slide-over Right Detail Panel Drawer -->
+    <!-- SLIDE-OVER DETAIL PANEL DRAWER -->
     <aside class="detail-drawer" id="detail-drawer">
       <div class="detail-drawer-header">
-        <h3><i class="fa-solid fa-chart-pie" style="color:var(--pastel-blue);"></i> Detail & Spatial Analysis</h3>
+        <h3><i class="fa-solid fa-chart-pie" style="color:var(--pastel-blue);"></i> Detail & Spatial Analytics</h3>
         <button class="btn btn-icon btn-secondary" onclick="App.closeDetailPanel()">
           <i class="fa-solid fa-xmark"></i>
         </button>
@@ -175,37 +190,85 @@
       <div class="detail-drawer-body" id="detail-drawer-body">
         <div class="empty-state p-4 text-center">
           <i class="fa-solid fa-hand-pointer text-muted" style="font-size: 32px;"></i>
-          <p class="mt-2 text-muted">Pilih titik BMN Idle di peta atau daftar untuk melihat analisis spasial.</p>
+          <p class="mt-2 text-muted">Pilih titik BMN Idle di peta atau daftar untuk melihat detail barang & analisis spasial.</p>
         </div>
       </div>
     </aside>
   </main>
 
   <!-- ==========================================================================
-       5. MODAL DIALOGS
+       4. MODAL DIALOGS
        ========================================================================== -->
-  <!-- Modal Upload Foto -->
-  <div class="modal-overlay" id="upload-photo-modal">
+  <!-- Modal Login User -->
+  <div class="modal-overlay" id="login-modal">
     <div class="modal-card">
       <div class="modal-header d-flex justify-content-between align-items-center mb-3">
-        <h3 style="font-size:16px; font-weight:700;"><i class="fa-solid fa-cloud-arrow-up" style="color:var(--pastel-blue);"></i> Upload Foto Aset Terbaru</h3>
+        <h3 style="font-size:16px; font-weight:700;"><i class="fa-solid fa-user-lock" style="color:var(--pastel-blue);"></i> Login Pengguna BMN Idle</h3>
+        <button class="btn btn-icon btn-secondary" onclick="App.closeLoginModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="login-form" onsubmit="App.handleLogin(event)">
+        <div class="form-group mb-3">
+          <label style="font-size:12px; color:var(--text-muted); display:block;" class="mb-1">Username / Akun Petugas</label>
+          <input type="text" class="form-control" id="login-username" value="admin_kpknl" required>
+        </div>
+
+        <div class="form-group mb-3">
+          <label style="font-size:12px; color:var(--text-muted); display:block;" class="mb-1">Password / Kode PIN</label>
+          <input type="password" class="form-control" id="login-password" value="bmnidle2026" required>
+        </div>
+
+        <div class="form-group mb-3">
+          <label style="font-size:12px; color:var(--text-muted); display:block;" class="mb-1">Role / Hak Akses</label>
+          <select class="form-control" id="login-role">
+            <option value="Admin KPKNL">Admin KPKNL Denpasar (Full Access)</option>
+            <option value="Verifikator Satker">Verifikator Satker Pengguna Barang</option>
+            <option value="Viewer">Viewer (Ekspor PPT & Melihat Data)</option>
+          </select>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 mt-4">
+          <button type="button" class="btn btn-secondary" onclick="App.closeLoginModal()">Batal</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-right-to-bracket"></i> Masuk Dashboard</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Multi-Photo Upload -->
+  <div class="modal-overlay" id="upload-photo-modal">
+    <div class="modal-card" style="max-width:560px;">
+      <div class="modal-header d-flex justify-content-between align-items-center mb-3">
+        <h3 style="font-size:16px; font-weight:700;"><i class="fa-solid fa-images" style="color:var(--pastel-blue);"></i> Multi-Photo Upload (Maks. 5 Foto)</h3>
         <button class="btn btn-icon btn-secondary" onclick="App.closeUploadPhotoModal()">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
-      <form id="upload-photo-form">
+      <form id="upload-photo-form" onsubmit="App.handleMultiPhotoSubmit(event)">
         <input type="hidden" id="upload-asset-id">
-        <p class="mb-3 text-muted" style="font-size:12px;">Memperbarui foto fisik BMN Idle: <strong id="upload-asset-title" style="color:var(--text-main);"></strong></p>
+        <p class="mb-2 text-muted" style="font-size:12px;">Memperbarui foto BMN Idle: <strong id="upload-asset-title" style="color:var(--text-main);"></strong></p>
+        
+        <div class="photo-upload-dropzone mb-3" onclick="document.getElementById('multi-photo-input').click()">
+          <i class="fa-solid fa-cloud-arrow-up" style="font-size:28px; color:var(--pastel-blue);"></i>
+          <p style="font-size:13px; font-weight:700; margin-top:6px;">Klik / Pilih Foto Fisik Aset (Up to 5 File)</p>
+          <span style="font-size:11px; color:var(--text-muted);">Foto akan otomatis dikompresi di browser sebelum disimpan ke Google Drive.</span>
+          <input type="file" id="multi-photo-input" multiple accept="image/*" style="display:none;" onchange="App.handleFileSelect(event)">
+        </div>
 
-        <div class="form-group mb-3">
-          <label style="font-size:12px; color:var(--text-muted); display:block;" class="mb-1">URL Foto Aset (Google Drive / Image Link)</label>
-          <input type="url" class="form-control" id="upload-photo-url" placeholder="https://images.unsplash.com/..." required>
+        <div id="compression-status-badge" class="mb-2" style="font-size:11px; font-weight:600; color:var(--pastel-blue); display:none;">
+          <i class="fa-solid fa-spinner fa-spin"></i> Memproses kompresi gambar HTML5 Canvas...
+        </div>
+
+        <div class="photo-preview-grid" id="photo-preview-grid">
+          <!-- Thumbnail previews rendered dynamically -->
         </div>
 
         <div class="d-flex justify-content-end gap-2 mt-4">
           <button type="button" class="btn btn-secondary" onclick="App.closeUploadPhotoModal()">Batal</button>
-          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-upload"></i> Simpan Foto Aset</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-photos"><i class="fa-solid fa-floppy-disk"></i> Simpan Foto Aset</button>
         </div>
       </form>
     </div>
@@ -215,7 +278,7 @@
   <div class="modal-overlay" id="sheets-sync-modal">
     <div class="modal-card">
       <div class="modal-header d-flex justify-content-between align-items-center mb-3">
-        <h3 style="font-size:16px; font-weight:700;"><i class="fa-solid fa-table text-success"></i> Integrasi Google Sheets & Apps Script</h3>
+        <h3 style="font-size:16px; font-weight:700;"><i class="fa-solid fa-table text-success"></i> Integrasi Google Sheets & Drive Backend</h3>
         <button class="btn btn-icon btn-secondary" onclick="App.closeGoogleSheetsModal()">
           <i class="fa-solid fa-xmark"></i>
         </button>
@@ -223,15 +286,12 @@
 
       <div class="modal-body">
         <p style="font-size:12px; color:var(--text-muted);" class="mb-3">
-          Masukkan <strong>URL Web App Google Apps Script</strong> dari Spreadsheet data BMN Idle Anda untuk menyinkronkan data secara otomatis & realtime.
+          File master Google Sheets <code>BMN_Idle_Master_Backend.xlsx</code> sudah siap di folder project! Masukkan <strong>URL Web App Google Apps Script</strong> di bawah ini untuk sync realtime:
         </p>
         <div class="form-group mb-3">
           <label style="font-size:12px; color:var(--text-muted); display:block;" class="mb-1">Web App Deployment URL</label>
           <input type="url" class="form-control" id="apps-script-url-input" placeholder="https://script.google.com/macros/s/.../exec">
         </div>
-        <p style="font-size:11px; color:var(--pastel-blue);">
-          <i class="fa-solid fa-info-circle"></i> File script <code>Code.gs</code> siap pakai sudah tersedia di folder project!
-        </p>
       </div>
 
       <div class="d-flex justify-content-end gap-2 mt-4">
@@ -248,6 +308,7 @@
   <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 
   <!-- Custom Dashboard JavaScript Modules -->
+  <script src="js/bmn_dataset.js"></script>
   <script src="js/config.js"></script>
   <script src="js/data.js"></script>
   <script src="js/spatial.js"></script>

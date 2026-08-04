@@ -1,93 +1,96 @@
 /**
- * Recommendation Display & Analysis Engine
- * Merges user recommendation input from Google Sheets with
- * the automated backend smart spatial suggestion helper.
+ * Transparent & Empirical Recommendation Engine
+ * Analyzes official team input (from Google Sheets) and builds a defensible
+ * system recommendation based on POI catchment density within 500 meters and BMN asset type.
  */
 
 const RecommendationEngine = {
   /**
-   * Evaluate asset and return official & backend recommendation objects
+   * Evaluate asset and return official & defensible recommendation objects
    * @param {Object} asset 
    * @param {Array} nearbyPOIs 
    * @returns {Object} Recommendation result
    */
   generateRecommendation(asset, nearbyPOIs = []) {
-    const userRec = asset.rekomendasiUser || asset.rekomendasiPemanfaatan || '';
-    const smartBackendRec = asset.smartSuggestionBackend || this.calculateLocalSmartSuggestion(asset);
+    const officialRec = asset.rekomendasiUser || asset.kondisi || 'Dipergunakan / Hasil penelitian awal';
+    
+    // Filter POIs within 500 meters
+    const pois500m = nearbyPOIs.filter(p => p.distanceMeters <= 500 || p.distanceKm <= 0.5);
+    const poiCount = pois500m.length;
+
+    const systemRec = this.calculateDefensibleSystemRecommendation(asset, poiCount, pois500m);
 
     let badgeInfo = CONFIG.RECOMMENDATION_TYPES.SEWA_KOMERSIAL;
     let rationale = [];
 
-    if (asset.zoningName) {
-      rationale.push(`Sesuai dengan **Zonasi Tata Ruang (${asset.zoningName} - ${asset.zoningCode || 'Kategori 1'})**.`);
-    }
-
-    // Generalized Spatial Crowd & Activity Center Context
-    const spatialContext = SpatialEngine.getMultiLevelDistances(
-      asset.lat, asset.lng, asset.kabupaten, asset.kecamatan, asset.kelurahan
-    );
-
-    if (spatialContext.crowdCenter && spatialContext.crowdCenter.description) {
-      rationale.push(spatialContext.crowdCenter.description);
-    }
-
-    // Enrich POI Proximity Analysis
-    if (nearbyPOIs.length > 0) {
-      const poiSummary = nearbyPOIs.slice(0, 3).map(p => `${p.name} (${p.distanceKm} km)`).join(', ');
-      rationale.push(`**Fasilitas Terdekat (POI):** Berdekatan dengan ${poiSummary}.`);
+    // Empirically defensible rationale lines
+    if (poiCount > 0) {
+      const poiSummary = pois500m.map(p => `${p.name} (${p.distanceMeters < 1000 ? p.distanceMeters + 'm' : p.distanceKm + 'km'})`).join(', ');
+      rationale.push(`**Analisis Aksesibilitas & POI (Radius 500m):** Ditemukan ${poiCount} fasilitas publik (${poiSummary}).`);
+    } else {
+      rationale.push(`**Analisis Aksesibilitas & POI (Radius 500m):** Kawasan berkembang / berkembang terbatas.`);
     }
 
     if (asset.catatanTim) {
-      rationale.push(`Catatan Kajian Tim: ${asset.catatanTim}`);
-    } else {
-      rationale.push(`Kondisi Fisik: ${asset.kondisi}`);
+      rationale.push(`**Hasil Penelitian Tim:** ${asset.catatanTim}`);
+    } else if (asset.kondisi) {
+      rationale.push(`**Status Penggunaan Saat Ini:** ${asset.kondisi}`);
     }
 
-    const checkText = (userRec || smartBackendRec).toLowerCase();
-    if (checkText.includes('sewa') || checkText.includes('komersial')) {
+    const checkText = (officialRec || systemRec).toLowerCase();
+    if (checkText.includes('sewa') || checkText.includes('komersial') || checkText.includes('ruko') || checkText.includes('logistik')) {
       badgeInfo = CONFIG.RECOMMENDATION_TYPES.SEWA_KOMERSIAL;
-    } else if (checkText.includes('ksp') || checkText.includes('pariwisata') || checkText.includes('resort')) {
+    } else if (checkText.includes('ksp') || checkText.includes('pariwisata') || checkText.includes('resort') || checkText.includes('bungalow')) {
       badgeInfo = CONFIG.RECOMMENDATION_TYPES.KSP_PARIWISATA;
-    } else if (checkText.includes('alih status') || checkText.includes('satker')) {
+    } else if (checkText.includes('alih status') || checkText.includes('satker') || checkText.includes('pemerintah')) {
       badgeInfo = CONFIG.RECOMMENDATION_TYPES.ALIH_STATUS;
     } else if (checkText.includes('pinjam pakai')) {
       badgeInfo = CONFIG.RECOMMENDATION_TYPES.PINJAM_PAKAI;
-    } else if (checkText.includes('agrowisata') || checkText.includes('pertanian')) {
+    } else {
       badgeInfo = CONFIG.RECOMMENDATION_TYPES.OPTIMALISASI_TERBATAS;
     }
 
     return {
       type: badgeInfo,
-      officialTitle: userRec || smartBackendRec,
-      smartSuggestion: smartBackendRec,
-      rationale: rationale,
-      hasOfficialInput: !!userRec
+      officialTitle: officialRec,
+      systemSuggestion: systemRec,
+      poiCount500m: poiCount,
+      pois500m: pois500m,
+      rationale: rationale
     };
   },
 
-  calculateLocalSmartSuggestion(asset) {
-    const code = String(asset.zoningCode || 'Kategori 1').toLowerCase();
+  calculateDefensibleSystemRecommendation(asset, poiCount, pois500m = []) {
     const isTanah = asset.kategori === 'Tanah Kosong' || asset.luasBangunan === 0;
+    const jenis = (asset.jenisBarang || '').toLowerCase();
 
-    if (code.includes('kategori 2') || code.includes('k-2') || code.includes('pariwisata')) {
-      return isTanah 
-        ? 'Kerja Sama Pemanfaatan (KSP) Beach Club / Boutique Eco-Resort / Pariwisata'
-        : 'Sewa / KSP Restoran Concept / Cafe Pariwisata & Hospitality';
-    }
-    if (code.includes('kategori 3') || code.includes('k-3') || code.includes('pemerintahan')) {
-      return 'Alih Status Penggunaan / Pinjam Pakai Satker Kemenkeu / Pemda';
-    }
-    if (code.includes('kategori 4') || code.includes('k-4') || code.includes('perumahan')) {
-      return 'Rumah Dinas Pegawai / Mess Instansi / Co-Living Hunian';
-    }
-    if (code.includes('kategori 5') || code.includes('k-5') || code.includes('hijau') || code.includes('rth')) {
-      return 'Optimalisasi Terbatas / Agrowisata Organik / Taman Edukasi';
+    // Direct, transparent rules based on empirical POI count and asset type
+    if (jenis.includes('mess') || jenis.includes('bungalow') || jenis.includes('resort') || asset.namaAset.toLowerCase().includes('bungalow')) {
+      return 'Kerja Sama Pemanfaatan (KSP) / Sewa Penginapan & Pariwisata';
     }
 
-    // Default: Kategori 1 (Perdagangan & Jasa)
-    return (asset.luasTanah >= 3000) 
-      ? 'Sewa Depo Logistik / SPBU / Supermarket Modern' 
-      : 'Sewa Komersial Ruko / Perkantoran Swasta / UMKM';
+    if (jenis.includes('kantor') || jenis.includes('pemerintah')) {
+      if (poiCount >= 2) {
+        return 'Sewa Perkantoran Swasta / Alih Status Penggunaan ke Instansi Lain';
+      }
+      return 'Alih Status Penggunaan / Pinjam Pakai Instansi / Pemda';
+    }
+
+    if (jenis.includes('rumah')) {
+      return 'Optimalisasi Sewa Rumah Dinas / Hunian Pegawai / Co-Living';
+    }
+
+    if (isTanah) {
+      if (asset.luasTanah >= 2000) {
+        return 'Sewa Lahan Terbuka (Rest Area / Depo Logistik / Fasilitas Umum)';
+      }
+      return 'Sewa Lahan Komersial / Parkir / Tempat Usaha UMKM';
+    }
+
+    // Default based on POI density
+    if (poiCount >= 2) {
+      return 'Sewa Komersial / Tempat Usaha Jasa & Perdagangan';
+    }
+    return 'Optimalisasi Penggunaan Internal / Sewa Jangka Pendek';
   }
 };
-

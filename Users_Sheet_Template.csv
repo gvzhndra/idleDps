@@ -1,0 +1,4 @@
+user_id,username,password,nama_lengkap,role,status_aktif
+USR001,admin_kpknl,bmnidle2026,Admin KPKNL Denpasar,Admin KPKNL,AKTIF
+USR002,petugas_satker,satker2026,Verifikator Satker BMN,Verifikator Satker,AKTIF
+USR003,viewer,viewer2026,Tamu / Executive Viewer,Viewer,AKTIF
