@@ -450,8 +450,9 @@ const App = {
 
     this.currentPhotoIndex = 0;
 
-    const userRole = typeof Auth !== 'undefined' ? Auth.getUserRole() : 'viewer';
-    const canEditOrUpload = userRole !== 'viewer' && userRole !== 'tamu';
+    const savedUser = this.currentUser || JSON.parse(localStorage.getItem('bmn_idle_user') || 'null');
+    const userRole = savedUser ? (savedUser.role || savedUser.username || '') : 'viewer';
+    const canEditOrUpload = userRole !== 'Viewer' && userRole !== 'viewer' && userRole !== 'tamu' && userRole !== '';
 
     const distData = SpatialEngine.getDistanceToKPKNL(asset.lat, asset.lng);
     const multiDist = SpatialEngine.getMultiLevelDistances(asset.lat, asset.lng, asset.kabupaten, asset.kecamatan, asset.kelurahan);
@@ -1120,10 +1121,10 @@ const App = {
     }
 
     // 3. Refresh UI components
-    this.renderAccordionCluster();
+    this.renderClusterAccordion();
     this.renderAllAssetsList();
     this.selectAsset(asset.id);
-    this.updateStatsBar();
+    this.updateKPIStats();
 
     this.closeEditAssetModal();
     this.showToast(`Berhasil memperbarui data BMN Idle: ${asset.namaBarang}`);
