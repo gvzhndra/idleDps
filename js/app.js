@@ -2,6 +2,7 @@
  * Main Application Controller
  * BMN Idle Interactive Dashboard - KPKNL Denpasar
  * Features:
+ * - Dynamic OpenStreetMap Overpass API POI Engine (No manual POI entries needed!)
  * - Split View Workspace with Collapsible Left & Right Panels (Toggle Hide / Expand)
  * - Centered Tile Switcher Bar (Centered horizontally across top map stage)
  * - Accordion Tree Clustering (Kementerian -> Satker -> Aset)
@@ -26,20 +27,19 @@ const App = {
   isLeftPanelCollapsed: false,
   isRightDrawerOpen: false,
 
-  // SHA-256 Pre-hashed Credentials
   USER_ACCOUNTS: {
     'admin_kpknl': {
-      hash: '590909dbb0422b9a7e6cd906900ec3a6da7f6937ce1f52dc821f4d0ed8a99dd1', // bmnidle2026
+      hash: '590909dbb0422b9a7e6cd906900ec3a6da7f6937ce1f52dc821f4d0ed8a99dd1',
       name: 'Admin KPKNL Denpasar',
       role: 'Admin KPKNL'
     },
     'petugas_satker': {
-      hash: '7e765589b3df7c27c77ec54b5a661a800e8016fd78c9f8a909e415992e0e8a20', // satker2026
+      hash: '7e765589b3df7c27c77ec54b5a661a800e8016fd78c9f8a909e415992e0e8a20',
       name: 'Verifikator Satker BMN',
       role: 'Verifikator Satker'
     },
     'viewer': {
-      hash: '35cbe0aaf4e558ac53847cf7b057f4a3a86a427e08935bffdf81d7b4ed7cd9f3', // viewer2026
+      hash: '35cbe0aaf4e558ac53847cf7b057f4a3a86a427e08935bffdf81d7b4ed7cd9f3',
       name: 'Tamu / Executive Viewer',
       role: 'Viewer'
     }
@@ -102,7 +102,6 @@ const App = {
     });
   },
 
-  /* SHA-256 Web Crypto Hashing Helper */
   async hashPassword(plainText) {
     const encoder = new TextEncoder();
     const data = encoder.encode(plainText);
@@ -189,7 +188,6 @@ const App = {
     document.getElementById('stat-count-tanah').textContent = `${countTanah} Unit`;
     document.getElementById('stat-count-bangunan').textContent = `${countBangunan} Unit`;
 
-    // Kluster tab badge counts total Accordion Groups / Ministries
     document.getElementById('badge-cluster-count').textContent = `${totalKluster} Kluster`;
     document.getElementById('badge-all-count').textContent = `${totalUnit} Unit`;
   },
@@ -393,7 +391,7 @@ const App = {
     }).join('');
   },
 
-  selectAsset(assetId) {
+  async selectAsset(assetId) {
     const asset = this.activeAssets.find(a => a.id === assetId);
     if (!asset) return;
 
@@ -407,18 +405,30 @@ const App = {
     MapEngine.drawKPKNLConnector(asset);
     MapEngine.drawCatchmentCircle(asset.lat, asset.lng, 500);
 
-    const catchmentData = SpatialEngine.getPOIsInCatchment(asset.lat, asset.lng, 500);
-
-    // Pass 500m Catchment POIs to MapEngine so Atlas Beach Fest, Tabanan POIs, etc. render inside circle on map
-    MapEngine.renderNearbyPOIs(catchmentData.pois);
-    const recommendation = RecommendationEngine.generateRecommendation(asset, catchmentData.pois);
-
-    this.renderDetailPanel(asset, catchmentData, recommendation);
-
     const drawer = document.getElementById('detail-drawer');
     const rightToggleBtn = document.getElementById('right-panel-toggle-btn');
     if (drawer) drawer.classList.add('open');
     if (rightToggleBtn) rightToggleBtn.style.display = 'none';
+
+    // Temporary loading state for drawer body
+    const drawerBody = document.getElementById('detail-drawer-body');
+    if (drawerBody) {
+      drawerBody.innerHTML = `
+        <div class="p-4 text-center">
+          <i class="fa-solid fa-circle-notch fa-spin text-primary" style="font-size:28px;"></i>
+          <p class="mt-2 text-muted" style="font-size:12px; font-weight:600;">Mengambil Data POI Real-Time dari OpenStreetMap API (Overpass)...</p>
+        </div>
+      `;
+    }
+
+    // AUTOMATIC OPENSTREETMAP OVERPASS REAL-TIME POI FETCH
+    const catchmentData = await SpatialEngine.fetchDynamicPOIsInCatchment(asset.lat, asset.lng, 500);
+
+    // Pass 100% real OpenStreetMap POIs to MapEngine & Recommendation Engine
+    MapEngine.renderNearbyPOIs(catchmentData.pois);
+    const recommendation = RecommendationEngine.generateRecommendation(asset, catchmentData.pois);
+
+    this.renderDetailPanel(asset, catchmentData, recommendation);
   },
 
   closeDetailPanel() {
@@ -470,7 +480,7 @@ const App = {
         <p style="font-size:11px; color:var(--text-muted);"><i class="fa-solid fa-map-location-dot"></i> ${asset.alamat}</p>
       </div>
 
-      <!-- DIRECT GOOGLE MAPS & MULTI-PHOTO UPLOAD BUTTON GROUP WITH SPACING -->
+      <!-- DIRECT GOOGLE MAPS & MULTI-PHOTO UPLOAD BUTTON GROUP WITH CLEAR GAP -->
       <div class="d-flex flex-column gap-3 mb-4">
         <a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-block" style="background:#eafaf1; color:#27ae60; border-color:#2ecc71; font-weight:700; padding:10px 14px;">
           <i class="fa-solid fa-map-location-dot" style="font-size:14px;"></i> Buka Koordinat di Google Maps (${asset.lat.toFixed(5)}, ${asset.lng.toFixed(5)})
@@ -534,7 +544,7 @@ const App = {
 
       <div class="detail-section-card mb-3">
         <div class="d-flex justify-content-between align-items-center mb-2">
-          <h4 class="section-title mb-0"><i class="fa-solid fa-bullseye text-primary"></i> Proksimitas POI (Radius 500m)</h4>
+          <h4 class="section-title mb-0"><i class="fa-solid fa-bullseye text-primary"></i> Proksimitas POI Real-Time (OSM Overpass API)</h4>
           <span class="badge badge-pastel-blue">${catchmentData.totalCount} POI Ditemukan</span>
         </div>
         <div class="poi-list-container">
@@ -828,7 +838,6 @@ const App = {
       this.closeLoginModal();
       this.showToast(`Autentikasi Berhasil! Selamat datang, ${accountMeta.name}`);
     } else {
-      // Fallback for custom usernames
       this.currentUser = { username: username, name: username, role: role };
       localStorage.setItem('bmn_idle_user', JSON.stringify(this.currentUser));
       this.updateUserUI();

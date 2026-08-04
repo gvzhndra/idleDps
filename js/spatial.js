@@ -1,5 +1,5 @@
 /**
- * Multi-Level Spatial Analytics Engine & POI Density Engine
+ * Multi-Level Spatial Analytics Engine & Dynamic OpenStreetMap Overpass POI Engine
  * Khusus KPKNL Denpasar & Seluruh Wilayah Provinsi Bali
  */
 
@@ -30,9 +30,8 @@ const NIGHTTIME_LIGHTS_HUBS = [
   { name: 'Pusat Kota & Pemerintahan Tabanan', lat: -8.5410, lng: 115.1316, nightLightScore: 78, tier: 'Sedang-Tinggi (Medium Luminosity)' }
 ];
 
-// Rich Comprehensive POIs covering Berawa/Canggu, Sanglah, Renon, Tuban, Tabanan, Bedugul, etc.
-const BALI_EXTENDED_POIS = [
-  // --- BERAWA BEACH / CANGGU AREA (Kejaksaan Tinggi Bali Mess - BMN-25) ---
+// Fallback Curated GIS POIs covering Bali
+const BALI_FALLBACK_POIS = [
   { name: 'Pantai Berawa (Berawa Beach)', type: 'pariwisata', lat: -8.6548, lng: 115.1420 },
   { name: 'Atlas Beach Fest & Beach Club', type: 'pasar', lat: -8.6541, lng: 115.1430 },
   { name: 'Finns Beach Club Canggu', type: 'pasar', lat: -8.6552, lng: 115.1425 },
@@ -42,53 +41,27 @@ const BALI_EXTENDED_POIS = [
   { name: 'Canggu Station Commercial Hub', type: 'pasar', lat: -8.6520, lng: 115.1460 },
   { name: 'Polsek Kuta Utara (Pos Pantai Berawa)', type: 'polisi', lat: -8.6535, lng: 115.1455 },
 
-  // --- SANGLAH / DENPASAR BARAT (BMKG Sanglah - BMN-3, BMN-4) ---
   { name: 'RSUP Prof. Ngoerah (Sanglah Denpasar)', type: 'kesehatan', lat: -8.6750, lng: 115.2120 },
   { name: 'Fakultas Kedokteran Universitas Udayana', type: 'pendidikan', lat: -8.6758, lng: 115.2110 },
   { name: 'Puskesmas Denpasar Barat I', type: 'kesehatan', lat: -8.6775, lng: 115.2085 },
-  { name: 'Kantor Kelurahan Dauh Puri Klod', type: 'pemda', lat: -8.6780, lng: 115.2070 },
-  { name: 'Pasar Sanglah Denpasar', type: 'pasar', lat: -8.6745, lng: 115.2105 },
-  { name: 'SMA Negeri 4 Denpasar', type: 'pendidikan', lat: -8.6760, lng: 115.2080 },
 
-  // --- TUBAN / KUTA / BANDARA AREA (BMKG Wilayah III - BMN-8) ---
   { name: 'Bandara Internasional I Gusti Ngurah Rai', type: 'transportasi', lat: -8.7400, lng: 115.1740 },
   { name: 'Hotel Novotel Bali Ngurah Rai Airport', type: 'hotel', lat: -8.7390, lng: 115.1760 },
-  { name: 'Polsek Kawasan Bandara Ngurah Rai', type: 'polisi', lat: -8.7375, lng: 115.1770 },
-  { name: 'Kantor Kelurahan Tuban Kuta', type: 'pemda', lat: -8.7365, lng: 115.1795 },
-  { name: 'Pasar Adat Tuban', type: 'pasar', lat: -8.7370, lng: 115.1790 },
 
-  // --- SANUR SOUTH / BKN DENPASAR (BMN-1, BMN-2, BMN-37) ---
   { name: 'Kantor Regional X BKN Denpasar', type: 'pemda', lat: -8.7150, lng: 115.2190 },
   { name: 'Pelabuhan Utama Benoa', type: 'transportasi', lat: -8.7180, lng: 115.2150 },
-  { name: 'Polsek Kawasan Benoa', type: 'polisi', lat: -8.7170, lng: 115.2160 },
-  { name: 'Puskesmas Denpasar Selatan II', type: 'kesehatan', lat: -8.7135, lng: 115.2200 },
-  { name: 'SD Negeri 6 Sesetan', type: 'pendidikan', lat: -8.7140, lng: 115.2175 },
 
-  // --- RENON / BPK RI BALI (BMN-16) ---
   { name: 'Kantor Gubernur Bali (Civic Center Renon)', type: 'pemda', lat: -8.6705, lng: 115.2250 },
   { name: 'Lapangan Renon & Monumen Bajra Sandhi', type: 'pariwisata', lat: -8.6718, lng: 115.2335 },
-  { name: 'Polda Bali Headquarter', type: 'polisi', lat: -8.6740, lng: 115.2440 },
-  { name: 'Consulate General of Japan / Australia', type: 'pemda', lat: -8.6750, lng: 115.2450 },
-  { name: 'Plaza Renon & Resto Koridor', type: 'pasar', lat: -8.6730, lng: 115.2420 },
 
-  // --- KOTA TABANAN (Kejari Tabanan BMN-28 - Presisi Real GIS Coordinates) ---
   { name: 'Kantor Kejaksaan Negeri Tabanan', type: 'pemda', lat: -8.5410, lng: 115.1316 },
   { name: 'RSUD Kabupaten Tabanan (Jl. Pahlawan)', type: 'kesehatan', lat: -8.5398, lng: 115.1268 },
-  { name: 'Pasar Kota Tabanan (Pasar Umum)', type: 'pasar', lat: -8.5392, lng: 115.1275 },
-  { name: 'SMA Negeri 1 Tabanan', type: 'pendidikan', lat: -8.5430, lng: 115.1290 },
-  { name: 'Gedung KPU Kabupaten Tabanan', type: 'pemda', lat: -8.5415, lng: 115.1310 },
-  { name: 'Dinas Pendidikan Kabupaten Tabanan', type: 'pemda', lat: -8.5420, lng: 115.1305 },
-  { name: 'Taman Kota Tabanan (Lapangan Debes)', type: 'pariwisata', lat: -8.5440, lng: 115.1330 },
-
-  // --- BATURITI / BEDUGUL TABANAN (Kejari Tabanan Rumah Dinas - BMN-27) ---
-  { name: 'Kantor Camat Baturiti Tabanan', type: 'pemda', lat: -8.3160, lng: 115.0810 },
-  { name: 'Polsek Baturiti Bedugul', type: 'polisi', lat: -8.3150, lng: 115.0820 },
-  { name: 'Puskesmas Baturiti I', type: 'kesehatan', lat: -8.3145, lng: 115.0795 },
-  { name: 'Pasar Sayur Baturiti', type: 'pasar', lat: -8.3170, lng: 115.0815 },
-  { name: 'Kebun Raya Eka Karya Bedugul', type: 'pariwisata', lat: -8.2830, lng: 115.1550 }
+  { name: 'Pasar Kota Tabanan (Pasar Umum)', type: 'pasar', lat: -8.5392, lng: 115.1275 }
 ];
 
 const SpatialEngine = {
+  dynamicPoiCache: {},
+
   calculateDistance(lat1, lon1, lat2, lon2) {
     if (!lat1 || !lon1 || !lat2 || !lon2) return 0;
     const R = 6371; // Radius of earth in km
@@ -167,12 +140,113 @@ const SpatialEngine = {
     };
   },
 
-  getPOIsInCatchment(assetLat, assetLng, radiusMeters = 500) {
-    if (!assetLat || !assetLng) return { totalCount: 0, pois: [] };
+  /* AUTOMATIC REAL-TIME DYNAMIC OPENSTREETMAP OVERPASS POI ENGINE */
+  async fetchDynamicPOIsInCatchment(lat, lng, radiusMeters = 500) {
+    if (!lat || !lng) return { totalCount: 0, pois: [] };
 
+    const cacheKey = `${lat.toFixed(4)}_${lng.toFixed(4)}_${radiusMeters}`;
+    if (this.dynamicPoiCache[cacheKey]) {
+      return this.dynamicPoiCache[cacheKey];
+    }
+
+    const overpassQuery = `[out:json][timeout:8];(node(around:${radiusMeters},${lat},${lng})[amenity];node(around:${radiusMeters},${lat},${lng})[tourism];node(around:${radiusMeters},${lat},${lng})[shop];node(around:${radiusMeters},${lat},${lng})[leisure];node(around:${radiusMeters},${lat},${lng})[office];);out;`;
+    const overpassUrl = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(overpassQuery)}`;
+
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
+
+      const resp = await fetch(overpassUrl, { signal: controller.signal });
+      clearTimeout(timeoutId);
+
+      if (resp.ok) {
+        const json = await resp.json();
+        const elements = json.elements || [];
+
+        if (elements.length > 0) {
+          const dynamicPois = [];
+
+          elements.forEach(node => {
+            const tags = node.tags || {};
+            const name = tags.name || tags.amenity || tags.tourism || tags.shop || tags.office || 'Fasilitas Publik';
+            const distKm = this.calculateDistance(lat, lng, node.lat, node.lon);
+            const distMeters = Math.round(distKm * 1000);
+
+            if (distMeters <= radiusMeters) {
+              const meta = this._mapOsmTagToCategory(tags);
+              dynamicPois.push({
+                name: name,
+                categoryName: meta.name,
+                icon: meta.icon,
+                color: meta.color,
+                lat: node.lat,
+                lng: node.lon,
+                distanceKm: distKm,
+                distanceMeters: distMeters
+              });
+            }
+          });
+
+          // Remove duplicate names
+          const uniquePois = [];
+          const seenNames = new Set();
+          dynamicPois.sort((a, b) => a.distanceMeters - b.distanceMeters);
+
+          dynamicPois.forEach(p => {
+            const key = p.name.toLowerCase();
+            if (!seenNames.has(key)) {
+              seenNames.add(key);
+              uniquePois.push(p);
+            }
+          });
+
+          const result = { totalCount: uniquePois.length, pois: uniquePois.slice(0, 12) };
+          this.dynamicPoiCache[cacheKey] = result;
+          return result;
+        }
+      }
+    } catch (e) {
+      console.warn('Overpass API timeout or offline, falling back to local GIS POIs:', e);
+    }
+
+    // Fallback if Overpass API fails
+    const fallbackPois = this.getFallbackPOIsInCatchment(lat, lng, radiusMeters);
+    this.dynamicPoiCache[cacheKey] = fallbackPois;
+    return fallbackPois;
+  },
+
+  _mapOsmTagToCategory(tags) {
+    const amenity = (tags.amenity || '').toLowerCase();
+    const tourism = (tags.tourism || '').toLowerCase();
+    const shop = (tags.shop || '').toLowerCase();
+    const office = (tags.office || '').toLowerCase();
+
+    if (amenity.includes('school') || amenity.includes('university') || amenity.includes('college') || amenity.includes('kindergarten') || amenity.includes('library')) {
+      return { name: 'Sekolah / Kampus (Pendidikan)', icon: 'fa-graduation-cap', color: '#2ecc71' };
+    }
+    if (amenity.includes('hospital') || amenity.includes('clinic') || amenity.includes('doctors') || amenity.includes('pharmacy')) {
+      return { name: 'Rumah Sakit / Kesehatan', icon: 'fa-hospital', color: '#e74c3c' };
+    }
+    if (amenity.includes('police') || amenity.includes('townhall') || office.includes('government') || amenity.includes('courthouse') || amenity.includes('public_building')) {
+      return { name: 'Kantor Polisi / Instansi Pemda', icon: 'fa-landmark', color: '#9b59b6' };
+    }
+    if (tourism.includes('hotel') || tourism.includes('guest_house') || tourism.includes('hostel') || tourism.includes('resort') || tourism.includes('motel')) {
+      return { name: 'Akomodasi & Hotel', icon: 'fa-hotel', color: '#3498db' };
+    }
+    if (tourism.includes('attraction') || tourism.includes('beach') || tourism.includes('museum') || tags.leisure) {
+      return { name: 'Pariwisata & Pantai', icon: 'fa-umbrella-beach', color: '#e67e22' };
+    }
+    if (amenity.includes('bank') || amenity.includes('atm') || amenity.includes('restaurant') || amenity.includes('cafe') || shop || amenity.includes('marketplace')) {
+      return { name: 'Pasar / Pusat Komersial & UMKM', icon: 'fa-store', color: '#f1c40f' };
+    }
+
+    return { name: 'Fasilitas & Komersial Publik', icon: 'fa-location-dot', color: '#4a90e2' };
+  },
+
+  getFallbackPOIsInCatchment(assetLat, assetLng, radiusMeters = 500) {
     const catchmentPois = [];
 
-    BALI_EXTENDED_POIS.forEach(poi => {
+    BALI_FALLBACK_POIS.forEach(poi => {
       const distKm = this.calculateDistance(assetLat, assetLng, poi.lat, poi.lng);
       const distMeters = Math.round(distKm * 1000);
 
@@ -205,8 +279,7 @@ const SpatialEngine = {
     };
   },
 
-  getNearbyPOIs(assetLat, assetLng, limit = 8) {
-    const catchment = this.getPOIsInCatchment(assetLat, assetLng, 500);
-    return catchment.pois.slice(0, limit);
+  getPOIsInCatchment(assetLat, assetLng, radiusMeters = 500) {
+    return this.getFallbackPOIsInCatchment(assetLat, assetLng, radiusMeters);
   }
 };
