@@ -480,13 +480,16 @@ const App = {
         <p style="font-size:11.5px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-id-card text-secondary" style="margin-right:6px;"></i> Kode Satker: <strong style="color:var(--text-main);">${asset.kodeSatker || '-'}</strong> &bull; <i class="fa-solid fa-location-dot text-danger" style="margin-left:4px; margin-right:4px;"></i> ${asset.kabupaten}</p>
       </div>
 
-      <!-- DIRECT GOOGLE MAPS & MULTI-PHOTO UPLOAD BUTTON GROUP WITH EXPLICIT SPACING -->
-      <div style="display:flex; flex-direction:column; margin-bottom:24px;">
-        <a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-block" style="background:#eafaf1; color:#27ae60; border-color:#2ecc71; font-weight:700; padding:12px 14px; border-radius:10px; margin-bottom:12px !important;">
-          <i class="fa-solid fa-map-location-dot" style="font-size:14px; margin-right:8px;"></i> Buka Koordinat di Google Maps (${asset.lat.toFixed(5)}, ${asset.lng.toFixed(5)})
+      <!-- DIRECT GOOGLE MAPS & MULTI-PHOTO UPLOAD BUTTONS IN SEPARATE BLOCK CONTAINERS -->
+      <div style="margin-bottom: 16px !important; display: block !important;">
+        <a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-block" style="display: flex !important; width: 100% !important; background: #eafaf1 !important; color: #27ae60 !important; border: 1px solid #2ecc71 !important; font-weight: 700; padding: 12px 14px; border-radius: 10px; text-decoration: none;">
+          <i class="fa-solid fa-map-location-dot" style="font-size: 14px; margin-right: 8px;"></i> Buka Koordinat di Google Maps (${asset.lat.toFixed(5)}, ${asset.lng.toFixed(5)})
         </a>
-        <button class="btn btn-primary btn-block" style="padding:12px 14px; border-radius:10px; box-shadow: 0 4px 14px rgba(74, 144, 226, 0.3);" onclick="App.openUploadPhotoModal('${asset.id}')">
-          <i class="fa-solid fa-images" style="font-size:14px; margin-right:8px;"></i> Upload Multi-Foto Aset (Up to 5)
+      </div>
+
+      <div style="margin-bottom: 24px !important; display: block !important;">
+        <button class="btn btn-primary btn-block" style="display: flex !important; width: 100% !important; padding: 12px 14px; border-radius: 10px; box-shadow: 0 4px 14px rgba(74, 144, 226, 0.3);" onclick="App.openUploadPhotoModal('${asset.id}')">
+          <i class="fa-solid fa-images" style="font-size: 14px; margin-right: 8px;"></i> Upload Multi-Foto Aset (Up to 5)
         </button>
       </div>
 
