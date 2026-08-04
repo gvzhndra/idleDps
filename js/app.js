@@ -7,7 +7,8 @@
  * - Accordion Selection Filters Map Markers & Fits Camera Bounds
  * - Clean Item Display: Nama Barang & Luas Barang (in m² / Ha)
  * - Multi-Level Spatial Distance Engine with Rich Bali POIs & Nighttime Lights Index
- * - Direct "Open in Google Maps" Button on Detail Drawer & Map Popup
+ * - Direct "Open in Google Maps" Button & "Upload Multi-Foto" Button Grouping
+ * - Sync 500m Catchment POIs on Map & Right Drawer Panel (Atlas Beach Fest, etc.)
  * - Multi-Select Checkboxes for Selective PowerPoint (.pptx) Slide Export
  * - Multi-Photo Upload with HTML5 Canvas Client-Side Compression
  * - Login Modal & User Session Management
@@ -49,7 +50,6 @@ const App = {
     MapEngine.renderBMNMarkers(this.activeAssets, (asset) => this.selectAsset(asset.id));
 
     this.bindEvents();
-    this.startClock();
     this.updateExportCountBadge();
   },
 
@@ -248,7 +248,6 @@ const App = {
           `;
         }).join('');
 
-        // Remove icon beside Satker name as requested by user
         satkerContentHtml += `
           <div class="accordion-satker-block">
             <div class="accordion-satker-header" onclick="App.filterBySatker('${kemKey}', '${sKey}')">
@@ -262,7 +261,6 @@ const App = {
         `;
       });
 
-      // Fixed flex layout: title flex-1, badge and chevron wrapped in flex-shrink:0 so > stays right next to pill badge
       html += `
         <div class="accordion-group">
           <div class="accordion-kem-header" onclick="App.toggleAccordionBlock('kem-block-${kIdx}', '${kemKey}')">
@@ -295,7 +293,6 @@ const App = {
       if (chevron) chevron.className = 'fa-solid fa-chevron-right chevron-icon';
     }
 
-    // Filter map markers & fit camera bounds to selected ministry assets
     if (kemKey) {
       const filteredAssets = this.activeAssets.filter(a => a.kementerian === kemKey);
       if (filteredAssets.length > 0) {
@@ -380,11 +377,13 @@ const App = {
     MapEngine.drawKPKNLConnector(asset);
     MapEngine.drawCatchmentCircle(asset.lat, asset.lng, 500);
 
-    const nearbyPOIs = SpatialEngine.getNearbyPOIs(asset.lat, asset.lng, 5);
-    MapEngine.renderNearbyPOIs(nearbyPOIs);
-    const recommendation = RecommendationEngine.generateRecommendation(asset, nearbyPOIs);
+    const catchmentData = SpatialEngine.getPOIsInCatchment(asset.lat, asset.lng, 500);
 
-    this.renderDetailPanel(asset, nearbyPOIs, recommendation);
+    // Pass 500m Catchment POIs to MapEngine so Atlas Beach Fest & all 8 POIs render inside circle on map
+    MapEngine.renderNearbyPOIs(catchmentData.pois);
+    const recommendation = RecommendationEngine.generateRecommendation(asset, catchmentData.pois);
+
+    this.renderDetailPanel(asset, catchmentData, recommendation);
 
     const drawer = document.getElementById('detail-drawer');
     const rightToggleBtn = document.getElementById('right-panel-toggle-btn');
@@ -402,13 +401,12 @@ const App = {
     MapEngine.clearCatchmentCircle();
   },
 
-  renderDetailPanel(asset, nearbyPOIs, recommendation) {
+  renderDetailPanel(asset, catchmentData, recommendation) {
     const container = document.getElementById('detail-drawer-body');
     if (!container) return;
 
     const distData = SpatialEngine.getDistanceToKPKNL(asset.lat, asset.lng);
     const multiDist = SpatialEngine.getMultiLevelDistances(asset.lat, asset.lng, asset.kabupaten, asset.kecamatan, asset.kelurahan);
-    const catchmentData = SpatialEngine.getPOIsInCatchment(asset.lat, asset.lng, 500);
     const gmapsUrl = `https://www.google.com/maps?q=${asset.lat},${asset.lng}`;
 
     const photoSlides = asset.fotoList.map((url, idx) => `
@@ -442,11 +440,14 @@ const App = {
         <p style="font-size:11px; color:var(--text-muted);"><i class="fa-solid fa-map-location-dot"></i> ${asset.alamat}</p>
       </div>
 
-      <!-- DIRECT GOOGLE MAPS LINK BUTTON -->
-      <div class="mb-3">
+      <!-- DIRECT GOOGLE MAPS & MULTI-PHOTO UPLOAD BUTTON GROUP -->
+      <div class="d-flex flex-column gap-2 mb-3">
         <a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-block" style="background:#eafaf1; color:#27ae60; border-color:#2ecc71; font-weight:700; padding:9px 14px;">
           <i class="fa-solid fa-map-location-dot" style="font-size:14px;"></i> Buka Koordinat di Google Maps (${asset.lat.toFixed(5)}, ${asset.lng.toFixed(5)})
         </a>
+        <button class="btn btn-primary btn-block" onclick="App.openUploadPhotoModal('${asset.id}')">
+          <i class="fa-solid fa-images"></i> Upload Multi-Foto Aset (Up to 5)
+        </button>
       </div>
 
       <div class="detail-metrics-grid mb-3">
@@ -529,12 +530,6 @@ const App = {
         <ul class="rec-rationale mt-2">
           ${recommendation.rationale.map(r => `<li><i class="fa-solid fa-circle-check"></i> ${r}</li>`).join('')}
         </ul>
-      </div>
-
-      <div class="d-flex flex-column gap-2 mt-3">
-        <button class="btn btn-primary btn-block" onclick="App.openUploadPhotoModal('${asset.id}')">
-          <i class="fa-solid fa-images"></i> Upload Multi-Foto Aset (Up to 5)
-        </button>
       </div>
     `;
   },
@@ -861,17 +856,6 @@ const App = {
     `;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 4000);
-  },
-
-  startClock() {
-    const clockEl = document.getElementById('live-clock');
-    if (!clockEl) return;
-    const update = () => {
-      const now = new Date();
-      clockEl.innerHTML = `<i class="fa-solid fa-clock"></i> ` + now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' }) + ' | ' + now.toLocaleTimeString('id-ID');
-    };
-    update();
-    setInterval(update, 1000);
   }
 };
 

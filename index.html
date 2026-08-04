@@ -33,9 +33,6 @@
     </div>
 
     <div class="header-right">
-      <div class="live-clock-badge" id="live-clock">
-        <i class="fa-solid fa-clock"></i> Synchronizing...
-      </div>
       <div id="user-status-container">
         <button class="btn btn-secondary" onclick="App.openLoginModal()">
           <i class="fa-solid fa-user-lock text-primary"></i> <span id="user-btn-label">Login User</span>
@@ -155,8 +152,8 @@
 
       <div id="map"></div>
 
-      <!-- Tile Switcher Tools -->
-      <div class="map-tools-group" style="position:absolute; top:16px; right:16px; z-index:800; display:flex; gap:6px; background:rgba(255,255,255,0.9); padding:6px; border-radius:10px; box-shadow:var(--shadow-soft);">
+      <!-- Tile Switcher Tools (Shifted left to right: 60px so it never overlaps right chevron button) -->
+      <div class="map-tools-group">
         <button class="btn-tile-switch active" data-layer="pastel">
           <i class="fa-solid fa-map-location"></i> Soft Pastel
         </button>
