@@ -92,7 +92,7 @@
        ========================================================================== -->
   <main class="main-workspace">
     <!-- LEFT PANEL: TABS & CONTROLS -->
-    <aside class="left-tab-panel">
+    <aside class="left-tab-panel" id="left-tab-panel">
       <!-- Nav Tabs -->
       <nav class="nav-tabs-bar">
         <button class="tab-btn active" data-tab="tab-cluster" onclick="App.switchTab('tab-cluster')">
@@ -144,6 +144,15 @@
 
     <!-- RIGHT PANEL: LEAFLET GIS INTERACTIVE MAP (ALWAYS VISIBLE) -->
     <section class="map-container">
+      <!-- FLOATING TOGGLE BUTTONS FOR LEFT & RIGHT PANELS -->
+      <button class="panel-toggle-btn left-toggle" id="left-panel-toggle-btn" onclick="App.toggleLeftPanel()" title="Sembunyikan / Tampilkan Panel Kiri">
+        <i class="fa-solid fa-angles-left" id="left-panel-toggle-icon"></i>
+      </button>
+
+      <button class="panel-toggle-btn right-toggle" id="right-panel-toggle-btn" onclick="App.toggleRightPanel()" title="Tampilkan Detail Drawer Kanan" style="display:none;">
+        <i class="fa-solid fa-angles-left"></i>
+      </button>
+
       <div id="map"></div>
 
       <!-- Tile Switcher Tools -->
@@ -182,9 +191,11 @@
     <aside class="detail-drawer" id="detail-drawer">
       <div class="detail-drawer-header">
         <h3><i class="fa-solid fa-chart-pie" style="color:var(--pastel-blue);"></i> Detail & Spatial Analytics</h3>
-        <button class="btn btn-icon btn-secondary" onclick="App.closeDetailPanel()">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
+        <div class="d-flex align-items-center gap-1">
+          <button class="btn btn-icon btn-secondary" onclick="App.toggleRightPanel()" title="Sembunyikan Drawer">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
       </div>
 
       <div class="detail-drawer-body" id="detail-drawer-body">

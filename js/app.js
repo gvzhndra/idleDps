@@ -2,9 +2,10 @@
  * Main Application Controller
  * BMN Idle Interactive Dashboard - KPKNL Denpasar
  * Features:
- * - Split View Workspace (Left Panel: Tabs & Controls, Right Panel: Always-Visible Leaflet Map)
+ * - Split View Workspace with Collapsible Left & Right Panels (Toggle Hide / Expand)
  * - Accordion Tree Clustering (Kementerian -> Satker -> Aset)
- * - Clear Item Display: Nama Barang & Luas Barang (in m² / Ha)
+ * - Accordion Selection Filters Map Markers & Fits Camera Bounds
+ * - Clean Item Display: Nama Barang & Luas Barang (in m² / Ha)
  * - Multi-Level Spatial Distance Engine with Rich Bali POIs & Nighttime Lights Index
  * - Direct "Open in Google Maps" Button on Detail Drawer & Map Popup
  * - Multi-Select Checkboxes for Selective PowerPoint (.pptx) Slide Export
@@ -19,10 +20,14 @@ const App = {
   selectedAsset: null,
   currentUser: null,
   compressedPhotoBlobs: [],
+  isLeftPanelCollapsed: false,
+  isRightDrawerOpen: false,
 
   filters: {
     kabupaten: 'all',
-    search: ''
+    search: '',
+    selectedKem: null,
+    selectedSatker: null
   },
 
   init() {
@@ -76,6 +81,46 @@ const App = {
     });
   },
 
+  toggleLeftPanel() {
+    const leftPanel = document.getElementById('left-tab-panel');
+    const toggleIcon = document.getElementById('left-panel-toggle-icon');
+    if (!leftPanel) return;
+
+    this.isLeftPanelCollapsed = !this.isLeftPanelCollapsed;
+    leftPanel.classList.toggle('collapsed', this.isLeftPanelCollapsed);
+
+    if (toggleIcon) {
+      toggleIcon.className = this.isLeftPanelCollapsed ? 'fa-solid fa-angles-right' : 'fa-solid fa-angles-left';
+    }
+
+    setTimeout(() => {
+      if (MapEngine.map) MapEngine.map.invalidateSize();
+    }, 320);
+  },
+
+  toggleRightPanel() {
+    const drawer = document.getElementById('detail-drawer');
+    const rightToggleBtn = document.getElementById('right-panel-toggle-btn');
+    if (!drawer) return;
+
+    this.isRightDrawerOpen = drawer.classList.contains('open');
+
+    if (this.isRightDrawerOpen) {
+      drawer.classList.remove('open');
+      if (rightToggleBtn) rightToggleBtn.style.display = 'flex';
+      MapEngine.resetView();
+    } else {
+      if (this.selectedAsset) {
+        drawer.classList.add('open');
+        if (rightToggleBtn) rightToggleBtn.style.display = 'none';
+      }
+    }
+
+    setTimeout(() => {
+      if (MapEngine.map) MapEngine.map.invalidateSize();
+    }, 320);
+  },
+
   switchTab(tabId) {
     this.activeTab = tabId;
     document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -106,13 +151,17 @@ const App = {
     const countTanah = this.activeAssets.filter(a => a.isTanah).length;
     const countBangunan = totalUnit - countTanah;
 
+    const tree = DataEngine.getClusteredTree(this.activeAssets);
+    const totalKluster = Object.keys(tree).length;
+
     document.getElementById('stat-total-unit').textContent = totalUnit;
     document.getElementById('stat-total-luas').textContent = SpatialEngine.formatLuas(totalLuas);
     document.getElementById('stat-count-tanah').textContent = `${countTanah} Unit`;
     document.getElementById('stat-count-bangunan').textContent = `${countBangunan} Unit`;
 
-    document.getElementById('badge-cluster-count').textContent = totalUnit;
-    document.getElementById('badge-all-count').textContent = totalUnit;
+    // Kluster tab badge counts total Accordion Groups / Ministries
+    document.getElementById('badge-cluster-count').textContent = `${totalKluster} Kluster`;
+    document.getElementById('badge-all-count').textContent = `${totalUnit} Unit`;
   },
 
   toggleSelectAssetForExport(assetId, checked) {
@@ -172,7 +221,7 @@ const App = {
 
       let satkerContentHtml = '';
 
-      satkerKeys.forEach(sKey => {
+      satkerKeys.forEach((sKey, sIdx) => {
         const satkerObj = kemData.satkers[sKey];
 
         const cardsHtml = satkerObj.assets.map(asset => {
@@ -199,11 +248,12 @@ const App = {
           `;
         }).join('');
 
+        // Remove icon beside Satker name as requested by user
         satkerContentHtml += `
           <div class="accordion-satker-block">
-            <div class="accordion-satker-header">
-              <i class="fa-solid fa-building-user"></i> ${satkerObj.name}
-              <span class="badge badge-pastel-purple" style="font-size:9px;">${satkerObj.assets.length} Aset</span>
+            <div class="accordion-satker-header" onclick="App.filterBySatker('${kemKey}', '${sKey}')">
+              <span style="font-weight:700; font-size:11.5px; color:var(--text-main);">${satkerObj.name}</span>
+              <span class="badge badge-pastel-purple" style="font-size:9px; flex-shrink:0;">${satkerObj.assets.length} Aset</span>
             </div>
             <div class="cluster-asset-grid">
               ${cardsHtml}
@@ -212,15 +262,14 @@ const App = {
         `;
       });
 
+      // Fixed flex layout: title flex-1, badge and chevron wrapped in flex-shrink:0 so > stays right next to pill badge
       html += `
         <div class="accordion-group">
-          <div class="accordion-kem-header" onclick="App.toggleAccordionBlock('kem-block-${kIdx}')">
-            <div>
-              <i class="fa-solid fa-landmark text-primary" style="margin-right:6px;"></i> ${kemData.name}
-            </div>
-            <div class="d-flex align-items-center gap-2">
-              <span class="badge badge-pastel-blue">${kemData.totalAssets} Unit BMN</span>
-              <i class="fa-solid fa-chevron-down" id="chevron-kem-block-${kIdx}"></i>
+          <div class="accordion-kem-header" onclick="App.toggleAccordionBlock('kem-block-${kIdx}', '${kemKey}')">
+            <div class="kem-title-text">${kemData.name}</div>
+            <div class="kem-badge-wrapper">
+              <span class="badge badge-pastel-blue" style="font-size:10px; font-weight:800;">${kemData.totalAssets} Unit BMN</span>
+              <i class="fa-solid fa-chevron-down chevron-icon" id="chevron-kem-block-${kIdx}"></i>
             </div>
           </div>
           <div class="accordion-body-content" id="kem-block-${kIdx}">
@@ -233,17 +282,40 @@ const App = {
     container.innerHTML = html;
   },
 
-  toggleAccordionBlock(blockId) {
+  toggleAccordionBlock(blockId, kemKey) {
     const el = document.getElementById(blockId);
     const chevron = document.getElementById(`chevron-${blockId}`);
     if (!el) return;
 
     if (el.style.display === 'none') {
       el.style.display = 'block';
-      if (chevron) chevron.className = 'fa-solid fa-chevron-down';
+      if (chevron) chevron.className = 'fa-solid fa-chevron-down chevron-icon';
     } else {
       el.style.display = 'none';
-      if (chevron) chevron.className = 'fa-solid fa-chevron-right';
+      if (chevron) chevron.className = 'fa-solid fa-chevron-right chevron-icon';
+    }
+
+    // Filter map markers & fit camera bounds to selected ministry assets
+    if (kemKey) {
+      const filteredAssets = this.activeAssets.filter(a => a.kementerian === kemKey);
+      if (filteredAssets.length > 0) {
+        MapEngine.renderBMNMarkers(filteredAssets, (asset) => this.selectAsset(asset.id));
+        const bounds = L.latLngBounds(filteredAssets.map(a => [a.lat, a.lng]));
+        if (bounds.isValid() && MapEngine.map) {
+          MapEngine.map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
+        }
+      }
+    }
+  },
+
+  filterBySatker(kemKey, satkerName) {
+    const filteredAssets = this.activeAssets.filter(a => a.kementerian === kemKey && a.namaSatker === satkerName);
+    if (filteredAssets.length > 0) {
+      MapEngine.renderBMNMarkers(filteredAssets, (asset) => this.selectAsset(asset.id));
+      const bounds = L.latLngBounds(filteredAssets.map(a => [a.lat, a.lng]));
+      if (bounds.isValid() && MapEngine.map) {
+        MapEngine.map.fitBounds(bounds, { padding: [50, 50], maxZoom: 16 });
+      }
     }
   },
 
@@ -315,12 +387,16 @@ const App = {
     this.renderDetailPanel(asset, nearbyPOIs, recommendation);
 
     const drawer = document.getElementById('detail-drawer');
+    const rightToggleBtn = document.getElementById('right-panel-toggle-btn');
     if (drawer) drawer.classList.add('open');
+    if (rightToggleBtn) rightToggleBtn.style.display = 'none';
   },
 
   closeDetailPanel() {
     const drawer = document.getElementById('detail-drawer');
+    const rightToggleBtn = document.getElementById('right-panel-toggle-btn');
     if (drawer) drawer.classList.remove('open');
+    if (rightToggleBtn) rightToggleBtn.style.display = 'flex';
     this.selectedAsset = null;
     MapEngine.resetView();
     MapEngine.clearCatchmentCircle();
