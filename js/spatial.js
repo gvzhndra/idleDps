@@ -49,6 +49,12 @@ const BALI_FALLBACK_POIS = [
   { name: 'Hotel Novotel Bali Ngurah Rai Airport', type: 'hotel', lat: -8.7390, lng: 115.1760 },
 
   { name: 'Kantor Regional X BKN Denpasar', type: 'pemda', lat: -8.7150, lng: 115.2190 },
+  { name: 'Puskesmas Denpasar Selatan III (Suwung)', type: 'kesehatan', lat: -8.7155, lng: 115.2180 },
+  { name: 'SD Negeri 6 Sesetan (Suwung Kauh)', type: 'pendidikan', lat: -8.7145, lng: 115.2175 },
+  { name: 'Kawasan Komersial & Pertokoan Jl. Bypass Suwung', type: 'pasar', lat: -8.7160, lng: 115.2195 },
+  { name: 'Bank BPD Bali Kas Suwung', type: 'pasar', lat: -8.7148, lng: 115.2198 },
+  { name: 'Indomaret Bypass Ngurah Rai Suwung', type: 'pasar', lat: -8.7158, lng: 115.2188 },
+  { name: 'SPBU Pertamina Suwung Kauh Bypass', type: 'pasar', lat: -8.7165, lng: 115.2205 },
   { name: 'Pelabuhan Utama Benoa', type: 'transportasi', lat: -8.7180, lng: 115.2150 },
 
   { name: 'Kantor Gubernur Bali (Civic Center Renon)', type: 'pemda', lat: -8.6705, lng: 115.2250 },
@@ -158,7 +164,7 @@ const SpatialEngine = {
   async fetchDynamicPOIsInCatchment(lat, lng, radiusMeters = 500) {
     if (!lat || !lng) return { totalCount: 0, pois: [] };
 
-    const cacheKey = `${lat.toFixed(4)}_${lng.toFixed(4)}_${radiusMeters}`;
+    const cacheKey = `${lat.toFixed(3)}_${lng.toFixed(3)}_${radiusMeters}`;
     if (this.dynamicPoiCache[cacheKey]) {
       return this.dynamicPoiCache[cacheKey];
     }

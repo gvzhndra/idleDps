@@ -445,15 +445,34 @@ const App = {
     const container = document.getElementById('detail-drawer-body');
     if (!container) return;
 
+    this.currentPhotoIndex = 0;
+
+    const userRole = typeof Auth !== 'undefined' ? Auth.getUserRole() : 'viewer';
+    const canEditOrUpload = userRole !== 'viewer' && userRole !== 'tamu';
+
     const distData = SpatialEngine.getDistanceToKPKNL(asset.lat, asset.lng);
     const multiDist = SpatialEngine.getMultiLevelDistances(asset.lat, asset.lng, asset.kabupaten, asset.kecamatan, asset.kelurahan);
     const gmapsUrl = `https://www.google.com/maps?q=${asset.lat},${asset.lng}`;
 
     const photoSlides = asset.fotoList.map((url, idx) => `
-      <div class="photo-slide ${idx === 0 ? 'active' : ''}" style="background-image: url('${url}');">
+      <div class="photo-slide ${idx === 0 ? 'active' : ''}" style="background-image: url('${url}'); display: ${idx === 0 ? 'block' : 'none'}; position: relative;">
         <span class="photo-counter">${idx + 1} / ${asset.fotoList.length}</span>
+        ${canEditOrUpload ? `
+          <button class="btn-delete-photo" title="Hapus foto ini" onclick="App.deletePhoto('${asset.id}', ${idx})">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        ` : ''}
       </div>
     `).join('');
+
+    const navArrows = asset.fotoList.length > 1 ? `
+      <button class="carousel-nav-btn carousel-nav-prev" onclick="App.prevPhoto('${asset.id}')" title="Foto Sebelumnya">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <button class="carousel-nav-btn carousel-nav-next" onclick="App.nextPhoto('${asset.id}')" title="Foto Selanjutnya">
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    ` : '';
 
     const catchmentPoiHtml = catchmentData.pois.map(poi => `
       <div class="poi-item">
@@ -469,8 +488,9 @@ const App = {
     `).join('');
 
     container.innerHTML = `
-      <div class="photo-carousel-container">
+      <div class="photo-carousel-container" style="position:relative;">
         ${photoSlides}
+        ${navArrows}
       </div>
 
       <div class="mb-4">
@@ -487,11 +507,13 @@ const App = {
         </a>
       </div>
 
+      ${canEditOrUpload ? `
       <div style="margin-bottom: 24px !important; display: block !important;">
         <button class="btn btn-primary btn-block" style="display: flex !important; width: 100% !important; padding: 12px 14px; border-radius: 10px; box-shadow: 0 4px 14px rgba(74, 144, 226, 0.3);" onclick="App.openUploadPhotoModal('${asset.id}')">
           <i class="fa-solid fa-images" style="font-size: 14px; margin-right: 8px;"></i> Upload Multi-Foto Aset (Up to 5)
         </button>
       </div>
+      ` : ''}
 
       <!-- KODE BARANG, NUP & LUAS METRICS GRID -->
       <div class="detail-metrics-grid mb-4">
@@ -712,6 +734,71 @@ const App = {
 
       this.closeUploadPhotoModal();
       this.selectAsset(assetId);
+    }
+  },
+
+  prevPhoto(assetId) {
+    const asset = this.activeAssets.find(a => a.id === assetId) || DataEngine.pendingAssets.find(a => a.id === assetId);
+    if (!asset || !asset.fotoList || asset.fotoList.length <= 1) return;
+    this.currentPhotoIndex = (this.currentPhotoIndex || 0) - 1;
+    if (this.currentPhotoIndex < 0) this.currentPhotoIndex = asset.fotoList.length - 1;
+    this.updateCarouselDisplay(asset);
+  },
+
+  nextPhoto(assetId) {
+    const asset = this.activeAssets.find(a => a.id === assetId) || DataEngine.pendingAssets.find(a => a.id === assetId);
+    if (!asset || !asset.fotoList || asset.fotoList.length <= 1) return;
+    this.currentPhotoIndex = (this.currentPhotoIndex || 0) + 1;
+    if (this.currentPhotoIndex >= asset.fotoList.length) this.currentPhotoIndex = 0;
+    this.updateCarouselDisplay(asset);
+  },
+
+  updateCarouselDisplay(asset) {
+    const container = document.querySelector('.photo-carousel-container');
+    if (!container) return;
+    const slides = container.querySelectorAll('.photo-slide');
+    const counter = container.querySelector('.photo-counter');
+    slides.forEach((slide, idx) => {
+      if (idx === this.currentPhotoIndex) {
+        slide.style.display = 'block';
+        slide.classList.add('active');
+      } else {
+        slide.style.display = 'none';
+        slide.classList.remove('active');
+      }
+    });
+    if (counter) {
+      counter.textContent = `${this.currentPhotoIndex + 1} / ${asset.fotoList.length}`;
+    }
+  },
+
+  deletePhoto(assetId, photoIndex) {
+    const asset = this.activeAssets.find(a => a.id === assetId) || DataEngine.pendingAssets.find(a => a.id === assetId);
+    if (!asset || !asset.fotoList || asset.fotoList.length <= 1) {
+      this.showToast('Minimal harus ada 1 foto aset.', 'warning');
+      return;
+    }
+
+    if (confirm('Apakah Anda yakin ingin menghapus foto ini?')) {
+      asset.fotoList.splice(photoIndex, 1);
+      this.currentPhotoIndex = 0;
+      this.savePhotosToLocalStorage();
+      this.showToast('Foto berhasil dihapus.');
+      this.selectAsset(assetId);
+    }
+  },
+
+  savePhotosToLocalStorage() {
+    const photoMap = {};
+    [...this.activeAssets, ...DataEngine.pendingAssets].forEach(a => {
+      if (a.fotoList && a.fotoList.length > 0) {
+        photoMap[a.id] = a.fotoList;
+      }
+    });
+    try {
+      localStorage.setItem('bmn_custom_photos', JSON.stringify(photoMap));
+    } catch(e) {
+      console.warn('LocalStorage save error:', e);
     }
   },
 
@@ -963,10 +1050,44 @@ const App = {
     asset.luas = parseFloat(document.getElementById('edit-luas').value) || 0;
     asset.luasTanah = asset.luas;
 
-    // Refresh UI components
+    // 1. Save edit to localStorage for persistent session survival
+    try {
+      const storedEdits = JSON.parse(localStorage.getItem('bmn_custom_edits') || '{}');
+      storedEdits[asset.id] = {
+        namaBarang: asset.namaBarang,
+        kondisi: asset.kondisi,
+        rekomendasiUser: asset.rekomendasiUser,
+        catatanTim: asset.catatanTim,
+        luas: asset.luas
+      };
+      localStorage.setItem('bmn_custom_edits', JSON.stringify(storedEdits));
+    } catch(e) {
+      console.warn('LocalStorage save edit error:', e);
+    }
+
+    // 2. Post edit to Google Apps Script Web App if URL is present
+    if (CONFIG.APPS_SCRIPT.WEB_APP_URL) {
+      fetch(CONFIG.APPS_SCRIPT.WEB_APP_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'updateAsset',
+          assetId: asset.id,
+          kodeSatker: asset.kodeSatker,
+          kodeBarang: asset.kodeBarang,
+          nup: asset.nup,
+          namaBarang: asset.namaBarang,
+          kondisi: asset.kondisi,
+          rekomendasiUser: asset.rekomendasiUser,
+          catatanTim: asset.catatanTim,
+          luas: asset.luas
+        })
+      }).catch(err => console.log('Apps Script update error:', err));
+    }
+
+    // 3. Refresh UI components
     this.renderAccordionCluster();
     this.renderAllAssetsList();
-    this.renderDetailDrawer(asset);
+    this.selectAsset(asset.id);
     this.updateStatsBar();
 
     this.closeEditAssetModal();

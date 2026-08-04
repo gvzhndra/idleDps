@@ -111,6 +111,44 @@ const DataEngine = {
         this.pendingAssets.push(item);
       }
     });
+
+    this.loadCustomOverrides();
+  },
+
+  loadCustomOverrides() {
+    try {
+      // 1. Load persistent custom photos
+      const storedPhotos = localStorage.getItem('bmn_custom_photos');
+      if (storedPhotos) {
+        const photoMap = JSON.parse(storedPhotos);
+        [...this.activeAssets, ...this.pendingAssets].forEach(asset => {
+          if (photoMap[asset.id] && Array.isArray(photoMap[asset.id])) {
+            asset.fotoList = photoMap[asset.id];
+          }
+        });
+      }
+
+      // 2. Load persistent custom asset edits (catatan, rekomendasi, nama, kondisi, luas)
+      const storedEdits = localStorage.getItem('bmn_custom_edits');
+      if (storedEdits) {
+        const editMap = JSON.parse(storedEdits);
+        [...this.activeAssets, ...this.pendingAssets].forEach(asset => {
+          if (editMap[asset.id]) {
+            const e = editMap[asset.id];
+            if (e.namaBarang) asset.namaBarang = e.namaBarang;
+            if (e.kondisi) asset.kondisi = e.kondisi;
+            if (e.rekomendasiUser) asset.rekomendasiUser = e.rekomendasiUser;
+            if (e.catatanTim) asset.catatanTim = e.catatanTim;
+            if (e.luas !== undefined) {
+              asset.luas = e.luas;
+              asset.luasTanah = e.luas;
+            }
+          }
+        });
+      }
+    } catch (e) {
+      console.warn('Error loading custom overrides from localStorage:', e);
+    }
   },
 
   detectKabupaten(satker, namaBarang, lat, lng) {

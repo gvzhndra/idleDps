@@ -150,6 +150,10 @@ function doPost(e) {
       return handleMultiPhotoUploadToDrive(contents.assetId, contents.photos);
     }
 
+    if (action === 'updateAsset') {
+      return handleUpdateAssetInSheet(contents);
+    }
+
     return createJsonResponse({ status: 'error', message: 'Aksi tidak dikenal.' });
   } catch (err) {
     return createJsonResponse({ status: 'error', message: err.toString() });
@@ -220,6 +224,54 @@ function handleUserLogin(username, passwordInput) {
   }
 
   return createJsonResponse({ status: 'error', message: 'Username "' + username + '" tidak ditemukan.' });
+}
+
+/**
+ * Updates asset record in Google Sheet "BMN_Idle" tab.
+ */
+function handleUpdateAssetInSheet(contents) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName('BMN_Idle') || ss.getSheets()[0];
+  if (!sheet) {
+    return createJsonResponse({ status: 'error', message: 'Sheet BMN_Idle tidak ditemukan.' });
+  }
+
+  var data = sheet.getDataRange().getValues();
+  if (data.length <= 1) {
+    return createJsonResponse({ status: 'error', message: 'Sheet kosong.' });
+  }
+
+  var headers = data[0];
+  var idCol = headers.indexOf('id');
+  var satkerCol = headers.indexOf('kode_satker');
+  var barangCol = headers.indexOf('kode_barang');
+  var nupCol = headers.indexOf('nup');
+  var namaBarangCol = headers.indexOf('nama_barang');
+  var kondisiCol = headers.indexOf('HASIL JAWABAN');
+  var rekomendasiCol = headers.indexOf('rekomendasi_user');
+  var catatanCol = headers.indexOf('CATATAN_REKONSILIASI');
+  var luasCol = headers.indexOf('luas');
+
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+    var matchById = (idCol >= 0 && String(row[idCol]) === String(contents.assetId));
+    var matchByKeys = (satkerCol >= 0 && barangCol >= 0 && nupCol >= 0 &&
+                       String(row[satkerCol]) === String(contents.kodeSatker) &&
+                       String(row[barangCol]) === String(contents.kodeBarang) &&
+                       String(row[nupCol]) === String(contents.nup));
+
+    if (matchById || matchByKeys) {
+      if (namaBarangCol >= 0 && contents.namaBarang) sheet.getRange(i + 1, namaBarangCol + 1).setValue(contents.namaBarang);
+      if (kondisiCol >= 0 && contents.kondisi) sheet.getRange(i + 1, kondisiCol + 1).setValue(contents.kondisi);
+      if (rekomendasiCol >= 0 && contents.rekomendasiUser) sheet.getRange(i + 1, rekomendasiCol + 1).setValue(contents.rekomendasiUser);
+      if (catatanCol >= 0 && contents.catatanTim) sheet.getRange(i + 1, catatanCol + 1).setValue(contents.catatanTim);
+      if (luasCol >= 0 && contents.luas !== undefined) sheet.getRange(i + 1, luasCol + 1).setValue(contents.luas);
+
+      return createJsonResponse({ status: 'success', message: 'Data aset berhasil diperbarui di Google Sheets.' });
+    }
+  }
+
+  return createJsonResponse({ status: 'warning', message: 'Aset tidak ditemukan di baris sheet.' });
 }
 
 // ============================================================================
