@@ -103,16 +103,17 @@ const SpatialEngine = {
     const provCap = REGENCY_CAPITALS['Kota Denpasar'];
     const provDist = this.calculateDistance(lat, lng, provCap.lat, provCap.lng);
 
+    // Use the best matching regency capital for kabupaten distance
     const regCap = REGENCY_CAPITALS[kabupatenName] || REGENCY_CAPITALS['Kota Denpasar'];
     const regDist = this.calculateDistance(lat, lng, regCap.lat, regCap.lng);
 
-    const distCenterLat = regCap.lat + 0.005;
-    const distCenterLng = regCap.lng + 0.005;
-    const distCenterDist = this.calculateDistance(lat, lng, distCenterLat, distCenterLng);
+    // For district/sub-district: use regency capital as reference (realistic, not fake)
+    // Show as "~X km from [Regency Capital]" context
+    const distCenterDist = regDist;
 
-    const villCenterLat = lat + 0.003;
-    const villCenterLng = lng + 0.003;
-    const villCenterDist = this.calculateDistance(lat, lng, villCenterLat, villCenterLng);
+    // For village: use a small offset from regency capital proportional to regDist
+    // This is an estimate: village center is roughly 20-40% closer than regency capital
+    const villCenterDist = Math.round((regDist * 0.3) * 100) / 100;
 
     let nearestNightHub = NIGHTTIME_LIGHTS_HUBS[0];
     let minNightDist = 999;
@@ -140,7 +141,10 @@ const SpatialEngine = {
     };
   },
 
-  /* AUTOMATIC REAL-TIME DYNAMIC OPENSTREETMAP OVERPASS POI ENGINE */
+  /* AUTOMATIC REAL-TIME DYNAMIC OPENSTREETMAP OVERPASS POI ENGINE
+   * Uses multiple mirror endpoints with progressive fallback.
+   * Falls back to curated local GIS data if all endpoints fail.
+   */
   async fetchDynamicPOIsInCatchment(lat, lng, radiusMeters = 500) {
     if (!lat || !lng) return { totalCount: 0, pois: [] };
 
@@ -149,17 +153,35 @@ const SpatialEngine = {
       return this.dynamicPoiCache[cacheKey];
     }
 
-    const overpassQuery = `[out:json][timeout:8];(node(around:${radiusMeters},${lat},${lng})[amenity];node(around:${radiusMeters},${lat},${lng})[tourism];node(around:${radiusMeters},${lat},${lng})[shop];node(around:${radiusMeters},${lat},${lng})[leisure];node(around:${radiusMeters},${lat},${lng})[office];);out;`;
-    const overpassUrl = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(overpassQuery)}`;
+    // Compact Overpass QL query (union syntax is more reliable than multiple separate node queries)
+    const overpassQuery = `[out:json][timeout:10];(
+      node(around:${radiusMeters},${lat},${lng})[amenity];
+      node(around:${radiusMeters},${lat},${lng})[tourism];
+      node(around:${radiusMeters},${lat},${lng})[shop];
+      node(around:${radiusMeters},${lat},${lng})[office~"government|ngo"];
+      node(around:${radiusMeters},${lat},${lng})[leisure~"park|stadium|sports_centre"];
+    );out body;`;
 
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 6000);
+    // Multiple Overpass API mirror endpoints for reliability
+    const OVERPASS_MIRRORS = [
+      'https://overpass-api.de/api/interpreter',
+      'https://overpass.kumi.systems/api/interpreter',
+      'https://maps.mail.ru/osm/tools/overpass/api/interpreter'
+    ];
 
-      const resp = await fetch(overpassUrl, { signal: controller.signal });
-      clearTimeout(timeoutId);
+    for (const mirrorUrl of OVERPASS_MIRRORS) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
 
-      if (resp.ok) {
+        const resp = await fetch(`${mirrorUrl}?data=${encodeURIComponent(overpassQuery)}`, {
+          signal: controller.signal,
+          headers: { 'Accept': 'application/json' }
+        });
+        clearTimeout(timeoutId);
+
+        if (!resp.ok) continue;
+
         const json = await resp.json();
         const elements = json.elements || [];
 
@@ -167,8 +189,13 @@ const SpatialEngine = {
           const dynamicPois = [];
 
           elements.forEach(node => {
+            if (!node.lat || !node.lon) return;
             const tags = node.tags || {};
-            const name = tags.name || tags.amenity || tags.tourism || tags.shop || tags.office || 'Fasilitas Publik';
+
+            // Skip unnamed generic nodes with no meaningful tag
+            const name = tags.name;
+            if (!name) return;
+
             const distKm = this.calculateDistance(lat, lng, node.lat, node.lon);
             const distMeters = Math.round(distKm * 1000);
 
@@ -187,32 +214,36 @@ const SpatialEngine = {
             }
           });
 
-          // Remove duplicate names
-          const uniquePois = [];
-          const seenNames = new Set();
-          dynamicPois.sort((a, b) => a.distanceMeters - b.distanceMeters);
+          if (dynamicPois.length > 0) {
+            // Deduplicate and sort by distance
+            const seenNames = new Set();
+            const uniquePois = [];
+            dynamicPois.sort((a, b) => a.distanceMeters - b.distanceMeters);
 
-          dynamicPois.forEach(p => {
-            const key = p.name.toLowerCase();
-            if (!seenNames.has(key)) {
-              seenNames.add(key);
-              uniquePois.push(p);
-            }
-          });
+            dynamicPois.forEach(p => {
+              const key = p.name.toLowerCase();
+              if (!seenNames.has(key)) {
+                seenNames.add(key);
+                uniquePois.push(p);
+              }
+            });
 
-          const result = { totalCount: uniquePois.length, pois: uniquePois.slice(0, 12) };
-          this.dynamicPoiCache[cacheKey] = result;
-          return result;
+            const result = { totalCount: uniquePois.length, pois: uniquePois.slice(0, 15) };
+            this.dynamicPoiCache[cacheKey] = result;
+            console.info(`Overpass: ${result.totalCount} POIs from ${mirrorUrl}`);
+            return result;
+          }
         }
+      } catch (e) {
+        console.warn(`Overpass mirror ${mirrorUrl} failed:`, e.message);
       }
-    } catch (e) {
-      console.warn('Overpass API timeout or offline, falling back to local GIS POIs:', e);
     }
 
-    // Fallback if Overpass API fails
-    const fallbackPois = this.getFallbackPOIsInCatchment(lat, lng, radiusMeters);
-    this.dynamicPoiCache[cacheKey] = fallbackPois;
-    return fallbackPois;
+    // All mirrors failed → use curated fallback GIS data
+    console.warn('All Overpass mirrors failed — using curated fallback GIS data.');
+    const fallbackResult = this.getFallbackPOIsInCatchment(lat, lng, radiusMeters);
+    this.dynamicPoiCache[cacheKey] = fallbackResult;
+    return fallbackResult;
   },
 
   _mapOsmTagToCategory(tags) {

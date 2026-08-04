@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Masuk — BMN Idle Dashboard · KPKNL Denpasar</title>
+  <meta name="description" content="Login ke BMN Idle Interactive Dashboard KPKNL Denpasar – DJKN Kemenkeu RI">
+  <meta name="robots" content="noindex, nofollow">
+
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --font: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --font-display: 'Outfit', sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 45%, #0c4a6e 100%);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Animated blobs */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.15;
+      animation: blobFloat 14s ease-in-out infinite;
+      pointer-events: none;
+    }
+    .blob-1 { width: 500px; height: 500px; background: #4a90e2; top: -130px; left: -100px; animation-duration: 16s; }
+    .blob-2 { width: 420px; height: 420px; background: #2ecc71; bottom: -100px; right: -80px; animation-duration: 12s; animation-delay: -4s; }
+    .blob-3 { width: 360px; height: 360px; background: #9b59b6; top: 45%; right: 12%; animation-duration: 18s; animation-delay: -9s; }
+    .blob-4 { width: 280px; height: 280px; background: #f39c12; bottom: 20%; left: 8%; animation-duration: 11s; animation-delay: -2s; }
+
+    @keyframes blobFloat {
+      0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+      30%       { transform: translateY(-28px) scale(1.05) rotate(6deg); }
+      60%       { transform: translateY(20px) scale(0.97) rotate(-4deg); }
+    }
+
+    /* Grid overlay texture */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Login Card */
+    .login-wrapper {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 440px;
+      padding: 20px;
+      animation: cardIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(36px) scale(0.95); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .login-card {
+      background: rgba(255, 255, 255, 0.065);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 28px;
+      padding: 44px 40px 40px;
+      box-shadow:
+        0 32px 80px rgba(0, 0, 0, 0.55),
+        0 0 0 1px rgba(255,255,255,0.05),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+
+    /* Logo ring */
+    .logo-ring {
+      width: 76px;
+      height: 76px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, #4a90e2 0%, #2568c8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      color: #fff;
+      margin: 0 auto 22px;
+      box-shadow: 0 10px 32px rgba(74, 144, 226, 0.5), inset 0 1px 0 rgba(255,255,255,0.2);
+      position: relative;
+    }
+
+    .logo-ring::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 26px;
+      border: 2px solid rgba(74, 144, 226, 0.3);
+      animation: ringPulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes ringPulse {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50%       { opacity: 0.15; transform: scale(1.08); }
+    }
+
+    .login-title {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 800;
+      color: #ffffff;
+      text-align: center;
+      letter-spacing: -0.6px;
+      margin-bottom: 4px;
+    }
+
+    .login-subtitle {
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.45);
+      text-align: center;
+      line-height: 1.6;
+      margin-bottom: 34px;
+    }
+
+    /* Divider with label */
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .section-divider::before, .section-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+    }
+    .section-divider span {
+      font-size: 10px;
+      color: rgba(255,255,255,0.35);
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    /* Input fields */
+    .field-group {
+      margin-bottom: 16px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.55);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 7px;
+    }
+
+    .field-wrap {
+      position: relative;
+    }
+
+    .field-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255,255,255,0.3);
+      font-size: 13px;
+      pointer-events: none;
+    }
+
+    .field-input {
+      width: 100%;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 12px 40px 12px 40px;
+      color: #ffffff;
+      font-family: var(--font);
+      font-size: 13.5px;
+      outline: none;
+      transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .field-input::placeholder { color: rgba(255,255,255,0.25); }
+
+    .field-input:focus {
+      border-color: #4a90e2;
+      background: rgba(74, 144, 226, 0.1);
+      box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.18);
+    }
+
+    .toggle-pw {
+      position: absolute;
+      right: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: rgba(255,255,255,0.3);
+      font-size: 14px;
+      padding: 4px;
+      transition: color 0.15s;
+    }
+    .toggle-pw:hover { color: rgba(255,255,255,0.6); }
+
+    /* Error message */
+    .error-msg {
+      background: rgba(231, 76, 60, 0.16);
+      border: 1px solid rgba(231, 76, 60, 0.35);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: #ff8585;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      display: none;
+      text-align: center;
+      gap: 6px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .error-msg.visible {
+      display: flex;
+    }
+
+    /* Submit button */
+    .submit-btn {
+      width: 100%;
+      padding: 13px 16px;
+      background: linear-gradient(135deg, #4a90e2 0%, #2568c8 100%);
+      border: none;
+      border-radius: 13px;
+      color: #ffffff;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 6px;
+      box-shadow: 0 8px 28px rgba(74, 144, 226, 0.5), inset 0 1px 0 rgba(255,255,255,0.15);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      letter-spacing: 0.1px;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 36px rgba(74, 144, 226, 0.6);
+    }
+
+    .submit-btn:active:not(:disabled) { transform: translateY(0); }
+
+    .submit-btn:disabled {
+      opacity: 0.75;
+      cursor: not-allowed;
+    }
+
+    .submit-btn.success {
+      background: linear-gradient(135deg, #2ecc71, #1aab5f);
+      box-shadow: 0 8px 28px rgba(46, 204, 113, 0.5);
+    }
+
+    /* Footer info */
+    .card-footer {
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .footer-label {
+      font-size: 10px;
+      color: rgba(255,255,255,0.22);
+      letter-spacing: 0.5px;
+      line-height: 1.7;
+    }
+
+    .security-badges {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .sec-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 9.5px;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .sec-badge i { font-size: 9px; }
+  </style>
+</head>
+<body>
+
+  <!-- Background blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="blob blob-4"></div>
+
+  <div class="login-wrapper">
+    <div class="login-card">
+
+      <div class="logo-ring">
+        <i class="fa-solid fa-landmark-flag"></i>
+      </div>
+
+      <h1 class="login-title">BMN IDLE DASHBOARD</h1>
+      <p class="login-subtitle">
+        KPKNL Denpasar &bull; Sistem Analisis Spasial BMN<br>
+        Direktorat Jenderal Kekayaan Negara — Kemenkeu RI
+      </p>
+
+      <div class="section-divider"><span>Masuk ke sistem</span></div>
+
+      <form id="login-form" onsubmit="handleLogin(event)" novalidate>
+
+        <div class="field-group">
+          <label class="field-label" for="ls-username">Username</label>
+          <div class="field-wrap">
+            <i class="fa-solid fa-user field-icon"></i>
+            <input
+              type="text"
+              id="ls-username"
+              class="field-input"
+              placeholder="Masukkan username..."
+              autocomplete="username"
+              required
+            >
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="ls-password">Password</label>
+          <div class="field-wrap">
+            <i class="fa-solid fa-lock field-icon"></i>
+            <input
+              type="password"
+              id="ls-password"
+              class="field-input"
+              placeholder="Masukkan password..."
+              autocomplete="current-password"
+              required
+            >
+            <button type="button" class="toggle-pw" id="toggle-pw-btn" aria-label="Tampilkan/sembunyikan password" onclick="togglePassword()">
+              <i class="fa-solid fa-eye" id="toggle-pw-icon"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="error-msg" id="error-msg">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span id="error-text">Username atau password salah. Silakan coba lagi.</span>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submit-btn">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          Masuk ke Dashboard
+        </button>
+
+      </form>
+
+      <div class="card-footer">
+        <div class="security-badges">
+          <span class="sec-badge"><i class="fa-solid fa-shield-halved"></i> SHA-256 Auth</span>
+          <span class="sec-badge"><i class="fa-solid fa-lock"></i> Encrypted Session</span>
+          <span class="sec-badge"><i class="fa-solid fa-code-branch"></i> v2.1</span>
+        </div>
+        <p class="footer-label" style="margin-top:12px;">
+          DJKN KEMENKEU RI &bull; Sistem Informasi Manajemen Aset BMN Idle<br>
+          Akses terbatas — hanya untuk petugas yang berwenang
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // SHA-256 via Web Crypto API
+    async function sha256(text) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // Pre-hashed credentials
+    const USER_ACCOUNTS = {
+      'admin_kpknl':    { hash: '590909dbb0422b9a7e6cd906900ec3a6da7f6937ce1f52dc821f4d0ed8a99dd1', name: 'Admin KPKNL Denpasar',   role: 'Admin KPKNL' },
+      'petugas_satker': { hash: '7e765589b3df7c27c77ec54b5a661a800e8016fd78c9f8a909e415992e0e8a20', name: 'Verifikator Satker BMN',  role: 'Verifikator Satker' },
+      'viewer':         { hash: '35cbe0aaf4e558ac53847cf7b057f4a3a86a427e08935bffdf81d7b4ed7cd9f3', name: 'Tamu / Executive Viewer', role: 'Viewer' }
+    };
+
+    // Redirect to dashboard if already logged in
+    (function checkExistingSession() {
+      const saved = localStorage.getItem('bmn_idle_user');
+      if (saved) {
+        try {
+          const user = JSON.parse(saved);
+          if (user && user.username) {
+            window.location.replace('index.html');
+          }
+        } catch(e) { localStorage.removeItem('bmn_idle_user'); }
+      }
+    })();
+
+    async function handleLogin(event) {
+      event.preventDefault();
+
+      const username = document.getElementById('ls-username').value.trim();
+      const password = document.getElementById('ls-password').value;
+      const errorMsg = document.getElementById('error-msg');
+      const errorText = document.getElementById('error-text');
+      const submitBtn = document.getElementById('submit-btn');
+
+      // Loading state
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Memverifikasi...';
+      errorMsg.classList.remove('visible');
+
+      const hash = await sha256(password);
+      const account = USER_ACCOUNTS[username];
+
+      if (account && account.hash === hash) {
+        // Success
+        submitBtn.classList.add('success');
+        submitBtn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Berhasil! Mengalihkan...';
+
+        const user = { username, name: account.name, role: account.role };
+        localStorage.setItem('bmn_idle_user', JSON.stringify(user));
+
+        setTimeout(() => {
+          window.location.replace('index.html');
+        }, 800);
+      } else {
+        // Failed
+        errorText.textContent = `Username atau password salah. Silakan coba lagi.`;
+        errorMsg.classList.add('visible');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk ke Dashboard';
+
+        // Shake card
+        const card = document.querySelector('.login-card');
+        card.style.animation = 'none';
+        void card.offsetHeight;
+        card.style.animation = 'cardShake 0.4s ease';
+      }
+    }
+
+    function togglePassword() {
+      const input = document.getElementById('ls-password');
+      const icon = document.getElementById('toggle-pw-icon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fa-solid fa-eye-slash';
+      } else {
+        input.type = 'password';
+        icon.className = 'fa-solid fa-eye';
+      }
+    }
+
+    // Shake keyframes
+    const styleEl = document.createElement('style');
+    styleEl.textContent = `
+      @keyframes cardShake {
+        0%, 100% { transform: translateX(0); }
+        20%  { transform: translateX(-10px); }
+        40%  { transform: translateX(10px); }
+        60%  { transform: translateX(-7px); }
+        80%  { transform: translateX(7px); }
+      }
+    `;
+    document.head.appendChild(styleEl);
+
+    // Allow Enter key to submit
+    document.getElementById('ls-password').addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('login-form').requestSubmit();
+    });
+  </script>
+
+</body>
+</html>

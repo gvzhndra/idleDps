@@ -534,11 +534,37 @@ const App = {
           <i class="fa-solid fa-lightbulb"></i> Nighttime Lights & Activity Index (VIIRS Proxy)
         </h4>
         <p style="font-size:11px; color:#1e293b;" class="mb-2">
-          <strong>Pusat Keramaian Nightlife/Komersial Terdekat:</strong> ${multiDist.nighttimeHub ? multiDist.nighttimeHub.name : 'Pusat Lokal'} (${multiDist.nighttimeHub ? multiDist.nighttimeHub.distanceKm + ' km' : '-'})
+          <strong>Pusat Keramaian Nightlife/Komersial Terdekat:</strong> ${multiDist.nighttimeHub ? multiDist.nighttimeHub.name : 'Pusat Lokal'} <span style="color:#e67e22; font-weight:700;">(${multiDist.nighttimeHub ? multiDist.nighttimeHub.distanceKm + ' km' : '-'})</span>
         </p>
-        <div class="d-flex align-items-center justify-content-between bg-white p-2 rounded border">
-          <span style="font-size:11px; font-weight:700; color:#e67e22;">Indeks Intensitas Cahaya Malam:</span>
-          <span class="badge badge-pastel-orange" style="font-size:11px;">Skor ${multiDist.nightLightScore} / 100 (${multiDist.nighttimeHub ? multiDist.nighttimeHub.tier : 'Medium'})</span>
+
+        <!-- Visual Score Bar -->
+        <div style="margin-bottom:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+            <span style="font-size:11px; font-weight:700; color:#e67e22;">Skor Intensitas Cahaya Malam:</span>
+            <span style="font-size:13px; font-weight:800; color:#1e293b;">${multiDist.nightLightScore}<span style="font-size:10px; font-weight:600; color:#64748b;"> / 100</span></span>
+          </div>
+          <!-- Bar track -->
+          <div style="position:relative; height:18px; background:linear-gradient(90deg, #93c5fd 0%, #6ee7b7 40%, #fde68a 65%, #fb923c 80%, #f87171 100%); border-radius:20px; overflow:hidden; border:1px solid rgba(0,0,0,0.1);">
+            <!-- Animated fill indicator -->
+            <div style="position:absolute; top:0; left:0; height:100%; width:${multiDist.nightLightScore}%; background:rgba(0,0,0,0.25); border-radius:20px; transition: width 0.8s ease;"></div>
+            <!-- Needle marker -->
+            <div style="position:absolute; top:-3px; left:calc(${multiDist.nightLightScore}% - 9px); width:18px; height:24px; background:#1e293b; border-radius:4px; border:2px solid #ffffff; box-shadow:0 2px 8px rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center;">
+              <div style="width:4px; height:4px; background:#ffffff; border-radius:50%;"></div>
+            </div>
+          </div>
+          <!-- Zone labels -->
+          <div style="display:flex; justify-content:space-between; margin-top:5px; font-size:9px; color:#94a3b8; font-weight:600;">
+            <span>Rendah<br><em style="font-weight:400;">&lt;50</em></span>
+            <span style="text-align:center;">Sedang<br><em style="font-weight:400;">50–70</em></span>
+            <span style="text-align:center;">Tinggi<br><em style="font-weight:400;">70–85</em></span>
+            <span style="text-align:right;">Sangat Tinggi<br><em style="font-weight:400;">&gt;85</em></span>
+          </div>
+        </div>
+
+        <!-- Classification result -->
+        <div style="background:rgba(255,255,255,0.8); border:1px solid rgba(243,156,18,0.3); border-radius:8px; padding:8px 12px; font-size:10.5px; color:#1e293b; line-height:1.6;">
+          <strong>Klasifikasi:</strong> ${multiDist.nighttimeHub ? multiDist.nighttimeHub.tier : 'Sedang'} &bull; 
+          Berdasarkan pendekatan <em>VIIRS Nighttime Light Index</em> (NASA/NOAA) yang digunakan sebagai proxy kepadatan aktivitas ekonomi malam. Skor ≥70 mengindikasikan zona komersial aktif yang berpotensi tinggi untuk skema sewa/KSP.
         </div>
       </div>
 

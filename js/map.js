@@ -171,11 +171,15 @@ const MapEngine = {
     this.poiLayerGroup.clearLayers();
 
     poiList.forEach(poi => {
+      // Guard: ensure icon is a valid FontAwesome class, otherwise use a safe default
+      const iconClass = (poi.icon && poi.icon.startsWith('fa-')) ? poi.icon : 'fa-location-dot';
+      const bgColor = poi.color || '#4a90e2';
+
       const poiIcon = L.divIcon({
         className: 'custom-poi-marker-badge',
         html: `
-          <div class="map-poi-badge" style="background:${poi.color};">
-            <i class="fa-solid ${poi.icon}"></i>
+          <div class="map-poi-badge" style="background:${bgColor};">
+            <i class="fa-solid ${iconClass}"></i>
           </div>
         `,
         iconSize: [28, 28],
@@ -185,7 +189,6 @@ const MapEngine = {
       const marker = L.marker([poi.lat, poi.lng], { icon: poiIcon }).addTo(this.poiLayerGroup);
       
       const distLabel = poi.distanceMeters < 1000 ? `${poi.distanceMeters} m` : `${poi.distanceKm} km`;
-      const poiGmapsUrl = `https://www.google.com/maps?q=${poi.lat},${poi.lng}`;
       
       marker.bindTooltip(`<b>${poi.name}</b><br><span style="color:#64748b; font-size:10px;">${poi.categoryName} (${distLabel})</span>`, { sticky: true });
     });
