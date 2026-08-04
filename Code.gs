@@ -88,6 +88,8 @@ function onOpen() {
     .addItem('🔑 Inisialisasi Sheet Users & Akses', 'initUsersSheet')
     .addItem('🔐 Hash Semua Password Lama di Sheet Users', 'hashAllPlaintextPasswords')
     .addSeparator()
+    .addItem('🗺️ Setup/Reset Tab Master Kecamatan Bali', 'setupMasterKecamatan')
+    .addSeparator()
     .addItem('🌐 Buka Dashboard Web App', 'openDashboardDialog')
     .addToUi();
 }
@@ -95,6 +97,10 @@ function onOpen() {
 function doGet(e) {
   if (e && e.parameter && e.parameter.action === 'getData') {
     return fetchBMNDataAsJSON();
+  }
+
+  if (e && e.parameter && e.parameter.action === 'getCentroids') {
+    return fetchCentroidsAsJSON();
   }
 
   return HtmlService.createHtmlOutputFromFile('index')
@@ -447,4 +453,174 @@ function openDashboardDialog() {
     .setWidth(1280)
     .setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(html, 'BMN Idle Interactive Dashboard');
+}
+
+// ============================================================================
+// MASTER KECAMATAN SETUP — Auto-creates & populates Master_Kecamatan tab
+// ============================================================================
+
+/**
+ * One-click setup: Membuat (atau me-reset) tab "Master_Kecamatan" di Google Sheet
+ * dan mengisi data centroid GPS untuk 57 Kecamatan se-Provinsi Bali.
+ *
+ * Cara menjalankan:
+ *   Menu Google Sheet ➔ 💡 BMN Idle Tools ➔ 🗺️ Setup/Reset Tab Master Kecamatan Bali
+ *
+ * Kolom output: kode_kec | kabupaten | kecamatan | lat_centroid | lng_centroid
+ */
+function setupMasterKecamatan() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheetName = 'Master_Kecamatan';
+
+  // Remove existing sheet if any, then recreate fresh
+  var existing = ss.getSheetByName(sheetName);
+  if (existing) ss.deleteSheet(existing);
+
+  var sheet = ss.insertSheet(sheetName);
+
+  // ── Header Row ─────────────────────────────────────────────────────────────
+  var headers = ['kode_kec', 'kabupaten', 'kecamatan', 'lat_centroid', 'lng_centroid'];
+  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+
+  // Style header
+  var headerRange = sheet.getRange(1, 1, 1, headers.length);
+  headerRange.setBackground('#1a237e');
+  headerRange.setFontColor('#ffffff');
+  headerRange.setFontWeight('bold');
+  headerRange.setHorizontalAlignment('center');
+
+  // ── Data: 57 Kecamatan se-Bali ────────────────────────────────────────────
+  // Format: [kode_kec, kabupaten, kecamatan, lat_centroid, lng_centroid]
+  var data = [
+    // Kota Denpasar
+    ['KEC-DPS-01', 'Kota Denpasar',      'Denpasar Selatan', -8.6850,  115.2200],
+    ['KEC-DPS-02', 'Kota Denpasar',      'Denpasar Barat',   -8.6650,  115.2000],
+    ['KEC-DPS-03', 'Kota Denpasar',      'Denpasar Utara',   -8.6300,  115.2100],
+    ['KEC-DPS-04', 'Kota Denpasar',      'Denpasar Timur',   -8.6500,  115.2400],
+
+    // Kabupaten Badung
+    ['KEC-BDG-01', 'Kabupaten Badung',   'Kuta',             -8.7200,  115.1700],
+    ['KEC-BDG-02', 'Kabupaten Badung',   'Kuta Utara',       -8.6500,  115.1500],
+    ['KEC-BDG-03', 'Kabupaten Badung',   'Kuta Selatan',     -8.7900,  115.2000],
+    ['KEC-BDG-04', 'Kabupaten Badung',   'Mengwi',           -8.5833,  115.1819],
+    ['KEC-BDG-05', 'Kabupaten Badung',   'Abiansemal',       -8.5200,  115.2100],
+    ['KEC-BDG-06', 'Kabupaten Badung',   'Petang',           -8.3800,  115.2200],
+
+    // Kabupaten Tabanan
+    ['KEC-TBN-01', 'Kabupaten Tabanan',  'Tabanan',          -8.5410,  115.1256],
+    ['KEC-TBN-02', 'Kabupaten Tabanan',  'Kediri',           -8.5600,  115.1400],
+    ['KEC-TBN-03', 'Kabupaten Tabanan',  'Marga',            -8.4900,  115.1700],
+    ['KEC-TBN-04', 'Kabupaten Tabanan',  'Penebel',          -8.4500,  115.1300],
+    ['KEC-TBN-05', 'Kabupaten Tabanan',  'Baturiti',         -8.3180,  115.1750],
+    ['KEC-TBN-06', 'Kabupaten Tabanan',  'Pupuan',           -8.3400,  115.0600],
+    ['KEC-TBN-07', 'Kabupaten Tabanan',  'Selemadeg',        -8.5200,  115.0600],
+    ['KEC-TBN-08', 'Kabupaten Tabanan',  'Selemadeg Timur',  -8.5300,  115.0900],
+    ['KEC-TBN-09', 'Kabupaten Tabanan',  'Selemadeg Barat',  -8.5000,  115.0200],
+    ['KEC-TBN-10', 'Kabupaten Tabanan',  'Kerambitan',       -8.5500,  115.0800],
+
+    // Kabupaten Gianyar
+    ['KEC-GNY-01', 'Kabupaten Gianyar',  'Gianyar',          -8.5398,  115.3275],
+    ['KEC-GNY-02', 'Kabupaten Gianyar',  'Ubud',             -8.5069,  115.2625],
+    ['KEC-GNY-03', 'Kabupaten Gianyar',  'Sukawati',         -8.5800,  115.2800],
+    ['KEC-GNY-04', 'Kabupaten Gianyar',  'Blahbatuh',        -8.5600,  115.3000],
+    ['KEC-GNY-05', 'Kabupaten Gianyar',  'Tampaksiring',     -8.4400,  115.3000],
+    ['KEC-GNY-06', 'Kabupaten Gianyar',  'Tegallalang',      -8.4300,  115.2800],
+    ['KEC-GNY-07', 'Kabupaten Gianyar',  'Payangan',         -8.3600,  115.2500],
+
+    // Kabupaten Buleleng
+    ['KEC-BLL-01', 'Kabupaten Buleleng', 'Buleleng',         -8.1120,  115.0882],
+    ['KEC-BLL-02', 'Kabupaten Buleleng', 'Sukasada',         -8.1500,  115.1000],
+    ['KEC-BLL-03', 'Kabupaten Buleleng', 'Banjar',           -8.1900,  115.0000],
+    ['KEC-BLL-04', 'Kabupaten Buleleng', 'Seririt',          -8.1900,  114.9300],
+    ['KEC-BLL-05', 'Kabupaten Buleleng', 'Gerokgak',         -8.1900,  114.6800],
+    ['KEC-BLL-06', 'Kabupaten Buleleng', 'Busungbiu',        -8.2600,  114.9700],
+    ['KEC-BLL-07', 'Kabupaten Buleleng', 'Sawan',            -8.1300,  115.1500],
+    ['KEC-BLL-08', 'Kabupaten Buleleng', 'Kubutambahan',     -8.1000,  115.1800],
+    ['KEC-BLL-09', 'Kabupaten Buleleng', 'Tejakula',         -8.1400,  115.3400],
+
+    // Kabupaten Karangasem
+    ['KEC-KRS-01', 'Kabupaten Karangasem', 'Karangasem',     -8.4475,  115.6148],
+    ['KEC-KRS-02', 'Kabupaten Karangasem', 'Abang',          -8.3800,  115.6200],
+    ['KEC-KRS-03', 'Kabupaten Karangasem', 'Bebandem',       -8.4300,  115.5500],
+    ['KEC-KRS-04', 'Kabupaten Karangasem', 'Manggis',        -8.4900,  115.5200],
+    ['KEC-KRS-05', 'Kabupaten Karangasem', 'Selat',          -8.4400,  115.4800],
+    ['KEC-KRS-06', 'Kabupaten Karangasem', 'Sidemen',        -8.4800,  115.4500],
+    ['KEC-KRS-07', 'Kabupaten Karangasem', 'Rendang',        -8.3700,  115.4300],
+    ['KEC-KRS-08', 'Kabupaten Karangasem', 'Kubu',           -8.2600,  115.5600],
+
+    // Kabupaten Klungkung
+    ['KEC-KLK-01', 'Kabupaten Klungkung', 'Klungkung',       -8.5356,  115.4039],
+    ['KEC-KLK-02', 'Kabupaten Klungkung', 'Banjarangkan',    -8.5300,  115.3700],
+    ['KEC-KLK-03', 'Kabupaten Klungkung', 'Dawan',           -8.5400,  115.4400],
+    ['KEC-KLK-04', 'Kabupaten Klungkung', 'Nusa Penida',     -8.6800,  115.5500],
+
+    // Kabupaten Bangli
+    ['KEC-BGL-01', 'Kabupaten Bangli',   'Bangli',           -8.4559,  115.3547],
+    ['KEC-BGL-02', 'Kabupaten Bangli',   'Susut',            -8.4700,  115.3300],
+    ['KEC-BGL-03', 'Kabupaten Bangli',   'Tembuku',          -8.4400,  115.3800],
+    ['KEC-BGL-04', 'Kabupaten Bangli',   'Kintamani',        -8.2400,  115.3500],
+
+    // Kabupaten Jembrana
+    ['KEC-JMB-01', 'Kabupaten Jembrana', 'Negara',           -8.3585,  114.6295],
+    ['KEC-JMB-02', 'Kabupaten Jembrana', 'Jembrana',         -8.3600,  114.6600],
+    ['KEC-JMB-03', 'Kabupaten Jembrana', 'Mendoyo',          -8.3600,  114.7600],
+    ['KEC-JMB-04', 'Kabupaten Jembrana', 'Pekutatan',        -8.4100,  114.8900],
+    ['KEC-JMB-05', 'Kabupaten Jembrana', 'Melaya',           -8.2600,  114.5000]
+  ];
+
+  sheet.getRange(2, 1, data.length, headers.length).setValues(data);
+
+  // Auto-resize columns
+  sheet.autoResizeColumns(1, headers.length);
+
+  // Freeze header row
+  sheet.setFrozenRows(1);
+
+  // Format lat/lng columns (D & E) to show 4 decimal places
+  sheet.getRange(2, 4, data.length, 2).setNumberFormat('0.0000');
+
+  SpreadsheetApp.getActiveSpreadsheet().toast(
+    '✅ Tab "Master_Kecamatan" berhasil dibuat dengan ' + data.length + ' data centroid Kecamatan se-Bali!',
+    '🗺️ Setup Selesai',
+    6
+  );
+}
+
+/**
+ * Membaca tab Master_Kecamatan dan mengembalikannya sebagai JSON.
+ * Endpoint: ?action=getCentroids
+ */
+function fetchCentroidsAsJSON() {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName('Master_Kecamatan');
+
+    if (!sheet) {
+      return createJsonResponse({
+        status: 'error',
+        message: 'Sheet "Master_Kecamatan" belum ada. Jalankan Setup via menu dahulu.'
+      });
+    }
+
+    var data = sheet.getDataRange().getValues();
+    if (data.length <= 1) {
+      return createJsonResponse({ status: 'success', data: [] });
+    }
+
+    var headers = data[0];
+    var result = [];
+    for (var i = 1; i < data.length; i++) {
+      var row = data[i];
+      if (!row[0]) continue;
+      var item = {};
+      for (var h = 0; h < headers.length; h++) {
+        item[headers[h]] = row[h];
+      }
+      result.push(item);
+    }
+
+    return createJsonResponse({ status: 'success', data: result });
+  } catch (err) {
+    return createJsonResponse({ status: 'error', message: err.toString() });
+  }
 }

@@ -712,9 +712,6 @@ const App = {
     });
   },
 
-  handleMultiPhotoSubmit(event) {
-    event.preventDefault();
-    const assetId = document.getElementById('upload-asset-id').value;
   getAsset(assetId) {
     return (DataEngine.activeAssets && DataEngine.activeAssets.find(a => a.id === assetId)) ||
            (DataEngine.pendingAssets && DataEngine.pendingAssets.find(a => a.id === assetId)) ||
