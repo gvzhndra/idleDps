@@ -307,6 +307,55 @@
         <button type="button" class="btn btn-primary" onclick="App.saveGoogleSheetsUrl()"><i class="fa-solid fa-rotate"></i> Simpan & Sinkronkan</button>
       </div>
     </div>
+  <!-- Modal Edit Data Aset & Rekomendasi (Khusus Admin KPKNL) -->
+  <div class="modal-overlay" id="edit-asset-modal">
+    <div class="modal-card" style="max-width:540px;">
+      <div class="modal-header d-flex justify-content-between align-items-center mb-3">
+        <h3 style="font-size:16px; font-weight:700;"><i class="fa-solid fa-pen-to-square" style="color:var(--pastel-blue);"></i> Edit Data & Rekomendasi Aset BMN</h3>
+        <button class="btn btn-icon btn-secondary" onclick="App.closeEditAssetModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="edit-asset-form" onsubmit="App.handleSaveEditAsset(event)">
+        <input type="hidden" id="edit-asset-id">
+
+        <div class="form-group mb-3">
+          <label style="font-size:12px; color:var(--text-muted); display:block;" class="mb-1">Nama Barang / Aset</label>
+          <input type="text" class="form-control" id="edit-nama-barang" required>
+        </div>
+
+        <div class="form-group mb-3">
+          <label style="font-size:12px; color:var(--text-muted); display:block;" class="mb-1">Hasil Penelitian / Kondisi Aset</label>
+          <input type="text" class="form-control" id="edit-kondisi" placeholder="Contoh: Terindikasi Idle / Digunakan sebagian">
+        </div>
+
+        <div class="form-group mb-3">
+          <label style="font-size:12px; color:var(--text-muted); display:block;" class="mb-1">Rekomendasi Tim (Official)</label>
+          <select class="form-control" id="edit-rekomendasi">
+            <option value="Sewa Komersial / Kerja Sama Pemanfaatan (KSP)">Sewa Komersial / Kerja Sama Pemanfaatan (KSP)</option>
+            <option value="Pinjam Pakai / Alih Status Penggunaan">Pinjam Pakai / Alih Status Penggunaan</option>
+            <option value="Penjualan / Pemindahtanganan Aset">Penjualan / Pemindahtanganan Aset</option>
+            <option value="Optimalisasi Penggunaan Mandiri Satker">Optimalisasi Penggunaan Mandiri Satker</option>
+          </select>
+        </div>
+
+        <div class="form-group mb-3">
+          <label style="font-size:12px; color:var(--text-muted); display:block;" class="mb-1">Catatan Tim Rekonsiliasi</label>
+          <textarea class="form-control" id="edit-catatan-tim" rows="3" placeholder="Masukkan catatan teknis lapangan..."></textarea>
+        </div>
+
+        <div class="form-group mb-3">
+          <label style="font-size:12px; color:var(--text-muted); display:block;" class="mb-1">Luas Aset (m²)</label>
+          <input type="number" class="form-control" id="edit-luas" step="any" required>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 mt-4">
+          <button type="button" class="btn btn-secondary" onclick="App.closeEditAssetModal()">Batal</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <!-- Leaflet GIS Map JS -->

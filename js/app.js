@@ -488,6 +488,11 @@ const App = {
         <button class="btn btn-primary btn-block" style="padding:10px 14px; box-shadow: 0 4px 14px rgba(74, 144, 226, 0.3);" onclick="App.openUploadPhotoModal('${asset.id}')">
           <i class="fa-solid fa-images" style="font-size:14px;"></i> Upload Multi-Foto Aset (Up to 5)
         </button>
+        ${(this.currentUser && (this.currentUser.role === 'Admin KPKNL' || this.currentUser.username === 'admin_kpknl')) ? `
+          <button class="btn btn-warning btn-block" style="background:linear-gradient(135deg, #f39c12, #d35400); color:#ffffff; border:none; font-weight:700; padding:10px 14px; box-shadow: 0 4px 14px rgba(243, 156, 18, 0.35);" onclick="App.openEditAssetModal('${asset.id}')">
+            <i class="fa-solid fa-pen-to-square" style="font-size:14px;"></i> Edit Data & Rekomendasi Aset (Admin)
+          </button>
+        ` : ''}
       </div>
 
       <div class="detail-metrics-grid mb-3">
@@ -503,27 +508,27 @@ const App = {
 
       <!-- MULTI-LEVEL SPATIAL DISTANCES CARD -->
       <div class="detail-section-card mb-3">
-        <h4 class="section-title"><i class="fa-solid fa-route" style="color:var(--pastel-blue);"></i> Analisis Jarak Spasial Multilevel</h4>
-        <div class="d-flex flex-column gap-2" style="font-size:11.5px;">
-          <div class="d-flex justify-content-between align-items-center p-2 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
-            <span><i class="fa-solid fa-building-columns text-primary"></i> <strong>Jarak ke KPKNL Denpasar:</strong></span>
-            <span class="badge badge-pastel-blue">${distData.distanceKm} km</span>
+        <h4 class="section-title mb-3"><i class="fa-solid fa-route" style="color:var(--pastel-blue);"></i> Analisis Jarak Spasial Multilevel</h4>
+        <div class="d-flex flex-column gap-3" style="font-size:12px;">
+          <div class="d-flex justify-content-between align-items-center p-3 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
+            <span style="line-height:1.4;"><i class="fa-solid fa-building-columns text-primary me-1"></i> <strong>Jarak ke KPKNL Denpasar:</strong></span>
+            <span class="badge badge-pastel-blue" style="font-size:11px; padding:6px 10px;">${distData.distanceKm} km</span>
           </div>
-          <div class="d-flex justify-content-between align-items-center p-2 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
-            <span><i class="fa-solid fa-building-flag text-danger"></i> <strong>Jarak ke Ibukota Prov. Bali (Denpasar):</strong></span>
-            <span class="badge badge-pastel-blue">${multiDist.provincialCapital.distanceKm} km</span>
+          <div class="d-flex justify-content-between align-items-center p-3 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
+            <span style="line-height:1.4;"><i class="fa-solid fa-building-flag text-danger me-1"></i> <strong>Jarak ke Ibukota Prov. Bali (Denpasar):</strong></span>
+            <span class="badge badge-pastel-blue" style="font-size:11px; padding:6px 10px;">${multiDist.provincialCapital.distanceKm} km</span>
           </div>
-          <div class="d-flex justify-content-between align-items-center p-2 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
-            <span><i class="fa-solid fa-landmark text-secondary"></i> <strong>Jarak ke Ibukota Kab. (${multiDist.regencyCapital ? multiDist.regencyCapital.name : asset.kabupaten}):</strong></span>
-            <span class="badge badge-pastel-purple">${multiDist.regencyCapital ? multiDist.regencyCapital.distanceKm + ' km' : '-'}</span>
+          <div class="d-flex justify-content-between align-items-center p-3 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
+            <span style="line-height:1.4;"><i class="fa-solid fa-landmark text-secondary me-1"></i> <strong>Jarak ke Ibukota Kab. (${multiDist.regencyCapital ? multiDist.regencyCapital.name : asset.kabupaten}):</strong></span>
+            <span class="badge badge-pastel-purple" style="font-size:11px; padding:6px 10px;">${multiDist.regencyCapital ? multiDist.regencyCapital.distanceKm + ' km' : '-'}</span>
           </div>
-          <div class="d-flex justify-content-between align-items-center p-2 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
-            <span><i class="fa-solid fa-store text-warning"></i> <strong>Jarak ke ${multiDist.districtCenter.name}:</strong></span>
-            <span class="badge badge-pastel-orange">${multiDist.districtCenter.distanceKm} km</span>
+          <div class="d-flex justify-content-between align-items-center p-3 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
+            <span style="line-height:1.4;"><i class="fa-solid fa-store text-warning me-1"></i> <strong>Jarak ke ${multiDist.districtCenter.name}:</strong></span>
+            <span class="badge badge-pastel-orange" style="font-size:11px; padding:6px 10px;">${multiDist.districtCenter.distanceKm} km</span>
           </div>
-          <div class="d-flex justify-content-between align-items-center p-2 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
-            <span><i class="fa-solid fa-house-user text-success"></i> <strong>Jarak ke ${multiDist.villageCenter.name}:</strong></span>
-            <span class="badge badge-pastel-mint">${multiDist.villageCenter.distanceKm} km</span>
+          <div class="d-flex justify-content-between align-items-center p-3 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
+            <span style="line-height:1.4;"><i class="fa-solid fa-house-user text-success me-1"></i> <strong>Jarak ke ${multiDist.villageCenter.name}:</strong></span>
+            <span class="badge badge-pastel-mint" style="font-size:11px; padding:6px 10px;">${multiDist.villageCenter.distanceKm} km</span>
           </div>
         </div>
       </div>
@@ -564,7 +569,7 @@ const App = {
         <!-- Classification result -->
         <div style="background:rgba(255,255,255,0.8); border:1px solid rgba(243,156,18,0.3); border-radius:8px; padding:8px 12px; font-size:10.5px; color:#1e293b; line-height:1.6;">
           <strong>Klasifikasi:</strong> ${multiDist.nighttimeHub ? multiDist.nighttimeHub.tier : 'Sedang'} &bull; 
-          Berdasarkan pendekatan <em>VIIRS Nighttime Light Index</em> (NASA/NOAA) yang digunakan sebagai proxy kepadatan aktivitas ekonomi malam. Skor ≥70 mengindikasikan zona komersial aktif yang berpotensi tinggi untuk skema sewa/KSP.
+          Berdasarkan pendekatan <em>VIIRS Nighttime Light Index</em> (NASA/NOAA) yang digunakan sebagai proxy kepadatan aktivitas ekonomi malam. Skor ≥70 mengindikasikan zona komersial aktif yang berpotensi tinggi untuk pemanfaatan BMN.
         </div>
       </div>
 
@@ -887,10 +892,10 @@ const App = {
       const displayName = this.currentUser.name || this.currentUser.username;
       container.innerHTML = `
         <div class="d-flex align-items-center gap-2">
-          <span style="font-size:12px; color:var(--text-muted);">
-            Halo, <strong style="color:var(--text-main);">${displayName}</strong>!
+          <span style="font-size:12px; color:var(--text-muted); font-weight:600;">
+            Halo, <strong style="color:var(--pastel-blue);">${displayName}</strong>!
           </span>
-          <button class="btn btn-sm btn-secondary" onclick="App.handleLogout()" title="Logout" style="padding:3px 9px; font-size:10px;">
+          <button class="btn btn-secondary" onclick="App.handleLogout()" title="Logout Pengguna">
             <i class="fa-solid fa-right-from-bracket text-danger"></i> Keluar
           </button>
         </div>
@@ -902,6 +907,60 @@ const App = {
         </button>
       `;
     }
+  },
+
+  openEditAssetModal(assetId) {
+    const asset = DataEngine.activeAssets.find(a => a.id === assetId) || DataEngine.pendingAssets.find(a => a.id === assetId);
+    if (!asset) return;
+
+    const idInput = document.getElementById('edit-asset-id');
+    const namaInput = document.getElementById('edit-nama-barang');
+    const kondisiInput = document.getElementById('edit-kondisi');
+    const recSelect = document.getElementById('edit-rekomendasi');
+    const catatanInput = document.getElementById('edit-catatan-tim');
+    const luasInput = document.getElementById('edit-luas');
+
+    if (idInput) idInput.value = asset.id;
+    if (namaInput) namaInput.value = asset.namaBarang || '';
+    if (kondisiInput) kondisiInput.value = asset.kondisi || '';
+    if (catatanInput) catatanInput.value = asset.catatanTim || '';
+    if (luasInput) luasInput.value = asset.luas || 0;
+
+    if (recSelect && asset.rekomendasiUser) {
+      recSelect.value = asset.rekomendasiUser;
+    }
+
+    const modal = document.getElementById('edit-asset-modal');
+    if (modal) modal.classList.add('show');
+  },
+
+  closeEditAssetModal() {
+    const modal = document.getElementById('edit-asset-modal');
+    if (modal) modal.classList.remove('show');
+  },
+
+  handleSaveEditAsset(event) {
+    event.preventDefault();
+    const assetId = document.getElementById('edit-asset-id').value;
+    const asset = DataEngine.activeAssets.find(a => a.id === assetId) || DataEngine.pendingAssets.find(a => a.id === assetId);
+
+    if (!asset) return;
+
+    asset.namaBarang = document.getElementById('edit-nama-barang').value.trim();
+    asset.kondisi = document.getElementById('edit-kondisi').value.trim();
+    asset.rekomendasiUser = document.getElementById('edit-rekomendasi').value;
+    asset.catatanTim = document.getElementById('edit-catatan-tim').value.trim();
+    asset.luas = parseFloat(document.getElementById('edit-luas').value) || 0;
+    asset.luasTanah = asset.luas;
+
+    // Refresh UI components
+    this.renderAccordionCluster();
+    this.renderAllAssetsList();
+    this.renderDetailDrawer(asset);
+    this.updateStatsBar();
+
+    this.closeEditAssetModal();
+    this.showToast(`Berhasil memperbarui data BMN Idle: ${asset.namaBarang}`);
   },
 
   openGoogleSheetsModal() {
