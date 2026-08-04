@@ -23,7 +23,8 @@ const NIGHTTIME_LIGHTS_HUBS = [
   { name: 'Pusat Wisata Seni & Budaya Ubud', lat: -8.5069, lng: 115.2625, nightLightScore: 92, tier: 'Tinggi (High Luminosity)' },
   { name: 'Kawasan MICE & Resort Internasional Nusa Dua', lat: -8.7983, lng: 115.2317, nightLightScore: 88, tier: 'Tinggi (High Luminosity)' },
   { name: 'Pusat Perdagangan Kota Denpasar (Renon / Teuku Umar)', lat: -8.6705, lng: 115.2260, nightLightScore: 85, tier: 'Sedang-Tinggi (Medium-High)' },
-  { name: 'Pusat Kota Singaraja Buleleng', lat: -8.1120, lng: 115.0882, nightLightScore: 72, tier: 'Sedang (Medium Luminosity)' }
+  { name: 'Pusat Kota Singaraja Buleleng', lat: -8.1120, lng: 115.0882, nightLightScore: 72, tier: 'Sedang (Medium Luminosity)' },
+  { name: 'Pusat Kota & Pemerintahan Tabanan', lat: -8.5410, lng: 115.1316, nightLightScore: 78, tier: 'Sedang-Tinggi (Medium Luminosity)' }
 ];
 
 // Rich Comprehensive POIs covering Berawa/Canggu, Sanglah, Renon, Tuban, Tabanan, Bedugul, etc.
@@ -67,12 +68,17 @@ const BALI_EXTENDED_POIS = [
   { name: 'Consulate General of Japan / Australia', type: 'pemda', lat: -8.6750, lng: 115.2450 },
   { name: 'Plaza Renon & Resto Koridor', type: 'pasar', lat: -8.6730, lng: 115.2420 },
 
-  // --- KOTA TABANAN (Kejari Tabanan - BMN-28, BMN-35) ---
-  { name: 'Kantor Bupati Tabanan', type: 'pemda', lat: -8.5380, lng: 115.1220 },
-  { name: 'RSUD Kabupaten Tabanan', type: 'kesehatan', lat: -8.5390, lng: 115.1200 },
-  { name: 'Polres Tabanan', type: 'polisi', lat: -8.5360, lng: 115.1180 },
-  { name: 'Pasar Umum Tabanan', type: 'pasar', lat: -8.5375, lng: 115.1240 },
+  // --- KOTA TABANAN (Kejari Tabanan BMN-28 & Rumah Negara Tabanan) ---
+  { name: 'Kantor Bupati & Pemkab Tabanan', type: 'pemda', lat: -8.5385, lng: 115.1245 },
+  { name: 'Polsek Tabanan Kota', type: 'polisi', lat: -8.5405, lng: 115.1305 },
+  { name: 'Polres Tabanan Headquarter', type: 'polisi', lat: -8.5360, lng: 115.1180 },
+  { name: 'SMP Negeri 1 Tabanan', type: 'pendidikan', lat: -8.5420, lng: 115.1310 },
+  { name: 'SD Negeri 1 Delod Peken Tabanan', type: 'pendidikan', lat: -8.5415, lng: 115.1325 },
   { name: 'SMA Negeri 1 Tabanan', type: 'pendidikan', lat: -8.5355, lng: 115.1190 },
+  { name: 'RSUD Kabupaten Tabanan', type: 'kesehatan', lat: -8.5390, lng: 115.1200 },
+  { name: 'Puskesmas Tabanan III', type: 'kesehatan', lat: -8.5425, lng: 115.1320 },
+  { name: 'Pasar Umum Tabanan Timur / Dauh Pala', type: 'pasar', lat: -8.5400, lng: 115.1330 },
+  { name: 'Kantor Camat Tabanan', type: 'pemda', lat: -8.5395, lng: 115.1290 },
 
   // --- BATURITI / BEDUGUL TABANAN (Kejari Tabanan Rumah Dinas - BMN-27) ---
   { name: 'Kantor Camat Baturiti Tabanan', type: 'pemda', lat: -8.3160, lng: 115.0810 },
@@ -101,116 +107,106 @@ const SpatialEngine = {
     return deg * (Math.PI / 180);
   },
 
-  getDistanceToKPKNL(lat, lng) {
-    const office = CONFIG.KPKNL_OFFICE;
-    const distanceKm = Math.round(this.calculateDistance(lat, lng, office.lat, office.lng) * 10) / 10;
-    return { office: office, distanceKm: distanceKm };
+  formatLuas(m2) {
+    if (!m2 || isNaN(m2)) return '0 m²';
+    if (m2 >= 10000) {
+      const ha = (m2 / 10000).toFixed(2);
+      return `${m2.toLocaleString('id-ID')} m² (${ha} Ha)`;
+    }
+    return `${m2.toLocaleString('id-ID')} m²`;
   },
 
-  getMultiLevelDistances(lat, lng, kabupaten = '', kecamatan = '', kelurahan = '') {
+  getDistanceToKPKNL(assetLat, assetLng) {
+    const kpknl = CONFIG.KPKNL_OFFICE;
+    const distKm = this.calculateDistance(assetLat, assetLng, kpknl.lat, kpknl.lng);
+    return {
+      officeName: kpknl.name,
+      distanceKm: distKm,
+      distanceMeters: Math.round(distKm * 1000)
+    };
+  },
+
+  getMultiLevelDistances(lat, lng, kabupatenName, kecamatanName, kelurahanName) {
     const provCap = REGENCY_CAPITALS['Kota Denpasar'];
-    const distProv = Math.round(this.calculateDistance(lat, lng, provCap.lat, provCap.lng) * 10) / 10;
+    const provDist = this.calculateDistance(lat, lng, provCap.lat, provCap.lng);
 
-    let nearestReg = null;
-    let minRegDist = 999;
-    Object.keys(REGENCY_CAPITALS).forEach(key => {
-      const cap = REGENCY_CAPITALS[key];
-      const dist = this.calculateDistance(lat, lng, cap.lat, cap.lng);
-      if (dist < minRegDist) {
-        minRegDist = dist;
-        nearestReg = { ...cap, regencyKey: key, distanceKm: Math.round(dist * 10) / 10 };
-      }
-    });
+    const regCap = REGENCY_CAPITALS[kabupatenName] || REGENCY_CAPITALS['Kota Denpasar'];
+    const regDist = this.calculateDistance(lat, lng, regCap.lat, regCap.lng);
 
-    const districtName = kecamatan || 'Kecamatan Setempat';
-    const distDistrict = Math.max(0.4, Math.round((minRegDist * 0.45) * 10) / 10);
+    const distCenterLat = regCap.lat + 0.005;
+    const distCenterLng = regCap.lng + 0.005;
+    const distCenterDist = this.calculateDistance(lat, lng, distCenterLat, distCenterLng);
 
-    const villageName = kelurahan || 'Pusat Desa Setempat';
-    const distVillage = Math.max(0.2, Math.round((distDistrict * 0.35) * 10) / 10);
+    const villCenterLat = lat + 0.003;
+    const villCenterLng = lng + 0.003;
+    const villCenterDist = this.calculateDistance(lat, lng, villCenterLat, villCenterLng);
 
-    let nearestNightHub = null;
+    let nearestNightHub = NIGHTTIME_LIGHTS_HUBS[0];
     let minNightDist = 999;
 
     NIGHTTIME_LIGHTS_HUBS.forEach(hub => {
       const d = this.calculateDistance(lat, lng, hub.lat, hub.lng);
       if (d < minNightDist) {
         minNightDist = d;
-        nearestNightHub = { ...hub, distanceKm: Math.round(d * 10) / 10 };
+        nearestNightHub = hub;
       }
     });
 
-    let nightLightScore = 50;
-    if (nearestNightHub) {
-      if (nearestNightHub.distanceKm <= 1.0) nightLightScore = 99;
-      else if (nearestNightHub.distanceKm <= 3.0) nightLightScore = 92;
-      else if (nearestNightHub.distanceKm <= 6.0) nightLightScore = 82;
-      else if (nearestNightHub.distanceKm <= 12.0) nightLightScore = 70;
-      else nightLightScore = 55;
+    let nightLightScore = nearestNightHub.nightLightScore;
+    if (minNightDist > 10) {
+      nightLightScore = Math.max(45, nightLightScore - Math.round((minNightDist - 10) * 3));
     }
 
     return {
-      provincialCapital: { name: 'Ibukota Provinsi (Denpasar)', distanceKm: distProv },
-      regencyCapital: nearestReg,
-      districtCenter: { name: `Pusat Kec. ${districtName}`, distanceKm: distDistrict },
-      villageCenter: { name: `Pusat ${villageName}`, distanceKm: distVillage },
+      provincialCapital: { name: provCap.name, distanceKm: provDist },
+      regencyCapital: { name: regCap.name, distanceKm: regDist },
+      districtCenter: { name: `Pusat Kec. ${kecamatanName || 'Terdekat'}`, distanceKm: distCenterDist },
+      villageCenter: { name: `Pusat Kel./Desa ${kelurahanName || 'Terdekat'}`, distanceKm: villCenterDist },
       nighttimeHub: nearestNightHub,
       nightLightScore: nightLightScore
     };
   },
 
-  getNearbyPOIs(lat, lng, maxRadiusKm = 5) {
-    const poiListWithDist = BALI_EXTENDED_POIS.map(poi => {
-      const dist = this.calculateDistance(lat, lng, poi.lat, poi.lng);
-      let catName = 'Fasilitas Publik';
-      let icon = 'fa-building';
-      let color = '#8e7cc3';
+  getPOIsInCatchment(assetLat, assetLng, radiusMeters = 500) {
+    if (!assetLat || !assetLng) return { totalCount: 0, pois: [] };
 
-      if (poi.type === 'hotel') { catName = 'Hotel / Resort / Villa'; icon = 'fa-hotel'; color = '#e74c3c'; }
-      else if (poi.type === 'pariwisata') { catName = 'Kawasan Wisata / Beach Club'; icon = 'fa-umbrella-beach'; color = '#e67e22'; }
-      else if (poi.type === 'pasar') { catName = 'Pasar / Pusat Bisnis'; icon = 'fa-store'; color = '#f1c40f'; }
-      else if (poi.type === 'polisi') { catName = 'Polsek / TNI'; icon = 'fa-user-shield'; color = '#3498db'; }
-      else if (poi.type === 'pemda') { catName = 'Kantor Pemda / Instansi'; icon = 'fa-landmark'; color = '#9b59b6'; }
-      else if (poi.type === 'kesehatan') { catName = 'Rumah Sakit / Puskesmas'; icon = 'fa-hospital'; color = '#e74c3c'; }
-      else if (poi.type === 'pendidikan') { catName = 'Sekolah / Kampus'; icon = 'fa-graduation-cap'; color = '#2ecc71'; }
-      else if (poi.type === 'transportasi') { catName = 'Bandara / Pelabuhan'; icon = 'fa-plane-departure'; color = '#1abc9c'; }
+    const catchmentPois = [];
 
-      return {
-        ...poi,
-        distanceKm: Math.round(dist * 100) / 100,
-        distanceMeters: Math.round(dist * 1000),
-        categoryName: catName,
-        icon: icon,
-        color: color
-      };
+    BALI_EXTENDED_POIS.forEach(poi => {
+      const distKm = this.calculateDistance(assetLat, assetLng, poi.lat, poi.lng);
+      const distMeters = Math.round(distKm * 1000);
+
+      if (distMeters <= radiusMeters) {
+        const catKey = poi.type.toUpperCase();
+        let catMeta = CONFIG.POI_CATEGORIES[catKey] || { name: 'Komersial & Fasilitas', icon: 'fa-location-dot', color: '#4a90e2' };
+
+        if (poi.type === 'pariwisata') {
+          catMeta = { name: 'Pariwisata & Pantai', icon: 'fa-umbrella-beach', color: '#e67e22' };
+        } else if (poi.type === 'hotel') {
+          catMeta = { name: 'Akomodasi & Hotel', icon: 'fa-hotel', color: '#9b59b6' };
+        }
+
+        catchmentPois.push({
+          ...poi,
+          categoryName: catMeta.name,
+          icon: catMeta.icon,
+          color: catMeta.color,
+          distanceKm: distKm,
+          distanceMeters: distMeters
+        });
+      }
     });
 
-    return poiListWithDist
-      .filter(poi => poi.distanceKm <= maxRadiusKm)
-      .sort((a, b) => a.distanceKm - b.distanceKm);
-  },
-
-  getPOIsInCatchment(lat, lng, radiusMeters = 500) {
-    const maxRadiusKm = radiusMeters / 1000;
-    let nearby = this.getNearbyPOIs(lat, lng, maxRadiusKm);
-
-    // Fallback if list is tight: search up to 800m
-    if (nearby.length === 0) {
-      nearby = this.getNearbyPOIs(lat, lng, 1.2).slice(0, 4);
-    }
+    catchmentPois.sort((a, b) => a.distanceMeters - b.distanceMeters);
 
     return {
-      radiusMeters: radiusMeters,
-      radiusLabel: radiusMeters >= 1000 ? (radiusMeters / 1000) + ' km' : radiusMeters + ' m',
-      totalCount: nearby.length,
-      pois: nearby
+      totalCount: catchmentPois.length,
+      pois: catchmentPois
     };
   },
 
-  formatLuas(m2) {
-    if (!m2) return '0 m²';
-    if (m2 >= 10000) {
-      return `${m2.toLocaleString('id-ID')} m² (${(m2 / 10000).toFixed(2)} Ha)`;
-    }
-    return `${m2.toLocaleString('id-ID')} m²`;
+  getNearbyPOIs(assetLat, assetLng, limit = 8) {
+    const catchment = this.getPOIsInCatchment(assetLat, assetLng, 500);
+    return catchment.pois.slice(0, limit);
   }
 };
