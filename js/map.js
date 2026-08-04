@@ -52,6 +52,7 @@ const MapEngine = {
 
   renderKPKNLMarker() {
     const office = CONFIG.KPKNL_OFFICE;
+    const gmapsUrl = `https://www.google.com/maps?q=${office.lat},${office.lng}`;
     const icon = L.divIcon({
       className: 'custom-kpknl-marker-container',
       html: `
@@ -69,7 +70,10 @@ const MapEngine = {
       <div class="custom-popup-content kpknl-popup">
         <h4><i class="fa-solid fa-building-columns" style="color:${office.color}"></i> ${office.name}</h4>
         <p>${office.address}</p>
-        <span class="badge badge-pastel-blue">Pusat Pelayanan DJKN Bali</span>
+        <span class="badge badge-pastel-blue mb-2">Pusat Pelayanan DJKN Bali</span>
+        <a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-secondary btn-block mt-2" style="background:#eafaf1; color:#27ae60; border-color:#2ecc71;">
+          <i class="fa-solid fa-map-location-dot"></i> Open in Google Maps
+        </a>
       </div>
     `);
   },
@@ -81,6 +85,7 @@ const MapEngine = {
       const isTanah = asset.isTanah;
       const iconHtml = isTanah ? '<i class="fa-solid fa-vector-square"></i>' : '<i class="fa-solid fa-house-flag"></i>';
       const isSelected = asset.id === this.activeAssetId ? 'selected-marker' : '';
+      const gmapsUrl = `https://www.google.com/maps?q=${asset.lat},${asset.lng}`;
 
       const icon = L.divIcon({
         className: 'custom-bmn-marker-container',
@@ -111,9 +116,14 @@ const MapEngine = {
               <span><i class="fa-solid fa-location-dot text-danger"></i> ${asset.kabupaten}</span>
               <span><i class="fa-solid fa-chart-area text-primary"></i> Luas: ${SpatialEngine.formatLuas(asset.luas)}</span>
             </div>
-            <button class="btn btn-sm btn-primary btn-block mt-2" onclick="App.selectAsset('${asset.id}')">
-              <i class="fa-solid fa-eye"></i> Detail & Analisis Spasial
-            </button>
+            <div class="d-flex gap-1 mt-2">
+              <button class="btn btn-sm btn-primary" style="flex:1;" onclick="App.selectAsset('${asset.id}')">
+                <i class="fa-solid fa-eye"></i> Detail
+              </button>
+              <a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-secondary" style="background:#eafaf1; color:#27ae60; border-color:#2ecc71;" title="Buka di Google Maps">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> Maps
+              </a>
+            </div>
           </div>
         </div>
       `;
@@ -157,7 +167,6 @@ const MapEngine = {
       .addTo(this.connectorLinesGroup);
   },
 
-  /* RENDER ALL POIS IN CATCHMENT ON MAP (NO SLICING / TRUNCATION) */
   renderNearbyPOIs(poiList) {
     this.poiLayerGroup.clearLayers();
 
@@ -176,6 +185,8 @@ const MapEngine = {
       const marker = L.marker([poi.lat, poi.lng], { icon: poiIcon }).addTo(this.poiLayerGroup);
       
       const distLabel = poi.distanceMeters < 1000 ? `${poi.distanceMeters} m` : `${poi.distanceKm} km`;
+      const poiGmapsUrl = `https://www.google.com/maps?q=${poi.lat},${poi.lng}`;
+      
       marker.bindTooltip(`<b>${poi.name}</b><br><span style="color:#64748b; font-size:10px;">${poi.categoryName} (${distLabel})</span>`, { sticky: true });
     });
   },

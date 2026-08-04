@@ -6,6 +6,7 @@
  * - Accordion Tree Clustering (Kementerian -> Satker -> Aset)
  * - Clear Item Display: Nama Barang & Luas Barang (in m² / Ha)
  * - Multi-Level Spatial Distance Engine with Rich Bali POIs & Nighttime Lights Index
+ * - Direct "Open in Google Maps" Button on Detail Drawer & Map Popup
  * - Multi-Select Checkboxes for Selective PowerPoint (.pptx) Slide Export
  * - Multi-Photo Upload with HTML5 Canvas Client-Side Compression
  * - Login Modal & User Session Management
@@ -332,6 +333,7 @@ const App = {
     const distData = SpatialEngine.getDistanceToKPKNL(asset.lat, asset.lng);
     const multiDist = SpatialEngine.getMultiLevelDistances(asset.lat, asset.lng, asset.kabupaten, asset.kecamatan, asset.kelurahan);
     const catchmentData = SpatialEngine.getPOIsInCatchment(asset.lat, asset.lng, 500);
+    const gmapsUrl = `https://www.google.com/maps?q=${asset.lat},${asset.lng}`;
 
     const photoSlides = asset.fotoList.map((url, idx) => `
       <div class="photo-slide ${idx === 0 ? 'active' : ''}" style="background-image: url('${url}');">
@@ -342,10 +344,13 @@ const App = {
     const catchmentPoiHtml = catchmentData.pois.map(poi => `
       <div class="poi-item">
         <div class="poi-icon" style="background:${poi.color}"><i class="fa-solid ${poi.icon}"></i></div>
-        <div class="poi-details">
+        <div class="poi-details" style="flex:1;">
           <div class="poi-name" style="font-size:11.5px; font-weight:600;">${poi.name}</div>
           <div class="poi-cat" style="font-size:10.5px; color:var(--text-muted);">${poi.categoryName} &bull; <strong>${poi.distanceMeters < 1000 ? poi.distanceMeters + ' m' : poi.distanceKm + ' km'}</strong></div>
         </div>
+        <a href="https://www.google.com/maps?q=${poi.lat},${poi.lng}" target="_blank" rel="noopener noreferrer" class="text-success" style="font-size:12px;" title="Buka POI di Google Maps">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        </a>
       </div>
     `).join('');
 
@@ -359,6 +364,13 @@ const App = {
         <h3 style="font-size:15px; font-weight:800; margin-top:4px; color:var(--text-main);">${asset.namaBarang}</h3>
         <p style="font-size:11.5px; color:var(--text-muted);"><i class="fa-solid fa-building-user text-primary"></i> ${asset.namaSatker}</p>
         <p style="font-size:11px; color:var(--text-muted);"><i class="fa-solid fa-map-location-dot"></i> ${asset.alamat}</p>
+      </div>
+
+      <!-- DIRECT GOOGLE MAPS LINK BUTTON -->
+      <div class="mb-3">
+        <a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-block" style="background:#eafaf1; color:#27ae60; border-color:#2ecc71; font-weight:700; padding:9px 14px;">
+          <i class="fa-solid fa-map-location-dot" style="font-size:14px;"></i> Buka Koordinat di Google Maps (${asset.lat.toFixed(5)}, ${asset.lng.toFixed(5)})
+        </a>
       </div>
 
       <div class="detail-metrics-grid mb-3">
@@ -619,6 +631,7 @@ const App = {
         `Jenis BMN / Kategori  : ${asset.jenisBarang} (${asset.kategori})`,
         `Kabupaten / Kota     : ${asset.kabupaten}`,
         `Luas Aset (BMN)       : ${SpatialEngine.formatLuas(asset.luas)}`,
+        `Google Maps Link     : https://www.google.com/maps?q=${asset.lat},${asset.lng}`,
         `--- ANALISIS JARAK SPASIAL MULTILEVEL ---`,
         `Jarak ke KPKNL Denpasar     : ${distData.distanceKm} km`,
         `Jarak ke Ibukota Prov. (Renon): ${multiDist.provincialCapital.distanceKm} km`,
