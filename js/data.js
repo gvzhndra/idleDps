@@ -114,22 +114,45 @@ const DataEngine = {
   },
 
   detectKabupaten(satker, namaBarang, lat, lng) {
-    if (lat !== null && lng !== null) {
-      if (lat > -8.67 && lat < -8.63 && lng > 115.13 && lng < 115.16) return 'Kabupaten Badung (Canggu / Berawa)';
-      if (lat < -8.70 && lng < 115.20) return 'Kabupaten Badung (Tuban)';
-      if (lat > -8.35 && lat < -8.25 && lng > 115.05 && lng < 115.15) return 'Kabupaten Tabanan (Baturiti)';
-      if (lat > -8.56 && lat < -8.50 && lng > 115.10 && lng < 115.16) return 'Kabupaten Tabanan';
+    // 1. Primary & Most Accurate: GPS Coordinate Distance to Regency Capitals
+    if (lat !== null && lng !== null && typeof SpatialEngine !== 'undefined') {
+      const regencyCapitals = {
+        'Kota Denpasar': { lat: -8.6705, lng: 115.2260 },
+        'Kabupaten Badung': { lat: -8.5833, lng: 115.1819 },
+        'Kabupaten Gianyar': { lat: -8.5398, lng: 115.3275 },
+        'Kabupaten Tabanan': { lat: -8.5412, lng: 115.1256 },
+        'Kabupaten Buleleng': { lat: -8.1120, lng: 115.0882 },
+        'Kabupaten Karangasem': { lat: -8.4475, lng: 115.6148 },
+        'Kabupaten Klungkung': { lat: -8.5356, lng: 115.4039 },
+        'Kabupaten Bangli': { lat: -8.4559, lng: 115.3547 },
+        'Kabupaten Jembrana': { lat: -8.3585, lng: 114.6295 }
+      };
+
+      let minDistance = 9999;
+      let closestKabupaten = 'Kota Denpasar';
+
+      Object.keys(regencyCapitals).forEach(kab => {
+        const cap = regencyCapitals[kab];
+        const dist = SpatialEngine.calculateDistance(lat, lng, cap.lat, cap.lng);
+        if (dist < minDistance) {
+          minDistance = dist;
+          closestKabupaten = kab;
+        }
+      });
+
+      return closestKabupaten;
     }
 
+    // 2. Keyword Fallback (Explicit regency names ONLY, no ambiguous words like "negara")
     const text = (String(satker) + ' ' + String(namaBarang)).toLowerCase();
     if (text.includes('tabanan')) return 'Kabupaten Tabanan';
     if (text.includes('buleleng') || text.includes('singaraja')) return 'Kabupaten Buleleng';
-    if (text.includes('gianyar') || text.includes('sanglah') || text.includes('ubud')) return 'Kabupaten Gianyar';
-    if (text.includes('badung') || text.includes('kuta') || text.includes('tuban') || text.includes('berawa') || text.includes('canggu')) return 'Kabupaten Badung';
+    if (text.includes('gianyar') || text.includes('ubud')) return 'Kabupaten Gianyar';
+    if (text.includes('badung') || text.includes('kuta') || text.includes('tuban') || text.includes('canggu') || text.includes('berawa')) return 'Kabupaten Badung';
     if (text.includes('karangasem') || text.includes('amlapura')) return 'Kabupaten Karangasem';
-    if (text.includes('klungkung')) return 'Kabupaten Klungkung';
+    if (text.includes('klungkung') || text.includes('semarapura')) return 'Kabupaten Klungkung';
     if (text.includes('bangli')) return 'Kabupaten Bangli';
-    if (text.includes('jembrana') || text.includes('negara')) return 'Kabupaten Jembrana';
+    if (text.includes('jembrana')) return 'Kabupaten Jembrana';
 
     return 'Kota Denpasar';
   },
