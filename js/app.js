@@ -482,20 +482,16 @@ const App = {
 
       <!-- DIRECT GOOGLE MAPS & MULTI-PHOTO UPLOAD BUTTON GROUP WITH CLEAR GAP -->
       <div class="d-flex flex-column gap-3 mb-4">
-        <a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-block" style="background:#eafaf1; color:#27ae60; border-color:#2ecc71; font-weight:700; padding:10px 14px;">
-          <i class="fa-solid fa-map-location-dot" style="font-size:14px;"></i> Buka Koordinat di Google Maps (${asset.lat.toFixed(5)}, ${asset.lng.toFixed(5)})
+        <a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-block" style="background:#eafaf1; color:#27ae60; border-color:#2ecc71; font-weight:700; padding:11px 14px; border-radius:10px;">
+          <i class="fa-solid fa-map-location-dot" style="font-size:14px; margin-right:6px;"></i> Buka Koordinat di Google Maps (${asset.lat.toFixed(5)}, ${asset.lng.toFixed(5)})
         </a>
-        <button class="btn btn-primary btn-block" style="padding:10px 14px; box-shadow: 0 4px 14px rgba(74, 144, 226, 0.3);" onclick="App.openUploadPhotoModal('${asset.id}')">
-          <i class="fa-solid fa-images" style="font-size:14px;"></i> Upload Multi-Foto Aset (Up to 5)
+        <button class="btn btn-primary btn-block" style="padding:11px 14px; border-radius:10px; box-shadow: 0 4px 14px rgba(74, 144, 226, 0.3);" onclick="App.openUploadPhotoModal('${asset.id}')">
+          <i class="fa-solid fa-images" style="font-size:14px; margin-right:6px;"></i> Upload Multi-Foto Aset (Up to 5)
         </button>
-        ${(this.currentUser && (this.currentUser.role === 'Admin KPKNL' || this.currentUser.username === 'admin_kpknl')) ? `
-          <button class="btn btn-warning btn-block" style="background:linear-gradient(135deg, #f39c12, #d35400); color:#ffffff; border:none; font-weight:700; padding:10px 14px; box-shadow: 0 4px 14px rgba(243, 156, 18, 0.35);" onclick="App.openEditAssetModal('${asset.id}')">
-            <i class="fa-solid fa-pen-to-square" style="font-size:14px;"></i> Edit Data & Rekomendasi Aset (Admin)
-          </button>
-        ` : ''}
       </div>
 
-      <div class="detail-metrics-grid mb-3">
+      <!-- KODE BARANG, NUP & LUAS METRICS GRID -->
+      <div class="detail-metrics-grid mb-4">
         <div class="metric-box">
           <label>Kode Barang & NUP</label>
           <strong>${asset.kodeBarang} (NUP ${asset.nup})</strong>
@@ -507,36 +503,36 @@ const App = {
       </div>
 
       <!-- MULTI-LEVEL SPATIAL DISTANCES CARD -->
-      <div class="detail-section-card mb-3">
-        <h4 class="section-title mb-3"><i class="fa-solid fa-route" style="color:var(--pastel-blue);"></i> Analisis Jarak Spasial Multilevel</h4>
-        <div class="d-flex flex-column gap-3" style="font-size:12px;">
-          <div class="d-flex justify-content-between align-items-center p-3 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
-            <span style="line-height:1.4;"><i class="fa-solid fa-building-columns text-primary me-1"></i> <strong>Jarak ke KPKNL Denpasar:</strong></span>
-            <span class="badge badge-pastel-blue" style="font-size:11px; padding:6px 10px;">${distData.distanceKm} km</span>
+      <div class="detail-section-card mb-4">
+        <h4 class="section-title mb-3"><i class="fa-solid fa-route" style="color:var(--pastel-blue); margin-right:6px;"></i> Analisis Jarak Spasial Multilevel</h4>
+        <div class="d-flex flex-column" style="font-size:12px;">
+          <div class="d-flex justify-content-between align-items-center" style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:10px; margin-bottom:10px;">
+            <span style="line-height:1.5;"><i class="fa-solid fa-building-columns text-primary" style="margin-right:10px; margin-left:2px;"></i> <strong>Jarak ke KPKNL Denpasar:</strong></span>
+            <span class="badge badge-pastel-blue" style="font-size:11px; padding:6px 12px; border-radius:12px; margin-left:8px; flex-shrink:0;">${distData.distanceKm} km</span>
           </div>
-          <div class="d-flex justify-content-between align-items-center p-3 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
-            <span style="line-height:1.4;"><i class="fa-solid fa-building-flag text-danger me-1"></i> <strong>Jarak ke Ibukota Prov. Bali (Denpasar):</strong></span>
-            <span class="badge badge-pastel-blue" style="font-size:11px; padding:6px 10px;">${multiDist.provincialCapital.distanceKm} km</span>
+          <div class="d-flex justify-content-between align-items-center" style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:10px; margin-bottom:10px;">
+            <span style="line-height:1.5;"><i class="fa-solid fa-building-flag text-danger" style="margin-right:10px; margin-left:2px;"></i> <strong>Jarak ke Ibukota Prov. Bali (Denpasar):</strong></span>
+            <span class="badge badge-pastel-blue" style="font-size:11px; padding:6px 12px; border-radius:12px; margin-left:8px; flex-shrink:0;">${multiDist.provincialCapital.distanceKm} km</span>
           </div>
-          <div class="d-flex justify-content-between align-items-center p-3 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
-            <span style="line-height:1.4;"><i class="fa-solid fa-landmark text-secondary me-1"></i> <strong>Jarak ke Ibukota Kab. (${multiDist.regencyCapital ? multiDist.regencyCapital.name : asset.kabupaten}):</strong></span>
-            <span class="badge badge-pastel-purple" style="font-size:11px; padding:6px 10px;">${multiDist.regencyCapital ? multiDist.regencyCapital.distanceKm + ' km' : '-'}</span>
+          <div class="d-flex justify-content-between align-items-center" style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:10px; margin-bottom:10px;">
+            <span style="line-height:1.5;"><i class="fa-solid fa-landmark text-secondary" style="margin-right:10px; margin-left:2px;"></i> <strong>Jarak ke Ibukota Kab. (${multiDist.regencyCapital ? multiDist.regencyCapital.name : asset.kabupaten}):</strong></span>
+            <span class="badge badge-pastel-purple" style="font-size:11px; padding:6px 12px; border-radius:12px; margin-left:8px; flex-shrink:0;">${multiDist.regencyCapital ? multiDist.regencyCapital.distanceKm + ' km' : '-'}</span>
           </div>
-          <div class="d-flex justify-content-between align-items-center p-3 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
-            <span style="line-height:1.4;"><i class="fa-solid fa-store text-warning me-1"></i> <strong>Jarak ke ${multiDist.districtCenter.name}:</strong></span>
-            <span class="badge badge-pastel-orange" style="font-size:11px; padding:6px 10px;">${multiDist.districtCenter.distanceKm} km</span>
+          <div class="d-flex justify-content-between align-items-center" style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:10px; margin-bottom:10px;">
+            <span style="line-height:1.5;"><i class="fa-solid fa-store text-warning" style="margin-right:10px; margin-left:2px;"></i> <strong>Jarak ke ${multiDist.districtCenter.name}:</strong></span>
+            <span class="badge badge-pastel-orange" style="font-size:11px; padding:6px 12px; border-radius:12px; margin-left:8px; flex-shrink:0;">${multiDist.districtCenter.distanceKm} km</span>
           </div>
-          <div class="d-flex justify-content-between align-items-center p-3 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
-            <span style="line-height:1.4;"><i class="fa-solid fa-house-user text-success me-1"></i> <strong>Jarak ke ${multiDist.villageCenter.name}:</strong></span>
-            <span class="badge badge-pastel-mint" style="font-size:11px; padding:6px 10px;">${multiDist.villageCenter.distanceKm} km</span>
+          <div class="d-flex justify-content-between align-items-center" style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:10px;">
+            <span style="line-height:1.5;"><i class="fa-solid fa-house-user text-success" style="margin-right:10px; margin-left:2px;"></i> <strong>Jarak ke ${multiDist.villageCenter.name}:</strong></span>
+            <span class="badge badge-pastel-mint" style="font-size:11px; padding:6px 12px; border-radius:12px; margin-left:8px; flex-shrink:0;">${multiDist.villageCenter.distanceKm} km</span>
           </div>
         </div>
       </div>
 
       <!-- NIGHTTIME LIGHTS LUMINOSITY & CROWD CENTER INDEX -->
-      <div class="detail-section-card mb-3" style="background:#fef5e7; border:1px solid #f39c12;">
+      <div class="detail-section-card mb-4" style="background:#fef5e7; border:1px solid #f39c12;">
         <h4 class="section-title mb-1" style="color:#e67e22;">
-          <i class="fa-solid fa-lightbulb"></i> Nighttime Lights & Activity Index (VIIRS Proxy)
+          <i class="fa-solid fa-lightbulb" style="margin-right:6px;"></i> Nighttime Lights & Activity Index (VIIRS Proxy)
         </h4>
         <p style="font-size:11px; color:#1e293b;" class="mb-2">
           <strong>Pusat Keramaian Nightlife/Komersial Terdekat:</strong> ${multiDist.nighttimeHub ? multiDist.nighttimeHub.name : 'Pusat Lokal'} <span style="color:#e67e22; font-weight:700;">(${multiDist.nighttimeHub ? multiDist.nighttimeHub.distanceKm + ' km' : '-'})</span>
@@ -573,9 +569,9 @@ const App = {
         </div>
       </div>
 
-      <div class="detail-section-card mb-3">
+      <div class="detail-section-card mb-4">
         <div class="d-flex justify-content-between align-items-center mb-2">
-          <h4 class="section-title mb-0"><i class="fa-solid fa-bullseye text-primary"></i> Proksimitas POI Real-Time (OSM Overpass API)</h4>
+          <h4 class="section-title mb-0"><i class="fa-solid fa-bullseye text-primary" style="margin-right:6px;"></i> Proksimitas POI Real-Time (OSM Overpass API)</h4>
           <span class="badge badge-pastel-blue">${catchmentData.totalCount} POI Ditemukan</span>
         </div>
         <div class="poi-list-container">
@@ -591,7 +587,7 @@ const App = {
         
         <div class="mt-2 pt-2 border-top" style="border-top:1px dashed rgba(243, 156, 18, 0.3) !important;">
           <small style="font-size:11px; font-weight:700; color:var(--text-muted); display:block;" class="mb-1">
-            <i class="fa-solid fa-shield-halved" style="color:var(--pastel-blue);"></i> Rekomendasi Sistem (Empirical Rule Engine):
+            <i class="fa-solid fa-shield-halved" style="color:var(--pastel-blue); margin-right:4px;"></i> Rekomendasi Sistem (Empirical Rule Engine):
           </small>
           <p style="font-size:11.5px; color:var(--text-main); font-weight:600; background:rgba(255,255,255,0.75); padding:6px 10px; border-radius:6px;">
             ${recommendation.systemSuggestion}
@@ -601,6 +597,14 @@ const App = {
         <ul class="rec-rationale mt-2">
           ${recommendation.rationale.map(r => `<li><i class="fa-solid fa-circle-check"></i> ${r}</li>`).join('')}
         </ul>
+
+        ${(this.currentUser && (this.currentUser.role === 'Admin KPKNL' || this.currentUser.username === 'admin_kpknl')) ? `
+          <div class="mt-3 pt-2 border-top" style="border-top:1px dashed rgba(243, 156, 18, 0.4) !important;">
+            <button class="btn btn-warning btn-block" style="background:linear-gradient(135deg, #f39c12, #d35400); color:#ffffff; border:none; font-weight:700; padding:10px 14px; width:100%; box-shadow: 0 4px 14px rgba(243, 156, 18, 0.35); border-radius:8px; cursor:pointer;" onclick="App.openEditAssetModal('${asset.id}')">
+              <i class="fa-solid fa-pen-to-square" style="font-size:14px; margin-right:6px;"></i> Edit Data & Rekomendasi Aset (Admin KPKNL)
+            </button>
+          </div>
+        ` : ''}
       </div>
     `;
   },

@@ -669,25 +669,27 @@ body {
 .detail-metrics-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 6px;
+  gap: 12px;
+  margin-bottom: 18px;
 }
 
 .metric-box {
   background: var(--bg-primary);
   border: 1px solid var(--border-subtle);
-  padding: 8px;
-  border-radius: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
 }
 
 .metric-box label {
-  font-size: 9.5px;
+  font-size: 10px;
   color: var(--text-muted);
   display: block;
-  margin-bottom: 1px;
+  margin-bottom: 3px;
+  font-weight: 600;
 }
 
 .metric-box strong {
-  font-size: 11px;
+  font-size: 11.5px;
   display: block;
 }
 
