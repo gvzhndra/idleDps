@@ -6,8 +6,11 @@
 const REGENCY_CAPITALS = {
   'Kota Denpasar': { name: 'Pusat Kota Denpasar (Renon)', lat: -8.6705, lng: 115.2260 },
   'Kabupaten Badung': { name: 'Pusat Kab. Badung (Mangupura)', lat: -8.5833, lng: 115.1819 },
+  'Kabupaten Badung (Canggu / Berawa)': { name: 'Pusat Kab. Badung (Mangupura)', lat: -8.5833, lng: 115.1819 },
+  'Kabupaten Badung (Tuban)': { name: 'Pusat Kab. Badung (Mangupura)', lat: -8.5833, lng: 115.1819 },
   'Kabupaten Gianyar': { name: 'Pusat Kab. Gianyar (Kota Gianyar)', lat: -8.5398, lng: 115.3275 },
   'Kabupaten Tabanan': { name: 'Pusat Kab. Tabanan (Kota Tabanan)', lat: -8.5412, lng: 115.1256 },
+  'Kabupaten Tabanan (Baturiti)': { name: 'Pusat Kab. Tabanan (Kota Tabanan)', lat: -8.5412, lng: 115.1256 },
   'Kabupaten Buleleng': { name: 'Pusat Kab. Buleleng (Singaraja)', lat: -8.1120, lng: 115.0882 },
   'Kabupaten Karangasem': { name: 'Pusat Kab. Karangasem (Amlapura)', lat: -8.4475, lng: 115.6148 },
   'Kabupaten Klungkung': { name: 'Pusat Kab. Klungkung (Semarapura)', lat: -8.5356, lng: 115.4039 },
@@ -68,17 +71,14 @@ const BALI_EXTENDED_POIS = [
   { name: 'Consulate General of Japan / Australia', type: 'pemda', lat: -8.6750, lng: 115.2450 },
   { name: 'Plaza Renon & Resto Koridor', type: 'pasar', lat: -8.6730, lng: 115.2420 },
 
-  // --- KOTA TABANAN (Kejari Tabanan BMN-28 & Rumah Negara Tabanan) ---
-  { name: 'Kantor Bupati & Pemkab Tabanan', type: 'pemda', lat: -8.5385, lng: 115.1245 },
-  { name: 'Polsek Tabanan Kota', type: 'polisi', lat: -8.5405, lng: 115.1305 },
-  { name: 'Polres Tabanan Headquarter', type: 'polisi', lat: -8.5360, lng: 115.1180 },
-  { name: 'SMP Negeri 1 Tabanan', type: 'pendidikan', lat: -8.5420, lng: 115.1310 },
-  { name: 'SD Negeri 1 Delod Peken Tabanan', type: 'pendidikan', lat: -8.5415, lng: 115.1325 },
-  { name: 'SMA Negeri 1 Tabanan', type: 'pendidikan', lat: -8.5355, lng: 115.1190 },
-  { name: 'RSUD Kabupaten Tabanan', type: 'kesehatan', lat: -8.5390, lng: 115.1200 },
-  { name: 'Puskesmas Tabanan III', type: 'kesehatan', lat: -8.5425, lng: 115.1320 },
-  { name: 'Pasar Umum Tabanan Timur / Dauh Pala', type: 'pasar', lat: -8.5400, lng: 115.1330 },
-  { name: 'Kantor Camat Tabanan', type: 'pemda', lat: -8.5395, lng: 115.1290 },
+  // --- KOTA TABANAN (Kejari Tabanan BMN-28 - Presisi Real GIS Coordinates) ---
+  { name: 'Kantor Kejaksaan Negeri Tabanan', type: 'pemda', lat: -8.5410, lng: 115.1316 },
+  { name: 'RSUD Kabupaten Tabanan (Jl. Pahlawan)', type: 'kesehatan', lat: -8.5398, lng: 115.1268 },
+  { name: 'Pasar Kota Tabanan (Pasar Umum)', type: 'pasar', lat: -8.5392, lng: 115.1275 },
+  { name: 'SMA Negeri 1 Tabanan', type: 'pendidikan', lat: -8.5430, lng: 115.1290 },
+  { name: 'Gedung KPU Kabupaten Tabanan', type: 'pemda', lat: -8.5415, lng: 115.1310 },
+  { name: 'Dinas Pendidikan Kabupaten Tabanan', type: 'pemda', lat: -8.5420, lng: 115.1305 },
+  { name: 'Taman Kota Tabanan (Lapangan Debes)', type: 'pariwisata', lat: -8.5440, lng: 115.1330 },
 
   // --- BATURITI / BEDUGUL TABANAN (Kejari Tabanan Rumah Dinas - BMN-27) ---
   { name: 'Kantor Camat Baturiti Tabanan', type: 'pemda', lat: -8.3160, lng: 115.0810 },
@@ -181,7 +181,7 @@ const SpatialEngine = {
         let catMeta = CONFIG.POI_CATEGORIES[catKey] || { name: 'Komersial & Fasilitas', icon: 'fa-location-dot', color: '#4a90e2' };
 
         if (poi.type === 'pariwisata') {
-          catMeta = { name: 'Pariwisata & Pantai', icon: 'fa-umbrella-beach', color: '#e67e22' };
+          catMeta = { name: 'Pariwisata & Fasilitas Publik', icon: 'fa-umbrella-beach', color: '#e67e22' };
         } else if (poi.type === 'hotel') {
           catMeta = { name: 'Akomodasi & Hotel', icon: 'fa-hotel', color: '#9b59b6' };
         }

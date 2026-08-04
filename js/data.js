@@ -67,6 +67,10 @@ const DataEngine = {
         }
       }
 
+      const kabupaten = this.detectKabupaten(row.nama_satker, row.nama_barang, lat, lng);
+      const kecamatan = this.detectKecamatan(row.nama_satker, row.nama_barang, lat, lng);
+      const kelurahan = this.detectKelurahan(row.nama_satker, row.nama_barang, lat, lng);
+
       const item = {
         id: row.id || `BMN-${idx + 1}`,
         kodeSatker: row.kode_satker || '',
@@ -79,15 +83,15 @@ const DataEngine = {
         jenisBarang: jenis,
         isTanah: isTanah,
         kategori: isTanah ? 'Tanah' : 'Bangunan',
-        kabupaten: this.detectKabupaten(row.nama_satker, row.nama_barang, lat, lng),
-        kecamatan: this.detectKecamatan(lat, lng),
-        kelurahan: this.detectKelurahan(lat, lng),
+        kabupaten: kabupaten,
+        kecamatan: kecamatan,
+        kelurahan: kelurahan,
         alamat: `${row.nama_satker} - ${row.nama_barang || jenis}`,
         lat: lat,
         lng: lng,
         hasCoordinates: lat !== null && lng !== null,
         luas: luas,
-        luasTanah: luas, // preserved for backward compat
+        luasTanah: luas,
         luasBangunan: 0,
         kondisi: row['HASIL JAWABAN'] || 'Telah dilakukan penelitian awal',
         statusPenguasaan: 'Sertifikat Hak Pakai a.n. Pemerintah RI c.q. Pengelola',
@@ -112,9 +116,9 @@ const DataEngine = {
   detectKabupaten(satker, namaBarang, lat, lng) {
     if (lat !== null && lng !== null) {
       if (lat > -8.67 && lat < -8.63 && lng > 115.13 && lng < 115.16) return 'Kabupaten Badung (Canggu / Berawa)';
-      if (lat < -8.70 && lng < 115.20) return 'Kabupaten Badung';
-      if (lat < -8.30 && lng < 115.10) return 'Kabupaten Tabanan (Baturiti)';
-      if (lat < -8.50 && lng < 115.15) return 'Kabupaten Tabanan';
+      if (lat < -8.70 && lng < 115.20) return 'Kabupaten Badung (Tuban)';
+      if (lat > -8.35 && lat < -8.25 && lng > 115.05 && lng < 115.15) return 'Kabupaten Tabanan (Baturiti)';
+      if (lat > -8.56 && lat < -8.50 && lng > 115.10 && lng < 115.16) return 'Kabupaten Tabanan';
     }
 
     const text = (String(satker) + ' ' + String(namaBarang)).toLowerCase();
@@ -130,21 +134,35 @@ const DataEngine = {
     return 'Kota Denpasar';
   },
 
-  detectKecamatan(lat, lng) {
+  detectKecamatan(satker, namaBarang, lat, lng) {
+    const text = (String(satker) + ' ' + String(namaBarang)).toLowerCase();
+    if (text.includes('tabanan')) {
+      if (text.includes('baturiti')) return 'Baturiti';
+      return 'Tabanan';
+    }
+
     if (lat !== null && lng !== null) {
       if (lat > -8.67 && lat < -8.63 && lng > 115.13 && lng < 115.16) return 'Kuta Utara';
       if (lat < -8.70 && lng < 115.20) return 'Kuta';
-      if (lat < -8.30 && lng < 115.10) return 'Baturiti';
-      if (lat < -8.50 && lng < 115.15) return 'Kediri';
+      if (lat > -8.35 && lat < -8.25) return 'Baturiti';
+      if (lat > -8.56 && lat < -8.50) return 'Tabanan';
     }
     return 'Denpasar Selatan';
   },
 
-  detectKelurahan(lat, lng) {
+  detectKelurahan(satker, namaBarang, lat, lng) {
+    const text = (String(satker) + ' ' + String(namaBarang)).toLowerCase();
+
+    if (text.includes('tabanan')) {
+      if (text.includes('baturiti')) return 'Baturiti';
+      return 'Delod Peken';
+    }
+
     if (lat !== null && lng !== null) {
       if (lat > -8.67 && lat < -8.63 && lng > 115.13 && lng < 115.16) return 'Tibubeneng (Berawa Beach)';
       if (lat < -8.70 && lng < 115.20) return 'Tuban';
-      if (lat < -8.30 && lng < 115.10) return 'Baturiti';
+      if (lat > -8.35 && lat < -8.25) return 'Baturiti';
+      if (lat > -8.56 && lat < -8.50) return 'Delod Peken';
     }
     return 'Renon';
   },
