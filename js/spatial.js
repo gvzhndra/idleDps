@@ -100,21 +100,31 @@ const SpatialEngine = {
   },
 
   getMultiLevelDistances(lat, lng, kabupatenName, kecamatanName, kelurahanName) {
+    // Provincial capital always = Renon Denpasar
     const provCap = REGENCY_CAPITALS['Kota Denpasar'];
     const provDist = this.calculateDistance(lat, lng, provCap.lat, provCap.lng);
 
-    // Use the best matching regency capital for kabupaten distance
-    const regCap = REGENCY_CAPITALS[kabupatenName] || REGENCY_CAPITALS['Kota Denpasar'];
-    const regDist = this.calculateDistance(lat, lng, regCap.lat, regCap.lng);
+    // ── Find the NEAREST regency capital by actual GPS distance ──────────────
+    // Do NOT rely on the kabupaten name string (which can be wrong).
+    // Instead, measure to every capital and pick the closest one.
+    let regCap = provCap;
+    let regDist = provDist;
 
-    // For district/sub-district: use regency capital as reference (realistic, not fake)
-    // Show as "~X km from [Regency Capital]" context
-    const distCenterDist = regDist;
+    Object.values(REGENCY_CAPITALS).forEach(cap => {
+      const d = this.calculateDistance(lat, lng, cap.lat, cap.lng);
+      if (d < regDist) {
+        regDist = d;
+        regCap = cap;
+      }
+    });
 
-    // For village: use a small offset from regency capital proportional to regDist
-    // This is an estimate: village center is roughly 20-40% closer than regency capital
-    const villCenterDist = Math.round((regDist * 0.3) * 100) / 100;
+    // Kecamatan: estimated ~50% of regency capital distance (sub-district is closer)
+    const distCenterDist = Math.round((regDist * 0.5) * 100) / 100;
 
+    // Village: estimated ~20% of regency capital distance
+    const villCenterDist = Math.round((regDist * 0.2) * 100) / 100;
+
+    // ── Nearest nighttime commercial hub ──────────────────────────────────────
     let nearestNightHub = NIGHTTIME_LIGHTS_HUBS[0];
     let minNightDist = 999;
 
@@ -133,11 +143,11 @@ const SpatialEngine = {
 
     return {
       provincialCapital: { name: provCap.name, distanceKm: provDist },
-      regencyCapital: { name: regCap.name, distanceKm: regDist },
-      districtCenter: { name: `Pusat Kec. ${kecamatanName || 'Terdekat'}`, distanceKm: distCenterDist },
-      villageCenter: { name: `Pusat Kel./Desa ${kelurahanName || 'Terdekat'}`, distanceKm: villCenterDist },
-      nighttimeHub: nearestNightHub,
-      nightLightScore: nightLightScore
+      regencyCapital:    { name: regCap.name,  distanceKm: regDist },
+      districtCenter:    { name: `Pusat Kec. ${kecamatanName || 'Terdekat'}`, distanceKm: distCenterDist },
+      villageCenter:     { name: `Pusat Kel./Desa ${kelurahanName || 'Terdekat'}`, distanceKm: villCenterDist },
+      nighttimeHub:      { ...nearestNightHub, distanceKm: Math.round(minNightDist * 100) / 100 },
+      nightLightScore:   nightLightScore
     };
   },
 

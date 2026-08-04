@@ -884,13 +884,14 @@ const App = {
     if (!container) return;
 
     if (this.currentUser) {
+      const displayName = this.currentUser.name || this.currentUser.username;
       container.innerHTML = `
-        <div class="d-flex align-items-center gap-2" style="background:#eafaf1; padding:4px 10px; border-radius:20px; border:1px solid #2ecc71;">
-          <span style="font-size:11px; font-weight:700; color:#27ae60;">
-            <i class="fa-solid fa-circle-user"></i> ${this.currentUser.username}
+        <div class="d-flex align-items-center gap-2">
+          <span style="font-size:12px; color:var(--text-muted);">
+            Halo, <strong style="color:var(--text-main);">${displayName}</strong>!
           </span>
-          <button class="btn btn-sm btn-secondary" onclick="App.handleLogout()" title="Logout" style="padding:2px 6px; font-size:10px;">
-            <i class="fa-solid fa-right-from-bracket text-danger"></i>
+          <button class="btn btn-sm btn-secondary" onclick="App.handleLogout()" title="Logout" style="padding:3px 9px; font-size:10px;">
+            <i class="fa-solid fa-right-from-bracket text-danger"></i> Keluar
           </button>
         </div>
       `;
