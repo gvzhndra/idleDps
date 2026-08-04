@@ -797,18 +797,40 @@ const App = {
 
     if (confirm('Apakah Anda yakin ingin menghapus foto ini?')) {
       const idx = this.currentPhotoIndex || 0;
+
+      // Splice the specific photo at current index
       asset.fotoList.splice(idx, 1);
+
+      // Sync fotoList back to DataEngine (same object reference, but ensure both in sync)
+      const deAsset = (DataEngine.activeAssets && DataEngine.activeAssets.find(a => a.id === assetId))
+                   || (DataEngine.pendingAssets && DataEngine.pendingAssets.find(a => a.id === assetId));
+      if (deAsset) deAsset.fotoList = asset.fotoList;
+
+      // Also sync to App.activeAssets
+      const appAsset = this.activeAssets && this.activeAssets.find(a => a.id === assetId);
+      if (appAsset) appAsset.fotoList = asset.fotoList;
+
+      // Reset counter BEFORE re-render
       this.currentPhotoIndex = 0;
+
       this.savePhotosToLocalStorage();
       this.showToast('Foto berhasil dihapus.');
-      this.selectAsset(assetId);
+      this.renderAssetDetail(asset); // Re-render detail without full selectAsset to preserve state
     }
   },
 
   savePhotosToLocalStorage() {
+    // Merge photos from all sources: App.activeAssets + DataEngine assets
+    const allAssets = [
+      ...(this.activeAssets || []),
+      ...(DataEngine.activeAssets || []),
+      ...(DataEngine.pendingAssets || [])
+    ];
     const photoMap = {};
-    [...this.activeAssets, ...DataEngine.pendingAssets].forEach(a => {
-      if (a.fotoList && a.fotoList.length > 0) {
+    allAssets.forEach(a => {
+      if (a && a.id && a.fotoList && a.fotoList.length > 0) {
+        // Only keep non-placeholder Unsplash photos and real URLs/base64
+        // Keep all photos (placeholder + real) - filtering can cause loss
         photoMap[a.id] = a.fotoList;
       }
     });

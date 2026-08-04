@@ -392,6 +392,7 @@ function handleMultiPhotoUploadToDrive(assetId, base64PhotoArray) {
     return createJsonResponse({ status: 'error', message: 'Tidak ada foto yang dikirim.' });
   }
 
+  // ── 1. Upload each base64 image to Google Drive ────────────────────────────
   var folders = DriveApp.getFoldersByName('BMN_Idle_Photos');
   var folder = folders.hasNext() ? folders.next() : DriveApp.createFolder('BMN_Idle_Photos');
   folder.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
@@ -400,7 +401,7 @@ function handleMultiPhotoUploadToDrive(assetId, base64PhotoArray) {
 
   for (var k = 0; k < base64PhotoArray.length; k++) {
     var rawBase64 = base64PhotoArray[k];
-    var base64Data = rawBase64.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
+    var base64Data = rawBase64.replace(/^data:image\/(png|jpeg|jpg|webp);base64,/, '');
     var blob = Utilities.newBlob(
       Utilities.base64Decode(base64Data),
       'image/jpeg',
@@ -410,26 +411,71 @@ function handleMultiPhotoUploadToDrive(assetId, base64PhotoArray) {
     var file = folder.createFile(blob);
     file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
 
-    var fileUrl = 'https://drive.google.com/uc?id=' + file.getId();
+    // Use direct download URL so <img> tags can render it
+    var fileUrl = 'https://drive.google.com/uc?export=view&id=' + file.getId();
     uploadedUrls.push(fileUrl);
   }
 
+  // ── 2. Write URLs back to BMN_Idle sheet (foto_urls column) ───────────────
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName('BMN_Idle') || ss.getSheetByName('denpasar saja');
   if (sheet) {
     var data = sheet.getDataRange().getValues();
     var headers = data[0];
+
+    // Find or create the foto_urls column
     var fotoColIdx = headers.indexOf('foto_urls');
-    if (fotoColIdx === -1) fotoColIdx = 19;
+    if (fotoColIdx === -1) {
+      // Append new column header at end
+      fotoColIdx = headers.length;
+      sheet.getRange(1, fotoColIdx + 1).setValue('foto_urls');
+    }
+
+    // Find the matching row: try matching by 'id' column first, then by kode_satker+kode_barang+nup
+    var idColIdx = headers.indexOf('id');
+    var satkerColIdx = headers.indexOf('kode_satker');
+    var barangColIdx = headers.indexOf('kode_barang');
+    var nupColIdx = headers.indexOf('nup');
+    var assetIdStr = String(assetId).trim();
 
     for (var i = 1; i < data.length; i++) {
-      if (String(data[i][0]) === String(assetId) || String(data[i][3]) === String(assetId)) {
-        var existing = String(data[i][fotoColIdx] || '');
-        var newPhotos = uploadedUrls.join(',') + (existing ? ',' + existing : '');
-        sheet.getRange(i + 1, fotoColIdx + 1).setValue(newPhotos);
+      var row = data[i];
+      var rowId = idColIdx >= 0 ? String(row[idColIdx]).trim() : '';
+      var rowSatker = satkerColIdx >= 0 ? String(row[satkerColIdx]).trim() : '';
+      var rowBarang = barangColIdx >= 0 ? String(row[barangColIdx]).trim() : '';
+      var rowNup = nupColIdx >= 0 ? String(row[nupColIdx]).trim() : '';
+
+      // Build a composite key matching the frontend BMN-ID format "KS-KB-NUP"
+      var compositeKey = rowSatker + '-' + rowBarang + '-' + rowNup;
+
+      var matched = (rowId !== '' && rowId === assetIdStr) ||
+                    (compositeKey.toLowerCase() === assetIdStr.toLowerCase()) ||
+                    (String(row[0]).trim() === assetIdStr);
+
+      if (matched) {
+        var existing = String(data[i][fotoColIdx] || '').trim();
+        var newVal = uploadedUrls.join(',') + (existing ? ',' + existing : '');
+        sheet.getRange(i + 1, fotoColIdx + 1).setValue(newVal);
         break;
       }
     }
+  }
+
+  // ── 3. Also write to dedicated BMN_Asset_Photos tab for permanent record ───
+  var photoSheet = ss.getSheetByName('BMN_Asset_Photos');
+  if (!photoSheet) {
+    photoSheet = ss.insertSheet('BMN_Asset_Photos');
+    photoSheet.getRange(1, 1, 1, 4).setValues([['asset_id', 'foto_url', 'uploaded_at', 'file_name']]);
+    var hdr = photoSheet.getRange(1, 1, 1, 4);
+    hdr.setBackground('#1a237e');
+    hdr.setFontColor('#ffffff');
+    hdr.setFontWeight('bold');
+    photoSheet.setFrozenRows(1);
+  }
+
+  var now = new Date().toLocaleString('id-ID');
+  for (var j = 0; j < uploadedUrls.length; j++) {
+    photoSheet.appendRow([assetId, uploadedUrls[j], now, 'BMN_' + assetId + '_' + (j + 1) + '.jpg']);
   }
 
   return createJsonResponse({
