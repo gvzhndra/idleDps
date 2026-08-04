@@ -454,22 +454,14 @@ const App = {
     const multiDist = SpatialEngine.getMultiLevelDistances(asset.lat, asset.lng, asset.kabupaten, asset.kecamatan, asset.kelurahan);
     const gmapsUrl = `https://www.google.com/maps?q=${asset.lat},${asset.lng}`;
 
-    const photoSlides = asset.fotoList.map((url, idx) => `
-      <div class="photo-slide ${idx === 0 ? 'active' : ''}" style="background-image: url('${url}'); display: ${idx === 0 ? 'block' : 'none'}; position: relative;">
-        <span class="photo-counter">${idx + 1} / ${asset.fotoList.length}</span>
-        ${canEditOrUpload ? `
-          <button class="btn-delete-photo" title="Hapus foto ini" onclick="App.deletePhoto('${asset.id}', ${idx})">
-            <i class="fa-solid fa-trash-can"></i>
-          </button>
-        ` : ''}
-      </div>
-    `).join('');
+    const activePhotoUrl = (asset.fotoList && asset.fotoList.length > 0) ? asset.fotoList[this.currentPhotoIndex || 0] : '';
+    const totalPhotos = asset.fotoList ? asset.fotoList.length : 0;
 
-    const navArrows = asset.fotoList.length > 1 ? `
-      <button class="carousel-nav-btn carousel-nav-prev" onclick="App.prevPhoto('${asset.id}')" title="Foto Sebelumnya">
+    const navArrows = totalPhotos > 1 ? `
+      <button class="carousel-nav-btn carousel-nav-prev" onclick="event.stopPropagation(); App.prevPhoto('${asset.id}')" title="Foto Sebelumnya">
         <i class="fa-solid fa-chevron-left"></i>
       </button>
-      <button class="carousel-nav-btn carousel-nav-next" onclick="App.nextPhoto('${asset.id}')" title="Foto Selanjutnya">
+      <button class="carousel-nav-btn carousel-nav-next" onclick="event.stopPropagation(); App.nextPhoto('${asset.id}')" title="Foto Selanjutnya">
         <i class="fa-solid fa-chevron-right"></i>
       </button>
     ` : '';
@@ -488,8 +480,13 @@ const App = {
     `).join('');
 
     container.innerHTML = `
-      <div class="photo-carousel-container" style="position:relative;">
-        ${photoSlides}
+      <div id="photo-carousel-box" class="photo-carousel-container" style="background-image: url('${activePhotoUrl}'); background-size: cover; background-position: center; position: relative; height: 190px; border-radius: 10px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+        <span id="photo-carousel-counter" class="photo-counter">${(this.currentPhotoIndex || 0) + 1} / ${totalPhotos}</span>
+        ${canEditOrUpload ? `
+          <button class="btn-delete-photo" title="Hapus foto ini" onclick="event.stopPropagation(); App.deletePhoto('${asset.id}')">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        ` : ''}
         ${navArrows}
       </div>
 
@@ -715,30 +712,55 @@ const App = {
   handleMultiPhotoSubmit(event) {
     event.preventDefault();
     const assetId = document.getElementById('upload-asset-id').value;
-    const asset = this.activeAssets.find(a => a.id === assetId);
+  getAsset(assetId) {
+    return (DataEngine.activeAssets && DataEngine.activeAssets.find(a => a.id === assetId)) ||
+           (DataEngine.pendingAssets && DataEngine.pendingAssets.find(a => a.id === assetId)) ||
+           (this.activeAssets && this.activeAssets.find(a => a.id === assetId));
+  },
+
+  async handleMultiPhotoSubmit(event) {
+    if (event) event.preventDefault();
+    const assetId = document.getElementById('upload-asset-id').value;
+    const asset = this.getAsset(assetId);
 
     if (asset && this.compressedPhotoBlobs.length > 0) {
+      // 1. Show instant compressed preview in UI
       asset.fotoList = [...this.compressedPhotoBlobs, ...asset.fotoList];
-      this.showToast(`Berhasil menyimpan & mengompres ${this.compressedPhotoBlobs.length} foto fisik aset!`);
-
-      if (CONFIG.APPS_SCRIPT.WEB_APP_URL) {
-        fetch(CONFIG.APPS_SCRIPT.WEB_APP_URL, {
-          method: 'POST',
-          body: JSON.stringify({
-            action: 'uploadBase64Photos',
-            assetId: assetId,
-            photos: this.compressedPhotoBlobs
-          })
-        }).catch(err => console.log(err));
-      }
-
+      this.currentPhotoIndex = 0;
+      this.savePhotosToLocalStorage();
       this.closeUploadPhotoModal();
       this.selectAsset(assetId);
+      this.showToast(`Mengompres & mengunggah ${this.compressedPhotoBlobs.length} foto ke Google Drive...`, 'info');
+
+      // 2. Upload to Google Drive via Apps Script Web App
+      if (CONFIG.APPS_SCRIPT.WEB_APP_URL) {
+        try {
+          const resp = await fetch(CONFIG.APPS_SCRIPT.WEB_APP_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+              action: 'uploadBase64Photos',
+              assetId: assetId,
+              photos: this.compressedPhotoBlobs
+            })
+          });
+          const json = await resp.json();
+          if (json && json.status === 'success' && json.urls && json.urls.length > 0) {
+            // Replace temporary base64 with permanent Google Drive URLs!
+            const nonBase64 = asset.fotoList.filter(url => !url.startsWith('data:image'));
+            asset.fotoList = [...json.urls, ...nonBase64];
+            this.savePhotosToLocalStorage();
+            this.updateCarouselDisplay(asset);
+            this.showToast(`✅ Berhasil menyimpan ${json.urls.length} foto permanen di Google Drive!`);
+          }
+        } catch(err) {
+          console.warn('Apps Script Drive photo upload error:', err);
+        }
+      }
     }
   },
 
   prevPhoto(assetId) {
-    const asset = this.activeAssets.find(a => a.id === assetId) || DataEngine.pendingAssets.find(a => a.id === assetId);
+    const asset = this.getAsset(assetId);
     if (!asset || !asset.fotoList || asset.fotoList.length <= 1) return;
     this.currentPhotoIndex = (this.currentPhotoIndex || 0) - 1;
     if (this.currentPhotoIndex < 0) this.currentPhotoIndex = asset.fotoList.length - 1;
@@ -746,7 +768,7 @@ const App = {
   },
 
   nextPhoto(assetId) {
-    const asset = this.activeAssets.find(a => a.id === assetId) || DataEngine.pendingAssets.find(a => a.id === assetId);
+    const asset = this.getAsset(assetId);
     if (!asset || !asset.fotoList || asset.fotoList.length <= 1) return;
     this.currentPhotoIndex = (this.currentPhotoIndex || 0) + 1;
     if (this.currentPhotoIndex >= asset.fotoList.length) this.currentPhotoIndex = 0;
@@ -754,33 +776,27 @@ const App = {
   },
 
   updateCarouselDisplay(asset) {
-    const container = document.querySelector('.photo-carousel-container');
-    if (!container) return;
-    const slides = container.querySelectorAll('.photo-slide');
-    const counter = container.querySelector('.photo-counter');
-    slides.forEach((slide, idx) => {
-      if (idx === this.currentPhotoIndex) {
-        slide.style.display = 'block';
-        slide.classList.add('active');
-      } else {
-        slide.style.display = 'none';
-        slide.classList.remove('active');
-      }
-    });
+    const box = document.getElementById('photo-carousel-box');
+    const counter = document.getElementById('photo-carousel-counter');
+    if (!box || !asset || !asset.fotoList || asset.fotoList.length === 0) return;
+    if (this.currentPhotoIndex >= asset.fotoList.length) this.currentPhotoIndex = 0;
+    const url = asset.fotoList[this.currentPhotoIndex] || asset.fotoList[0];
+    box.style.backgroundImage = `url('${url}')`;
     if (counter) {
       counter.textContent = `${this.currentPhotoIndex + 1} / ${asset.fotoList.length}`;
     }
   },
 
-  deletePhoto(assetId, photoIndex) {
-    const asset = this.activeAssets.find(a => a.id === assetId) || DataEngine.pendingAssets.find(a => a.id === assetId);
+  deletePhoto(assetId) {
+    const asset = this.getAsset(assetId);
     if (!asset || !asset.fotoList || asset.fotoList.length <= 1) {
       this.showToast('Minimal harus ada 1 foto aset.', 'warning');
       return;
     }
 
     if (confirm('Apakah Anda yakin ingin menghapus foto ini?')) {
-      asset.fotoList.splice(photoIndex, 1);
+      const idx = this.currentPhotoIndex || 0;
+      asset.fotoList.splice(idx, 1);
       this.currentPhotoIndex = 0;
       this.savePhotosToLocalStorage();
       this.showToast('Foto berhasil dihapus.');
@@ -1037,18 +1053,37 @@ const App = {
   },
 
   handleSaveEditAsset(event) {
-    event.preventDefault();
+    if (event) event.preventDefault();
     const assetId = document.getElementById('edit-asset-id').value;
-    const asset = DataEngine.activeAssets.find(a => a.id === assetId) || DataEngine.pendingAssets.find(a => a.id === assetId);
+    const asset = this.getAsset(assetId);
 
-    if (!asset) return;
+    if (!asset) {
+      this.showToast('Gagal menemukan data aset yang diedit.', 'error');
+      return;
+    }
 
-    asset.namaBarang = document.getElementById('edit-nama-barang').value.trim();
-    asset.kondisi = document.getElementById('edit-kondisi').value.trim();
-    asset.rekomendasiUser = document.getElementById('edit-rekomendasi').value;
-    asset.catatanTim = document.getElementById('edit-catatan-tim').value.trim();
-    asset.luas = parseFloat(document.getElementById('edit-luas').value) || 0;
-    asset.luasTanah = asset.luas;
+    const namaVal = document.getElementById('edit-nama-barang').value.trim();
+    const kondisiVal = document.getElementById('edit-kondisi').value.trim();
+    const recVal = document.getElementById('edit-rekomendasi').value;
+    const catatanVal = document.getElementById('edit-catatan-tim').value.trim();
+    const luasVal = parseFloat(document.getElementById('edit-luas').value) || 0;
+
+    asset.namaBarang = namaVal || asset.namaBarang;
+    asset.kondisi = kondisiVal || asset.kondisi;
+    asset.rekomendasiUser = recVal;
+    asset.catatanTim = catatanVal;
+    asset.luas = luasVal;
+    asset.luasTanah = luasVal;
+
+    // Save to DataEngine instance
+    const deAsset = DataEngine.activeAssets.find(a => a.id === asset.id) || DataEngine.pendingAssets.find(a => a.id === asset.id);
+    if (deAsset) {
+      deAsset.namaBarang = asset.namaBarang;
+      deAsset.kondisi = asset.kondisi;
+      deAsset.rekomendasiUser = asset.rekomendasiUser;
+      deAsset.catatanTim = asset.catatanTim;
+      deAsset.luas = asset.luas;
+    }
 
     // 1. Save edit to localStorage for persistent session survival
     try {
