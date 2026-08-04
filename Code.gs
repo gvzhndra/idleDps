@@ -415,8 +415,8 @@ function handleMultiPhotoUploadToDrive(assetId, base64PhotoArray) {
     var file = folder.createFile(blob);
     file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
 
-    // Use direct download URL so <img> tags can render it
-    var fileUrl = 'https://drive.google.com/uc?export=view&id=' + file.getId();
+    // Use Google CDN URL format so <img> and background-image CSS can render it without CORS/cookie blocking
+    var fileUrl = 'https://lh3.googleusercontent.com/d/' + file.getId();
     uploadedUrls.push(fileUrl);
   }
 

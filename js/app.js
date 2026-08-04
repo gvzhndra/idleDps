@@ -516,7 +516,8 @@ const App = {
     const multiDist = SpatialEngine.getMultiLevelDistances(asset.lat, asset.lng, asset.kabupaten, asset.kecamatan, asset.kelurahan);
     const gmapsUrl = `https://www.google.com/maps?q=${asset.lat},${asset.lng}`;
 
-    const activePhotoUrl = (asset.fotoList && asset.fotoList.length > 0) ? asset.fotoList[this.currentPhotoIndex || 0] : '';
+    const rawPhotoUrl = (asset.fotoList && asset.fotoList.length > 0) ? asset.fotoList[this.currentPhotoIndex || 0] : '';
+    const activePhotoUrl = this.formatPhotoUrl(rawPhotoUrl);
     const totalPhotos = asset.fotoList ? asset.fotoList.length : 0;
 
     const navArrows = totalPhotos > 1 ? `
@@ -834,12 +835,31 @@ const App = {
     this.updateCarouselDisplay(asset);
   },
 
+  formatPhotoUrl(url) {
+    if (!url) return '';
+    if (url.includes('drive.google.com')) {
+      let fileId = '';
+      const matchId = url.match(/[?&]id=([^&]+)/);
+      if (matchId) {
+        fileId = matchId[1];
+      } else {
+        const matchPath = url.match(/\/d\/([^/]+)/);
+        if (matchPath) fileId = matchPath[1];
+      }
+      if (fileId) {
+        return `https://lh3.googleusercontent.com/d/${fileId}`;
+      }
+    }
+    return url;
+  },
+
   updateCarouselDisplay(asset) {
     const box = document.getElementById('photo-carousel-box');
     const counter = document.getElementById('photo-carousel-counter');
     if (!box || !asset || !asset.fotoList || asset.fotoList.length === 0) return;
     if (this.currentPhotoIndex >= asset.fotoList.length) this.currentPhotoIndex = 0;
-    const url = asset.fotoList[this.currentPhotoIndex] || asset.fotoList[0];
+    const rawUrl = asset.fotoList[this.currentPhotoIndex] || asset.fotoList[0];
+    const url = this.formatPhotoUrl(rawUrl);
     box.style.backgroundImage = `url('${url}')`;
     if (counter) {
       counter.textContent = `${this.currentPhotoIndex + 1} / ${asset.fotoList.length}`;
