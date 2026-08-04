@@ -143,7 +143,7 @@ function doPost(e) {
     var action = contents.action;
 
     if (action === 'login') {
-      return handleUserLogin(contents.username, contents.passwordHash);
+      return handleUserLogin(contents.username, contents.passwordHash || contents.password);
     }
 
     if (action === 'uploadBase64Photos') {
@@ -157,43 +157,69 @@ function doPost(e) {
 }
 
 /**
- * Validates login using SHA-256 hash comparison.
- * The frontend sends the SHA-256 hash of the password (NOT plain text).
- * The sheet stores SHA-256 hashes in column C (password_hash).
+ * Validates login against Google Sheet "Users" tab.
+ * Supports case-insensitive username matching, plain-text passwords,
+ * and SHA-256 password hashes.
  */
-function handleUserLogin(username, passwordHash) {
+function handleUserLogin(username, passwordInput) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName('Users');
 
+  var cleanUser = String(username || '').trim().toLowerCase();
+  var cleanPass = String(passwordInput || '').trim();
+  var inputHash = /^[0-9a-f]{64}$/i.test(cleanPass) ? cleanPass.toLowerCase() : sha256Hex(cleanPass);
+
   if (!sheet) {
-    // Fallback: compare hash against known admin hash
+    // Fallback if Users sheet is not yet created
     var adminHash = sha256Hex('bmnidle2026');
-    if (username === 'admin_kpknl' && passwordHash === adminHash) {
-      return createJsonResponse({ status: 'success', user: { username: username, role: 'Admin KPKNL' } });
+    if ((cleanUser === 'admin_kpknl' || cleanUser === 'admin' || cleanUser === 'kpknl') &&
+        (cleanPass === 'bmnidle2026' || inputHash === adminHash)) {
+      return createJsonResponse({
+        status: 'success',
+        user: { username: 'admin_kpknl', name: 'Admin KPKNL Denpasar', role: 'Admin KPKNL' }
+      });
     }
-    return createJsonResponse({ status: 'error', message: 'Akun tidak valid.' });
+    return createJsonResponse({ status: 'error', message: 'Sheet Users tidak ditemukan.' });
   }
 
   var data = sheet.getDataRange().getValues();
-  // Columns: [user_id, username, password_hash, nama_lengkap, role, status_aktif]
-  for (var i = 1; i < data.length; i++) {
-    var rowUsername = String(data[i][1]).trim();
-    var rowHash     = String(data[i][2]).trim().toLowerCase();
-    var rowStatus   = String(data[i][5]).trim().toUpperCase();
+  if (data.length <= 1) {
+    return createJsonResponse({ status: 'error', message: 'Tidak ada data user di sheet Users.' });
+  }
 
-    if (rowUsername === username && rowHash === passwordHash && rowStatus === 'AKTIF') {
-      return createJsonResponse({
-        status: 'success',
-        user: {
-          username: data[i][1],
-          name: data[i][3],
-          role: data[i][4]
-        }
-      });
+  // Columns: [user_id (0), username (1), password_hash/plain (2), nama_lengkap (3), role (4), status_aktif (5)]
+  for (var i = 1; i < data.length; i++) {
+    var rowUser   = String(data[i][1] || '').trim().toLowerCase();
+    var rowPass   = String(data[i][2] || '').trim();
+    var rowPassLower = rowPass.toLowerCase();
+    var rowStatus = String(data[i][5] || 'AKTIF').trim().toUpperCase();
+
+    if (rowUser === cleanUser) {
+      if (rowStatus !== 'AKTIF' && rowStatus !== 'TRUE' && rowStatus !== '1' && rowStatus !== '') {
+        return createJsonResponse({ status: 'error', message: 'Akun ini sedang tidak aktif.' });
+      }
+
+      // Check matching: plain-text match OR SHA-256 hash match OR double hash match
+      var isMatch = (rowPass === cleanPass) ||
+                    (rowPassLower === inputHash) ||
+                    (sha256Hex(rowPass) === inputHash);
+
+      if (isMatch) {
+        return createJsonResponse({
+          status: 'success',
+          user: {
+            username: String(data[i][1]).trim(),
+            name: String(data[i][3] || data[i][1]).trim(),
+            role: String(data[i][4] || 'Admin KPKNL').trim()
+          }
+        });
+      } else {
+        return createJsonResponse({ status: 'error', message: 'Password salah.' });
+      }
     }
   }
 
-  return createJsonResponse({ status: 'error', message: 'Username atau password salah.' });
+  return createJsonResponse({ status: 'error', message: 'Username "' + username + '" tidak ditemukan.' });
 }
 
 // ============================================================================
