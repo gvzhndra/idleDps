@@ -518,7 +518,7 @@ const App = {
             <span class="badge badge-pastel-blue" style="font-size:11px; padding:6px 12px; border-radius:12px; margin-left:8px; flex-shrink:0;">${multiDist.provincialCapital.distanceKm} km</span>
           </div>
           <div class="d-flex justify-content-between align-items-center" style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:10px; margin-bottom:10px;">
-            <span style="line-height:1.5;"><i class="fa-solid fa-landmark text-secondary" style="margin-right:10px; margin-left:2px;"></i> <strong>Jarak ke Ibukota Kab. (${multiDist.regencyCapital ? multiDist.regencyCapital.name : asset.kabupaten}):</strong></span>
+            <span style="line-height:1.5;"><i class="fa-solid fa-landmark text-secondary" style="margin-right:10px; margin-left:2px;"></i> <strong>Jarak ke Ibukota Kab. Terdekat (${multiDist.regencyCapital ? multiDist.regencyCapital.name : asset.kabupaten}):</strong></span>
             <span class="badge badge-pastel-purple" style="font-size:11px; padding:6px 12px; border-radius:12px; margin-left:8px; flex-shrink:0;">${multiDist.regencyCapital ? multiDist.regencyCapital.distanceKm + ' km' : '-'}</span>
           </div>
           <div class="d-flex justify-content-between align-items-center" style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:10px; margin-bottom:10px;">

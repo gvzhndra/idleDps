@@ -158,35 +158,38 @@ const DataEngine = {
   },
 
   detectKecamatan(satker, namaBarang, lat, lng) {
-    const text = (String(satker) + ' ' + String(namaBarang)).toLowerCase();
-    if (text.includes('tabanan')) {
-      if (text.includes('baturiti')) return 'Baturiti';
-      return 'Tabanan';
-    }
-
+    // 1. Primary GPS Coordinates Check
     if (lat !== null && lng !== null) {
+      if (lat > -8.40 && lat < -8.20) return 'Baturiti';
+      if (lat > -8.58 && lat < -8.50) return 'Tabanan';
       if (lat > -8.67 && lat < -8.63 && lng > 115.13 && lng < 115.16) return 'Kuta Utara';
       if (lat < -8.70 && lng < 115.20) return 'Kuta';
-      if (lat > -8.35 && lat < -8.25) return 'Baturiti';
-      if (lat > -8.56 && lat < -8.50) return 'Tabanan';
     }
+
+    // 2. Keyword Fallback
+    const text = (String(satker) + ' ' + String(namaBarang)).toLowerCase();
+    if (text.includes('baturiti') || text.includes('bedugul') || text.includes('candikuning')) return 'Baturiti';
+    if (text.includes('tabanan')) return 'Tabanan';
+    if (text.includes('kuta utara') || text.includes('berawa') || text.includes('canggu')) return 'Kuta Utara';
+    if (text.includes('kuta')) return 'Kuta';
+
     return 'Denpasar Selatan';
   },
 
   detectKelurahan(satker, namaBarang, lat, lng) {
-    const text = (String(satker) + ' ' + String(namaBarang)).toLowerCase();
-
-    if (text.includes('tabanan')) {
-      if (text.includes('baturiti')) return 'Baturiti';
-      return 'Delod Peken';
-    }
-
+    // 1. Primary GPS Coordinates Check
     if (lat !== null && lng !== null) {
-      if (lat > -8.67 && lat < -8.63 && lng > 115.13 && lng < 115.16) return 'Tibubeneng (Berawa Beach)';
+      if (lat > -8.40 && lat < -8.20) return 'Baturiti / Candikuning';
+      if (lat > -8.58 && lat < -8.50) return 'Delod Peken';
+      if (lat > -8.67 && lat < -8.63 && lng > 115.13 && lng < 115.16) return 'Tibubeneng (Berawa)';
       if (lat < -8.70 && lng < 115.20) return 'Tuban';
-      if (lat > -8.35 && lat < -8.25) return 'Baturiti';
-      if (lat > -8.56 && lat < -8.50) return 'Delod Peken';
     }
+
+    // 2. Keyword Fallback
+    const text = (String(satker) + ' ' + String(namaBarang)).toLowerCase();
+    if (text.includes('baturiti') || text.includes('bedugul') || text.includes('candikuning')) return 'Baturiti / Candikuning';
+    if (text.includes('tabanan')) return 'Delod Peken';
+
     return 'Renon';
   },
 
