@@ -86,7 +86,7 @@ const DataEngine = {
         kabupaten: kabupaten,
         kecamatan: kecamatan,
         kelurahan: kelurahan,
-        alamat: `${row.nama_satker} - ${row.nama_barang || jenis}`,
+        alamat: row.alamat || `${kelurahan}, ${kecamatan}, ${kabupaten}`,
         lat: lat,
         lng: lng,
         hasCoordinates: lat !== null && lng !== null,

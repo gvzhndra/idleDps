@@ -473,11 +473,11 @@ const App = {
         ${photoSlides}
       </div>
 
-      <div class="mb-3">
+      <div class="mb-4">
         <span class="badge badge-pastel-blue">${asset.kategori} (${asset.jenisBarang})</span>
-        <h3 style="font-size:15px; font-weight:800; margin-top:4px; color:var(--text-main);">${asset.namaBarang}</h3>
-        <p style="font-size:11.5px; color:var(--text-muted);"><i class="fa-solid fa-building-user text-primary"></i> ${asset.namaSatker}</p>
-        <p style="font-size:11px; color:var(--text-muted);"><i class="fa-solid fa-map-location-dot"></i> ${asset.alamat}</p>
+        <h3 style="font-size:15px; font-weight:800; margin-top:6px; color:var(--text-main); line-height:1.4;">${asset.namaBarang}</h3>
+        <p style="font-size:11.5px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-building-user text-primary" style="margin-right:6px;"></i> ${asset.namaSatker}</p>
+        <p style="font-size:11.5px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-id-card text-secondary" style="margin-right:6px;"></i> Kode Satker: <strong style="color:var(--text-main);">${asset.kodeSatker || '-'}</strong> &bull; <i class="fa-solid fa-location-dot text-danger" style="margin-left:4px; margin-right:4px;"></i> ${asset.kabupaten}</p>
       </div>
 
       <!-- DIRECT GOOGLE MAPS & MULTI-PHOTO UPLOAD BUTTON GROUP WITH CLEAR GAP -->
