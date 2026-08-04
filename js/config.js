@@ -61,7 +61,7 @@ const CONFIG = {
 
   // Google Apps Script Integration
   APPS_SCRIPT: {
-    WEB_APP_URL: localStorage.getItem('bmn_idle_apps_script_url') || '',
+    WEB_APP_URL: localStorage.getItem('bmn_idle_apps_script_url') || 'https://script.google.com/macros/s/AKfycbzWqyN97KaeTwwFXBMPDCanTQizU35KXSMNBMMJcjLhmZGki1tLuMq9X2oeTB04HhjH/exec',
     SHEET_NAME: 'BMN_Idle'
   }
 };
