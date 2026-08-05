@@ -425,6 +425,33 @@ const App = {
     this.syncCheckboxesUI();
   },
 
+  toggleKementerianAccordion(kIdx) {
+    const el = document.getElementById(`kem-body-${kIdx}`);
+    const icon = document.getElementById(`kem-icon-${kIdx}`);
+    if (!el) return;
+
+    if (el.style.display === 'none') {
+      el.style.display = 'block';
+      if (icon) icon.style.transform = 'rotate(0deg)';
+    } else {
+      el.style.display = 'none';
+      if (icon) icon.style.transform = 'rotate(-90deg)';
+    }
+  },
+
+  filterBySatker(kemKey, satkerName) {
+    const filteredAssets = this.activeAssets.filter(a => a.kementerian === kemKey && a.namaSatker === satkerName);
+    if (filteredAssets.length > 0 && typeof MapEngine !== 'undefined') {
+      MapEngine.renderBMNMarkers(filteredAssets, (asset) => this.selectAsset(asset.id));
+      if (typeof L !== 'undefined') {
+        const bounds = L.latLngBounds(filteredAssets.map(a => [a.lat, a.lng]));
+        if (bounds.isValid() && MapEngine.map) {
+          MapEngine.map.fitBounds(bounds, { padding: [50, 50], maxZoom: 16 });
+        }
+      }
+    }
+  },
+
   renderAllAssetsList() {
     const container = document.getElementById('all-assets-list-root');
     if (!container) return;
