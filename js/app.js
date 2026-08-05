@@ -542,10 +542,16 @@ const App = {
     if (!container) return;
 
     this.currentPhotoIndex = 0;
-
     const savedUser = this.currentUser || JSON.parse(localStorage.getItem('bmn_idle_user') || 'null');
     const userRole = savedUser ? (savedUser.role || savedUser.username || '') : 'viewer';
     const canEditOrUpload = userRole !== 'Viewer' && userRole !== 'viewer' && userRole !== 'tamu' && userRole !== '';
+    const isAdmin = savedUser && (
+      savedUser.role === 'Admin KPKNL' ||
+      savedUser.username === 'admin_kpknl' ||
+      savedUser.role === 'admin_kpknl' ||
+      savedUser.role === 'Admin' ||
+      savedUser.role === 'admin'
+    );
 
     const distData = SpatialEngine.getDistanceToKPKNL(asset.lat, asset.lng);
     const multiDist = SpatialEngine.getMultiLevelDistances(asset.lat, asset.lng, asset.kabupaten, asset.kecamatan, asset.kelurahan);
@@ -590,22 +596,31 @@ const App = {
 
       <div class="mb-4">
         <span class="badge badge-pastel-blue">${asset.kategori} (${asset.jenisBarang})</span>
+        ${asset.isPinned ? `<span class="badge" style="background:linear-gradient(135deg, #e74c3c, #c0392b); color:#ffffff; font-size:10.5px; padding:4px 8px; border-radius:6px; margin-left:6px;"><i class="fa-solid fa-thumbtack"></i> Prioritas Idle</span>` : ''}
         <h3 style="font-size:15px; font-weight:800; margin-top:6px; color:var(--text-main); line-height:1.4;">${asset.namaBarang}</h3>
         <p style="font-size:11.5px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-building-user text-primary" style="margin-right:6px;"></i> ${asset.namaSatker}</p>
         <p style="font-size:11.5px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-id-card text-secondary" style="margin-right:6px;"></i> Kode Satker: <strong style="color:var(--text-main);">${asset.kodeSatker || '-'}</strong> &bull; <i class="fa-solid fa-location-dot text-danger" style="margin-left:4px; margin-right:4px;"></i> ${asset.kabupaten}</p>
       </div>
 
       <!-- DIRECT GOOGLE MAPS & MULTI-PHOTO UPLOAD BUTTONS IN SEPARATE BLOCK CONTAINERS -->
-      <div style="margin-bottom: 16px !important; display: block !important;">
+      <div style="margin-bottom: 12px !important; display: block !important;">
         <a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-block" style="display: flex !important; width: 100% !important; background: #eafaf1 !important; color: #27ae60 !important; border: 1px solid #2ecc71 !important; font-weight: 700; padding: 12px 14px; border-radius: 10px; text-decoration: none;">
           <i class="fa-solid fa-map-location-dot" style="font-size: 14px; margin-right: 8px;"></i> Buka Koordinat di Google Maps (${asset.lat.toFixed(5)}, ${asset.lng.toFixed(5)})
         </a>
       </div>
 
       ${canEditOrUpload ? `
-      <div style="margin-bottom: 24px !important; display: block !important;">
+      <div style="margin-bottom: 12px !important; display: block !important;">
         <button class="btn btn-primary btn-block" style="display: flex !important; width: 100% !important; padding: 12px 14px; border-radius: 10px; box-shadow: 0 4px 14px rgba(74, 144, 226, 0.3);" onclick="App.openUploadPhotoModal('${asset.id}')">
           <i class="fa-solid fa-images" style="font-size: 14px; margin-right: 8px;"></i> Upload Multi-Foto Aset (Up to 5)
+        </button>
+      </div>
+      ` : ''}
+
+      ${isAdmin ? `
+      <div style="margin-bottom: 24px !important; display: block !important;">
+        <button class="btn btn-block" style="${asset.isPinned ? 'background: linear-gradient(135deg, #e74c3c, #c0392b); color: #ffffff; box-shadow: 0 4px 14px rgba(231, 76, 60, 0.35);' : 'background: #ffffff; color: #2c3e50; border: 1.5px solid #e74c3c;'} display: flex !important; width: 100% !important; font-weight: 700; padding: 12px 14px; border-radius: 10px; align-items: center; justify-content: center; font-size: 13px;" onclick="App.togglePinAsset('${asset.id}')" title="Toggle status prioritas pin idle">
+          <i class="fa-solid fa-thumbtack" style="font-size: 14px; margin-right: 8px; ${asset.isPinned ? 'transform: rotate(-45deg);' : ''}"></i> ${asset.isPinned ? '📌 Prioritas Idle (Klik untuk Lepas Pin)' : '📌 Pin Aset Sebagai Prioritas Idle'}
         </button>
       </div>
       ` : ''}
@@ -651,41 +666,13 @@ const App = {
 
       <!-- NIGHTTIME LIGHTS LUMINOSITY & CROWD CENTER INDEX -->
       <div class="detail-section-card mb-4" style="background:#fef5e7; border:1px solid #f39c12;">
-        <h4 class="section-title mb-1" style="color:#e67e22;">
-          <i class="fa-solid fa-lightbulb" style="margin-right:6px;"></i> Nighttime Lights & Activity Index (VIIRS Proxy)
-        </h4>
-        <p style="font-size:11px; color:#1e293b;" class="mb-2">
-          <strong>Pusat Keramaian Nightlife/Komersial Terdekat:</strong> ${multiDist.nighttimeHub ? multiDist.nighttimeHub.name : 'Pusat Lokal'} <span style="color:#e67e22; font-weight:700;">(${multiDist.nighttimeHub ? multiDist.nighttimeHub.distanceKm + ' km' : '-'})</span>
-        </p>
-
-        <!-- Visual Score Bar -->
-        <div style="margin-bottom:10px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
-            <span style="font-size:11px; font-weight:700; color:#e67e22;">Skor Intensitas Cahaya Malam:</span>
-            <span style="font-size:13px; font-weight:800; color:#1e293b;">${multiDist.nightLightScore}<span style="font-size:10px; font-weight:600; color:#64748b;"> / 100</span></span>
-          </div>
-          <!-- Bar track -->
-          <div style="position:relative; height:18px; background:linear-gradient(90deg, #93c5fd 0%, #6ee7b7 40%, #fde68a 65%, #fb923c 80%, #f87171 100%); border-radius:20px; overflow:hidden; border:1px solid rgba(0,0,0,0.1);">
-            <!-- Animated fill indicator -->
-            <div style="position:absolute; top:0; left:0; height:100%; width:${multiDist.nightLightScore}%; background:rgba(0,0,0,0.25); border-radius:20px; transition: width 0.8s ease;"></div>
-            <!-- Needle marker -->
-            <div style="position:absolute; top:-3px; left:calc(${multiDist.nightLightScore}% - 9px); width:18px; height:24px; background:#1e293b; border-radius:4px; border:2px solid #ffffff; box-shadow:0 2px 8px rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center;">
-              <div style="width:4px; height:4px; background:#ffffff; border-radius:50%;"></div>
-            </div>
-          </div>
-          <!-- Zone labels -->
-          <div style="display:flex; justify-content:space-between; margin-top:5px; font-size:9px; color:#94a3b8; font-weight:600;">
-            <span>Rendah<br><em style="font-weight:400;">&lt;50</em></span>
-            <span style="text-align:center;">Sedang<br><em style="font-weight:400;">50–70</em></span>
-            <span style="text-align:center;">Tinggi<br><em style="font-weight:400;">70–85</em></span>
-            <span style="text-align:right;">Sangat Tinggi<br><em style="font-weight:400;">&gt;85</em></span>
-          </div>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h4 class="section-title mb-0" style="color:#d35400;"><i class="fa-solid fa-moon text-warning" style="margin-right:6px;"></i> Nighttime Lights & Koridor Bisnis</h4>
+          <span class="badge" style="background:#f39c12; color:#fff; font-size:10.5px;">Skor Luminositas: ${multiDist.nightLightScore}/100</span>
         </div>
-
-        <!-- Classification result -->
-        <div style="background:rgba(255,255,255,0.8); border:1px solid rgba(243,156,18,0.3); border-radius:8px; padding:8px 12px; font-size:10.5px; color:#1e293b; line-height:1.6;">
-          <strong>Klasifikasi:</strong> ${multiDist.nighttimeHub ? multiDist.nighttimeHub.tier : 'Sedang'} &bull; 
-          Berdasarkan pendekatan <em>VIIRS Nighttime Light Index</em> (NASA/NOAA) yang digunakan sebagai proxy kepadatan aktivitas ekonomi malam. Skor ≥70 mengindikasikan zona komersial aktif yang berpotensi tinggi untuk pemanfaatan BMN.
+        <div style="font-size:11.5px; line-height:1.5; color:#5d4037;">
+          <p class="mb-1">Pusat Aktivitas / Nightlife Terdekat: <strong>${multiDist.nighttimeHub.name}</strong> (${multiDist.nighttimeHub.distanceKm} km)</p>
+          <p class="mb-0">Tier Aktivitas Malam: <strong class="badge badge-pastel-orange" style="font-size:10.5px;">${multiDist.nighttimeHub.tier}</strong></p>
         </div>
       </div>
 
@@ -718,13 +705,10 @@ const App = {
           ${recommendation.rationale.map(r => `<li><i class="fa-solid fa-circle-check"></i> ${r}</li>`).join('')}
         </ul>
 
-        ${(this.currentUser && (this.currentUser.role === 'Admin KPKNL' || this.currentUser.username === 'admin_kpknl')) ? `
-          <div class="mt-3 pt-2 border-top" style="border-top:1px dashed rgba(243, 156, 18, 0.4) !important; display: flex; gap: 8px;">
-            <button class="btn" style="${asset.isPinned ? 'background: linear-gradient(135deg, #e74c3c, #c0392b); color: #ffffff; box-shadow: 0 4px 12px rgba(231, 76, 60, 0.35);' : 'background: #ffffff; color: #2c3e50; border: 1px solid #cbd5e1;'} font-weight: 700; padding: 10px 12px; flex: 1.2; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11.5px;" onclick="App.togglePinAsset('${asset.id}')" title="Toggle status prioritas pin idle">
-              <i class="fa-solid fa-thumbtack" style="font-size: 13px; ${asset.isPinned ? 'transform: rotate(-45deg);' : ''}"></i> ${asset.isPinned ? 'Prioritas Idle (Lepas Pin)' : 'Pin Aset Prioritas Idle'}
-            </button>
-            <button class="btn btn-warning" style="background: linear-gradient(135deg, #f39c12, #d35400); color: #ffffff; border: none; font-weight: 700; padding: 10px 12px; box-shadow: 0 4px 14px rgba(243, 156, 18, 0.35); border-radius: 8px; cursor: pointer; white-space: nowrap; font-size: 11.5px;" onclick="App.openEditAssetModal('${asset.id}')" title="Edit Data & Rekomendasi Aset">
-              <i class="fa-solid fa-pen-to-square" style="font-size: 13px; margin-right: 4px;"></i> Edit
+        ${isAdmin ? `
+          <div class="mt-3 pt-2 border-top" style="border-top:1px dashed rgba(243, 156, 18, 0.4) !important;">
+            <button class="btn btn-warning btn-block" style="background:linear-gradient(135deg, #f39c12, #d35400); color:#ffffff; border:none; font-weight:700; padding:10px 14px; width:100%; box-shadow: 0 4px 14px rgba(243, 156, 18, 0.35); border-radius:8px; cursor:pointer;" onclick="App.openEditAssetModal('${asset.id}')">
+              <i class="fa-solid fa-pen-to-square" style="font-size:14px; margin-right:6px;"></i> Edit Data & Rekomendasi Aset (Admin KPKNL)
             </button>
           </div>
         ` : ''}
