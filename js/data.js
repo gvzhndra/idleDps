@@ -96,6 +96,8 @@ const DataEngine = {
       const kecamatan = this.detectKecamatan(satkerName, barangName, lat, lng);
       const kelurahan = this.detectKelurahan(satkerName, barangName, lat, lng);
 
+      const isPinnedFromRow = row.is_pinned === true || row.is_pinned === 'TRUE' || row.is_pinned === '1' || row.isPinned === true;
+
       const item = {
         id: row.id || (kodeSatker && kodeBarang ? `${kodeSatker}-${kodeBarang}-${nupVal}` : `BMN-${idx + 1}`),
         kodeSatker: kodeSatker,
@@ -125,6 +127,7 @@ const DataEngine = {
         rekomendasiUser: row.rekomendasi_user || row.rekomendasi || row['HASIL JAWABAN'] || '',
         catatanTim: row['CATATAN_REKONSILIASI'] || row.catatan_tim || row['PEMETAAN AWAL BERBASIS KEYWORD'] || '',
         fotoList: fotoList,
+        isPinned: isPinnedFromRow,
         suratJawaban: row['SURAT JAWABAN PENGGUNA BARANG'] || '-',
         tglSurat: row['TANGGAL SURAT JAWABAN PENGGUNA BARANG'] || '-',
         tahapBerikut: row['TAHAP_BERIKUT'] || 'PENELITIAN'
@@ -165,15 +168,48 @@ const DataEngine = {
             if (e.rekomendasiUser) asset.rekomendasiUser = e.rekomendasiUser;
             if (e.catatanTim) asset.catatanTim = e.catatanTim;
             if (e.luas !== undefined) {
-              asset.luas = e.luas;
-              asset.luasTanah = e.luas;
+              asset.luas = parseFloat(e.luas) || asset.luas;
+              asset.luasTanah = asset.luas;
             }
           }
         });
       }
+
+      // 3. Load persistent pinned assets (Admin KPKNL)
+      const storedPins = localStorage.getItem('bmn_pinned_assets');
+      if (storedPins) {
+        const pinMap = JSON.parse(storedPins);
+        [...this.activeAssets, ...this.pendingAssets].forEach(asset => {
+          if (pinMap[asset.id] !== undefined) {
+            asset.isPinned = Boolean(pinMap[asset.id]);
+          }
+        });
+      }
     } catch (e) {
-      console.warn('Error loading custom overrides from localStorage:', e);
+      console.warn('LocalStorage overrides error:', e);
     }
+  },
+
+  togglePinAsset(assetId) {
+    const all = [...this.activeAssets, ...this.pendingAssets];
+    const asset = all.find(a => a.id === assetId);
+    if (!asset) return false;
+
+    asset.isPinned = !asset.isPinned;
+
+    try {
+      const storedPins = JSON.parse(localStorage.getItem('bmn_pinned_assets') || '{}');
+      if (asset.isPinned) {
+        storedPins[asset.id] = true;
+      } else {
+        delete storedPins[asset.id];
+      }
+      localStorage.setItem('bmn_pinned_assets', JSON.stringify(storedPins));
+    } catch(e) {
+      console.warn('LocalStorage pin error:', e);
+    }
+
+    return asset.isPinned;
   },
 
   detectKabupaten(satker, namaBarang, lat, lng) {
@@ -268,6 +304,7 @@ const DataEngine = {
           name: kem,
           satkers: {},
           totalAssets: 0,
+          totalPinned: 0,
           totalLuas: 0
         };
       }
@@ -276,13 +313,29 @@ const DataEngine = {
         tree[kem].satkers[satker] = {
           name: satker,
           kodeSatker: asset.kodeSatker,
+          pinnedCount: 0,
           assets: []
         };
       }
 
       tree[kem].satkers[satker].assets.push(asset);
+      if (asset.isPinned) {
+        tree[kem].satkers[satker].pinnedCount += 1;
+        tree[kem].totalPinned += 1;
+      }
       tree[kem].totalAssets += 1;
       tree[kem].totalLuas += asset.luas;
+    });
+
+    // ── Sort assets inside each Satker: Pinned assets float to top ─────────────
+    Object.keys(tree).forEach(kemKey => {
+      Object.keys(tree[kemKey].satkers).forEach(satKey => {
+        tree[kemKey].satkers[satKey].assets.sort((a, b) => {
+          if (a.isPinned && !b.isPinned) return -1;
+          if (!a.isPinned && b.isPinned) return 1;
+          return a.namaBarang.localeCompare(b.namaBarang);
+        });
+      });
     });
 
     return tree;

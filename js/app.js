@@ -331,9 +331,25 @@ const App = {
 
     let html = '';
 
-    Object.keys(tree).forEach((kemKey, kIdx) => {
+    // Sort Kementerian keys by totalPinned DESC, then totalAssets DESC
+    const kemKeys = Object.keys(tree).sort((aKey, bKey) => {
+      const pA = tree[aKey].totalPinned || 0;
+      const pB = tree[bKey].totalPinned || 0;
+      if (pA !== pB) return pB - pA;
+      return tree[bKey].totalAssets - tree[aKey].totalAssets;
+    });
+
+    kemKeys.forEach((kemKey, kIdx) => {
       const kemData = tree[kemKey];
       const satkerKeys = Object.keys(kemData.satkers);
+
+      // Sort Satkers: Satkers with pinned assets float to top
+      satkerKeys.sort((aKey, bKey) => {
+        const pA = kemData.satkers[aKey].pinnedCount || 0;
+        const pB = kemData.satkers[bKey].pinnedCount || 0;
+        if (pA !== pB) return pB - pA;
+        return kemData.satkers[bKey].assets.length - kemData.satkers[aKey].assets.length;
+      });
 
       let satkerContentHtml = '';
 
@@ -345,9 +361,10 @@ const App = {
           const isSelected = this.selectedAsset && this.selectedAsset.id === asset.id ? 'active' : '';
 
           return `
-            <div class="asset-card ${isSelected}">
+            <div class="asset-card ${isSelected}" style="position: relative;">
+              ${asset.isPinned ? `<span class="badge" style="background:linear-gradient(135deg, #e74c3c, #c0392b); color:#ffffff; font-size:9.5px; padding:3px 7px; border-radius:6px; position:absolute; top:6px; right:6px; z-index:3; box-shadow: 0 2px 6px rgba(231, 76, 60, 0.4);"><i class="fa-solid fa-thumbtack" style="margin-right:3px;"></i> Prioritas</span>` : ''}
               <input type="checkbox" class="custom-checkbox asset-export-cb" data-asset-id="${asset.id}" ${isChecked} onchange="App.toggleSelectAssetForExport('${asset.id}', this.checked)">
-              <div class="asset-card-thumb" style="background-image: url('${asset.fotoList[0] || ''}')" onclick="App.selectAsset('${asset.id}')">
+              <div class="asset-card-thumb" style="background-image: url('${this.formatPhotoUrl(asset.fotoList[0] || '')}')" onclick="App.selectAsset('${asset.id}')">
                 <span class="asset-card-category">${asset.kategori}</span>
               </div>
               <div class="asset-card-content" onclick="App.selectAsset('${asset.id}')">
@@ -364,29 +381,40 @@ const App = {
           `;
         }).join('');
 
+        const pinnedBadge = satkerObj.pinnedCount > 0 ? `
+          <span class="badge" style="background:#e74c3c; color:#ffffff; font-size:10px; padding:3px 8px; border-radius:10px; margin-left:6px;"><i class="fa-solid fa-thumbtack"></i> ${satkerObj.pinnedCount} Prioritas</span>
+        ` : '';
+
         satkerContentHtml += `
           <div class="accordion-satker-block">
             <div class="accordion-satker-header" onclick="App.filterBySatker('${kemKey}', '${sKey}')">
-              <span style="font-weight:700; font-size:11.5px; color:var(--text-main);">${satkerObj.name}</span>
-              <span class="badge badge-pastel-purple" style="font-size:9px; flex-shrink:0;">${satkerObj.assets.length} Aset</span>
+              <span style="font-weight:700; font-size:11.5px; color:var(--text-main);">${satkerObj.name} ${pinnedBadge}</span>
+              <span class="badge badge-pastel-blue" style="font-size:10.5px;">${satkerObj.assets.length} Unit</span>
             </div>
-            <div class="cluster-asset-grid">
+            <div class="satker-assets-grid p-2">
               ${cardsHtml}
             </div>
           </div>
         `;
       });
 
+      const kemPinnedBadge = kemData.totalPinned > 0 ? `
+        <span class="badge" style="background:#e74c3c; color:#ffffff; font-size:10.5px; padding:3px 8px; border-radius:10px; margin-left:8px;"><i class="fa-solid fa-thumbtack"></i> ${kemData.totalPinned} Prioritas</span>
+      ` : '';
+
       html += `
-        <div class="accordion-group">
-          <div class="accordion-kem-header" onclick="App.toggleAccordionBlock('kem-block-${kIdx}', '${kemKey}')">
-            <div class="kem-title-text">${kemData.name}</div>
-            <div class="kem-badge-wrapper">
-              <span class="badge badge-pastel-blue" style="font-size:10px; font-weight:800;">${kemData.totalAssets} Unit BMN</span>
-              <i class="fa-solid fa-chevron-down chevron-icon" id="chevron-kem-block-${kIdx}"></i>
+        <div class="accordion-item mb-2" style="border-radius:10px; border:1px solid var(--border-color); overflow:hidden;">
+          <div class="accordion-header d-flex justify-content-between align-items-center p-3" style="background:#ffffff; cursor:pointer;" onclick="App.toggleKementerianAccordion(${kIdx})">
+            <div class="d-flex align-items-center gap-2">
+              <i class="fa-solid fa-building-columns text-primary" style="font-size:14px;"></i>
+              <strong style="font-size:12.5px; color:var(--text-main);">${kemData.name} ${kemPinnedBadge}</strong>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <span class="badge badge-pastel-mint" style="font-size:11px;">${kemData.totalAssets} Unit</span>
+              <i class="fa-solid fa-chevron-down text-muted" id="kem-icon-${kIdx}" style="font-size:12px; transition:transform 0.2s;"></i>
             </div>
           </div>
-          <div class="accordion-body-content" id="kem-block-${kIdx}">
+          <div class="accordion-body" id="kem-body-${kIdx}" style="display:${kIdx === 0 ? 'block' : 'none'}; background:#f8fafc; border-top:1px solid var(--border-color);">
             ${satkerContentHtml}
           </div>
         </div>
@@ -394,74 +422,50 @@ const App = {
     });
 
     container.innerHTML = html;
-  },
-
-  toggleAccordionBlock(blockId, kemKey) {
-    const el = document.getElementById(blockId);
-    const chevron = document.getElementById(`chevron-${blockId}`);
-    if (!el) return;
-
-    if (el.style.display === 'none') {
-      el.style.display = 'block';
-      if (chevron) chevron.className = 'fa-solid fa-chevron-down chevron-icon';
-    } else {
-      el.style.display = 'none';
-      if (chevron) chevron.className = 'fa-solid fa-chevron-right chevron-icon';
-    }
-
-    if (kemKey) {
-      const filteredAssets = this.activeAssets.filter(a => a.kementerian === kemKey);
-      if (filteredAssets.length > 0) {
-        MapEngine.renderBMNMarkers(filteredAssets, (asset) => this.selectAsset(asset.id));
-        const bounds = L.latLngBounds(filteredAssets.map(a => [a.lat, a.lng]));
-        if (bounds.isValid() && MapEngine.map) {
-          MapEngine.map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
-        }
-      }
-    }
-  },
-
-  filterBySatker(kemKey, satkerName) {
-    const filteredAssets = this.activeAssets.filter(a => a.kementerian === kemKey && a.namaSatker === satkerName);
-    if (filteredAssets.length > 0) {
-      MapEngine.renderBMNMarkers(filteredAssets, (asset) => this.selectAsset(asset.id));
-      const bounds = L.latLngBounds(filteredAssets.map(a => [a.lat, a.lng]));
-      if (bounds.isValid() && MapEngine.map) {
-        MapEngine.map.fitBounds(bounds, { padding: [50, 50], maxZoom: 16 });
-      }
-    }
+    this.syncCheckboxesUI();
   },
 
   renderAllAssetsList() {
-    const container = document.getElementById('all-assets-list');
+    const container = document.getElementById('all-assets-list-root');
     if (!container) return;
 
-    const filtered = this.activeAssets.filter(asset => {
-      const matchKab = this.filters.kabupaten === 'all' || asset.kabupaten === this.filters.kabupaten;
-      const q = this.filters.search;
-      const matchSearch = !q ||
-        asset.namaBarang.toLowerCase().includes(q) ||
-        asset.namaSatker.toLowerCase().includes(q) ||
-        asset.kementerian.toLowerCase().includes(q) ||
-        asset.kodeBarang.toLowerCase().includes(q) ||
-        asset.nup.toLowerCase().includes(q);
+    let list = [...this.activeAssets];
 
-      return matchKab && matchSearch;
+    if (this.filters.kabupaten && this.filters.kabupaten !== 'all') {
+      list = list.filter(a => a.kabupaten === this.filters.kabupaten);
+    }
+
+    if (this.filters.search) {
+      const q = this.filters.search.toLowerCase();
+      list = list.filter(a =>
+        a.namaBarang.toLowerCase().includes(q) ||
+        a.namaSatker.toLowerCase().includes(q) ||
+        a.kodeBarang.toLowerCase().includes(q) ||
+        a.kabupaten.toLowerCase().includes(q)
+      );
+    }
+
+    // Sort: Pinned assets first
+    list.sort((a, b) => {
+      if (a.isPinned && !b.isPinned) return -1;
+      if (!a.isPinned && b.isPinned) return 1;
+      return a.namaBarang.localeCompare(b.namaBarang);
     });
 
-    if (filtered.length === 0) {
-      container.innerHTML = `<div class="p-3 text-center text-muted">Tidak ada aset terkoordinat yang sesuai filter.</div>`;
+    if (list.length === 0) {
+      container.innerHTML = `<div class="p-4 text-center text-muted">Tidak ada aset yang cocok dengan filter pencarian.</div>`;
       return;
     }
 
-    container.innerHTML = filtered.map(asset => {
+    const html = list.map(asset => {
       const isChecked = this.selectedExportAssetIds.has(asset.id) ? 'checked' : '';
       const isSelected = this.selectedAsset && this.selectedAsset.id === asset.id ? 'active' : '';
 
       return `
-        <div class="asset-card ${isSelected}">
+        <div class="asset-card ${isSelected} mb-2" style="position: relative;">
+          ${asset.isPinned ? `<span class="badge" style="background:linear-gradient(135deg, #e74c3c, #c0392b); color:#ffffff; font-size:9.5px; padding:3px 7px; border-radius:6px; position:absolute; top:6px; right:6px; z-index:3; box-shadow: 0 2px 6px rgba(231, 76, 60, 0.4);"><i class="fa-solid fa-thumbtack" style="margin-right:3px;"></i> Prioritas</span>` : ''}
           <input type="checkbox" class="custom-checkbox asset-export-cb" data-asset-id="${asset.id}" ${isChecked} onchange="App.toggleSelectAssetForExport('${asset.id}', this.checked)">
-          <div class="asset-card-thumb" style="background-image: url('${asset.fotoList[0] || ''}')" onclick="App.selectAsset('${asset.id}')">
+          <div class="asset-card-thumb" style="background-image: url('${this.formatPhotoUrl(asset.fotoList[0] || '')}')" onclick="App.selectAsset('${asset.id}')">
             <span class="asset-card-category">${asset.kategori}</span>
           </div>
           <div class="asset-card-content" onclick="App.selectAsset('${asset.id}')">
@@ -472,11 +476,15 @@ const App = {
             </div>
             <div class="asset-card-footer">
               <div class="asset-card-area"><i class="fa-solid fa-vector-square"></i> Luas: ${SpatialEngine.formatLuas(asset.luas)}</div>
+              <span class="badge badge-pastel-blue" style="font-size:10px;">NUP ${asset.nup}</span>
             </div>
           </div>
         </div>
       `;
     }).join('');
+
+    container.innerHTML = html;
+    this.syncCheckboxesUI();
   },
 
   async selectAsset(assetId) {
@@ -711,14 +719,59 @@ const App = {
         </ul>
 
         ${(this.currentUser && (this.currentUser.role === 'Admin KPKNL' || this.currentUser.username === 'admin_kpknl')) ? `
-          <div class="mt-3 pt-2 border-top" style="border-top:1px dashed rgba(243, 156, 18, 0.4) !important;">
-            <button class="btn btn-warning btn-block" style="background:linear-gradient(135deg, #f39c12, #d35400); color:#ffffff; border:none; font-weight:700; padding:10px 14px; width:100%; box-shadow: 0 4px 14px rgba(243, 156, 18, 0.35); border-radius:8px; cursor:pointer;" onclick="App.openEditAssetModal('${asset.id}')">
-              <i class="fa-solid fa-pen-to-square" style="font-size:14px; margin-right:6px;"></i> Edit Data & Rekomendasi Aset (Admin KPKNL)
+          <div class="mt-3 pt-2 border-top" style="border-top:1px dashed rgba(243, 156, 18, 0.4) !important; display: flex; gap: 8px;">
+            <button class="btn" style="${asset.isPinned ? 'background: linear-gradient(135deg, #e74c3c, #c0392b); color: #ffffff; box-shadow: 0 4px 12px rgba(231, 76, 60, 0.35);' : 'background: #ffffff; color: #2c3e50; border: 1px solid #cbd5e1;'} font-weight: 700; padding: 10px 12px; flex: 1.2; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11.5px;" onclick="App.togglePinAsset('${asset.id}')" title="Toggle status prioritas pin idle">
+              <i class="fa-solid fa-thumbtack" style="font-size: 13px; ${asset.isPinned ? 'transform: rotate(-45deg);' : ''}"></i> ${asset.isPinned ? 'Prioritas Idle (Lepas Pin)' : 'Pin Aset Prioritas Idle'}
+            </button>
+            <button class="btn btn-warning" style="background: linear-gradient(135deg, #f39c12, #d35400); color: #ffffff; border: none; font-weight: 700; padding: 10px 12px; box-shadow: 0 4px 14px rgba(243, 156, 18, 0.35); border-radius: 8px; cursor: pointer; white-space: nowrap; font-size: 11.5px;" onclick="App.openEditAssetModal('${asset.id}')" title="Edit Data & Rekomendasi Aset">
+              <i class="fa-solid fa-pen-to-square" style="font-size: 13px; margin-right: 4px;"></i> Edit
             </button>
           </div>
         ` : ''}
       </div>
     `;
+  },
+
+  async togglePinAsset(assetId) {
+    if (typeof DataEngine === 'undefined') return;
+
+    const isPinnedNow = DataEngine.togglePinAsset(assetId);
+    const asset = this.getAsset(assetId);
+
+    if (isPinnedNow) {
+      this.showToast(`📌 ${asset ? asset.namaBarang : 'Aset'} ditandai sebagai Prioritas Idle!`, 'success');
+    } else {
+      this.showToast(`📌 Tanda pin aset dilepas.`, 'info');
+    }
+
+    // Sync pin state to Google Sheet via Apps Script Web App
+    if (CONFIG.APPS_SCRIPT.WEB_APP_URL && asset) {
+      fetch(CONFIG.APPS_SCRIPT.WEB_APP_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'updateAsset',
+          assetId: asset.id,
+          kodeSatker: asset.kodeSatker,
+          kodeBarang: asset.kodeBarang,
+          nup: asset.nup,
+          isPinned: isPinnedNow
+        })
+      }).catch(err => console.log('Apps Script pin sync error:', err));
+    }
+
+    // Re-render UI views immediately
+    this.renderClusterAccordion();
+    this.renderAllAssetsList();
+    if (this.selectedAsset && this.selectedAsset.id === assetId) {
+      const refreshed = this.getAsset(assetId);
+      if (refreshed) {
+        this.renderDetailPanel(
+          refreshed,
+          SpatialEngine.getCatchmentAnalysis(refreshed.lat, refreshed.lng),
+          RecommendationEngine.getRecommendation(refreshed)
+        );
+      }
+    }
   },
 
   openUploadPhotoModal(assetId) {

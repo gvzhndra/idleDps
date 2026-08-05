@@ -261,6 +261,11 @@ function handleUpdateAssetInSheet(contents) {
   var rekomendasiCol = headers.indexOf('rekomendasi_user');
   var catatanCol = headers.indexOf('CATATAN_REKONSILIASI');
   var luasCol = headers.indexOf('luas');
+  var pinCol = headers.indexOf('is_pinned');
+  if (pinCol === -1 && contents.isPinned !== undefined) {
+    pinCol = headers.length;
+    sheet.getRange(1, pinCol + 1).setValue('is_pinned');
+  }
 
   for (var i = 1; i < data.length; i++) {
     var row = data[i];
@@ -276,6 +281,7 @@ function handleUpdateAssetInSheet(contents) {
       if (rekomendasiCol >= 0 && contents.rekomendasiUser) sheet.getRange(i + 1, rekomendasiCol + 1).setValue(contents.rekomendasiUser);
       if (catatanCol >= 0 && contents.catatanTim) sheet.getRange(i + 1, catatanCol + 1).setValue(contents.catatanTim);
       if (luasCol >= 0 && contents.luas !== undefined) sheet.getRange(i + 1, luasCol + 1).setValue(contents.luas);
+      if (pinCol >= 0 && contents.isPinned !== undefined) sheet.getRange(i + 1, pinCol + 1).setValue(contents.isPinned ? 'TRUE' : 'FALSE');
 
       return createJsonResponse({ status: 'success', message: 'Data aset berhasil diperbarui di Google Sheets.' });
     }
