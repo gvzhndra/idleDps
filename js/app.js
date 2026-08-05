@@ -76,8 +76,35 @@ const App = {
     this.bindEvents();
     this.updateExportCountBadge();
 
-    // Load permanent photos from Google Sheet / Drive in background
+    // Load permanent photos and live dataset from Google Sheet in background
     this.loadPhotosFromSheet();
+    this.loadLiveDatasetFromSheet();
+  },
+
+  /**
+   * Fetches live asset rows directly from Google Sheets via Apps Script (?action=getData).
+   * Automatically moves any assets that have newly filled coordinates in Google Sheets
+   * into activeAssets, rendering them in the left panel and on the map!
+   */
+  async loadLiveDatasetFromSheet() {
+    if (typeof DataEngine === 'undefined') return;
+    const synced = await DataEngine.syncLiveDatasetFromSheet();
+    if (synced) {
+      this.activeAssets = DataEngine.activeAssets || [];
+
+      // Update PPT export selection with new active assets
+      this.activeAssets.forEach(a => this.selectedExportAssetIds.add(a.id));
+
+      // Refresh UI components with live Google Sheets data
+      this.populateKabupatenOptions();
+      this.updateKPIStats();
+      this.renderClusterAccordion();
+      this.renderAllAssetsList();
+
+      if (typeof MapEngine !== 'undefined' && MapEngine.map) {
+        MapEngine.renderBMNMarkers(this.activeAssets, (asset) => this.selectAsset(asset.id));
+      }
+    }
   },
 
   /**

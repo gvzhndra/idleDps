@@ -12,12 +12,30 @@ const DataEngine = {
     this.processRawDataset();
   },
 
+  async syncLiveDatasetFromSheet() {
+    if (typeof CONFIG === 'undefined' || !CONFIG.APPS_SCRIPT || !CONFIG.APPS_SCRIPT.WEB_APP_URL) return false;
+    try {
+      const url = CONFIG.APPS_SCRIPT.WEB_APP_URL + '?action=getData';
+      const resp = await fetch(url);
+      const json = await resp.json();
+
+      if (json && json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
+        this.rawDataset = json.data;
+        this.processRawDataset();
+        return true;
+      }
+    } catch(err) {
+      console.warn('Live Google Sheets dataset fetch error:', err);
+    }
+    return false;
+  },
+
   processRawDataset() {
     this.activeAssets = [];
     this.pendingAssets = [];
 
     this.rawDataset.forEach((row, idx) => {
-      const coordStr = String(row.koordinat || '').trim();
+      const coordStr = String(row.koordinat || row.KOORDINAT || row.Koordinat || row['KOORDINAT ASET'] || '').trim();
       const hasValidCoord = coordStr && coordStr !== '-' && coordStr.includes(',');
 
       let lat = null;
@@ -35,16 +53,23 @@ const DataEngine = {
         }
       }
 
-      const luas = parseFloat(row.luas) || 0;
-      const jenis = String(row.jenis_barang || 'BMN').trim();
+      const luas = parseFloat(row.luas || row.LUAS || row.Luas) || 0;
+      const jenis = String(row.jenis_barang || row.JENIS_BARANG || row['JENIS BARANG'] || 'BMN').trim();
+      const satkerName = String(row.nama_satker || row.NAMA_SATKER || row['NAMA SATKER'] || row['Pengguna Barang'] || 'Satker Tanpa Nama').trim();
+      const barangName = String(row.nama_barang || row.NAMA_BARANG || row['NAMA BARANG'] || jenis || 'Aset BMN Idle').trim();
+      const kodeSatker = String(row.kode_satker || row.KODE_SATKER || row['KODE SATKER'] || '').trim();
+      const kodeBarang = String(row.kode_barang || row.KODE_BARANG || row['KODE BARANG'] || '').trim();
+      const nupVal = String(row.nup || row.NUP || '1').trim();
+      const kemVal = String(row.kementerian || row.KEMENTERIAN || row['Pengguna Barang'] || 'LAIN-LAIN / INDEPENDEN').trim();
+      const fotoUrlsVal = String(row.foto_urls || row.FOTO_URLS || row.fotoList || '').trim();
       const isTanah = jenis.toLowerCase().includes('tanah');
 
       let fotoList = [];
-      if (row.foto_urls && row.foto_urls.trim()) {
-        fotoList = row.foto_urls.split(',').map(u => u.trim()).filter(u => u.length > 0);
+      if (fotoUrlsVal) {
+        fotoList = fotoUrlsVal.split(',').map(u => u.trim()).filter(u => u.length > 0);
       }
       if (fotoList.length === 0) {
-        const nameText = (String(row.nama_barang) + ' ' + jenis).toLowerCase();
+        const nameText = (barangName + ' ' + jenis).toLowerCase();
 
         if (nameText.includes('bungalow') || nameText.includes('cottage') || nameText.includes('peristirahan') || nameText.includes('mess')) {
           fotoList = [
@@ -67,19 +92,19 @@ const DataEngine = {
         }
       }
 
-      const kabupaten = this.detectKabupaten(row.nama_satker, row.nama_barang, lat, lng);
-      const kecamatan = this.detectKecamatan(row.nama_satker, row.nama_barang, lat, lng);
-      const kelurahan = this.detectKelurahan(row.nama_satker, row.nama_barang, lat, lng);
+      const kabupaten = this.detectKabupaten(satkerName, barangName, lat, lng);
+      const kecamatan = this.detectKecamatan(satkerName, barangName, lat, lng);
+      const kelurahan = this.detectKelurahan(satkerName, barangName, lat, lng);
 
       const item = {
-        id: row.id || `BMN-${idx + 1}`,
-        kodeSatker: row.kode_satker || '',
-        kementerian: row.kementerian || 'LAIN-LAIN / INDEPENDEN',
-        namaSatker: row.nama_satker || 'Satker Tanpa Nama',
-        kodeBarang: row.kode_barang || '',
-        nup: row.nup || '1',
-        namaBarang: row.nama_barang || jenis || 'Aset BMN Idle',
-        namaAset: row.nama_barang || jenis || 'Aset BMN Idle',
+        id: row.id || (kodeSatker && kodeBarang ? `${kodeSatker}-${kodeBarang}-${nupVal}` : `BMN-${idx + 1}`),
+        kodeSatker: kodeSatker,
+        kementerian: kemVal,
+        namaSatker: satkerName,
+        kodeBarang: kodeBarang,
+        nup: nupVal,
+        namaBarang: barangName,
+        namaAset: barangName,
         jenisBarang: jenis,
         isTanah: isTanah,
         kategori: isTanah ? 'Tanah' : 'Bangunan',
@@ -93,12 +118,12 @@ const DataEngine = {
         luas: luas,
         luasTanah: luas,
         luasBangunan: 0,
-        kondisi: row['HASIL JAWABAN'] || 'Telah dilakukan penelitian awal',
+        kondisi: row['HASIL JAWABAN'] || row.kondisi || 'Telah dilakukan penelitian awal',
         statusPenguasaan: 'Sertifikat Hak Pakai a.n. Pemerintah RI c.q. Pengelola',
         zoningCode: 'Kategori 1',
         zoningName: 'Kawasan Perdagangan & Jasa',
-        rekomendasiUser: row.rekomendasi_user || row['HASIL JAWABAN'] || '',
-        catatanTim: row['CATATAN_REKONSILIASI'] || row['PEMETAAN AWAL BERBASIS KEYWORD'] || '',
+        rekomendasiUser: row.rekomendasi_user || row.rekomendasi || row['HASIL JAWABAN'] || '',
+        catatanTim: row['CATATAN_REKONSILIASI'] || row.catatan_tim || row['PEMETAAN AWAL BERBASIS KEYWORD'] || '',
         fotoList: fotoList,
         suratJawaban: row['SURAT JAWABAN PENGGUNA BARANG'] || '-',
         tglSurat: row['TANGGAL SURAT JAWABAN PENGGUNA BARANG'] || '-',
