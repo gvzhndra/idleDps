@@ -5,8 +5,8 @@
 
 const CONFIG = {
   // Application Version & Release Metadata
-  VERSION: 'v2.5.6',
-  VERSION_NAME: 'Clean Executive Workspace & Pure UI Sync',
+  VERSION: 'v2.5.7',
+  VERSION_NAME: 'Exact Google Sheet Column Matching & Clean Coordinates',
 
   // Office Reference for Distance Calculations (KPKNL Denpasar Official Coordinates)
   KPKNL_OFFICE: {

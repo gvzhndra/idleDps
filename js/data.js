@@ -196,7 +196,7 @@ const DataEngine = {
       return {
         key: 'pemindahtanganan',
         label: 'Pemindahtanganan',
-        detil: isSelesai ? 'Selesai Hibah Pemda' : 'Rencana Hibah Pemkab'
+        detil: isSelesai ? 'Selesai Hibah' : 'Rencana Hibah Pemkab'
       };
     }
 
@@ -226,7 +226,7 @@ const DataEngine = {
       return {
         key: 'pemanfaatan',
         label: 'Pemanfaatan',
-        detil: isRencana ? 'Rencana Pemanfaatan / Sewa' : 'Pemanfaatan Berjalan / Sewa'
+        detil: isRencana ? 'Rencana Pemanfaatan' : 'Pemanfaatan Berjalan'
       };
     }
 
@@ -249,7 +249,7 @@ const DataEngine = {
 
     // 6. Penggunaan (default, covers 'penggunaan', 'pernggunaan', 'pengunaan')
     let detilGuna = 'Digunakan Satker';
-    if (rawD.includes('alih status') || rawD.includes('transfer') || rawD.includes('satker lain')) {
+    if (rawD.includes('alih status') || rawD.includes('transfer')) {
       detilGuna = 'Alih Status ke Satker Lain';
     } else if (rawD.includes('rencana') || rawD.includes('usul')) {
       detilGuna = 'Rencana Penggunaan Satker';
