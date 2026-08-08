@@ -48,56 +48,86 @@
   </header>
 
   <!-- ==========================================================================
-       2. KPI SUMMARY METRICS BAR (5 EXECUTIVE MONITORING CARDS)
+       2. KPI SUMMARY METRICS BAR (2-ROW EXECUTIVE DASHBOARD)
        ========================================================================== -->
   <section class="stats-bar" id="executive-stats-bar">
-    <!-- CARD 1: TOTAL PERMINTAAN KLARIFIKASI -->
-    <div class="stat-card interactive" id="card-filter-all" onclick="App.resetAllFilters()" title="Klik untuk menampilkan seluruh aset">
-      <div class="stat-icon blue"><i class="fa-solid fa-envelope-circle-check"></i></div>
-      <div class="stat-info">
-        <label>Total Klarifikasi</label>
-        <div class="stat-value" id="stat-total-permintaan">0 Unit</div>
-        <div class="stat-subtext" id="stat-total-satker-sub">0 Satker Terdata</div>
+    <!-- ROW 1, COL 1 (CARD 1): TOTAL PERMINTAAN KLARIFIKASI -->
+    <div class="stat-card interactive" id="card-filter-all" onclick="App.resetAllFilters()" title="Klik untuk reset & menampilkan seluruh 248 unit BMN">
+      <div class="stat-card-header">
+        <label><i class="fa-solid fa-envelope-open-text text-primary"></i> Total Klarifikasi</label>
+        <span class="stat-icon blue"><i class="fa-solid fa-layer-group"></i></span>
+      </div>
+      <div class="d-flex align-items-baseline justify-content-between">
+        <div class="stat-value" id="stat-total-permintaan">248 Unit</div>
+        <div class="stat-subtext" id="stat-total-satker-sub">60 Satker Terdata</div>
+      </div>
+      <div class="stat-pills-row">
+        <span class="stat-mini-pill blue" title="Klarifikasi dikirim"><i class="fa-solid fa-paper-plane"></i> Dikirim: <strong id="stat-sub-dikirim">248</strong></span>
+        <span class="stat-mini-pill mint" title="Klarifikasi dijawab"><i class="fa-solid fa-envelope-circle-check"></i> Dijawab: <strong id="stat-sub-dijawab">248</strong></span>
+        <span class="stat-mini-pill gray" title="Belum ada klarifikasi"><i class="fa-solid fa-clock"></i> Belum: <strong id="stat-sub-belum">0</strong></span>
       </div>
     </div>
 
-    <!-- CARD 2: PERLU DISURATI (BELUM ADA KOORDINAT) -->
-    <div class="stat-card interactive" id="card-filter-unmapped" onclick="App.toggleFilterUnmapped()" title="Klik untuk memfilter daftar Satker yang perlu disurati update koordinat">
-      <div class="stat-icon amber"><i class="fa-solid fa-triangle-exclamation"></i></div>
-      <div class="stat-info">
-        <label style="color:#d35400;">Perlu Disurati (No GPS)</label>
-        <div class="stat-value text-danger" id="stat-unmapped-unit">0 Unit</div>
-        <div class="stat-subtext" id="stat-unmapped-satker-sub">0 Satker Butuh GPS</div>
+    <!-- ROW 1, COL 2 (CARD 2): BMN BELUM ADA KOORDINAT -->
+    <div class="stat-card interactive" id="card-filter-unmapped" onclick="App.toggleFilterUnmapped()" title="Klik untuk memfilter daftar Satker yang belum input koordinat di SIMAN">
+      <div class="stat-card-header">
+        <label style="color:#d35400;"><i class="fa-solid fa-triangle-exclamation"></i> BMN Belum Ada Koordinat</label>
+        <span class="stat-icon amber"><i class="fa-solid fa-location-crosshairs"></i></span>
+      </div>
+      <div class="d-flex align-items-baseline justify-content-between">
+        <div class="stat-value text-danger" id="stat-unmapped-unit">235 Unit</div>
+        <div class="stat-subtext text-danger" id="stat-unmapped-satker-sub">57 Satker</div>
+      </div>
+      <div class="stat-subtext" style="font-size:9.5px; color:#c2410c; margin-top:2px;">
+        <i class="fa-solid fa-circle-exclamation"></i> <strong>57 Satker</strong> belum menginput koordinat di SIMAN
       </div>
     </div>
 
-    <!-- CARD 3: KLASIFIKASI & DETIL -->
+    <!-- ROW 1 & 2, COL 3 (CARD 5): PRIORITAS BMN IDLE (HERO 2-ROWS) -->
+    <div class="stat-card interactive hero-pinned" id="card-filter-pinned" onclick="App.toggleFilterPinned()" title="Klik untuk memfilter aset prioritas atensi pimpinan">
+      <div class="stat-card-header">
+        <label style="color:#c0392b;"><i class="fa-solid fa-star text-danger"></i> Prioritas BMN Idle</label>
+        <span class="badge" style="background:#e74c3c; color:#fff; font-size:9px; font-weight:700; padding:2px 6px; border-radius:6px;">
+          Atensi Pimpinan
+        </span>
+      </div>
+      <div class="d-flex align-items-baseline justify-content-between mt-1 mb-1">
+        <div style="font-size:16px; font-weight:800; font-family:var(--font-display); color:#c0392b;">
+          <span id="stat-total-pinned">0</span> <span style="font-size:10.5px; font-weight:700; color:var(--text-muted);">Unit Prioritas</span>
+        </div>
+        <span style="font-size:9px; color:var(--text-muted);"><i class="fa-solid fa-thumbtack"></i> 1-Klik Filter</span>
+      </div>
+      <div id="stat-pinned-preview-list" class="hero-pinned-list custom-scrollbar">
+        <!-- Dynamically rendered with pinned asset items -->
+      </div>
+    </div>
+
+    <!-- ROW 2, COL 1 (CARD 3): KLASIFIKASI BMN IDLE (FULL LIST BREAKDOWN) -->
     <div class="stat-card interactive" id="card-filter-klasifikasi" onclick="App.cycleFilterKlasifikasi()" title="Klik untuk berganti filter klasifikasi aset">
-      <div class="stat-icon purple"><i class="fa-solid fa-tags"></i></div>
-      <div class="stat-info">
-        <label>Klasifikasi Terbanyak</label>
-        <div class="stat-value" id="stat-top-klasifikasi">Penggunaan</div>
-        <div class="stat-subtext" id="stat-sub-klasifikasi">Klik filter kategori</div>
+      <div class="stat-card-header">
+        <label><i class="fa-solid fa-tags text-purple"></i> Klasifikasi BMN Idle</label>
+        <span class="stat-icon purple"><i class="fa-solid fa-list-check"></i></span>
+      </div>
+      <div id="stat-klasifikasi-breakdown" class="stat-breakdown-grid">
+        <!-- Dynamically rendered full breakdown -->
       </div>
     </div>
 
-    <!-- CARD 4: STATUS TINDAK LANJUT -->
-    <div class="stat-card interactive" id="card-filter-tahap" onclick="App.cycleFilterTahap()" title="Klik untuk memfilter berdasarkan tahap tindak lanjut">
-      <div class="stat-icon mint"><i class="fa-solid fa-diagram-next"></i></div>
-      <div class="stat-info">
-        <label>Tahap Tindak Lanjut</label>
-        <div class="stat-value" id="stat-top-tahap">Penelitian</div>
-        <div class="stat-subtext" id="stat-sub-tahap">Monitoring progres</div>
+    <!-- ROW 2, COL 2 (CARD 4): RENCANA TINDAK LANJUT (DARI TAHAP_BERIKUT) -->
+    <div class="stat-card interactive" id="card-filter-tahap" onclick="App.cycleFilterTahap()" title="Klik untuk memfilter berdasarkan rencana tindak lanjut">
+      <div class="stat-card-header">
+        <label><i class="fa-solid fa-diagram-next text-success"></i> Rencana Tindak Lanjut</label>
+        <span class="stat-icon mint"><i class="fa-solid fa-arrows-split-up-and-left"></i></span>
       </div>
-    </div>
-
-    <!-- CARD 5: PRIORITAS BMN IDLE -->
-    <div class="stat-card interactive" id="card-filter-pinned" onclick="App.toggleFilterPinned()" title="Klik untuk memfilter aset prioritas atensi pimpinan">
-      <div class="stat-icon rose"><i class="fa-solid fa-thumbtack"></i></div>
-      <div class="stat-info">
-        <label style="color:#c0392b;">Prioritas BMN Idle</label>
-        <div class="stat-value" id="stat-total-pinned">0 Unit</div>
-        <div class="stat-subtext">Atensi Khusus KPKNL</div>
+      <div id="stat-tahap-breakdown" class="stat-tahap-grid" style="grid-template-columns: 1fr 1fr; margin-top: 4px;">
+        <span class="tahap-pill blue" style="padding: 6px 10px; font-size: 10.5px;" onclick="event.stopPropagation(); App.setTahapFilter('PENELITIAN')" title="Penelitian Awal">
+          <span><i class="fa-solid fa-magnifying-glass"></i> Penelitian</span>
+          <strong id="stat-tahap-penelitian" style="font-size: 12px;">235</strong>
+        </span>
+        <span class="tahap-pill mint" style="padding: 6px 10px; font-size: 10.5px;" onclick="event.stopPropagation(); App.setTahapFilter('PEMANTAUAN')" title="Pemantauan Berkala">
+          <span><i class="fa-solid fa-eye"></i> Pemantauan</span>
+          <strong id="stat-tahap-pemantauan" style="font-size: 12px;">13</strong>
+        </span>
       </div>
     </div>
   </section>
@@ -169,11 +199,9 @@
             </div>
             <div class="d-flex align-items-center justify-content-between mt-1">
               <select class="filter-select" id="all-filter-tahap" style="flex:1; margin-right:6px;">
-                <option value="all">Semua Tahap Tindak Lanjut</option>
-                <option value="PENELITIAN">Penelitian Awal</option>
-                <option value="PENELUSURAN">Penelusuran</option>
+                <option value="all">Semua Rencana Tindak Lanjut</option>
+                <option value="PENELITIAN">Penelitian</option>
                 <option value="PEMANTAUAN">Pemantauan</option>
-                <option value="DATA TIDAK LENGKAP">Data Belum Lengkap</option>
               </select>
               <label style="font-size:11px; font-weight:700; color:var(--text-main); cursor:pointer; flex-shrink:0;">
                 <input type="checkbox" class="custom-checkbox" id="all-select-all-cb" onchange="App.toggleSelectAll(this.checked)"> Select All

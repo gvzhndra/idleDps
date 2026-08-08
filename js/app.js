@@ -81,6 +81,82 @@ const App = {
   },
 
   /**
+   * Fetches live asset rows directly from Google Sheets via Apps Script (?action=getData).
+   * Automatically synchronizes all 248 active assets from the Google Sheet into activeAssets.
+   */
+  async loadLiveDatasetFromSheet() {
+    if (typeof DataEngine === 'undefined') return;
+    const synced = await DataEngine.syncLiveDatasetFromSheet();
+    if (synced) {
+      this.activeAssets = DataEngine.activeAssets || [];
+
+      // Update PPT export selection with new active assets
+      this.activeAssets.forEach(a => this.selectedExportAssetIds.add(a.id));
+
+      // Refresh UI components with live Google Sheets data
+      this.populateKabupatenOptions();
+      this.updateKPIStats();
+      this.renderClusterAccordion();
+      this.renderAllAssetsList();
+
+      if (typeof MapEngine !== 'undefined' && MapEngine.map) {
+        const mapped = this.activeAssets.filter(a => a.hasCoordinates);
+        MapEngine.renderBMNMarkers(mapped, (asset) => this.selectAsset(asset.id));
+      }
+    }
+  },
+
+  /**
+   * Fetches permanent Google Drive photo URLs from Apps Script backend.
+   * Merges them into each asset's fotoList.
+   */
+  async loadPhotosFromSheet() {
+    if (!CONFIG.APPS_SCRIPT || !CONFIG.APPS_SCRIPT.WEB_APP_URL) return;
+    try {
+      const url = CONFIG.APPS_SCRIPT.WEB_APP_URL + '?action=getPhotos';
+      const resp = await fetch(url);
+      const json = await resp.json();
+
+      if (json && json.status === 'success' && json.photos) {
+        const photoMap = json.photos;
+        let updated = false;
+
+        const allAssets = [...(this.activeAssets || []), ...(DataEngine.activeAssets || []), ...(DataEngine.pendingAssets || [])];
+
+        allAssets.forEach(asset => {
+          if (!asset || !asset.id) return;
+          const driveUrls = photoMap[asset.id];
+          if (!driveUrls || driveUrls.length === 0) return;
+
+          const existing = (asset.fotoList || []).filter(u => !u.includes('images.unsplash.com'));
+          const merged = [...driveUrls];
+          existing.forEach(u => {
+            if (!merged.includes(u)) merged.push(u);
+          });
+
+          asset.fotoList = merged;
+          updated = true;
+        });
+
+        if (updated) {
+          this.renderClusterAccordion();
+          this.renderAllAssetsList();
+          if (this.selectedAsset) {
+            const refreshed = this.getAsset(this.selectedAsset.id);
+            if (refreshed) {
+              const catchment = SpatialEngine.getCatchmentAnalysis(refreshed.lat, refreshed.lng);
+              const rec = typeof RecommendationEngine !== 'undefined' ? RecommendationEngine.getRecommendation(refreshed) : {};
+              this.renderDetailPanel(refreshed, catchment, rec);
+            }
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Google Drive photo fetch error:', e);
+    }
+  },
+
+  /**
    * Centralized Filter Application:
    * Combines all active filter criteria (kabupaten, klasifikasi, tahap, unmapped, pinned, search)
    */
@@ -215,7 +291,7 @@ const App = {
   },
 
   cycleFilterTahap() {
-    const list = ['all', 'PENELITIAN', 'PENELUSURAN', 'PEMANTAUAN', 'DATA TIDAK LENGKAP'];
+    const list = ['all', 'PENELITIAN', 'PEMANTAUAN'];
     let idx = list.indexOf(this.filters.tahap || 'all');
     idx = (idx + 1) % list.length;
     this.filters.tahap = list[idx];
@@ -223,7 +299,7 @@ const App = {
     if (selTahap) selTahap.value = this.filters.tahap;
     this.updateActiveStatCard(this.filters.tahap !== 'all' ? 'card-filter-tahap' : null);
     this.applyFilters();
-    this.showToast(`🔄 Filter Tahap: ${this.filters.tahap}`, 'info');
+    this.showToast(`🔄 Filter Rencana Tindak Lanjut: ${this.filters.tahap === 'all' ? 'Semua' : this.filters.tahap}`, 'info');
   },
 
   setQuickFilter(type) {
@@ -396,49 +472,107 @@ const App = {
     });
   },
 
+  setTahapFilter(tahapCode) {
+    this.filters.tahap = tahapCode;
+    this.filters.onlyUnmapped = false;
+    this.filters.onlyPinned = false;
+    const selTahap = document.getElementById('all-filter-tahap');
+    if (selTahap) selTahap.value = tahapCode;
+    this.updateActiveStatCard('card-filter-tahap');
+    this.applyFilters();
+    this.showToast(`🔄 Filter Rencana Tindak Lanjut: ${tahapCode}`, 'info');
+  },
+
   updateKPIStats() {
     const stats = DataEngine.getStatsSummary();
 
     // Card 1: Total Permintaan Klarifikasi
     const elTotal = document.getElementById('stat-total-permintaan');
     const elTotalSatker = document.getElementById('stat-total-satker-sub');
+    const elDikirim = document.getElementById('stat-sub-dikirim');
+    const elDijawab = document.getElementById('stat-sub-dijawab');
+    const elBelum = document.getElementById('stat-sub-belum');
+
     if (elTotal) elTotal.textContent = `${stats.totalAssets} Unit`;
     if (elTotalSatker) elTotalSatker.textContent = `${stats.totalSatkers} Satker Terdata`;
+    if (elDikirim) elDikirim.textContent = stats.dikirimCount;
+    if (elDijawab) elDijawab.textContent = stats.dijawabCount;
+    if (elBelum) elBelum.textContent = stats.belumDijawabCount;
 
-    // Card 2: Perlu Disurati (Belum Ada Titik GPS)
+    // Card 2: BMN Belum Ada Koordinat
     const elUnmapped = document.getElementById('stat-unmapped-unit');
     const elUnmappedSatker = document.getElementById('stat-unmapped-satker-sub');
     if (elUnmapped) elUnmapped.textContent = `${stats.unmappedCount} Unit`;
-    if (elUnmappedSatker) elUnmappedSatker.textContent = `${stats.unmappedSatkersCount} Satker Butuh GPS`;
+    if (elUnmappedSatker) elUnmappedSatker.textContent = `${stats.unmappedSatkersCount} Satker`;
 
-    // Card 3: Klasifikasi Terbanyak
-    const elTopKlas = document.getElementById('stat-top-klasifikasi');
-    const elSubKlas = document.getElementById('stat-sub-klasifikasi');
-    const sortedKlas = Object.entries(stats.klasifikasiMap || {}).sort((a, b) => b[1] - a[1]);
-    if (elTopKlas) {
-      if (sortedKlas.length > 0) {
-        elTopKlas.textContent = `${sortedKlas[0][0]} (${sortedKlas[0][1]})`;
-      } else {
-        elTopKlas.textContent = 'Penggunaan';
-      }
+    // Card 3: Klasifikasi BMN Idle (Full Breakdown Hierarchy direct on card)
+    const elKlasBreakdown = document.getElementById('stat-klasifikasi-breakdown');
+    if (elKlasBreakdown && stats.hierarchy) {
+      const items = [
+        { key: 'penggunaan', label: 'Penggunaan', color: '#1d4ed8', icon: 'fa-building-user', data: stats.hierarchy['Penggunaan'] },
+        { key: 'penghapusan', label: 'Penghapusan', color: '#b91c1c', icon: 'fa-trash-can', data: stats.hierarchy['Penghapusan'] },
+        { key: 'renovasi', label: 'Renovasi', color: '#c2410c', icon: 'fa-hammer', data: stats.hierarchy['Renovasi'] },
+        { key: 'pemanfaatan', label: 'Pemanfaatan', color: '#15803d', icon: 'fa-handshake', data: stats.hierarchy['Pemanfaatan'] },
+        { key: 'masalah_pencatatan', label: 'Masalah Catat', color: '#7e22ce', icon: 'fa-triangle-exclamation', data: stats.hierarchy['Masalah Pencatatan'] },
+        { key: 'pemindahtanganan', label: 'Pemindahtanganan', color: '#0e7490', icon: 'fa-gift', data: stats.hierarchy['Pemindahtanganan'] }
+      ];
+
+      elKlasBreakdown.innerHTML = items.map(item => {
+        const count = item.data ? item.data.count : 0;
+        const detailsObj = item.data ? item.data.details : {};
+        const detailSnippet = Object.entries(detailsObj)
+          .slice(0, 2)
+          .map(([dName, dCount]) => {
+            const shortName = dName.replace('Rencana / Usulan ', 'Rencana ').replace('ke Satker Lain', '').replace(' / Sewa', '').trim();
+            return `${shortName} (${dCount})`;
+          })
+          .join(' • ');
+
+        return `
+          <div class="stat-breakdown-row" onclick="event.stopPropagation(); App.setQuickFilter('${item.key}')" title="Filter klasifikasi: ${item.label}">
+            <span style="font-weight:700; color:${item.color}; white-space:nowrap;">
+              <i class="fa-solid ${item.icon}" style="margin-right:2px;"></i> ${item.label}: <strong>${count}</strong>
+            </span>
+            <span class="stat-breakdown-sub" style="text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+              ${detailSnippet || '-'}
+            </span>
+          </div>
+        `;
+      }).join('');
     }
-    if (elSubKlas) {
-      if (sortedKlas.length > 1) {
-        elSubKlas.textContent = `${sortedKlas[1][0]} (${sortedKlas[1][1]}) • Lainnya`;
-      } else {
-        elSubKlas.textContent = 'Klik untuk filter';
-      }
-    }
 
-    // Card 4: Status Tindak Lanjut
-    const elTopTahap = document.getElementById('stat-top-tahap');
-    const elSubTahap = document.getElementById('stat-sub-tahap');
-    if (elTopTahap) elTopTahap.textContent = `Penelitian (${stats.tahapMap['PENELITIAN'] || 0})`;
-    if (elSubTahap) elSubTahap.textContent = `Penelusuran (${stats.tahapMap['PENELUSURAN'] || 0}) • Lengkap (${stats.tahapMap['DATA TIDAK LENGKAP'] || 0})`;
+    // Card 4: Rencana Tindak Lanjut (diambil dari kolom TAHAP_BERIKUT)
+    const elPenelitian = document.getElementById('stat-tahap-penelitian');
+    const elPemantauan = document.getElementById('stat-tahap-pemantauan');
 
-    // Card 5: Prioritas BMN Idle
+    if (elPenelitian) elPenelitian.textContent = stats.tahapMap['PENELITIAN'] || 0;
+    if (elPemantauan) elPemantauan.textContent = stats.tahapMap['PEMANTAUAN'] || 0;
+
+    // Card 5: Prioritas BMN Idle (Hero 2-Row Card)
     const elPinned = document.getElementById('stat-total-pinned');
-    if (elPinned) elPinned.textContent = `${stats.pinnedCount} Unit`;
+    if (elPinned) elPinned.textContent = stats.pinnedCount;
+
+    const elPinnedList = document.getElementById('stat-pinned-preview-list');
+    if (elPinnedList) {
+      if (stats.pinnedAssets && stats.pinnedAssets.length > 0) {
+        elPinnedList.innerHTML = stats.pinnedAssets.map(asset => `
+          <div class="hero-pinned-item" onclick="event.stopPropagation(); App.selectAsset('${asset.id}')" title="Fokus ke aset ${asset.namaBarang}">
+            <div style="display:flex; align-items:center; gap:5px; min-width:0; flex:1;">
+              <i class="fa-solid fa-thumbtack text-danger" style="font-size:8.5px;"></i>
+              <strong style="color:var(--text-main); font-size:9.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${asset.namaBarang}</strong>
+            </div>
+            <span class="badge badge-pastel-blue" style="font-size:8px; padding:1px 4px; flex-shrink:0;">${asset.kabupaten}</span>
+          </div>
+        `).join('');
+      } else {
+        elPinnedList.innerHTML = `
+          <div style="font-size:9px; color:var(--text-muted); text-align:center; padding:8px 4px; background:#fff5f5; border-radius:6px;">
+            <i class="fa-solid fa-thumbtack text-danger" style="margin-bottom:2px;"></i><br>
+            Klik tanda pin 📌 pada kartu aset untuk menandai prioritas atensi pimpinan.
+          </div>
+        `;
+      }
+    }
 
     // Tab badges
     const tree = DataEngine.getClusteredTree(this.getFilteredAssets());

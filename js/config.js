@@ -141,12 +141,10 @@ const CONFIG = {
     }
   },
 
-  // Next Stages Mapping (Tahap Berikut)
+  // Next Stages Mapping (Tahap / Rencana Tindak Lanjut dari kolom TAHAP_BERIKUT)
   TAHAP_TINDAK_LANJUT: {
-    PENELITIAN: { key: 'PENELITIAN', label: 'Penelitian Awal', icon: 'fa-magnifying-glass-chart', color: '#4a90e2', badgeClass: 'badge-pastel-blue' },
-    PENELUSURAN: { key: 'PENELUSURAN', label: 'Penelusuran Dokumen/Fisik', icon: 'fa-compass', color: '#f39c12', badgeClass: 'badge-pastel-orange' },
-    PEMANTAUAN: { key: 'PEMANTAUAN', label: 'Pemantauan Berkala', icon: 'fa-eye', color: '#2ecc71', badgeClass: 'badge-pastel-mint' },
-    DATA_TIDAK_LENGKAP: { key: 'DATA TIDAK LENGKAP', label: 'Data Belum Lengkap', icon: 'fa-triangle-exclamation', color: '#e74c3c', badgeClass: 'badge-pastel-rose' }
+    PENELITIAN: { key: 'PENELITIAN', label: 'Penelitian', icon: 'fa-magnifying-glass-chart', color: '#4a90e2', badgeClass: 'badge-pastel-blue' },
+    PEMANTAUAN: { key: 'PEMANTAUAN', label: 'Pemantauan', icon: 'fa-eye', color: '#2ecc71', badgeClass: 'badge-pastel-mint' }
   },
 
   // Google Apps Script Integration

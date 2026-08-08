@@ -142,7 +142,7 @@ const DataEngine = {
         suratJawaban: row['SURAT JAWABAN PENGGUNA BARANG'] || row.surat_jawaban || '-',
         tglSurat: row['TANGGAL SURAT JAWABAN PENGGUNA BARANG'] || row.tgl_surat || '-',
         hasilJawaban: row['HASIL JAWABAN'] || row.hasil_jawaban || row.kondisi || '',
-        tahapBerikut: (row['TAHAP_BERIKUT'] || row.tahap_berikut || 'PENELITIAN').toUpperCase().trim(),
+        tahapBerikut: (String(row['TAHAP_BERIKUT'] || row.tahap_berikut || '').toUpperCase().includes('PANTAU')) ? 'PEMANTAUAN' : 'PENELITIAN',
         penyampaianKlarifikasi: row['PENYAMPAIAN_KLARIFIKASI_REKAP'] || 'SUDAH'
       };
 
@@ -246,18 +246,28 @@ const DataEngine = {
 
     const klasifikasiMap = {};
     const detilMap = {};
+    const hierarchy = {
+      'Penggunaan': { count: 0, key: 'penggunaan', details: {} },
+      'Penghapusan': { count: 0, key: 'penghapusan', details: {} },
+      'Renovasi': { count: 0, key: 'renovasi', details: {} },
+      'Pemanfaatan': { count: 0, key: 'pemanfaatan', details: {} },
+      'Masalah Pencatatan': { count: 0, key: 'masalah_pencatatan', details: {} },
+      'Pemindahtanganan': { count: 0, key: 'pemindahtanganan', details: {} }
+    };
     const tahapMap = {
       'PENELITIAN': 0,
-      'PENELUSURAN': 0,
-      'PEMANTAUAN': 0,
-      'DATA TIDAK LENGKAP': 0
+      'PEMANTAUAN': 0
     };
+    const pinnedAssets = [];
 
     this.activeAssets.forEach(a => {
       satkerSet.add(a.namaSatker);
       totalLuas += a.luas || 0;
       if (a.isTanah) countTanah++; else countBangunan++;
-      if (a.isPinned) pinnedCount++;
+      if (a.isPinned) {
+        pinnedCount++;
+        pinnedAssets.push(a);
+      }
 
       if (a.hasCoordinates) {
         mappedCount++;
@@ -271,10 +281,18 @@ const DataEngine = {
         suratCount++;
       }
 
-      klasifikasiMap[a.klasifikasi] = (klasifikasiMap[a.klasifikasi] || 0) + 1;
+      const kLabel = a.klasifikasi || 'Penggunaan';
+      klasifikasiMap[kLabel] = (klasifikasiMap[kLabel] || 0) + 1;
       detilMap[a.detilKlasifikasi] = (detilMap[a.detilKlasifikasi] || 0) + 1;
 
-      const th = a.tahapBerikut || 'PENELITIAN';
+      if (!hierarchy[kLabel]) {
+        hierarchy[kLabel] = { count: 0, key: a.klasifikasiKey || 'penggunaan', details: {} };
+      }
+      hierarchy[kLabel].count++;
+      const dLabel = a.detilKlasifikasi || 'Umum';
+      hierarchy[kLabel].details[dLabel] = (hierarchy[kLabel].details[dLabel] || 0) + 1;
+
+      const th = (a.tahapBerikut || 'PENELITIAN').toUpperCase().trim();
       tahapMap[th] = (tahapMap[th] || 0) + 1;
     });
 
@@ -288,9 +306,14 @@ const DataEngine = {
       countTanah,
       countBangunan,
       pinnedCount,
+      pinnedAssets,
       suratCount,
+      dikirimCount: totalAssets,
+      dijawabCount: totalAssets,
+      belumDijawabCount: 0,
       klasifikasiMap,
       detilMap,
+      hierarchy,
       tahapMap
     };
   },
