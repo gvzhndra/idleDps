@@ -362,7 +362,7 @@ const App = {
 
           return `
             <div class="asset-card ${isSelected}" style="position: relative;">
-              ${asset.isPinned ? `<span class="badge" style="background:linear-gradient(135deg, #e74c3c, #c0392b); color:#ffffff; font-size:9.5px; padding:3px 7px; border-radius:6px; position:absolute; top:6px; right:6px; z-index:3; box-shadow: 0 2px 6px rgba(231, 76, 60, 0.4);"><i class="fa-solid fa-thumbtack" style="margin-right:3px;"></i> Prioritas</span>` : ''}
+              ${asset.isPinned ? `<span class="pin-mini-badge" title="Prioritas Idle"><i class="fa-solid fa-thumbtack"></i></span>` : ''}
               <input type="checkbox" class="custom-checkbox asset-export-cb" data-asset-id="${asset.id}" ${isChecked} onchange="App.toggleSelectAssetForExport('${asset.id}', this.checked)">
               <div class="asset-card-thumb" style="background-image: url('${this.formatPhotoUrl(asset.fotoList[0] || '')}')" onclick="App.selectAsset('${asset.id}')">
                 <span class="asset-card-category">${asset.kategori}</span>
@@ -382,7 +382,7 @@ const App = {
         }).join('');
 
         const pinnedBadge = satkerObj.pinnedCount > 0 ? `
-          <span class="badge" style="background:#e74c3c; color:#ffffff; font-size:10px; padding:3px 8px; border-radius:10px; margin-left:6px;"><i class="fa-solid fa-thumbtack"></i> ${satkerObj.pinnedCount} Prioritas</span>
+          <span class="satker-pin-icon" title="${satkerObj.pinnedCount} Aset Prioritas Idle"><i class="fa-solid fa-thumbtack"></i></span>
         ` : '';
 
         satkerContentHtml += `
@@ -500,7 +500,7 @@ const App = {
 
       return `
         <div class="asset-card ${isSelected} mb-2" style="position: relative;">
-          ${asset.isPinned ? `<span class="badge" style="background:linear-gradient(135deg, #e74c3c, #c0392b); color:#ffffff; font-size:9.5px; padding:3px 7px; border-radius:6px; position:absolute; top:6px; right:6px; z-index:3; box-shadow: 0 2px 6px rgba(231, 76, 60, 0.4);"><i class="fa-solid fa-thumbtack" style="margin-right:3px;"></i> Prioritas</span>` : ''}
+          ${asset.isPinned ? `<span class="pin-mini-badge" title="Prioritas Idle"><i class="fa-solid fa-thumbtack"></i></span>` : ''}
           <input type="checkbox" class="custom-checkbox asset-export-cb" data-asset-id="${asset.id}" ${isChecked} onchange="App.toggleSelectAssetForExport('${asset.id}', this.checked)">
           <div class="asset-card-thumb" style="background-image: url('${this.formatPhotoUrl(asset.fotoList[0] || '')}')" onclick="App.selectAsset('${asset.id}')">
             <span class="asset-card-category">${asset.kategori}</span>
