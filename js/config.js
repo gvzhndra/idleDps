@@ -59,6 +59,92 @@ const CONFIG = {
     OPTIMALISASI_TERBATAS: { label: 'Optimalisasi Terbatas / Agrowisata', color: '#38761d', badgeClass: 'badge-pastel-mint' }
   },
 
+  // Classification Taxonomy & Sub-Details Mapping
+  KLASIFIKASI_TAXONOMY: {
+    PENGGUNAAN: {
+      key: 'penggunaan',
+      label: 'Penggunaan',
+      icon: 'fa-building-circle-check',
+      color: '#3498db',
+      badgeClass: 'badge-pastel-blue',
+      details: {
+        'digunakan satker': 'Digunakan Satker',
+        'alih status ke satker lain': 'Alih Status ke Satker Lain',
+        'rencana penggunaan satker': 'Rencana Penggunaan Satker'
+      }
+    },
+    PENGHAPUSAN: {
+      key: 'penghapusan',
+      label: 'Penghapusan',
+      icon: 'fa-trash-can',
+      color: '#e74c3c',
+      badgeClass: 'badge-pastel-rose',
+      details: {
+        'sudah dihapus': 'Sudah Dihapus',
+        'sudah penghapusan': 'Sudah Dihapus',
+        'rencana penghapusan': 'Rencana / Usulan Penghapusan'
+      }
+    },
+    PEMANFAATAN: {
+      key: 'pemanfaatan',
+      label: 'Pemanfaatan',
+      icon: 'fa-handshake',
+      color: '#2ecc71',
+      badgeClass: 'badge-pastel-mint',
+      details: {
+        'pemanfaatan': 'Pemanfaatan Berjalan / Sewa',
+        'rencana pemanfaatan': 'Rencana Pemanfaatan / Sewa',
+        'rencana pemanfatan': 'Rencana Pemanfaatan / Sewa'
+      }
+    },
+    PEMINDAHTANGANAN: {
+      key: 'pemindahtanganan',
+      label: 'Pemindahtanganan',
+      icon: 'fa-gift',
+      color: '#f39c12',
+      badgeClass: 'badge-pastel-orange',
+      details: {
+        'rencana hibah pemkab': 'Rencana Hibah Pemkab / Pemda',
+        'selesai hibah': 'Selesai Hibah Pemda'
+      }
+    },
+    RENOVASI: {
+      key: 'renovasi',
+      label: 'Renovasi',
+      icon: 'fa-hammer',
+      color: '#9b59b6',
+      badgeClass: 'badge-pastel-purple',
+      details: {
+        'rencana renovasi': 'Rencana Renovasi',
+        'rusak berat perlu renovasi': 'Rusak Berat Perlu Renovasi',
+        'proses renovasi': 'Proses Renovasi Sedang Berjalan'
+      }
+    },
+    MASALAH_PENCATATAN: {
+      key: 'masalah_pencatatan',
+      label: 'Masalah Pencatatan',
+      icon: 'fa-circle-exclamation',
+      color: '#e67e22',
+      badgeClass: 'badge-pastel-orange',
+      details: {
+        'tidak ditemukan di master aset': 'Tidak Ditemukan di Master Aset',
+        'reklas pencatatan': 'Reklasifikasi / Koreksi Catat',
+        'koreksi pencatatan': 'Koreksi Pencatatan',
+        'kode satker berbeda': 'Kode Satker Berbeda',
+        'dobel catat': 'Dobel Catat (Duplikasi)',
+        'masalah pencatatan': 'Masalah Pencatatan / Anomali'
+      }
+    }
+  },
+
+  // Next Stages Mapping (Tahap Berikut)
+  TAHAP_TINDAK_LANJUT: {
+    PENELITIAN: { key: 'PENELITIAN', label: 'Penelitian Awal', icon: 'fa-magnifying-glass-chart', color: '#4a90e2', badgeClass: 'badge-pastel-blue' },
+    PENELUSURAN: { key: 'PENELUSURAN', label: 'Penelusuran Dokumen/Fisik', icon: 'fa-compass', color: '#f39c12', badgeClass: 'badge-pastel-orange' },
+    PEMANTAUAN: { key: 'PEMANTAUAN', label: 'Pemantauan Berkala', icon: 'fa-eye', color: '#2ecc71', badgeClass: 'badge-pastel-mint' },
+    DATA_TIDAK_LENGKAP: { key: 'DATA TIDAK LENGKAP', label: 'Data Belum Lengkap', icon: 'fa-triangle-exclamation', color: '#e74c3c', badgeClass: 'badge-pastel-rose' }
+  },
+
   // Google Apps Script Integration
   APPS_SCRIPT: {
     WEB_APP_URL: localStorage.getItem('bmn_idle_apps_script_url') || 'https://script.google.com/macros/s/AKfycbzWqyN97KaeTwwFXBMPDCanTQizU35KXSMNBMMJcjLhmZGki1tLuMq9X2oeTB04HhjH/exec',

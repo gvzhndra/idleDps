@@ -48,38 +48,56 @@
   </header>
 
   <!-- ==========================================================================
-       2. KPI SUMMARY METRICS BAR (BERDASARKAN LUAS & JENIS ASET)
+       2. KPI SUMMARY METRICS BAR (5 EXECUTIVE MONITORING CARDS)
        ========================================================================== -->
-  <section class="stats-bar">
-    <div class="stat-card">
-      <div class="stat-icon blue"><i class="fa-solid fa-building-circle-exclamation"></i></div>
+  <section class="stats-bar" id="executive-stats-bar">
+    <!-- CARD 1: TOTAL PERMINTAAN KLARIFIKASI -->
+    <div class="stat-card interactive" id="card-filter-all" onclick="App.resetAllFilters()" title="Klik untuk menampilkan seluruh aset">
+      <div class="stat-icon blue"><i class="fa-solid fa-envelope-circle-check"></i></div>
       <div class="stat-info">
-        <label>BMN Terindikasi Idle (Terkoordinat)</label>
-        <div class="stat-value" id="stat-total-unit">0</div>
+        <label>Total Klarifikasi</label>
+        <div class="stat-value" id="stat-total-permintaan">0 Unit</div>
+        <div class="stat-subtext" id="stat-total-satker-sub">0 Satker Terdata</div>
       </div>
     </div>
 
-    <div class="stat-card">
-      <div class="stat-icon mint"><i class="fa-solid fa-chart-area"></i></div>
+    <!-- CARD 2: PERLU DISURATI (BELUM ADA KOORDINAT) -->
+    <div class="stat-card interactive" id="card-filter-unmapped" onclick="App.toggleFilterUnmapped()" title="Klik untuk memfilter daftar Satker yang perlu disurati update koordinat">
+      <div class="stat-icon amber"><i class="fa-solid fa-triangle-exclamation"></i></div>
       <div class="stat-info">
-        <label>Total Luas BMN</label>
-        <div class="stat-value" id="stat-total-luas">0 m²</div>
+        <label style="color:#d35400;">Perlu Disurati (No GPS)</label>
+        <div class="stat-value text-danger" id="stat-unmapped-unit">0 Unit</div>
+        <div class="stat-subtext" id="stat-unmapped-satker-sub">0 Satker Butuh GPS</div>
       </div>
     </div>
 
-    <div class="stat-card">
-      <div class="stat-icon orange"><i class="fa-solid fa-vector-square"></i></div>
+    <!-- CARD 3: KLASIFIKASI & DETIL -->
+    <div class="stat-card interactive" id="card-filter-klasifikasi" onclick="App.cycleFilterKlasifikasi()" title="Klik untuk berganti filter klasifikasi aset">
+      <div class="stat-icon purple"><i class="fa-solid fa-tags"></i></div>
       <div class="stat-info">
-        <label>Aset Berjenis Tanah</label>
-        <div class="stat-value" id="stat-count-tanah">0 Unit</div>
+        <label>Klasifikasi Terbanyak</label>
+        <div class="stat-value" id="stat-top-klasifikasi">Penggunaan</div>
+        <div class="stat-subtext" id="stat-sub-klasifikasi">Klik filter kategori</div>
       </div>
     </div>
 
-    <div class="stat-card">
-      <div class="stat-icon purple"><i class="fa-solid fa-house-flag"></i></div>
+    <!-- CARD 4: STATUS TINDAK LANJUT -->
+    <div class="stat-card interactive" id="card-filter-tahap" onclick="App.cycleFilterTahap()" title="Klik untuk memfilter berdasarkan tahap tindak lanjut">
+      <div class="stat-icon mint"><i class="fa-solid fa-diagram-next"></i></div>
       <div class="stat-info">
-        <label>Aset Berjenis Bangunan</label>
-        <div class="stat-value" id="stat-count-bangunan">0 Unit</div>
+        <label>Tahap Tindak Lanjut</label>
+        <div class="stat-value" id="stat-top-tahap">Penelitian</div>
+        <div class="stat-subtext" id="stat-sub-tahap">Monitoring progres</div>
+      </div>
+    </div>
+
+    <!-- CARD 5: PRIORITAS BMN IDLE -->
+    <div class="stat-card interactive" id="card-filter-pinned" onclick="App.toggleFilterPinned()" title="Klik untuk memfilter aset prioritas atensi pimpinan">
+      <div class="stat-icon rose"><i class="fa-solid fa-thumbtack"></i></div>
+      <div class="stat-info">
+        <label style="color:#c0392b;">Prioritas BMN Idle</label>
+        <div class="stat-value" id="stat-total-pinned">0 Unit</div>
+        <div class="stat-subtext">Atensi Khusus KPKNL</div>
       </div>
     </div>
   </section>
@@ -97,19 +115,31 @@
           <span class="tab-badge" id="badge-cluster-count">0</span>
         </button>
         <button class="tab-btn" data-tab="tab-all-assets" onclick="App.switchTab('tab-all-assets')">
-          <i class="fa-solid fa-boxes-stacked" style="color:var(--pastel-mint);"></i> semua aset
+          <i class="fa-solid fa-boxes-stacked" style="color:var(--pastel-mint);"></i> Semua Aset
           <span class="tab-badge" id="badge-all-count">0</span>
         </button>
       </nav>
 
       <!-- TAB CONTENT PANELS -->
       <div class="tab-content-area">
+        <!-- QUICK FILTER PILLS (AVAILABLE ACROSS TABS) -->
+        <div class="quick-filter-bar mb-2">
+          <button class="quick-filter-pill active" id="qf-all" onclick="App.setQuickFilter('all')">Semua</button>
+          <button class="quick-filter-pill" id="qf-unmapped" onclick="App.setQuickFilter('unmapped')"><i class="fa-solid fa-triangle-exclamation text-danger"></i> Butuh GPS</button>
+          <button class="quick-filter-pill" id="qf-pinned" onclick="App.setQuickFilter('pinned')"><i class="fa-solid fa-thumbtack text-danger"></i> Prioritas</button>
+          <button class="quick-filter-pill" id="qf-penggunaan" onclick="App.setQuickFilter('penggunaan')">Penggunaan</button>
+          <button class="quick-filter-pill" id="qf-penghapusan" onclick="App.setQuickFilter('penghapusan')">Penghapusan</button>
+          <button class="quick-filter-pill" id="qf-pemanfaatan" onclick="App.setQuickFilter('pemanfaatan')">Pemanfaatan</button>
+          <button class="quick-filter-pill" id="qf-renovasi" onclick="App.setQuickFilter('renovasi')">Renovasi</button>
+        </div>
+
         <!-- TAB 1: KLUSTER ASET (ACCORDION) -->
         <div class="tab-sub-panel active" id="tab-cluster">
-          <div class="cluster-toolbar mb-2">
-            <label style="font-size:12px; font-weight:700; color:var(--text-main); cursor:pointer;">
-              <input type="checkbox" class="custom-checkbox" id="cluster-select-all-cb" onchange="App.toggleSelectAll(this.checked)"> Select All untuk Ekspor PPT
+          <div class="cluster-toolbar mb-2 d-flex justify-content-between align-items-center">
+            <label style="font-size:11.5px; font-weight:700; color:var(--text-main); cursor:pointer;">
+              <input type="checkbox" class="custom-checkbox" id="cluster-select-all-cb" onchange="App.toggleSelectAll(this.checked)"> Select All Ekspor PPT
             </label>
+            <span id="active-filter-indicator" class="badge badge-pastel-blue" style="font-size:9.5px; display:none;">Filter Aktif</span>
           </div>
           <div id="cluster-accordion-root">
             <!-- Accordion items rendered dynamically -->
@@ -121,11 +151,29 @@
           <div class="all-assets-toolbar mb-2">
             <div class="search-box mb-2">
               <i class="fa-solid fa-magnifying-glass"></i>
-              <input type="text" id="all-search-input" placeholder="Cari Nama Barang, Kode Barang, NUP, Satker...">
+              <input type="text" id="all-search-input" placeholder="Cari Nama Barang, Kode, NUP, Satker, Klasifikasi...">
             </div>
-            <div class="d-flex align-items-center justify-content-between">
-              <select class="filter-select" id="all-filter-kabupaten" style="flex:1; margin-right:6px;">
+            <div class="d-flex align-items-center gap-1 mb-1">
+              <select class="filter-select" id="all-filter-kabupaten" style="flex:1;">
                 <option value="all">Semua Kabupaten/Kota</option>
+              </select>
+              <select class="filter-select" id="all-filter-klasifikasi" style="flex:1;">
+                <option value="all">Semua Klasifikasi</option>
+                <option value="penggunaan">Penggunaan</option>
+                <option value="penghapusan">Penghapusan</option>
+                <option value="pemanfaatan">Pemanfaatan</option>
+                <option value="pemindahtanganan">Pemindahtanganan</option>
+                <option value="renovasi">Renovasi</option>
+                <option value="masalah_pencatatan">Masalah Pencatatan</option>
+              </select>
+            </div>
+            <div class="d-flex align-items-center justify-content-between mt-1">
+              <select class="filter-select" id="all-filter-tahap" style="flex:1; margin-right:6px;">
+                <option value="all">Semua Tahap Tindak Lanjut</option>
+                <option value="PENELITIAN">Penelitian Awal</option>
+                <option value="PENELUSURAN">Penelusuran</option>
+                <option value="PEMANTAUAN">Pemantauan</option>
+                <option value="DATA TIDAK LENGKAP">Data Belum Lengkap</option>
               </select>
               <label style="font-size:11px; font-weight:700; color:var(--text-main); cursor:pointer; flex-shrink:0;">
                 <input type="checkbox" class="custom-checkbox" id="all-select-all-cb" onchange="App.toggleSelectAll(this.checked)"> Select All

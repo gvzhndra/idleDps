@@ -72,7 +72,6 @@ const App = {
     // Map Engine init on right stage
     MapEngine.init('map');
     MapEngine.renderBMNMarkers(this.activeAssets, (asset) => this.selectAsset(asset.id));
-
     this.bindEvents();
     this.updateExportCountBadge();
 
@@ -82,92 +81,209 @@ const App = {
   },
 
   /**
-   * Fetches live asset rows directly from Google Sheets via Apps Script (?action=getData).
-   * Automatically moves any assets that have newly filled coordinates in Google Sheets
-   * into activeAssets, rendering them in the left panel and on the map!
+   * Centralized Filter Application:
+   * Combines all active filter criteria (kabupaten, klasifikasi, tahap, unmapped, pinned, search)
    */
-  async loadLiveDatasetFromSheet() {
-    if (typeof DataEngine === 'undefined') return;
-    const synced = await DataEngine.syncLiveDatasetFromSheet();
-    if (synced) {
-      this.activeAssets = DataEngine.activeAssets || [];
+  getFilteredAssets() {
+    let list = [...this.activeAssets];
 
-      // Update PPT export selection with new active assets
-      this.activeAssets.forEach(a => this.selectedExportAssetIds.add(a.id));
-
-      // Refresh UI components with live Google Sheets data
-      this.populateKabupatenOptions();
-      this.updateKPIStats();
-      this.renderClusterAccordion();
-      this.renderAllAssetsList();
-
-      if (typeof MapEngine !== 'undefined' && MapEngine.map) {
-        MapEngine.renderBMNMarkers(this.activeAssets, (asset) => this.selectAsset(asset.id));
-      }
+    if (this.filters.onlyUnmapped) {
+      list = list.filter(a => !a.hasCoordinates);
     }
+
+    if (this.filters.onlyPinned) {
+      list = list.filter(a => a.isPinned);
+    }
+
+    if (this.filters.kabupaten && this.filters.kabupaten !== 'all') {
+      list = list.filter(a => a.kabupaten === this.filters.kabupaten);
+    }
+
+    if (this.filters.klasifikasi && this.filters.klasifikasi !== 'all') {
+      list = list.filter(a => (a.klasifikasiKey || '').toLowerCase() === this.filters.klasifikasi.toLowerCase() || (a.klasifikasi || '').toLowerCase() === this.filters.klasifikasi.toLowerCase());
+    }
+
+    if (this.filters.tahap && this.filters.tahap !== 'all') {
+      list = list.filter(a => (a.tahapBerikut || '').toUpperCase() === this.filters.tahap.toUpperCase());
+    }
+
+    if (this.filters.search) {
+      const q = this.filters.search.toLowerCase();
+      list = list.filter(a =>
+        (a.namaBarang && a.namaBarang.toLowerCase().includes(q)) ||
+        (a.namaSatker && a.namaSatker.toLowerCase().includes(q)) ||
+        (a.kodeBarang && a.kodeBarang.toLowerCase().includes(q)) ||
+        (a.nup && String(a.nup).includes(q)) ||
+        (a.klasifikasi && a.klasifikasi.toLowerCase().includes(q)) ||
+        (a.detilKlasifikasi && a.detilKlasifikasi.toLowerCase().includes(q)) ||
+        (a.kabupaten && a.kabupaten.toLowerCase().includes(q))
+      );
+    }
+
+    return list;
   },
 
-  /**
-   * Fetches permanent Google Drive photo URLs from Apps Script backend.
-   * Merges them into each asset's fotoList (Drive URLs take priority over placeholders).
-   * Called once on app init so photos persist across sessions even in incognito.
-   */
-  async loadPhotosFromSheet() {
-    if (!CONFIG.APPS_SCRIPT.WEB_APP_URL) return;
-    try {
-      const url = CONFIG.APPS_SCRIPT.WEB_APP_URL + '?action=getPhotos';
-      const resp = await fetch(url);
-      const json = await resp.json();
+  applyFilters() {
+    this.renderClusterAccordion();
+    this.renderAllAssetsList();
 
-      if (json && json.status === 'success' && json.photos) {
-        const photoMap = json.photos; // { assetId: ['url1', 'url2', ...] }
-        let updated = false;
-
-        const allAssets = [...(this.activeAssets || []), ...(DataEngine.activeAssets || []), ...(DataEngine.pendingAssets || [])];
-
-        allAssets.forEach(asset => {
-          if (!asset || !asset.id) return;
-          const driveUrls = photoMap[asset.id];
-          if (!driveUrls || driveUrls.length === 0) return;
-
-          // Filter out placeholder Unsplash images, keep only real Drive URLs and base64
-          const existing = (asset.fotoList || []).filter(u =>
-            !u.includes('images.unsplash.com')
-          );
-
-          // Merge: Drive URLs first, then any existing non-placeholder
-          const merged = [...driveUrls];
-          existing.forEach(u => {
-            if (!merged.includes(u)) merged.push(u);
-          });
-
-          asset.fotoList = merged;
-          updated = true;
-        });
-
-        if (updated) {
-          // Save merged photos to localStorage for instant next-load
-          this.savePhotosToLocalStorage();
-          // If an asset is currently selected, refresh its detail panel
-          if (this.selectedAsset) {
-            const refreshed = this.getAsset(this.selectedAsset.id);
-            if (refreshed) this.renderAssetDetail(refreshed);
-          }
+    const filtered = this.getFilteredAssets();
+    const mappedAssets = filtered.filter(a => a.hasCoordinates);
+    if (typeof MapEngine !== 'undefined' && MapEngine.map) {
+      MapEngine.renderBMNMarkers(mappedAssets, (asset) => this.selectAsset(asset.id));
+      if (mappedAssets.length > 0 && typeof L !== 'undefined') {
+        const bounds = L.latLngBounds(mappedAssets.map(a => [a.lat, a.lng]));
+        if (bounds.isValid()) {
+          MapEngine.map.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
         }
       }
-    } catch (err) {
-      // Silently fail — photos will still show from localStorage if available
-      console.log('Photo sync from sheet skipped:', err.message);
+    }
+
+    const indicator = document.getElementById('active-filter-indicator');
+    if (indicator) {
+      const isFiltered = this.filters.onlyUnmapped || this.filters.onlyPinned || this.filters.klasifikasi !== 'all' || this.filters.tahap !== 'all' || this.filters.kabupaten !== 'all' || Boolean(this.filters.search);
+      indicator.style.display = isFiltered ? 'inline-block' : 'none';
+      if (isFiltered) {
+        indicator.textContent = `${filtered.length} Terfilter`;
+      }
     }
   },
 
+  resetAllFilters() {
+    this.filters.onlyUnmapped = false;
+    this.filters.onlyPinned = false;
+    this.filters.klasifikasi = 'all';
+    this.filters.tahap = 'all';
+    this.filters.kabupaten = 'all';
+    this.filters.search = '';
+
+    const sInput = document.getElementById('all-search-input');
+    if (sInput) sInput.value = '';
+    const selKab = document.getElementById('all-filter-kabupaten');
+    if (selKab) selKab.value = 'all';
+    const selKlas = document.getElementById('all-filter-klasifikasi');
+    if (selKlas) selKlas.value = 'all';
+    const selTahap = document.getElementById('all-filter-tahap');
+    if (selTahap) selTahap.value = 'all';
+
+    this.updateQuickFilterUI('all');
+    this.updateActiveStatCard(null);
+    this.applyFilters();
+    this.showToast('📋 Menampilkan seluruh 248 unit BMN Idle (60 Satker)', 'info');
+  },
+
+  toggleFilterUnmapped() {
+    this.filters.onlyUnmapped = !this.filters.onlyUnmapped;
+    if (this.filters.onlyUnmapped) {
+      this.filters.onlyPinned = false;
+      this.updateQuickFilterUI('unmapped');
+      this.updateActiveStatCard('card-filter-unmapped');
+      this.showToast('⚠️ Memfilter daftar Satker yang perlu disurati untuk update koordinat GPS', 'warning');
+    } else {
+      this.updateQuickFilterUI('all');
+      this.updateActiveStatCard(null);
+      this.showToast('Menampilkan seluruh aset', 'info');
+    }
+    this.applyFilters();
+  },
+
+  toggleFilterPinned() {
+    this.filters.onlyPinned = !this.filters.onlyPinned;
+    if (this.filters.onlyPinned) {
+      this.filters.onlyUnmapped = false;
+      this.updateQuickFilterUI('pinned');
+      this.updateActiveStatCard('card-filter-pinned');
+      this.showToast('📌 Memfilter aset Prioritas BMN Idle', 'success');
+    } else {
+      this.updateQuickFilterUI('all');
+      this.updateActiveStatCard(null);
+    }
+    this.applyFilters();
+  },
+
+  cycleFilterKlasifikasi() {
+    const list = ['all', 'penggunaan', 'penghapusan', 'pemanfaatan', 'pemindahtanganan', 'renovasi', 'masalah_pencatatan'];
+    let idx = list.indexOf(this.filters.klasifikasi || 'all');
+    idx = (idx + 1) % list.length;
+    this.filters.klasifikasi = list[idx];
+    const selKlas = document.getElementById('all-filter-klasifikasi');
+    if (selKlas) selKlas.value = this.filters.klasifikasi;
+    this.updateQuickFilterUI(this.filters.klasifikasi === 'all' ? 'all' : this.filters.klasifikasi);
+    this.updateActiveStatCard(this.filters.klasifikasi !== 'all' ? 'card-filter-klasifikasi' : null);
+    this.applyFilters();
+    this.showToast(`🏷️ Filter Klasifikasi: ${this.filters.klasifikasi.toUpperCase()}`, 'info');
+  },
+
+  cycleFilterTahap() {
+    const list = ['all', 'PENELITIAN', 'PENELUSURAN', 'PEMANTAUAN', 'DATA TIDAK LENGKAP'];
+    let idx = list.indexOf(this.filters.tahap || 'all');
+    idx = (idx + 1) % list.length;
+    this.filters.tahap = list[idx];
+    const selTahap = document.getElementById('all-filter-tahap');
+    if (selTahap) selTahap.value = this.filters.tahap;
+    this.updateActiveStatCard(this.filters.tahap !== 'all' ? 'card-filter-tahap' : null);
+    this.applyFilters();
+    this.showToast(`🔄 Filter Tahap: ${this.filters.tahap}`, 'info');
+  },
+
+  setQuickFilter(type) {
+    if (type === 'all') {
+      this.resetAllFilters();
+      return;
+    }
+    if (type === 'unmapped') {
+      this.filters.onlyUnmapped = true;
+      this.filters.onlyPinned = false;
+      this.filters.klasifikasi = 'all';
+    } else if (type === 'pinned') {
+      this.filters.onlyPinned = true;
+      this.filters.onlyUnmapped = false;
+      this.filters.klasifikasi = 'all';
+    } else {
+      this.filters.onlyUnmapped = false;
+      this.filters.onlyPinned = false;
+      this.filters.klasifikasi = type;
+      const selKlas = document.getElementById('all-filter-klasifikasi');
+      if (selKlas) selKlas.value = type;
+    }
+    this.updateQuickFilterUI(type);
+    this.applyFilters();
+  },
+
+  updateQuickFilterUI(activeId) {
+    document.querySelectorAll('.quick-filter-pill').forEach(pill => {
+      pill.classList.toggle('active', pill.id === `qf-${activeId}`);
+    });
+  },
+
+  updateActiveStatCard(activeCardId) {
+    document.querySelectorAll('.stat-card.interactive').forEach(card => {
+      card.classList.toggle('active-filter', card.id === activeCardId);
+    });
+  },
+
+  getKlasifikasiBadgeClass(key) {
+    const k = (key || 'penggunaan').toUpperCase();
+    if (CONFIG.KLASIFIKASI_TAXONOMY && CONFIG.KLASIFIKASI_TAXONOMY[k]) {
+      return CONFIG.KLASIFIKASI_TAXONOMY[k].badgeClass || 'badge-pastel-blue';
+    }
+    return 'badge-pastel-blue';
+  },
+
+  getKlasifikasiIcon(key) {
+    const k = (key || 'penggunaan').toUpperCase();
+    if (CONFIG.KLASIFIKASI_TAXONOMY && CONFIG.KLASIFIKASI_TAXONOMY[k]) {
+      return CONFIG.KLASIFIKASI_TAXONOMY[k].icon || 'fa-tag';
+    }
+    return 'fa-tag';
+  },
 
   bindEvents() {
     const allSearchInput = document.getElementById('all-search-input');
     if (allSearchInput) {
       allSearchInput.addEventListener('input', (e) => {
-        this.filters.search = e.target.value.toLowerCase();
-        this.renderAllAssetsList();
+        this.filters.search = e.target.value;
+        this.applyFilters();
       });
     }
 
@@ -175,7 +291,24 @@ const App = {
     if (allFilterKab) {
       allFilterKab.addEventListener('change', (e) => {
         this.filters.kabupaten = e.target.value;
-        this.renderAllAssetsList();
+        this.applyFilters();
+      });
+    }
+
+    const allFilterKlas = document.getElementById('all-filter-klasifikasi');
+    if (allFilterKlas) {
+      allFilterKlas.addEventListener('change', (e) => {
+        this.filters.klasifikasi = e.target.value;
+        this.updateQuickFilterUI(e.target.value === 'all' ? 'all' : e.target.value);
+        this.applyFilters();
+      });
+    }
+
+    const allFilterTahap = document.getElementById('all-filter-tahap');
+    if (allFilterTahap) {
+      allFilterTahap.addEventListener('change', (e) => {
+        this.filters.tahap = e.target.value;
+        this.applyFilters();
       });
     }
 
@@ -253,7 +386,8 @@ const App = {
     const selectKab = document.getElementById('all-filter-kabupaten');
     if (!selectKab) return;
 
-    const kabList = [...new Set(this.activeAssets.map(a => a.kabupaten))].sort();
+    selectKab.innerHTML = '<option value="all">Semua Kabupaten/Kota</option>';
+    const kabList = [...new Set(this.activeAssets.map(a => a.kabupaten))].filter(Boolean).sort();
     kabList.forEach(kab => {
       const opt = document.createElement('option');
       opt.value = kab;
@@ -263,21 +397,56 @@ const App = {
   },
 
   updateKPIStats() {
-    const totalUnit = this.activeAssets.length;
-    const totalLuas = this.activeAssets.reduce((sum, a) => sum + (a.luas || 0), 0);
-    const countTanah = this.activeAssets.filter(a => a.isTanah).length;
-    const countBangunan = totalUnit - countTanah;
+    const stats = DataEngine.getStatsSummary();
 
-    const tree = DataEngine.getClusteredTree(this.activeAssets);
+    // Card 1: Total Permintaan Klarifikasi
+    const elTotal = document.getElementById('stat-total-permintaan');
+    const elTotalSatker = document.getElementById('stat-total-satker-sub');
+    if (elTotal) elTotal.textContent = `${stats.totalAssets} Unit`;
+    if (elTotalSatker) elTotalSatker.textContent = `${stats.totalSatkers} Satker Terdata`;
+
+    // Card 2: Perlu Disurati (Belum Ada Titik GPS)
+    const elUnmapped = document.getElementById('stat-unmapped-unit');
+    const elUnmappedSatker = document.getElementById('stat-unmapped-satker-sub');
+    if (elUnmapped) elUnmapped.textContent = `${stats.unmappedCount} Unit`;
+    if (elUnmappedSatker) elUnmappedSatker.textContent = `${stats.unmappedSatkersCount} Satker Butuh GPS`;
+
+    // Card 3: Klasifikasi Terbanyak
+    const elTopKlas = document.getElementById('stat-top-klasifikasi');
+    const elSubKlas = document.getElementById('stat-sub-klasifikasi');
+    const sortedKlas = Object.entries(stats.klasifikasiMap || {}).sort((a, b) => b[1] - a[1]);
+    if (elTopKlas) {
+      if (sortedKlas.length > 0) {
+        elTopKlas.textContent = `${sortedKlas[0][0]} (${sortedKlas[0][1]})`;
+      } else {
+        elTopKlas.textContent = 'Penggunaan';
+      }
+    }
+    if (elSubKlas) {
+      if (sortedKlas.length > 1) {
+        elSubKlas.textContent = `${sortedKlas[1][0]} (${sortedKlas[1][1]}) • Lainnya`;
+      } else {
+        elSubKlas.textContent = 'Klik untuk filter';
+      }
+    }
+
+    // Card 4: Status Tindak Lanjut
+    const elTopTahap = document.getElementById('stat-top-tahap');
+    const elSubTahap = document.getElementById('stat-sub-tahap');
+    if (elTopTahap) elTopTahap.textContent = `Penelitian (${stats.tahapMap['PENELITIAN'] || 0})`;
+    if (elSubTahap) elSubTahap.textContent = `Penelusuran (${stats.tahapMap['PENELUSURAN'] || 0}) • Lengkap (${stats.tahapMap['DATA TIDAK LENGKAP'] || 0})`;
+
+    // Card 5: Prioritas BMN Idle
+    const elPinned = document.getElementById('stat-total-pinned');
+    if (elPinned) elPinned.textContent = `${stats.pinnedCount} Unit`;
+
+    // Tab badges
+    const tree = DataEngine.getClusteredTree(this.getFilteredAssets());
     const totalKluster = Object.keys(tree).length;
-
-    document.getElementById('stat-total-unit').textContent = totalUnit;
-    document.getElementById('stat-total-luas').textContent = SpatialEngine.formatLuas(totalLuas);
-    document.getElementById('stat-count-tanah').textContent = `${countTanah} Unit`;
-    document.getElementById('stat-count-bangunan').textContent = `${countBangunan} Unit`;
-
-    document.getElementById('badge-cluster-count').textContent = `${totalKluster} Kluster`;
-    document.getElementById('badge-all-count').textContent = `${totalUnit} Unit`;
+    const badgeCluster = document.getElementById('badge-cluster-count');
+    const badgeAll = document.getElementById('badge-all-count');
+    if (badgeCluster) badgeCluster.textContent = `${totalKluster} Kluster`;
+    if (badgeAll) badgeAll.textContent = `${stats.totalAssets} Unit`;
   },
 
   toggleSelectAssetForExport(assetId, checked) {
@@ -322,10 +491,11 @@ const App = {
     const container = document.getElementById('cluster-accordion-root');
     if (!container) return;
 
-    const tree = DataEngine.getClusteredTree(this.activeAssets);
+    const displayAssets = this.getFilteredAssets();
+    const tree = DataEngine.getClusteredTree(displayAssets);
 
     if (Object.keys(tree).length === 0) {
-      container.innerHTML = `<div class="p-4 text-center text-muted">Tidak ada aset terkoordinat untuk diklusterkan.</div>`;
+      container.innerHTML = `<div class="p-4 text-center text-muted">Tidak ada aset yang cocok dengan filter aktif.</div>`;
       return;
     }
 
@@ -361,7 +531,7 @@ const App = {
           const isSelected = this.selectedAsset && this.selectedAsset.id === asset.id ? 'active' : '';
 
           return `
-            <div class="asset-card ${isSelected}" style="position: relative;">
+            <div class="asset-card ${isSelected} ${!asset.hasCoordinates ? 'unmapped-card' : ''}" style="position: relative;">
               ${asset.isPinned ? `<span class="pin-mini-badge" title="Prioritas Idle"><i class="fa-solid fa-thumbtack"></i></span>` : ''}
               <input type="checkbox" class="custom-checkbox asset-export-cb" data-asset-id="${asset.id}" ${isChecked} onchange="App.toggleSelectAssetForExport('${asset.id}', this.checked)">
               <div class="asset-card-thumb" style="background-image: url('${this.formatPhotoUrl(asset.fotoList[0] || '')}')" onclick="App.selectAsset('${asset.id}')">
@@ -369,12 +539,19 @@ const App = {
               </div>
               <div class="asset-card-content" onclick="App.selectAsset('${asset.id}')">
                 <h5 class="asset-card-title">${asset.namaBarang}</h5>
+                <div class="d-flex align-items-center gap-1 flex-wrap mb-1">
+                  <span class="badge badge-klasifikasi ${this.getKlasifikasiBadgeClass(asset.klasifikasiKey)}" title="${asset.detilKlasifikasi}">
+                    <i class="fa-solid ${this.getKlasifikasiIcon(asset.klasifikasiKey)}"></i> ${asset.klasifikasi}: ${asset.detilKlasifikasi}
+                  </span>
+                  ${!asset.hasCoordinates ? `<span class="badge-unmapped" title="Belum ada titik koordinat GPS. Perlu disurati."><i class="fa-solid fa-triangle-exclamation"></i> Butuh GPS</span>` : ''}
+                </div>
                 <div class="asset-card-meta">
                   <span><i class="fa-solid fa-barcode"></i> NUP ${asset.nup} &bull; ${asset.kodeBarang}</span>
                   <span><i class="fa-solid fa-location-dot text-danger"></i> ${asset.kabupaten}</span>
                 </div>
                 <div class="asset-card-footer">
                   <div class="asset-card-area"><i class="fa-solid fa-vector-square"></i> Luas: ${SpatialEngine.formatLuas(asset.luas)}</div>
+                  <span class="badge badge-pastel-purple" style="font-size:9px;">${asset.tahapBerikut || 'PENELITIAN'}</span>
                 </div>
               </div>
             </div>
@@ -436,7 +613,7 @@ const App = {
     }
 
     if (kemKey && typeof MapEngine !== 'undefined') {
-      const filteredAssets = this.activeAssets.filter(a => a.kementerian === kemKey);
+      const filteredAssets = this.getFilteredAssets().filter(a => a.kementerian === kemKey && a.hasCoordinates);
       if (filteredAssets.length > 0) {
         MapEngine.renderBMNMarkers(filteredAssets, (asset) => this.selectAsset(asset.id));
         if (typeof L !== 'undefined') {
@@ -450,37 +627,25 @@ const App = {
   },
 
   filterBySatker(kemKey, satkerName) {
-    const filteredAssets = this.activeAssets.filter(a => a.kementerian === kemKey && a.namaSatker === satkerName);
-    if (filteredAssets.length > 0 && typeof MapEngine !== 'undefined') {
-      MapEngine.renderBMNMarkers(filteredAssets, (asset) => this.selectAsset(asset.id));
+    const filteredAssets = this.getFilteredAssets().filter(a => a.kementerian === kemKey && a.namaSatker === satkerName);
+    const mappedAssets = filteredAssets.filter(a => a.hasCoordinates);
+    if (mappedAssets.length > 0 && typeof MapEngine !== 'undefined') {
+      MapEngine.renderBMNMarkers(mappedAssets, (asset) => this.selectAsset(asset.id));
       if (typeof L !== 'undefined') {
-        const bounds = L.latLngBounds(filteredAssets.map(a => [a.lat, a.lng]));
+        const bounds = L.latLngBounds(mappedAssets.map(a => [a.lat, a.lng]));
         if (bounds.isValid() && MapEngine.map) {
           MapEngine.map.fitBounds(bounds, { padding: [50, 50], maxZoom: 16 });
         }
       }
     }
+    this.showToast(`Filter Satker: ${satkerName} (${filteredAssets.length} unit)`, 'info');
   },
 
   renderAllAssetsList() {
     const container = document.getElementById('all-assets-list-root');
     if (!container) return;
 
-    let list = [...this.activeAssets];
-
-    if (this.filters.kabupaten && this.filters.kabupaten !== 'all') {
-      list = list.filter(a => a.kabupaten === this.filters.kabupaten);
-    }
-
-    if (this.filters.search) {
-      const q = this.filters.search.toLowerCase();
-      list = list.filter(a =>
-        a.namaBarang.toLowerCase().includes(q) ||
-        a.namaSatker.toLowerCase().includes(q) ||
-        a.kodeBarang.toLowerCase().includes(q) ||
-        a.kabupaten.toLowerCase().includes(q)
-      );
-    }
+    let list = this.getFilteredAssets();
 
     // Sort: Pinned assets first
     list.sort((a, b) => {
@@ -499,7 +664,7 @@ const App = {
       const isSelected = this.selectedAsset && this.selectedAsset.id === asset.id ? 'active' : '';
 
       return `
-        <div class="asset-card ${isSelected} mb-2" style="position: relative;">
+        <div class="asset-card ${isSelected} mb-2 ${!asset.hasCoordinates ? 'unmapped-card' : ''}" style="position: relative;">
           ${asset.isPinned ? `<span class="pin-mini-badge" title="Prioritas Idle"><i class="fa-solid fa-thumbtack"></i></span>` : ''}
           <input type="checkbox" class="custom-checkbox asset-export-cb" data-asset-id="${asset.id}" ${isChecked} onchange="App.toggleSelectAssetForExport('${asset.id}', this.checked)">
           <div class="asset-card-thumb" style="background-image: url('${this.formatPhotoUrl(asset.fotoList[0] || '')}')" onclick="App.selectAsset('${asset.id}')">
@@ -507,13 +672,20 @@ const App = {
           </div>
           <div class="asset-card-content" onclick="App.selectAsset('${asset.id}')">
             <h5 class="asset-card-title">${asset.namaBarang}</h5>
+            <div class="d-flex align-items-center gap-1 flex-wrap mb-1">
+              <span class="badge badge-klasifikasi ${this.getKlasifikasiBadgeClass(asset.klasifikasiKey)}" title="${asset.detilKlasifikasi}">
+                <i class="fa-solid ${this.getKlasifikasiIcon(asset.klasifikasiKey)}"></i> ${asset.klasifikasi}: ${asset.detilKlasifikasi}
+              </span>
+              ${!asset.hasCoordinates ? `<span class="badge-unmapped" title="Belum ada titik koordinat GPS. Perlu disurati."><i class="fa-solid fa-triangle-exclamation"></i> Butuh GPS</span>` : ''}
+            </div>
             <div class="asset-card-meta">
               <span><i class="fa-solid fa-building-user text-primary"></i> ${asset.namaSatker}</span>
+              <span><i class="fa-solid fa-barcode"></i> NUP ${asset.nup} &bull; ${asset.kodeBarang}</span>
               <span><i class="fa-solid fa-location-dot text-danger"></i> ${asset.kabupaten}</span>
             </div>
             <div class="asset-card-footer">
               <div class="asset-card-area"><i class="fa-solid fa-vector-square"></i> Luas: ${SpatialEngine.formatLuas(asset.luas)}</div>
-              <span class="badge badge-pastel-blue" style="font-size:10px;">NUP ${asset.nup}</span>
+              <span class="badge badge-pastel-purple" style="font-size:9px;">${asset.tahapBerikut || 'PENELITIAN'}</span>
             </div>
           </div>
         </div>
@@ -534,32 +706,41 @@ const App = {
     this.renderClusterAccordion();
     this.renderAllAssetsList();
 
-    MapEngine.focusLocation(asset.lat, asset.lng, 16);
-    MapEngine.drawKPKNLConnector(asset);
-    MapEngine.drawCatchmentCircle(asset.lat, asset.lng, 500);
-
     const drawer = document.getElementById('detail-drawer');
     const rightToggleBtn = document.getElementById('right-panel-toggle-btn');
     if (drawer) drawer.classList.add('open');
     if (rightToggleBtn) rightToggleBtn.style.display = 'none';
 
-    // Temporary loading state for drawer body
-    const drawerBody = document.getElementById('detail-drawer-body');
-    if (drawerBody) {
-      drawerBody.innerHTML = `
-        <div class="p-4 text-center">
-          <i class="fa-solid fa-circle-notch fa-spin text-primary" style="font-size:28px;"></i>
-          <p class="mt-2 text-muted" style="font-size:12px; font-weight:600;">Mengambil Data POI Real-Time dari OpenStreetMap API (Overpass)...</p>
-        </div>
-      `;
+    let catchmentData = { pois: [], totalCount: 0 };
+    let recommendation = typeof RecommendationEngine !== 'undefined'
+      ? RecommendationEngine.generateRecommendation(asset, [])
+      : { officialTitle: 'Penelitian Awal Penggunaan BMN', type: { badgeClass: 'badge-pastel-blue' } };
+
+    if (asset.hasCoordinates && typeof asset.lat === 'number' && typeof asset.lng === 'number') {
+      MapEngine.focusLocation(asset.lat, asset.lng, 16);
+      MapEngine.drawKPKNLConnector(asset);
+      MapEngine.drawCatchmentCircle(asset.lat, asset.lng, 500);
+
+      // Temporary loading state for drawer body
+      const drawerBody = document.getElementById('detail-drawer-body');
+      if (drawerBody) {
+        drawerBody.innerHTML = `
+          <div class="p-4 text-center">
+            <i class="fa-solid fa-circle-notch fa-spin text-primary" style="font-size:28px;"></i>
+            <p class="mt-2 text-muted" style="font-size:12px; font-weight:600;">Mengambil Data POI Real-Time dari OpenStreetMap API (Overpass)...</p>
+          </div>
+        `;
+      }
+
+      // AUTOMATIC OPENSTREETMAP OVERPASS REAL-TIME POI FETCH
+      catchmentData = await SpatialEngine.fetchDynamicPOIsInCatchment(asset.lat, asset.lng, 500);
+      MapEngine.renderNearbyPOIs(catchmentData.pois);
+      recommendation = RecommendationEngine.generateRecommendation(asset, catchmentData.pois);
+    } else {
+      this.showToast(`📍 Aset belum ada titik GPS. Menampilkan data surat & atribut satker ${asset.namaSatker}.`, 'warning');
+      if (MapEngine.connectorLinesGroup) MapEngine.connectorLinesGroup.clearLayers();
+      if (typeof MapEngine.clearCatchmentCircle === 'function') MapEngine.clearCatchmentCircle();
     }
-
-    // AUTOMATIC OPENSTREETMAP OVERPASS REAL-TIME POI FETCH
-    const catchmentData = await SpatialEngine.fetchDynamicPOIsInCatchment(asset.lat, asset.lng, 500);
-
-    // Pass 100% real OpenStreetMap POIs to MapEngine & Recommendation Engine
-    MapEngine.renderNearbyPOIs(catchmentData.pois);
-    const recommendation = RecommendationEngine.generateRecommendation(asset, catchmentData.pois);
 
     this.renderDetailPanel(asset, catchmentData, recommendation);
   },
@@ -590,9 +771,10 @@ const App = {
       savedUser.role === 'admin'
     );
 
-    const distData = SpatialEngine.getDistanceToKPKNL(asset.lat, asset.lng);
-    const multiDist = SpatialEngine.getMultiLevelDistances(asset.lat, asset.lng, asset.kabupaten, asset.kecamatan, asset.kelurahan);
-    const gmapsUrl = `https://www.google.com/maps?q=${asset.lat},${asset.lng}`;
+    const hasCoords = asset.hasCoordinates && typeof asset.lat === 'number' && typeof asset.lng === 'number';
+    const distData = hasCoords ? SpatialEngine.getDistanceToKPKNL(asset.lat, asset.lng) : { distanceKm: '-' };
+    const multiDist = hasCoords ? SpatialEngine.getMultiLevelDistances(asset.lat, asset.lng, asset.kabupaten, asset.kecamatan, asset.kelurahan) : null;
+    const gmapsUrl = hasCoords ? `https://www.google.com/maps?q=${asset.lat},${asset.lng}` : '#';
 
     const rawPhotoUrl = (asset.fotoList && asset.fotoList.length > 0) ? asset.fotoList[this.currentPhotoIndex || 0] : '';
     const activePhotoUrl = this.formatPhotoUrl(rawPhotoUrl);
@@ -607,7 +789,7 @@ const App = {
       </button>
     ` : '';
 
-    const catchmentPoiHtml = catchmentData.pois.map(poi => `
+    const catchmentPoiHtml = (catchmentData && catchmentData.pois) ? catchmentData.pois.map(poi => `
       <div class="poi-item">
         <div class="poi-icon" style="background:${poi.color}"><i class="fa-solid ${poi.icon}"></i></div>
         <div class="poi-details" style="flex:1;">
@@ -618,7 +800,196 @@ const App = {
           <i class="fa-solid fa-arrow-up-right-from-square"></i>
         </a>
       </div>
-    `).join('');
+    `).join('') : '';
+
+    container.innerHTML = `
+      <div id="photo-carousel-box" class="photo-carousel-container" style="background-image: url('${activePhotoUrl}'); background-size: cover; background-position: center; position: relative; height: 190px; border-radius: 10px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+        <span id="photo-carousel-counter" class="photo-counter">${(this.currentPhotoIndex || 0) + 1} / ${totalPhotos}</span>
+        ${canEditOrUpload ? `
+          <button class="btn-delete-photo" title="Hapus foto ini" onclick="event.stopPropagation(); App.deletePhoto('${asset.id}')">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        ` : ''}
+        ${navArrows}
+      </div>
+
+      <!-- UNMAPPED WARNING CALLOUT BOX (IF NO GPS) -->
+      ${!hasCoords ? `
+        <div class="unmapped-alert-box">
+          <i class="fa-solid fa-triangle-exclamation" style="font-size:20px; color:#d35400; flex-shrink:0; margin-top:2px;"></i>
+          <div>
+            <strong style="font-size:12px; display:block; margin-bottom:2px;">Aset Belum Memiliki Titik Koordinat GPS</strong>
+            <span>Satker <strong>${asset.namaSatker}</strong> perlu dikirimi surat dinas klarifikasi dan pemutakhiran koordinat spasial BMN.</span>
+          </div>
+        </div>
+      ` : ''}
+
+      <!-- CLASSIFICATION & SUB-DETAIL CHIP BANNER -->
+      <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px; margin-bottom:12px;">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+          <span class="badge ${this.getKlasifikasiBadgeClass(asset.klasifikasiKey)}" style="font-size:10.5px; font-weight:700;">
+            <i class="fa-solid ${this.getKlasifikasiIcon(asset.klasifikasiKey)}"></i> ${asset.klasifikasi}
+          </span>
+          <span class="badge badge-pastel-purple" style="font-size:9.5px; font-weight:700;">Tahap: ${asset.tahapBerikut || 'PENELITIAN'}</span>
+        </div>
+        <div style="font-size:11.5px; font-weight:700; color:var(--text-main); margin-top:4px;">
+          <i class="fa-solid fa-arrow-turn-down" style="font-size:9px; margin-right:4px; color:var(--pastel-blue);"></i> Detil: ${asset.detilKlasifikasi}
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <span class="badge badge-pastel-blue">${asset.kategori} (${asset.jenisBarang})</span>
+        ${asset.isPinned ? `<span class="badge" style="background:linear-gradient(135deg, #e74c3c, #c0392b); color:#ffffff; font-size:10.5px; padding:4px 8px; border-radius:6px; margin-left:6px;"><i class="fa-solid fa-thumbtack"></i> Prioritas Idle</span>` : ''}
+        <h3 style="font-size:15px; font-weight:800; margin-top:6px; color:var(--text-main); line-height:1.4;">${asset.namaBarang}</h3>
+        <p style="font-size:11.5px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-building-user text-primary" style="margin-right:6px;"></i> ${asset.namaSatker}</p>
+        <p style="font-size:11.5px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-id-card text-secondary" style="margin-right:6px;"></i> Kode Satker: <strong style="color:var(--text-main);">${asset.kodeSatker || '-'}</strong> &bull; <i class="fa-solid fa-location-dot text-danger" style="margin-left:4px; margin-right:4px;"></i> ${asset.kabupaten}</p>
+      </div>
+
+      <!-- SURAT JAWABAN & TANGGAL SURAT CARD -->
+      <div class="detail-section-card mb-4">
+        <h4 class="section-title mb-2"><i class="fa-solid fa-envelope-open-text text-primary" style="margin-right:6px;"></i> Respon & Surat Pengguna Barang</h4>
+        <div style="font-size:11.5px; line-height:1.5;">
+          <p class="mb-1"><strong>Nomor Surat:</strong> <span class="badge badge-pastel-blue" style="font-size:10.5px;">${asset.suratJawaban || '-'}</span></p>
+          <p class="mb-2"><strong>Tanggal Surat:</strong> <span style="color:var(--text-muted);">${asset.tglSurat || '-'}</span></p>
+          <div style="background:#f8fafc; border-left:3px solid var(--pastel-blue); padding:8px 12px; border-radius:0 8px 8px 0; font-size:11.5px; font-style:italic; color:var(--text-main);">
+            "${asset.hasilJawaban || 'Belum ada catatan jawaban dari satker.'}"
+          </div>
+          ${asset.catatanTim ? `
+            <div class="mt-2" style="background:#fff9db; border:1px dashed #f59f00; padding:6px 10px; border-radius:6px; font-size:10.5px; color:#854d0e;">
+              <strong>Catatan Rekonsiliasi:</strong> ${asset.catatanTim}
+            </div>
+          ` : ''}
+        </div>
+      </div>
+
+      <!-- DIRECT GOOGLE MAPS & MULTI-PHOTO UPLOAD BUTTONS -->
+      ${hasCoords ? `
+      <div style="margin-bottom: 12px !important; display: block !important;">
+        <a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-block" style="display: flex !important; width: 100% !important; background: #eafaf1 !important; color: #27ae60 !important; border: 1px solid #2ecc71 !important; font-weight: 700; padding: 12px 14px; border-radius: 10px; text-decoration: none;">
+          <i class="fa-solid fa-map-location-dot" style="font-size: 14px; margin-right: 8px;"></i> Buka Koordinat di Google Maps (${asset.lat.toFixed(5)}, ${asset.lng.toFixed(5)})
+        </a>
+      </div>
+      ` : ''}
+
+      ${canEditOrUpload ? `
+      <div style="margin-bottom: 12px !important; display: block !important;">
+        <button class="btn btn-primary btn-block" style="display: flex !important; width: 100% !important; padding: 12px 14px; border-radius: 10px; box-shadow: 0 4px 14px rgba(74, 144, 226, 0.3);" onclick="App.openUploadPhotoModal('${asset.id}')">
+          <i class="fa-solid fa-images" style="font-size: 14px; margin-right: 8px;"></i> Upload Multi-Foto Aset (Up to 5)
+        </button>
+      </div>
+      ` : ''}
+
+      ${isAdmin ? `
+      <div style="margin-bottom: 24px !important; display: block !important;">
+        <button class="btn btn-block" style="${asset.isPinned ? 'background: linear-gradient(135deg, #e74c3c, #c0392b); color: #ffffff; box-shadow: 0 4px 14px rgba(231, 76, 60, 0.35);' : 'background: #ffffff; color: #2c3e50; border: 1.5px solid #e74c3c;'} display: flex !important; width: 100% !important; font-weight: 700; padding: 12px 14px; border-radius: 10px; align-items: center; justify-content: center; font-size: 13px;" onclick="App.togglePinAsset('${asset.id}')" title="Toggle status prioritas pin idle">
+          <i class="fa-solid fa-thumbtack" style="font-size: 14px; margin-right: 8px; ${asset.isPinned ? 'transform: rotate(-45deg);' : ''}"></i> ${asset.isPinned ? '📌 Prioritas Idle (Klik untuk Lepas Pin)' : '📌 Pin Aset Sebagai Prioritas Idle'}
+        </button>
+      </div>
+      ` : ''}
+
+      <!-- KODE BARANG, NUP & LUAS METRICS GRID -->
+      <div class="detail-metrics-grid mb-4">
+        <div class="metric-box">
+          <label>Kode Barang & NUP</label>
+          <strong>${asset.kodeBarang} (NUP ${asset.nup})</strong>
+        </div>
+        <div class="metric-box">
+          <label>Luas Aset (BMN)</label>
+          <strong style="color:var(--pastel-blue);">${SpatialEngine.formatLuas(asset.luas)}</strong>
+        </div>
+      </div>
+
+      <!-- MULTI-LEVEL SPATIAL DISTANCES CARD (IF COORDS AVAILABLE) -->
+      ${hasCoords && multiDist ? `
+      <div class="detail-section-card mb-4">
+        <h4 class="section-title mb-3"><i class="fa-solid fa-route" style="color:var(--pastel-blue); margin-right:6px;"></i> Analisis Jarak Spasial Multilevel</h4>
+        <div class="d-flex flex-column" style="font-size:12px;">
+          <div class="d-flex justify-content-between align-items-center" style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:10px; margin-bottom:10px;">
+            <span style="line-height:1.5;"><i class="fa-solid fa-building-columns text-primary" style="margin-right:10px; margin-left:2px;"></i> <strong>Jarak ke KPKNL Denpasar:</strong></span>
+            <span class="badge badge-pastel-blue" style="font-size:11px; padding:6px 12px; border-radius:12px; margin-left:8px; flex-shrink:0;">${distData.distanceKm} km</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center" style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:10px; margin-bottom:10px;">
+            <span style="line-height:1.5;"><i class="fa-solid fa-building-flag text-danger" style="margin-right:10px; margin-left:2px;"></i> <strong>Jarak ke Ibukota Prov. Bali (Denpasar):</strong></span>
+            <span class="badge badge-pastel-blue" style="font-size:11px; padding:6px 12px; border-radius:12px; margin-left:8px; flex-shrink:0;">${multiDist.provincialCapital.distanceKm} km</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center" style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:10px; margin-bottom:10px;">
+            <span style="line-height:1.5;"><i class="fa-solid fa-landmark text-secondary" style="margin-right:10px; margin-left:2px;"></i> <strong>Jarak ke Ibukota Kab. Terdekat (${multiDist.regencyCapital ? multiDist.regencyCapital.name : asset.kabupaten}):</strong></span>
+            <span class="badge badge-pastel-purple" style="font-size:11px; padding:6px 12px; border-radius:12px; margin-left:8px; flex-shrink:0;">${multiDist.regencyCapital ? multiDist.regencyCapital.distanceKm + ' km' : '-'}</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center" style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:10px; margin-bottom:10px;">
+            <span style="line-height:1.5;"><i class="fa-solid fa-store text-warning" style="margin-right:10px; margin-left:2px;"></i> <strong>Jarak ke ${multiDist.districtCenter.name}:</strong></span>
+            <span class="badge badge-pastel-orange" style="font-size:11px; padding:6px 12px; border-radius:12px; margin-left:8px; flex-shrink:0;">${multiDist.districtCenter.distanceKm} km</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center" style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:10px;">
+            <span style="line-height:1.5;"><i class="fa-solid fa-house-user text-success" style="margin-right:10px; margin-left:2px;"></i> <strong>Jarak ke ${multiDist.villageCenter.name}:</strong></span>
+            <span class="badge badge-pastel-mint" style="font-size:11px; padding:6px 12px; border-radius:12px; margin-left:8px; flex-shrink:0;">${multiDist.villageCenter.distanceKm} km</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- NIGHTTIME LIGHTS LUMINOSITY & CROWD CENTER INDEX -->
+      <div class="detail-section-card mb-4" style="background:#fef5e7; border:1px solid #f39c12;">
+        <h4 class="section-title mb-1" style="color:#e67e22;">
+          <i class="fa-solid fa-lightbulb" style="margin-right:6px;"></i> Nighttime Lights & Activity Index (VIIRS Proxy)
+        </h4>
+        <p style="font-size:11px; color:#1e293b;" class="mb-2">
+          <strong>Pusat Keramaian Nightlife/Komersial Terdekat:</strong> ${multiDist.nighttimeHub ? multiDist.nighttimeHub.name : 'Pusat Lokal'} <span style="color:#e67e22; font-weight:700;">(${multiDist.nighttimeHub ? multiDist.nighttimeHub.distanceKm + ' km' : '-'})</span>
+        </p>
+
+        <!-- Visual Score Bar -->
+        <div style="margin-bottom:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+            <span style="font-size:11px; font-weight:700; color:#e67e22;">Skor Intensitas Cahaya Malam:</span>
+            <span style="font-size:13px; font-weight:800; color:#1e293b;">${multiDist.nightLightScore}<span style="font-size:10px; font-weight:600; color:#64748b;"> / 100</span></span>
+          </div>
+          <!-- Bar track -->
+          <div style="position:relative; height:18px; background:linear-gradient(90deg, #93c5fd 0%, #6ee7b7 40%, #fde68a 65%, #fb923c 80%, #f87171 100%); border-radius:20px; overflow:hidden; border:1px solid rgba(0,0,0,0.1);">
+            <div style="position:absolute; top:0; left:0; height:100%; width:${multiDist.nightLightScore}%; background:rgba(0,0,0,0.25); border-radius:20px; transition: width 0.8s ease;"></div>
+            <div style="position:absolute; top:-3px; left:calc(${multiDist.nightLightScore}% - 9px); width:18px; height:24px; background:#1e293b; border-radius:4px; border:2px solid #ffffff; box-shadow:0 2px 8px rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center;">
+              <div style="width:4px; height:4px; background:#ffffff; border-radius:50%;"></div>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-top:5px; font-size:9px; color:#94a3b8; font-weight:600;">
+            <span>Rendah<br><em style="font-weight:400;">&lt;50</em></span>
+            <span style="text-align:center;">Sedang<br><em style="font-weight:400;">50–70</em></span>
+            <span style="text-align:center;">Tinggi<br><em style="font-weight:400;">70–85</em></span>
+            <span style="text-align:right;">Sangat Tinggi<br><em style="font-weight:400;">&gt;85</em></span>
+          </div>
+        </div>
+
+        <div style="background:rgba(255,255,255,0.8); border:1px solid rgba(243,156,18,0.3); border-radius:8px; padding:8px 12px; font-size:10.5px; color:#1e293b; line-height:1.6;">
+          <strong>Klasifikasi:</strong> ${multiDist.nighttimeHub ? multiDist.nighttimeHub.tier : 'Sedang'} &bull; 
+          Berdasarkan pendekatan <em>VIIRS Nighttime Light Index</em> (NASA/NOAA) yang digunakan sebagai proxy kepadatan aktivitas ekonomi malam. Skor ≥70 mengindikasikan zona komersial aktif yang berpotensi tinggi untuk pemanfaatan BMN.
+        </div>
+      </div>
+
+      <div class="detail-section-card mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h4 class="section-title mb-0"><i class="fa-solid fa-bullseye text-primary" style="margin-right:6px;"></i> Proksimitas POI Real-Time (OSM Overpass API)</h4>
+          <span class="badge badge-pastel-blue">${catchmentData ? catchmentData.totalCount : 0} POI Ditemukan</span>
+        </div>
+        <div class="poi-list-container">
+          ${catchmentPoiHtml || `<p class="text-muted text-center p-3" style="font-size:11px; background:#f8fafc; border-radius:8px;"><i class="fa-solid fa-info-circle"></i> Tidak ada POI utama dalam radius 500m.</p>`}
+        </div>
+      </div>
+      ` : ''}
+
+      <div class="detail-section-card recommendation-card mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="badge ${recommendation.type ? recommendation.type.badgeClass : 'badge-pastel-blue'}"><i class="fa-solid fa-user-check"></i> REKOMENDASI TIM</span>
+        </div>
+        <h4 class="rec-title">${recommendation.officialTitle || 'Optimalisasi & Penelitian BMN'}</h4>
+        
+        <div class="mt-2 pt-2 border-top" style="border-top:1px dashed rgba(243, 156, 18, 0.3) !important;">
+          <label style="font-size:10.5px; font-weight:700; color:var(--pastel-orange); text-transform:uppercase; margin-bottom:4px; display:block;">
+            <i class="fa-solid fa-pen-to-square"></i> Rekomendasi Khusus Pengguna / Tim:
+          </label>
+          <div style="font-size:12px; color:var(--text-main); font-style:italic;">
+            "${asset.rekomendasiUser || 'Belum ada rekomendasi khusus yang ditambahkan.'}"
+          </div>
+        </div>
+      </div>
+    `;
 
     container.innerHTML = `
       <div id="photo-carousel-box" class="photo-carousel-container" style="background-image: url('${activePhotoUrl}'); background-size: cover; background-position: center; position: relative; height: 190px; border-radius: 10px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">

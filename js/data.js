@@ -98,6 +98,14 @@ const DataEngine = {
 
       const isPinnedFromRow = row.is_pinned === true || row.is_pinned === 'TRUE' || row.is_pinned === '1' || row.isPinned === true;
 
+      // Normalize 2-level taxonomy: Klasifikasi & Detil Klasifikasi
+      const normKlas = this.normalizeKlasifikasi(
+        row.klasifikasi || row.KLASIFIKASI || row.kategori_idle,
+        row['detil klasifikasi'] || row.detil_klasifikasi || row['DETIL KLASIFIKASI'] || row.sub_klasifikasi
+      );
+
+      const hasCoords = lat !== null && lng !== null && !isNaN(lat) && !isNaN(lng);
+
       const item = {
         id: row.id || (kodeSatker && kodeBarang ? `${kodeSatker}-${kodeBarang}-${nupVal}` : `BMN-${idx + 1}`),
         kodeSatker: kodeSatker,
@@ -110,13 +118,16 @@ const DataEngine = {
         jenisBarang: jenis,
         isTanah: isTanah,
         kategori: isTanah ? 'Tanah' : 'Bangunan',
+        klasifikasiKey: normKlas.key,
+        klasifikasi: normKlas.label,
+        detilKlasifikasi: normKlas.detil,
         kabupaten: kabupaten,
         kecamatan: kecamatan,
         kelurahan: kelurahan,
         alamat: row.alamat || `${kelurahan}, ${kecamatan}, ${kabupaten}`,
         lat: lat,
         lng: lng,
-        hasCoordinates: lat !== null && lng !== null,
+        hasCoordinates: hasCoords,
         luas: luas,
         luasTanah: luas,
         luasBangunan: 0,
@@ -128,19 +139,160 @@ const DataEngine = {
         catatanTim: row['CATATAN_REKONSILIASI'] || row.catatan_tim || row['PEMETAAN AWAL BERBASIS KEYWORD'] || '',
         fotoList: fotoList,
         isPinned: isPinnedFromRow,
-        suratJawaban: row['SURAT JAWABAN PENGGUNA BARANG'] || '-',
-        tglSurat: row['TANGGAL SURAT JAWABAN PENGGUNA BARANG'] || '-',
-        tahapBerikut: row['TAHAP_BERIKUT'] || 'PENELITIAN'
+        suratJawaban: row['SURAT JAWABAN PENGGUNA BARANG'] || row.surat_jawaban || '-',
+        tglSurat: row['TANGGAL SURAT JAWABAN PENGGUNA BARANG'] || row.tgl_surat || '-',
+        hasilJawaban: row['HASIL JAWABAN'] || row.hasil_jawaban || row.kondisi || '',
+        tahapBerikut: (row['TAHAP_BERIKUT'] || row.tahap_berikut || 'PENELITIAN').toUpperCase().trim(),
+        penyampaianKlarifikasi: row['PENYAMPAIAN_KLARIFIKASI_REKAP'] || 'SUDAH'
       };
 
-      if (item.hasCoordinates) {
-        this.activeAssets.push(item);
-      } else {
+      // Load ALL assets into activeAssets for Left Panel & Global Search
+      this.activeAssets.push(item);
+      if (!hasCoords) {
         this.pendingAssets.push(item);
       }
     });
 
     this.loadCustomOverrides();
+  },
+
+  normalizeKlasifikasi(rawKlasifikasi, rawDetil) {
+    const rawK = (rawKlasifikasi || '').toLowerCase().trim();
+    const rawD = (rawDetil || '').toLowerCase().trim();
+
+    let parentKey = 'penggunaan';
+    let parentLabel = 'Penggunaan';
+    let detilLabel = 'Digunakan Satker';
+
+    if (rawK.includes('hapus') || rawD.includes('hapus')) {
+      parentKey = 'penghapusan';
+      parentLabel = 'Penghapusan';
+      if (rawD.includes('rencana') || rawD.includes('usulan')) {
+        detilLabel = 'Rencana / Usulan Penghapusan';
+      } else {
+        detilLabel = 'Sudah Dihapus';
+      }
+    } else if (rawK.includes('manfaat') || rawD.includes('manfaat') || rawD.includes('sewa')) {
+      parentKey = 'pemanfaatan';
+      parentLabel = 'Pemanfaatan';
+      if (rawD.includes('rencana')) {
+        detilLabel = 'Rencana Pemanfaatan / Sewa';
+      } else {
+        detilLabel = 'Pemanfaatan Berjalan / Sewa';
+      }
+    } else if (rawK.includes('pindah') || rawK.includes('hibah') || rawD.includes('hibah')) {
+      parentKey = 'pemindahtanganan';
+      parentLabel = 'Pemindahtanganan';
+      if (rawD.includes('rencana')) {
+        detilLabel = 'Rencana Hibah Pemkab / Pemda';
+      } else {
+        detilLabel = 'Selesai Hibah Pemda';
+      }
+    } else if (rawK.includes('renov') || rawD.includes('renov') || rawD.includes('rusak berat')) {
+      parentKey = 'renovasi';
+      parentLabel = 'Renovasi';
+      if (rawD.includes('rusak berat')) {
+        detilLabel = 'Rusak Berat Perlu Renovasi';
+      } else if (rawD.includes('proses')) {
+        detilLabel = 'Proses Renovasi Sedang Berjalan';
+      } else {
+        detilLabel = 'Rencana Renovasi';
+      }
+    } else if (rawK.includes('masalah') || rawK.includes('anomali') || rawK.includes('catat') || rawD.includes('master') || rawD.includes('reklas') || rawD.includes('catat') || rawD.includes('kode satker')) {
+      parentKey = 'masalah_pencatatan';
+      parentLabel = 'Masalah Pencatatan';
+      if (rawD.includes('tidak ditemukan') || rawD.includes('master')) {
+        detilLabel = 'Tidak Ditemukan di Master Aset';
+      } else if (rawD.includes('reklas') || rawD.includes('koreksi')) {
+        detilLabel = 'Reklasifikasi / Koreksi Catat';
+      } else if (rawD.includes('dobel')) {
+        detilLabel = 'Dobel Catat (Duplikasi)';
+      } else if (rawD.includes('kode satker')) {
+        detilLabel = 'Kode Satker Berbeda';
+      } else {
+        detilLabel = 'Masalah Pencatatan / Anomali';
+      }
+    } else {
+      // Default: Penggunaan
+      parentKey = 'penggunaan';
+      parentLabel = 'Penggunaan';
+      if (rawD.includes('alih status') || rawD.includes('transfer')) {
+        detilLabel = 'Alih Status ke Satker Lain';
+      } else if (rawD.includes('rencana')) {
+        detilLabel = 'Rencana Penggunaan Satker';
+      } else {
+        detilLabel = 'Digunakan Satker';
+      }
+    }
+
+    return {
+      key: parentKey,
+      label: parentLabel,
+      detil: detilLabel
+    };
+  },
+
+  getStatsSummary() {
+    const totalAssets = this.activeAssets.length;
+    const satkerSet = new Set();
+    const unmappedSatkerSet = new Set();
+    let unmappedCount = 0;
+    let mappedCount = 0;
+    let totalLuas = 0;
+    let countTanah = 0;
+    let countBangunan = 0;
+    let pinnedCount = 0;
+    let suratCount = 0;
+
+    const klasifikasiMap = {};
+    const detilMap = {};
+    const tahapMap = {
+      'PENELITIAN': 0,
+      'PENELUSURAN': 0,
+      'PEMANTAUAN': 0,
+      'DATA TIDAK LENGKAP': 0
+    };
+
+    this.activeAssets.forEach(a => {
+      satkerSet.add(a.namaSatker);
+      totalLuas += a.luas || 0;
+      if (a.isTanah) countTanah++; else countBangunan++;
+      if (a.isPinned) pinnedCount++;
+
+      if (a.hasCoordinates) {
+        mappedCount++;
+      } else {
+        unmappedCount++;
+        unmappedSatkerSet.add(a.namaSatker);
+      }
+
+      const s = (a.suratJawaban || '').trim();
+      if (s && s !== '-' && s !== 'Belum' && s !== 'BELUM') {
+        suratCount++;
+      }
+
+      klasifikasiMap[a.klasifikasi] = (klasifikasiMap[a.klasifikasi] || 0) + 1;
+      detilMap[a.detilKlasifikasi] = (detilMap[a.detilKlasifikasi] || 0) + 1;
+
+      const th = a.tahapBerikut || 'PENELITIAN';
+      tahapMap[th] = (tahapMap[th] || 0) + 1;
+    });
+
+    return {
+      totalAssets,
+      totalSatkers: satkerSet.size,
+      mappedCount,
+      unmappedCount,
+      unmappedSatkersCount: unmappedSatkerSet.size,
+      totalLuas,
+      countTanah,
+      countBangunan,
+      pinnedCount,
+      suratCount,
+      klasifikasiMap,
+      detilMap,
+      tahapMap
+    };
   },
 
   loadCustomOverrides() {
