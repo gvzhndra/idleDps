@@ -5,8 +5,8 @@
 
 const CONFIG = {
   // Application Version & Release Metadata
-  VERSION: 'v2.5.7',
-  VERSION_NAME: 'Exact Google Sheet Column Matching & Clean Coordinates',
+  VERSION: 'v2.6.0',
+  VERSION_NAME: 'Pola Tata Ruang Bali Spatial Zoning Catchment Integration',
 
   // Office Reference for Distance Calculations (KPKNL Denpasar Official Coordinates)
   KPKNL_OFFICE: {

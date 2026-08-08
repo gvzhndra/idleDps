@@ -28,7 +28,7 @@
       </div>
       <div class="brand-text">
         <h1>BMN IDLE DASHBOARD</h1>
-        <p>KPKNL Denpasar <span class="badge badge-pastel-blue" style="font-size:9.5px; font-weight:800; padding:2px 6px; border-radius:6px; margin-left:4px;">v2.5.7</span></p>
+        <p>KPKNL Denpasar <span class="badge badge-pastel-blue" style="font-size:9.5px; font-weight:800; padding:2px 6px; border-radius:6px; margin-left:4px;">v2.6.0</span></p>
       </div>
     </div>
 
@@ -267,14 +267,39 @@
         <button class="btn-tile-switch" data-layer="streets">
           <i class="fa-solid fa-road"></i> Peta Jalan
         </button>
+        <!-- POLA RUANG CATCHMENT TOGGLE BUTTON -->
+        <button class="btn-tile-switch active" id="btn-toggle-pola-ruang" onclick="App.togglePolaRuangMode()" title="Toggle Pola Ruang Catchment">
+          <i class="fa-solid fa-map-location-dot text-primary"></i> Pola Ruang: ON
+        </button>
+      </div>
+
+      <!-- Floating Pola Ruang Catchment Legend Card -->
+      <div class="zoning-legend-card" id="pola-ruang-legend-card">
+        <div class="legend-header" onclick="document.getElementById('pola-ruang-legend-body').classList.toggle('collapsed')">
+          <span><i class="fa-solid fa-map-location-dot" style="color:var(--pastel-blue);"></i> <strong>Legenda Pola Ruang (Catchment)</strong></span>
+          <i class="fa-solid fa-chevron-down" style="font-size:10px; cursor:pointer;"></i>
+        </div>
+        <div class="legend-body" id="pola-ruang-legend-body">
+          <div class="legend-item"><span class="legend-color" style="background:#e91e63;"></span> Pariwisata (Hotel / Resort)</div>
+          <div class="legend-item"><span class="legend-color" style="background:#e67e22;"></span> Permukiman / Perumahan</div>
+          <div class="legend-item"><span class="legend-color" style="background:#27ae60;"></span> Pertanian Pangan / Kebun</div>
+          <div class="legend-item"><span class="legend-color" style="background:#00bcd4;"></span> Perikanan / Pesisir</div>
+          <div class="legend-item"><span class="legend-color" style="background:#1b5e20;"></span> Konservasi & Suaka Alam</div>
+          <div class="legend-item"><span class="legend-color" style="background:#004d40;"></span> Ekosistem Mangrove</div>
+          <div class="legend-item"><span class="legend-color" style="background:#c0392b;"></span> Transportasi (Bandara/Pelabuhan)</div>
+          <div class="legend-item"><span class="legend-color" style="background:#00897b;"></span> Perlindungan Setempat / Sempadan</div>
+          <div class="legend-item"><span class="legend-color" style="background:#546e7a;"></span> Peruntukan Industri & Gudang</div>
+          <div class="legend-item"><span class="legend-color" style="background:#0288d1;"></span> Badan Air / Danau / Sungai</div>
+        </div>
       </div>
 
       <!-- Floating POI Catchment Legend Card -->
-      <div class="zoning-legend-card">
-        <div class="legend-header">
-          <i class="fa-solid fa-bullseye" style="color:var(--pastel-blue);"></i> <strong>Legenda POI Radius 500m</strong>
+      <div class="zoning-legend-card" style="bottom: 240px;">
+        <div class="legend-header" onclick="document.getElementById('poi-legend-body').classList.toggle('collapsed')">
+          <span><i class="fa-solid fa-bullseye" style="color:var(--pastel-blue);"></i> <strong>Legenda POI 500m</strong></span>
+          <i class="fa-solid fa-chevron-down" style="font-size:10px; cursor:pointer;"></i>
         </div>
-        <div class="legend-body">
+        <div class="legend-body" id="poi-legend-body">
           <div class="legend-item"><span class="legend-color" style="background:#e67e22;"></span> Sekolah / Kampus (Pendidikan)</div>
           <div class="legend-item"><span class="legend-color" style="background:#3498db;"></span> Polsek / TNI (Keamanan)</div>
           <div class="legend-item"><span class="legend-color" style="background:#9b59b6;"></span> Kantor Desa / Pemda (Instansi)</div>
@@ -464,18 +489,22 @@
   <!-- Leaflet GIS Map JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+  <!-- TopoJSON Client Library for Spatial Zoning Polygons -->
+  <script src="https://unpkg.com/topojson-client@3/dist/topojson-client.min.js"></script>
+
   <!-- PptxGenJS Library for PowerPoint Export -->
   <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 
-  <script src="js/config.js?v=2.5.7"></script>
-  <script src="js/spatial.js?v=2.5.7"></script>
-  <script src="js/bmn_dataset.js?v=2.5.7"></script>
-  <script src="js/data.js?v=2.5.7"></script>
-  <script src="js/recommendation.js?v=2.5.7"></script>
-  <script src="js/map.js?v=2.5.7"></script>
-  <script src="js/app.js?v=2.5.7"></script>
+  <script src="js/config.js?v=2.6.0"></script>
+  <script src="js/pola_ruang.js?v=2.6.0"></script>
+  <script src="js/spatial.js?v=2.6.0"></script>
+  <script src="js/bmn_dataset.js?v=2.6.0"></script>
+  <script src="js/data.js?v=2.6.0"></script>
+  <script src="js/recommendation.js?v=2.6.0"></script>
+  <script src="js/map.js?v=2.6.0"></script>
+  <script src="js/app.js?v=2.6.0"></script>
 
   <!-- Auth Guard: redirect to login.html if no valid session -->
-  <script src="js/auth.js?v=2.5.7"></script>
+  <script src="js/auth.js?v=2.6.0"></script>
 </body>
 </html>

@@ -75,9 +75,12 @@ const App = {
     this.bindEvents();
     this.updateExportCountBadge();
 
-    // Load permanent photos and live dataset from Google Sheet in background
+    // Load permanent photos, live dataset, and Pola Tata Ruang Bali in background
     this.loadPhotosFromSheet();
     this.loadLiveDatasetFromSheet();
+    if (typeof PolaRuangEngine !== 'undefined') {
+      PolaRuangEngine.loadDataset();
+    }
   },
 
   /**
@@ -908,6 +911,11 @@ const App = {
       MapEngine.drawKPKNLConnector(asset);
       MapEngine.drawCatchmentCircle(asset.lat, asset.lng, 500);
 
+      // Render Pola Tata Ruang inside Catchment Focus (High Performance & Beautiful Aesthetic)
+      if (typeof MapEngine.renderCatchmentPolaRuang === 'function') {
+        MapEngine.renderCatchmentPolaRuang(asset, 1500);
+      }
+
       // Temporary loading state for drawer body
       const drawerBody = document.getElementById('detail-drawer-body');
       if (drawerBody) {
@@ -927,6 +935,7 @@ const App = {
       this.showToast(`📍 Aset belum ada titik GPS. Menampilkan data surat & atribut satker ${asset.namaSatker}.`, 'warning');
       if (MapEngine.connectorLinesGroup) MapEngine.connectorLinesGroup.clearLayers();
       if (typeof MapEngine.clearCatchmentCircle === 'function') MapEngine.clearCatchmentCircle();
+      if (typeof MapEngine.clearPolaRuang === 'function') MapEngine.clearPolaRuang();
     }
 
     this.renderDetailPanel(asset, catchmentData, recommendation);
@@ -939,7 +948,6 @@ const App = {
     if (rightToggleBtn) rightToggleBtn.style.display = 'flex';
     this.selectedAsset = null;
     MapEngine.resetView();
-    MapEngine.clearCatchmentCircle();
   },
 
   renderDetailPanel(asset, catchmentData, recommendation) {
@@ -962,6 +970,11 @@ const App = {
     const distData = hasCoords ? SpatialEngine.getDistanceToKPKNL(asset.lat, asset.lng) : { distanceKm: '-' };
     const multiDist = hasCoords ? SpatialEngine.getMultiLevelDistances(asset.lat, asset.lng, asset.kabupaten, asset.kecamatan, asset.kelurahan) : null;
     const gmapsUrl = hasCoords ? `https://www.google.com/maps?q=${asset.lat},${asset.lng}` : '#';
+
+    // Point-in-Polygon Spatial Zoning Analytics (RTRW / RDTR)
+    const zoningInfo = (hasCoords && typeof PolaRuangEngine !== 'undefined')
+      ? PolaRuangEngine.getZoningForPoint(asset.lat, asset.lng)
+      : null;
 
     const rawPhotoUrl = (asset.fotoList && asset.fotoList.length > 0) ? asset.fotoList[this.currentPhotoIndex || 0] : '';
     const activePhotoUrl = this.formatPhotoUrl(rawPhotoUrl);
@@ -1056,6 +1069,49 @@ const App = {
           ` : ''}
         </div>
       </div>
+
+      <!-- SPATIAL ZONING (POLA TATA RUANG ATR/BPN) CARD -->
+      ${hasCoords && zoningInfo ? `
+      <div class="detail-section-card mb-4" style="background:#ffffff; border:1.5px solid ${zoningInfo.color}; border-radius:12px; padding:14px; box-shadow: 0 4px 16px rgba(0,0,0,0.06);">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h4 class="section-title mb-0" style="color:${zoningInfo.color}; font-size:13px; font-weight:800;">
+            <i class="fa-solid fa-map-location-dot" style="margin-right:6px;"></i> Pola Tata Ruang (RTRW / RDTR)
+          </h4>
+          <span class="badge" style="background:${zoningInfo.color}; color:#ffffff; font-size:10.5px; font-weight:700; padding:4px 9px; border-radius:6px;">
+            <i class="fa-solid ${zoningInfo.icon}"></i> ${zoningInfo.namaZona}
+          </span>
+        </div>
+        
+        <div style="font-size:11.5px; line-height:1.55; color:var(--text-main);">
+          <div style="background:#f8fafc; border-left:3.5px solid ${zoningInfo.color}; padding:8px 12px; border-radius:0 8px 8px 0; margin-bottom:8px;">
+            <strong style="color:var(--text-main); display:block; font-size:12px;">Peruntukan Kawasan:</strong>
+            <span>${zoningInfo.desc}</span>
+          </div>
+
+          ${zoningInfo.keteranganKhusus ? `
+            <div class="mb-2" style="background:#fff9db; border:1px dashed #f59f00; padding:6px 10px; border-radius:6px; font-size:11px; color:#854d0e;">
+              <strong><i class="fa-solid fa-star text-warning"></i> Atribut Khusus:</strong> ${zoningInfo.keteranganKhusus}
+            </div>
+          ` : ''}
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:8px;">
+            <div style="background:#f1f5f9; padding:6px 10px; border-radius:6px; font-size:10.5px;">
+              <span style="color:#64748b; display:block;">Wilayah Administrasi:</span>
+              <strong>${zoningInfo.kabupaten}</strong>
+            </div>
+            <div style="background:#f1f5f9; padding:6px 10px; border-radius:6px; font-size:10.5px;">
+              <span style="color:#64748b; display:block;">Cagar Budaya:</span>
+              <strong style="${zoningInfo.cagarBudaya ? 'color:#e74c3c;' : 'color:#10b981;'}">${zoningInfo.cagarBudaya || 'Tidak Ada'}</strong>
+            </div>
+          </div>
+
+          <div class="mt-2" style="background:#f8fafc; border:1px solid #e2e8f0; padding:8px 10px; border-radius:8px; font-size:10.5px;">
+            <span style="color:#64748b; display:block; margin-bottom:2px;"><i class="fa-solid fa-triangle-exclamation text-danger"></i> Kerawanan Bencana (KRB):</span>
+            <strong style="${zoningInfo.rawanBencana !== 'Tidak Ada Riwayat Rawan Tinggi' ? 'color:#c0392b;' : 'color:#10b981;'}">${zoningInfo.rawanBencana}</strong>
+          </div>
+        </div>
+      </div>
+      ` : ''}
 
       <!-- DIRECT GOOGLE MAPS & MULTI-PHOTO UPLOAD BUTTONS -->
       ${hasCoords ? `
@@ -1176,6 +1232,19 @@ const App = {
         <h4 class="rec-title">${recommendation.officialTitle || 'Optimalisasi & Penelitian BMN'}</h4>
         
         <div class="mt-2 pt-2 border-top" style="border-top:1px dashed rgba(243, 156, 18, 0.3) !important;">
+          <small style="font-size:11px; font-weight:700; color:var(--text-muted); display:block;" class="mb-1">
+            <i class="fa-solid fa-shield-halved" style="color:var(--pastel-blue); margin-right:4px;"></i> Rekomendasi Sistem (Empirical Rule Engine):
+          </small>
+          <p style="font-size:11.5px; color:var(--text-main); font-weight:600; background:rgba(255,255,255,0.75); padding:6px 10px; border-radius:6px;">
+            ${recommendation.systemSuggestion || 'Lakukan penelitian status hukum dan fisik BMN.'}
+          </p>
+        </div>
+
+        <ul class="rec-rationale mt-2">
+          ${recommendation.rationale ? recommendation.rationale.map(r => `<li><i class="fa-solid fa-circle-check"></i> ${r}</li>`).join('') : ''}
+        </ul>
+
+        <div class="mt-2 pt-2 border-top" style="border-top:1px dashed rgba(243, 156, 18, 0.3) !important;">
           <label style="font-size:10.5px; font-weight:700; color:var(--pastel-orange); text-transform:uppercase; margin-bottom:4px; display:block;">
             <i class="fa-solid fa-pen-to-square"></i> Rekomendasi Khusus Pengguna / Tim:
           </label>
@@ -1183,166 +1252,6 @@ const App = {
             "${asset.rekomendasiUser || 'Belum ada rekomendasi khusus yang ditambahkan.'}"
           </div>
         </div>
-      </div>
-    `;
-
-    container.innerHTML = `
-      ${totalPhotos > 0 && activePhotoUrl ? `
-        <div id="photo-carousel-box" class="photo-carousel-container" style="background-image: url('${activePhotoUrl}'); background-size: cover; background-position: center; position: relative; height: 190px; border-radius: 10px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-          <span id="photo-carousel-counter" class="photo-counter">${(this.currentPhotoIndex || 0) + 1} / ${totalPhotos}</span>
-          ${canEditOrUpload ? `
-            <button class="btn-delete-photo" title="Hapus foto ini" onclick="event.stopPropagation(); App.deletePhoto('${asset.id}')">
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
-          ` : ''}
-          ${navArrows}
-        </div>
-      ` : `
-        <div class="photo-placeholder-box">
-          <i class="fa-solid fa-camera-retro"></i>
-          <span>Belum Ada Foto Lapangan</span>
-          <small>Unggah foto aset melalui tombol upload foto di bawah</small>
-        </div>
-      `}
-
-      <div class="mb-4">
-        <span class="badge badge-pastel-blue">${asset.kategori} (${asset.jenisBarang})</span>
-        ${asset.isPinned ? `<span class="badge" style="background:linear-gradient(135deg, #e74c3c, #c0392b); color:#ffffff; font-size:10.5px; padding:4px 8px; border-radius:6px; margin-left:6px;"><i class="fa-solid fa-thumbtack"></i> Prioritas Idle</span>` : ''}
-        <h3 style="font-size:15px; font-weight:800; margin-top:6px; color:var(--text-main); line-height:1.4;">${asset.namaBarang}</h3>
-        <p style="font-size:11.5px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-building-user text-primary" style="margin-right:6px;"></i> ${asset.namaSatker}</p>
-        <p style="font-size:11.5px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-id-card text-secondary" style="margin-right:6px;"></i> Kode Satker: <strong style="color:var(--text-main);">${asset.kodeSatker || '-'}</strong> &bull; <i class="fa-solid fa-location-dot text-danger" style="margin-left:4px; margin-right:4px;"></i> ${asset.kabupaten}</p>
-      </div>
-
-      <!-- DIRECT GOOGLE MAPS & MULTI-PHOTO UPLOAD BUTTONS IN SEPARATE BLOCK CONTAINERS -->
-      <div style="margin-bottom: 12px !important; display: block !important;">
-        <a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-block" style="display: flex !important; width: 100% !important; background: #eafaf1 !important; color: #27ae60 !important; border: 1px solid #2ecc71 !important; font-weight: 700; padding: 12px 14px; border-radius: 10px; text-decoration: none;">
-          <i class="fa-solid fa-map-location-dot" style="font-size: 14px; margin-right: 8px;"></i> Buka Koordinat di Google Maps (${asset.lat.toFixed(5)}, ${asset.lng.toFixed(5)})
-        </a>
-      </div>
-
-      ${canEditOrUpload ? `
-      <div style="margin-bottom: 12px !important; display: block !important;">
-        <button class="btn btn-primary btn-block" style="display: flex !important; width: 100% !important; padding: 12px 14px; border-radius: 10px; box-shadow: 0 4px 14px rgba(74, 144, 226, 0.3);" onclick="App.openUploadPhotoModal('${asset.id}')">
-          <i class="fa-solid fa-images" style="font-size: 14px; margin-right: 8px;"></i> Upload Multi-Foto Aset (Up to 5)
-        </button>
-      </div>
-      ` : ''}
-
-      ${isAdmin ? `
-      <div style="margin-bottom: 24px !important; display: block !important;">
-        <button class="btn btn-block" style="${asset.isPinned ? 'background: linear-gradient(135deg, #e74c3c, #c0392b); color: #ffffff; box-shadow: 0 4px 14px rgba(231, 76, 60, 0.35);' : 'background: #ffffff; color: #2c3e50; border: 1.5px solid #e74c3c;'} display: flex !important; width: 100% !important; font-weight: 700; padding: 12px 14px; border-radius: 10px; align-items: center; justify-content: center; font-size: 13px;" onclick="App.togglePinAsset('${asset.id}')" title="Toggle status prioritas pin idle">
-          <i class="fa-solid fa-thumbtack" style="font-size: 14px; margin-right: 8px; ${asset.isPinned ? 'transform: rotate(-45deg);' : ''}"></i> ${asset.isPinned ? '📌 Prioritas Idle (Klik untuk Lepas Pin)' : '📌 Pin Aset Sebagai Prioritas Idle'}
-        </button>
-      </div>
-      ` : ''}
-
-      <!-- KODE BARANG, NUP & LUAS METRICS GRID -->
-      <div class="detail-metrics-grid mb-4">
-        <div class="metric-box">
-          <label>Kode Barang & NUP</label>
-          <strong>${asset.kodeBarang} (NUP ${asset.nup})</strong>
-        </div>
-        <div class="metric-box">
-          <label>Luas Aset (BMN)</label>
-          <strong style="color:var(--pastel-blue);">${SpatialEngine.formatLuas(asset.luas)}</strong>
-        </div>
-      </div>
-
-      <!-- MULTI-LEVEL SPATIAL DISTANCES CARD -->
-      <div class="detail-section-card mb-4">
-        <h4 class="section-title mb-3"><i class="fa-solid fa-route" style="color:var(--pastel-blue); margin-right:6px;"></i> Analisis Jarak Spasial Multilevel</h4>
-        <div class="d-flex flex-column" style="font-size:12px;">
-          <div class="d-flex justify-content-between align-items-center" style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:10px; margin-bottom:10px;">
-            <span style="line-height:1.5;"><i class="fa-solid fa-building-columns text-primary" style="margin-right:10px; margin-left:2px;"></i> <strong>Jarak ke KPKNL Denpasar:</strong></span>
-            <span class="badge badge-pastel-blue" style="font-size:11px; padding:6px 12px; border-radius:12px; margin-left:8px; flex-shrink:0;">${distData.distanceKm} km</span>
-          </div>
-          <div class="d-flex justify-content-between align-items-center" style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:10px; margin-bottom:10px;">
-            <span style="line-height:1.5;"><i class="fa-solid fa-building-flag text-danger" style="margin-right:10px; margin-left:2px;"></i> <strong>Jarak ke Ibukota Prov. Bali (Denpasar):</strong></span>
-            <span class="badge badge-pastel-blue" style="font-size:11px; padding:6px 12px; border-radius:12px; margin-left:8px; flex-shrink:0;">${multiDist.provincialCapital.distanceKm} km</span>
-          </div>
-          <div class="d-flex justify-content-between align-items-center" style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:10px; margin-bottom:10px;">
-            <span style="line-height:1.5;"><i class="fa-solid fa-landmark text-secondary" style="margin-right:10px; margin-left:2px;"></i> <strong>Jarak ke Ibukota Kab. Terdekat (${multiDist.regencyCapital ? multiDist.regencyCapital.name : asset.kabupaten}):</strong></span>
-            <span class="badge badge-pastel-purple" style="font-size:11px; padding:6px 12px; border-radius:12px; margin-left:8px; flex-shrink:0;">${multiDist.regencyCapital ? multiDist.regencyCapital.distanceKm + ' km' : '-'}</span>
-          </div>
-          <div class="d-flex justify-content-between align-items-center" style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:10px; margin-bottom:10px;">
-            <span style="line-height:1.5;"><i class="fa-solid fa-store text-warning" style="margin-right:10px; margin-left:2px;"></i> <strong>Jarak ke ${multiDist.districtCenter.name}:</strong></span>
-            <span class="badge badge-pastel-orange" style="font-size:11px; padding:6px 12px; border-radius:12px; margin-left:8px; flex-shrink:0;">${multiDist.districtCenter.distanceKm} km</span>
-          </div>
-          <div class="d-flex justify-content-between align-items-center" style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:10px;">
-            <span style="line-height:1.5;"><i class="fa-solid fa-house-user text-success" style="margin-right:10px; margin-left:2px;"></i> <strong>Jarak ke ${multiDist.villageCenter.name}:</strong></span>
-            <span class="badge badge-pastel-mint" style="font-size:11px; padding:6px 12px; border-radius:12px; margin-left:8px; flex-shrink:0;">${multiDist.villageCenter.distanceKm} km</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- NIGHTTIME LIGHTS LUMINOSITY & CROWD CENTER INDEX -->
-      <div class="detail-section-card mb-4" style="background:#fef5e7; border:1px solid #f39c12;">
-        <h4 class="section-title mb-1" style="color:#e67e22;">
-          <i class="fa-solid fa-lightbulb" style="margin-right:6px;"></i> Nighttime Lights & Activity Index (VIIRS Proxy)
-        </h4>
-        <p style="font-size:11px; color:#1e293b;" class="mb-2">
-          <strong>Pusat Keramaian Nightlife/Komersial Terdekat:</strong> ${multiDist.nighttimeHub ? multiDist.nighttimeHub.name : 'Pusat Lokal'} <span style="color:#e67e22; font-weight:700;">(${multiDist.nighttimeHub ? multiDist.nighttimeHub.distanceKm + ' km' : '-'})</span>
-        </p>
-
-        <!-- Visual Score Bar -->
-        <div style="margin-bottom:10px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
-            <span style="font-size:11px; font-weight:700; color:#e67e22;">Skor Intensitas Cahaya Malam:</span>
-            <span style="font-size:13px; font-weight:800; color:#1e293b;">${multiDist.nightLightScore}<span style="font-size:10px; font-weight:600; color:#64748b;"> / 100</span></span>
-          </div>
-          <!-- Bar track -->
-          <div style="position:relative; height:18px; background:linear-gradient(90deg, #93c5fd 0%, #6ee7b7 40%, #fde68a 65%, #fb923c 80%, #f87171 100%); border-radius:20px; overflow:hidden; border:1px solid rgba(0,0,0,0.1);">
-            <!-- Animated fill indicator -->
-            <div style="position:absolute; top:0; left:0; height:100%; width:${multiDist.nightLightScore}%; background:rgba(0,0,0,0.25); border-radius:20px; transition: width 0.8s ease;"></div>
-            <!-- Needle marker -->
-            <div style="position:absolute; top:-3px; left:calc(${multiDist.nightLightScore}% - 9px); width:18px; height:24px; background:#1e293b; border-radius:4px; border:2px solid #ffffff; box-shadow:0 2px 8px rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center;">
-              <div style="width:4px; height:4px; background:#ffffff; border-radius:50%;"></div>
-            </div>
-          </div>
-          <!-- Zone labels -->
-          <div style="display:flex; justify-content:space-between; margin-top:5px; font-size:9px; color:#94a3b8; font-weight:600;">
-            <span>Rendah<br><em style="font-weight:400;">&lt;50</em></span>
-            <span style="text-align:center;">Sedang<br><em style="font-weight:400;">50–70</em></span>
-            <span style="text-align:center;">Tinggi<br><em style="font-weight:400;">70–85</em></span>
-            <span style="text-align:right;">Sangat Tinggi<br><em style="font-weight:400;">&gt;85</em></span>
-          </div>
-        </div>
-
-        <!-- Classification result -->
-        <div style="background:rgba(255,255,255,0.8); border:1px solid rgba(243,156,18,0.3); border-radius:8px; padding:8px 12px; font-size:10.5px; color:#1e293b; line-height:1.6;">
-          <strong>Klasifikasi:</strong> ${multiDist.nighttimeHub ? multiDist.nighttimeHub.tier : 'Sedang'} &bull; 
-          Berdasarkan pendekatan <em>VIIRS Nighttime Light Index</em> (NASA/NOAA) yang digunakan sebagai proxy kepadatan aktivitas ekonomi malam. Skor ≥70 mengindikasikan zona komersial aktif yang berpotensi tinggi untuk pemanfaatan BMN.
-        </div>
-      </div>
-
-      <div class="detail-section-card mb-4">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <h4 class="section-title mb-0"><i class="fa-solid fa-bullseye text-primary" style="margin-right:6px;"></i> Proksimitas POI Real-Time (OSM Overpass API)</h4>
-          <span class="badge badge-pastel-blue">${catchmentData.totalCount} POI Ditemukan</span>
-        </div>
-        <div class="poi-list-container">
-          ${catchmentPoiHtml || `<p class="text-muted text-center p-3" style="font-size:11px; background:#f8fafc; border-radius:8px;"><i class="fa-solid fa-info-circle"></i> Tidak ada POI utama dalam radius 500m.</p>`}
-        </div>
-      </div>
-
-      <div class="detail-section-card recommendation-card mb-3">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <span class="badge ${recommendation.type.badgeClass}"><i class="fa-solid fa-user-check"></i> REKOMENDASI TIM</span>
-        </div>
-        <h4 class="rec-title">${recommendation.officialTitle}</h4>
-        
-        <div class="mt-2 pt-2 border-top" style="border-top:1px dashed rgba(243, 156, 18, 0.3) !important;">
-          <small style="font-size:11px; font-weight:700; color:var(--text-muted); display:block;" class="mb-1">
-            <i class="fa-solid fa-shield-halved" style="color:var(--pastel-blue); margin-right:4px;"></i> Rekomendasi Sistem (Empirical Rule Engine):
-          </small>
-          <p style="font-size:11.5px; color:var(--text-main); font-weight:600; background:rgba(255,255,255,0.75); padding:6px 10px; border-radius:6px;">
-            ${recommendation.systemSuggestion}
-          </p>
-        </div>
-
-        <ul class="rec-rationale mt-2">
-          ${recommendation.rationale.map(r => `<li><i class="fa-solid fa-circle-check"></i> ${r}</li>`).join('')}
-        </ul>
 
         ${isAdmin ? `
           <div class="mt-3 pt-2 border-top" style="border-top:1px dashed rgba(243, 156, 18, 0.4) !important;">
@@ -1353,6 +1262,23 @@ const App = {
         ` : ''}
       </div>
     `;
+  },
+
+  togglePolaRuangMode() {
+    if (typeof MapEngine === 'undefined') return;
+    const isEnabled = MapEngine.togglePolaRuang();
+    const btn = document.getElementById('btn-toggle-pola-ruang');
+    if (btn) {
+      btn.classList.toggle('active', isEnabled);
+      btn.innerHTML = isEnabled 
+        ? '<i class="fa-solid fa-map-location-dot text-primary"></i> Pola Ruang: ON' 
+        : '<i class="fa-regular fa-map text-muted"></i> Pola Ruang: OFF';
+    }
+    const legend = document.getElementById('pola-ruang-legend-card');
+    if (legend) {
+      legend.style.display = isEnabled ? 'block' : 'none';
+    }
+    this.showToast(isEnabled ? '🗺️ Layer Pola Ruang Catchment diaktifkan' : '🗺️ Layer Pola Ruang dinonaktifkan', 'info');
   },
 
   async togglePinAsset(assetId) {

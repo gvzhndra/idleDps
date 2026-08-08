@@ -10,8 +10,10 @@ const MapEngine = {
   markersLayer: null,
   connectorLinesGroup: null,
   poiLayerGroup: null,
+  polaRuangLayerGroup: null,
   catchmentCircleLayer: null,
   activeAssetId: null,
+  isPolaRuangEnabled: true,
 
   init(containerId = 'map') {
     if (this.map) return;
@@ -35,6 +37,7 @@ const MapEngine = {
     this.currentTileLayer = 'pastel';
 
     // Layer Groups
+    this.polaRuangLayerGroup = L.layerGroup().addTo(this.map);
     this.markersLayer = L.layerGroup().addTo(this.map);
     this.connectorLinesGroup = L.layerGroup().addTo(this.map);
     this.poiLayerGroup = L.layerGroup().addTo(this.map);
@@ -231,6 +234,7 @@ const MapEngine = {
     this.connectorLinesGroup.clearLayers();
     this.poiLayerGroup.clearLayers();
     this.clearCatchmentCircle();
+    this.clearPolaRuang();
     this.map.flyTo(CONFIG.MAP.DEFAULT_CENTER, CONFIG.MAP.DEFAULT_ZOOM, { animate: true, duration: 1.2 });
   },
 
@@ -244,7 +248,7 @@ const MapEngine = {
       radius: radiusMeters,
       color: '#4a90e2',
       fillColor: '#4a90e2',
-      fillOpacity: 0.16,
+      fillOpacity: 0.12,
       weight: 2,
       dashArray: '6, 6'
     }).addTo(this.map);
@@ -262,5 +266,96 @@ const MapEngine = {
       this.map.removeLayer(this.catchmentCircleLayer);
       this.catchmentCircleLayer = null;
     }
+  },
+
+  /**
+   * Render Pola Tata Ruang polygons only inside the asset's catchment radius
+   */
+  renderCatchmentPolaRuang(asset, radiusMeters = 1500) {
+    this.clearPolaRuang();
+
+    if (!this.isPolaRuangEnabled || !asset || !asset.lat || !asset.lng) return;
+    if (typeof PolaRuangEngine === 'undefined') return;
+
+    const features = PolaRuangEngine.getFeaturesInCatchment(asset.lat, asset.lng, radiusMeters);
+    if (!features || !features.length) return;
+
+    features.forEach(feat => {
+      const p = feat.properties || {};
+      const zoneName = p.NAMOBJ || 'Kawasan Terbuka';
+      const style = PolaRuangEngine.getZoningStyle(zoneName);
+
+      const geoLayer = L.geoJSON(feat, {
+        style: () => ({
+          color: style.color,
+          fillColor: style.fillColor,
+          fillOpacity: 0.35,
+          weight: 1.5,
+          opacity: 0.85,
+          dashArray: '3, 3'
+        }),
+        onEachFeature: (feature, layer) => {
+          // Hover highlighting
+          layer.on({
+            mouseover: (e) => {
+              const l = e.target;
+              l.setStyle({
+                fillOpacity: 0.65,
+                weight: 3,
+                opacity: 1
+              });
+              if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                l.bringToFront();
+              }
+            },
+            mouseout: (e) => {
+              geoLayer.resetStyle(e.target);
+            }
+          });
+
+          // Tooltip info
+          const remarkHtml = (p.REMARK && p.REMARK !== 'Tidak Ada')
+            ? `<div style="font-size:10px; color:#e67e22; margin-top:2px;"><i class="fa-solid fa-circle-info"></i> ${p.REMARK}</div>`
+            : '';
+          const disasterHtml = (p.KRB_03 && p.KRB_03 !== 'Tidak Ada')
+            ? `<div style="font-size:9.5px; color:#e74c3c; margin-top:2px;"><i class="fa-solid fa-triangle-exclamation"></i> Rawan: ${p.KRB_03.split(',')[0]}</div>`
+            : '';
+
+          const tooltipContent = `
+            <div class="pola-ruang-map-tooltip">
+              <div style="font-weight:700; font-size:12px; color:${style.color}; display:flex; align-items:center; gap:5px;">
+                <i class="fa-solid ${style.icon}"></i> ${zoneName}
+              </div>
+              <div style="font-size:11px; color:#64748b;">${p.WADMKK || 'Provinsi Bali'}</div>
+              ${remarkHtml}
+              ${disasterHtml}
+            </div>
+          `;
+
+          layer.bindTooltip(tooltipContent, { sticky: true, className: 'pola-ruang-leaflet-tooltip' });
+        }
+      });
+
+      geoLayer.addTo(this.polaRuangLayerGroup);
+    });
+  },
+
+  clearPolaRuang() {
+    if (this.polaRuangLayerGroup) {
+      this.polaRuangLayerGroup.clearLayers();
+    }
+  },
+
+  togglePolaRuang(enabled) {
+    this.isPolaRuangEnabled = (typeof enabled === 'boolean') ? enabled : !this.isPolaRuangEnabled;
+    if (!this.isPolaRuangEnabled) {
+      this.clearPolaRuang();
+    } else if (this.activeAssetId) {
+      const asset = DataEngine.getAssetById(this.activeAssetId);
+      if (asset) {
+        this.renderCatchmentPolaRuang(asset, 1500);
+      }
+    }
+    return this.isPolaRuangEnabled;
   }
 };
