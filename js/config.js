@@ -5,8 +5,8 @@
 
 const CONFIG = {
   // Application Version & Release Metadata
-  VERSION: 'v2.5.0',
-  VERSION_NAME: 'Executive Monitoring & Full Dataset Overhaul',
+  VERSION: 'v2.5.2',
+  VERSION_NAME: 'Executive Monitoring & Pure 248 Dataset Sync',
 
   // Office Reference for Distance Calculations (KPKNL Denpasar Official Coordinates)
   KPKNL_OFFICE: {

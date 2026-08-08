@@ -131,7 +131,11 @@ function fetchBMNDataAsJSON() {
 
     for (var i = 1; i < data.length; i++) {
       var row = data[i];
-      if (!row[0]) continue;
+      // Skip empty placeholder / dummy rows
+      var kodeSatker = String(row[0] || '').trim();
+      var namaSatker = String(row[2] || '').trim();
+      var namaBarang = String(row[8] || '').trim();
+      if (!kodeSatker && !namaSatker && !namaBarang) continue;
 
       var item = {};
       for (var h = 0; h < headers.length; h++) {

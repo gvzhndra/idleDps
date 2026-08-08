@@ -35,8 +35,27 @@ const DataEngine = {
     this.pendingAssets = [];
 
     this.rawDataset.forEach((row, idx) => {
+      if (!row) return;
+
+      const satkerNameRaw = String(row.nama_satker || row.NAMA_SATKER || row['NAMA SATKER'] || row['Pengguna Barang'] || '').trim();
+      const barangNameRaw = String(row.nama_barang || row.NAMA_BARANG || row['NAMA BARANG'] || '').trim();
+      const kodeSatkerRaw = String(row.kode_satker || row.KODE_SATKER || row['KODE SATKER'] || '').trim();
+      const kodeBarangRaw = String(row.kode_barang || row.KODE_BARANG || row['KODE BARANG'] || '').trim();
+      const kemValRaw = String(row.kementerian || row.KEMENTERIAN || '').trim();
+
+      // STRICT GUARD: Skip empty / placeholder dummy rows from Google Sheets API
+      if (!satkerNameRaw && !barangNameRaw && !kodeSatkerRaw && !kodeBarangRaw) {
+        return;
+      }
+      if ((satkerNameRaw === 'Satker Tanpa Nama' || satkerNameRaw === '-' || satkerNameRaw === 'undefined') && !barangNameRaw && !kodeBarangRaw) {
+        return;
+      }
+      if (kemValRaw === 'LAIN-LAIN / INDEPENDEN' && (!satkerNameRaw || satkerNameRaw === 'Satker Tanpa Nama') && !kodeBarangRaw) {
+        return;
+      }
+
       const coordStr = String(row.koordinat || row.KOORDINAT || row.Koordinat || row['KOORDINAT ASET'] || '').trim();
-      const hasValidCoord = coordStr && coordStr !== '-' && coordStr.includes(',');
+      const hasValidCoord = coordStr && coordStr !== '-' && coordStr !== 'undefined' && coordStr.includes(',');
 
       let lat = null;
       let lng = null;
@@ -55,12 +74,12 @@ const DataEngine = {
 
       const luas = parseFloat(row.luas || row.LUAS || row.Luas) || 0;
       const jenis = String(row.jenis_barang || row.JENIS_BARANG || row['JENIS BARANG'] || 'BMN').trim();
-      const satkerName = String(row.nama_satker || row.NAMA_SATKER || row['NAMA SATKER'] || row['Pengguna Barang'] || 'Satker Tanpa Nama').trim();
-      const barangName = String(row.nama_barang || row.NAMA_BARANG || row['NAMA BARANG'] || jenis || 'Aset BMN Idle').trim();
-      const kodeSatker = String(row.kode_satker || row.KODE_SATKER || row['KODE SATKER'] || '').trim();
-      const kodeBarang = String(row.kode_barang || row.KODE_BARANG || row['KODE BARANG'] || '').trim();
+      const satkerName = satkerNameRaw || 'Satker Tanpa Nama';
+      const barangName = barangNameRaw || jenis || 'Aset BMN Idle';
+      const kodeSatker = kodeSatkerRaw;
+      const kodeBarang = kodeBarangRaw;
       const nupVal = String(row.nup || row.NUP || '1').trim();
-      const kemVal = String(row.kementerian || row.KEMENTERIAN || row['Pengguna Barang'] || 'LAIN-LAIN / INDEPENDEN').trim();
+      const kemVal = kemValRaw || String(row['Pengguna Barang'] || 'KEMENTERIAN / LEMBAGA').trim();
       const fotoUrlsVal = String(row.foto_urls || row.FOTO_URLS || row.fotoList || '').trim();
       const isTanah = jenis.toLowerCase().includes('tanah');
 
