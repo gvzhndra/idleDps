@@ -181,43 +181,38 @@ const DataEngine = {
   },
 
   /**
-   * Smart Taxonomy Classifier:
-   * Inspects row fields (klasifikasi, detil klasifikasi, PEMETAAN AWAL BERBASIS KEYWORD, HASIL JAWABAN, CATATAN_REKONSILIASI)
-   * to accurately classify the asset into 1 of 6 parent categories and their sub-details.
+   * Normalizes classification directly from Column N (klasifikasi) and Column O (detil klasifikasi)
+   * in the Google Sheet, ensuring exact matching with zero keyword contamination.
    */
   normalizeKlasifikasi(row) {
     if (!row) return { key: 'penggunaan', label: 'Penggunaan', detil: 'Digunakan Satker' };
 
-    const rawK = String(row.klasifikasi || row.KLASIFIKASI || '').toLowerCase().trim();
-    const rawD = String(row['detil klasifikasi'] || row.detil_klasifikasi || row['DETIL KLASIFIKASI'] || '').toLowerCase().trim();
-    const rawPemetaan = String(row['PEMETAAN AWAL BERBASIS KEYWORD'] || '').toLowerCase().trim();
-    const rawHasil = String(row['HASIL JAWABAN'] || row.hasil_jawaban || '').toLowerCase().trim();
-    const rawCatatan = String(row['CATATAN_REKONSILIASI'] || row.catatan_tim || '').toLowerCase().trim();
-    const allText = `${rawK} ${rawD} ${rawPemetaan} ${rawHasil} ${rawCatatan}`.toLowerCase();
+    let rawK = String(row.klasifikasi || row.KLASIFIKASI || '').toLowerCase().trim();
+    let rawD = String(row['detil klasifikasi'] || row.detil_klasifikasi || row['DETIL KLASIFIKASI'] || '').toLowerCase().trim();
 
-    // 1. PENGHAPUSAN
-    if (rawK.includes('hapus') || allText.includes('hapus') || allText.includes('dihapuskan') || allText.includes('penghapusan')) {
-      const isRencana = rawD.includes('rencana') || rawD.includes('usul') || allText.includes('rencana') || allText.includes('usul');
-      return {
-        key: 'penghapusan',
-        label: 'Penghapusan',
-        detil: isRencana ? 'Rencana / Usulan Penghapusan' : 'Sudah Dihapus'
-      };
-    }
-
-    // 2. PEMINDAHTANGANAN / HIBAH
-    if (rawK.includes('pindah') || rawK.includes('hibah') || allText.includes('hibah') || allText.includes('pemindahtanganan')) {
-      const isRencana = rawD.includes('rencana') || allText.includes('rencana') || allText.includes('usul') || allText.includes('pembahasan');
+    // 1. Pemindahtanganan / Hibah
+    if (rawK.includes('pemindahtanganan') || rawK.includes('hibah')) {
+      const isSelesai = rawD.includes('selesai');
       return {
         key: 'pemindahtanganan',
         label: 'Pemindahtanganan',
-        detil: isRencana ? 'Rencana Hibah Pemkab / Pemda' : 'Selesai Hibah Pemda'
+        detil: isSelesai ? 'Selesai Hibah Pemda' : 'Rencana Hibah Pemkab'
       };
     }
 
-    // 3. RENOVASI / RUSAK BERAT
-    if (rawK.includes('renov') || rawK.includes('rusak') || allText.includes('renovasi') || allText.includes('rusak berat')) {
-      const isRusak = rawD.includes('rusak') || allText.includes('rusak berat');
+    // 2. Penghapusan
+    if (rawK.includes('penghapusan') || rawK.includes('hapus')) {
+      const isRencana = rawD.includes('rencana') || rawD.includes('usul');
+      return {
+        key: 'penghapusan',
+        label: 'Penghapusan',
+        detil: isRencana ? 'Rencana Penghapusan' : 'Sudah Dihapus'
+      };
+    }
+
+    // 3. Renovasi
+    if (rawK.includes('renovasi') || rawK.includes('renov') || rawK.includes('rusak')) {
+      const isRusak = rawD.includes('rusak');
       return {
         key: 'renovasi',
         label: 'Renovasi',
@@ -225,9 +220,9 @@ const DataEngine = {
       };
     }
 
-    // 4. PEMANFAATAN / SEWA
-    if (rawK.includes('manfaat') || rawK.includes('sewa') || allText.includes('sewa') || allText.includes('pemanfaatan')) {
-      const isRencana = rawD.includes('rencana') || allText.includes('rencana') || allText.includes('permohonan');
+    // 4. Pemanfaatan
+    if (rawK.includes('pemanfaatan') || rawK.includes('manfaat') || rawK.includes('sewa')) {
+      const isRencana = rawD.includes('rencana') || rawD.includes('usul');
       return {
         key: 'pemanfaatan',
         label: 'Pemanfaatan',
@@ -235,42 +230,35 @@ const DataEngine = {
       };
     }
 
-    // 5. MASALAH PENCATATAN / ANOMALI / REKLAS
-    if (rawK.includes('catat') || rawK.includes('masalah') || rawK.includes('anomali') || allText.includes('tidak ditemukan') || allText.includes('master aset') || allText.includes('reklas')) {
-      if (rawD.includes('master') || rawD.includes('tidak ditemukan') || allText.includes('tidak ditemukan') || allText.includes('master aset')) {
-        return {
-          key: 'masalah_pencatatan',
-          label: 'Masalah Pencatatan',
-          detil: 'Tidak Ditemukan di Master Aset'
-        };
+    // 5. Masalah Pencatatan
+    if (rawK.includes('catat') || rawK.includes('pencatatan') || rawK.includes('masalah') || rawK.includes('anomali')) {
+      let d = 'Reklasifikasi / Koreksi Catat';
+      if (rawD.includes('master') || rawD.includes('tidak ditemukan')) {
+        d = 'Tidak Ditemukan di Master Aset';
+      } else if (rawD.includes('dobel')) {
+        d = 'Dobel Catat';
+      } else if (rawD.includes('kode satker')) {
+        d = 'Kode Satker Berbeda';
       }
       return {
         key: 'masalah_pencatatan',
         label: 'Masalah Pencatatan',
-        detil: 'Reklasifikasi / Koreksi Catat'
+        detil: d
       };
     }
 
-    // 6. PENGGUNAAN (DEFAULT, matches penggunaan, pernggunaan, pengunaan)
-    if (rawD.includes('alih status') || rawD.includes('transfer') || allText.includes('alih status') || allText.includes('satker lain')) {
-      return {
-        key: 'penggunaan',
-        label: 'Penggunaan',
-        detil: 'Alih Status ke Satker Lain'
-      };
-    }
-    if (rawD.includes('rencana') || allText.includes('rencana')) {
-      return {
-        key: 'penggunaan',
-        label: 'Penggunaan',
-        detil: 'Rencana Penggunaan Satker'
-      };
+    // 6. Penggunaan (default, covers 'penggunaan', 'pernggunaan', 'pengunaan')
+    let detilGuna = 'Digunakan Satker';
+    if (rawD.includes('alih status') || rawD.includes('transfer') || rawD.includes('satker lain')) {
+      detilGuna = 'Alih Status ke Satker Lain';
+    } else if (rawD.includes('rencana') || rawD.includes('usul')) {
+      detilGuna = 'Rencana Penggunaan Satker';
     }
 
     return {
       key: 'penggunaan',
       label: 'Penggunaan',
-      detil: 'Digunakan Satker'
+      detil: detilGuna
     };
   },
 
