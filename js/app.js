@@ -505,7 +505,7 @@ const App = {
     if (elUnmapped) elUnmapped.textContent = `${stats.unmappedCount} Unit`;
     if (elUnmappedSatker) elUnmappedSatker.textContent = `${stats.unmappedSatkersCount} Satker`;
 
-    // Card 3: Klasifikasi BMN Idle (2-Column Grid Chips)
+    // Card 3: Klasifikasi BMN Idle (Hero 2-Row Card on Right)
     const elKlasBreakdown = document.getElementById('stat-klasifikasi-breakdown');
     if (elKlasBreakdown && stats.hierarchy) {
       const items = [
@@ -529,26 +529,46 @@ const App = {
           .join(' • ');
 
         return `
-          <div class="stat-cat-chip ${item.colorClass}" onclick="event.stopPropagation(); App.setQuickFilter('${item.key}')" title="Filter klasifikasi: ${item.label} (${count} Unit)">
-            <div class="chip-label">
-              <span class="chip-name"><i class="fa-solid ${item.icon}"></i> ${item.label}</span>
-              <span class="chip-sub">${detailSnippet || '-'}</span>
+          <div class="hero-cat-item ${item.colorClass}" onclick="event.stopPropagation(); App.setQuickFilter('${item.key}')" title="Filter klasifikasi: ${item.label} (${count} Unit)">
+            <div class="cat-main">
+              <span class="cat-title"><i class="fa-solid ${item.icon}"></i> ${item.label}</span>
+              <span class="cat-subtext">${detailSnippet || '-'}</span>
             </div>
-            <span class="chip-count">${count}</span>
+            <span class="cat-badge-val">${count}</span>
           </div>
         `;
       }).join('');
     }
 
-    // Card 4: Rencana Tindak Lanjut & Ratio Bar
-    const elPenelitian = document.getElementById('stat-tahap-penelitian');
-    const elPemantauan = document.getElementById('stat-tahap-pemantauan');
+    // Card 4: Rencana Tindak Lanjut (Dynamic Stages from Sheet)
+    const tahapEntries = Object.entries(stats.tahapMap || {});
     const cPenelitian = stats.tahapMap['PENELITIAN'] || 0;
     const cPemantauan = stats.tahapMap['PEMANTAUAN'] || 0;
-    const totalTahap = cPenelitian + cPemantauan || 1;
+    const totalTahap = stats.totalAssets || 1;
 
+    const elPenelitian = document.getElementById('stat-tahap-penelitian');
+    const elPemantauan = document.getElementById('stat-tahap-pemantauan');
     if (elPenelitian) elPenelitian.textContent = cPenelitian;
     if (elPemantauan) elPemantauan.textContent = cPemantauan;
+
+    // If there are more stages present in Google Sheet (e.g. PENELUSURAN, DATA TIDAK LENGKAP):
+    const cardsContainer = document.getElementById('stat-tahap-cards-container');
+    if (cardsContainer && tahapEntries.length > 2) {
+      cardsContainer.style.gridTemplateColumns = `repeat(${Math.min(tahapEntries.length, 4)}, 1fr)`;
+      cardsContainer.innerHTML = tahapEntries.map(([tCode, tCount], tIdx) => {
+        const colorClass = tIdx === 0 ? 'blue' : (tIdx === 1 ? 'mint' : (tIdx === 2 ? 'orange' : 'purple'));
+        const iconClass = tCode.includes('PANTAU') ? 'fa-eye' : (tCode.includes('TELUSUR') ? 'fa-compass' : (tCode.includes('LENGKAP') ? 'fa-triangle-exclamation' : 'fa-magnifying-glass'));
+        return `
+          <div class="tahap-box ${colorClass}" onclick="event.stopPropagation(); App.setTahapFilter('${tCode}')" title="Filter: ${tCode} (${tCount} Unit)">
+            <div class="tahap-box-info">
+              <small>Tahap ${tIdx + 1}</small>
+              <strong style="font-size:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"><i class="fa-solid ${iconClass}"></i> ${tCode}</strong>
+            </div>
+            <div class="tahap-box-val" style="font-size:14px;">${tCount}</div>
+          </div>
+        `;
+      }).join('');
+    }
 
     const ratioBlue = ((cPenelitian / totalTahap) * 100).toFixed(1);
     const ratioMint = ((cPemantauan / totalTahap) * 100).toFixed(1);
@@ -562,9 +582,18 @@ const App = {
     const elUnmappedDesc = document.getElementById('stat-unmapped-satker-desc');
     if (elUnmappedDesc) elUnmappedDesc.textContent = `${stats.unmappedSatkersCount} Satker`;
 
-    // Card 5: Prioritas BMN Idle (Hero 2-Row Card)
+    // Card 5: Prioritas BMN Idle (Swapped to Row 2)
     const elPinned = document.getElementById('stat-total-pinned');
     if (elPinned) elPinned.textContent = stats.pinnedCount;
+
+    const elPinnedPreviewNote = document.getElementById('stat-pinned-preview-note');
+    if (elPinnedPreviewNote) {
+      if (stats.pinnedCount > 0) {
+        elPinnedPreviewNote.innerHTML = `<i class="fa-solid fa-thumbtack text-danger"></i> <span><strong>${stats.pinnedCount} Unit</strong> terpilih atensi pimpinan (1-Klik filter)</span>`;
+      } else {
+        elPinnedPreviewNote.innerHTML = `<i class="fa-solid fa-thumbtack text-danger"></i> <span>Klik tanda 📌 pada kartu aset untuk menandai prioritas</span>`;
+      }
+    }
 
     const elPinnedList = document.getElementById('stat-pinned-preview-list');
     if (elPinnedList) {

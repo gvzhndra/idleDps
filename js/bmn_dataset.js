@@ -13,11 +13,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46147.0",
     "HASIL JAWABAN": "Digunakan pegawai",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-1"
+    "id": "BMN-1",
+    "foto_urls": "https://drive.google.com/uc?export=view&id=1hPA2D2xjOzGsR_X3eT2N4_qO7kq9jcoo,https://drive.google.com/uc?export=view&id=1RyuFcS_uVOunsvRU72qO_ZCiYxOkEhuu,https://drive.google.com/uc?export=view&id=1cjSDpyQRa8zqIb7bob7PrS3P7AvTRAmc,https://drive.google.com/uc?export=view&id=1mHSwnFEu_RMguwVxSWp6newDGyMVK5Sv,https://drive.google.com/uc?export=view&id=16sEmCyOW3YjuwOoCJhfAs7OiX_OAfyaw,https://drive.google.com/uc?export=view&id=1jpQTqq5FD4SoNWXJbAbqbXYL-5lYI6te,https://drive.google.com/uc?export=view&id=1vin3rBNDjfkTUe5joA0KeCchtI0OSo0U,https://drive.google.com/uc?export=view&id=1Hs2xjU54Jcb5LArG3lyHgzyNgoxoiPwH",
+    "is_pinned": ""
   },
   {
     "kode_satker": "088012200667882000KD",
@@ -33,11 +37,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46147.0",
     "HASIL JAWABAN": "Digunakan pegawai",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-2"
+    "id": "BMN-2",
+    "foto_urls": "https://drive.google.com/uc?export=view&id=1lN_F_ovh0W1W-5ZTQT-rE1MT-QqiSN8k,https://drive.google.com/uc?export=view&id=1U_AOPCqN9RsyuF6pE2TZ-LkkRZqYmXWR,https://drive.google.com/uc?export=view&id=1Rzf-znoioxz5ITG4pqQ9UWIj3vtmGTX1,https://drive.google.com/uc?export=view&id=1-DFbuqh0_OWolnU7e3r_nD03Hz6mYev7",
+    "is_pinned": ""
   },
   {
     "kode_satker": "075012200437344000KD",
@@ -53,11 +61,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46230.0",
     "HASIL JAWABAN": "Dalam pembahasan hibah ke Pemkab Karangasem",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "pemindahtanganan",
+    "detil klasifikasi": "rencana hibah pemkab",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-3"
+    "id": "BMN-3",
+    "foto_urls": "https://drive.google.com/uc?export=view&id=1QU43XI_VUesZ2ua4Te-6H5uKgzfGGYZN",
+    "is_pinned": ""
   },
   {
     "kode_satker": "075012200437344000KD",
@@ -73,11 +85,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46230.0",
     "HASIL JAWABAN": "Dalam pembahasan hibah ke Pemkab Karangasem",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "pemindahtanganan",
+    "detil klasifikasi": "rencana hibah pemkab",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-4"
+    "id": "BMN-4",
+    "foto_urls": "https://drive.google.com/uc?export=view&id=1im0RPXqe9o98lOS103Qe1C9qsec-eRQl",
+    "is_pinned": ""
   },
   {
     "kode_satker": "075012200437344000KD",
@@ -93,11 +109,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46230.0",
     "HASIL JAWABAN": "Dalam pembahasan hibah ke Pemkab Karangasem",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "pemindahtanganan",
+    "detil klasifikasi": "rencana hibah pemkab",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-5"
+    "id": "BMN-5",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "075012200437344000KD",
@@ -113,11 +133,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46230.0",
     "HASIL JAWABAN": "Dalam pembahasan hibah ke Pemkab Karangasem",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "pemindahtanganan",
+    "detil klasifikasi": "rencana hibah pemkab",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-6"
+    "id": "BMN-6",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "075012200437338000KD",
@@ -133,11 +157,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46118.0",
     "HASIL JAWABAN": "Sedang digunakan berdasarkan kep izin penghunian rumah negara ",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-7"
+    "id": "BMN-7",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "075012200437792000KD",
@@ -153,11 +181,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46112.0",
     "HASIL JAWABAN": "sedang dan masih dipergunakan untuk gedung penyimpanan arsip-arsip",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-8"
+    "id": "BMN-8",
+    "foto_urls": "https://drive.google.com/uc?export=view&id=1W2U7soqZrol4SFeVr-C1iV99EFkP0lxA,https://drive.google.com/uc?export=view&id=12K7sMuiwwOK_JDr9u51is0OLdi7O4s-O,https://drive.google.com/uc?export=view&id=1xHuhcXG45wIKVUZgkUOfLf1_KSOWn6On,https://drive.google.com/uc?export=view&id=1GHX1p7HDgyyI1F-kMcT4B3_UigjXCEKv,https://drive.google.com/uc?export=view&id=1FxdBGVSWHk29Txbnmm2u8HcYPSQcoZDk",
+    "is_pinned": ""
   },
   {
     "kode_satker": "075012200437338000KD",
@@ -173,11 +205,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46118.0",
     "HASIL JAWABAN": "Sedang digunakan berdasarkan kep izin penghunian rumah negara ",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-9"
+    "id": "BMN-9",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "075012200437338000KD",
@@ -193,11 +229,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46118.0",
     "HASIL JAWABAN": "Sedang digunakan berdasarkan kep izin penghunian rumah negara ",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-10"
+    "id": "BMN-10",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "075012200437338000KD",
@@ -213,11 +253,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46118.0",
     "HASIL JAWABAN": "Sedang digunakan berdasarkan kep izin penghunian rumah negara ",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-11"
+    "id": "BMN-11",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "004012200579220000KD",
@@ -233,11 +277,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46076.0",
     "HASIL JAWABAN": "- Tidak ditemukan pada master aset\n- Tidak memiliki aset dengan kode barang tersebut\n- Tidak ada dalam pengelolaan Aset BPK Perwakilan Provinsi Bali",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Anomali data/pencatatan atau perubahan organisasi",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "permasalahan pencatatan",
+    "detil klasifikasi": "tidak ditemukan di master aset",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-12"
+    "id": "BMN-12",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "004012200579220000KD",
@@ -253,11 +301,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46076.0",
     "HASIL JAWABAN": "- Tidak ditemukan pada master aset\n- Tidak memiliki aset dengan kode barang tersebut\n- Tidak ada dalam pengelolaan Aset BPK Perwakilan Provinsi Bali",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Anomali data/pencatatan atau perubahan organisasi",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "permasalahan pencatatan",
+    "detil klasifikasi": "tidak ditemukan di master aset",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-13"
+    "id": "BMN-13",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "004012200579220000KD",
@@ -273,11 +325,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46076.0",
     "HASIL JAWABAN": "Telah dilakukan Reklasifikasi Aset ke Bangunan Gedung Perpustakaan Permanen (4010116011) NUP 1",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Anomali data/pencatatan atau perubahan organisasi",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "permasalahan pencatatan",
+    "detil klasifikasi": "reklas pencatatan",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-14"
+    "id": "BMN-14",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "004012200579220000KD",
@@ -293,11 +349,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46076.0",
     "HASIL JAWABAN": "Telah dilakukan Reklasifikasi Aset ke Gedung Pos Jaga Permanen (410113001) NUP 1",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Anomali data/pencatatan atau perubahan organisasi",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "pengunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-15"
+    "id": "BMN-15",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "004012200579220000KD",
@@ -313,11 +373,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46076.0",
     "HASIL JAWABAN": "Rumah Dinas Golongan 1 Tipe D Permanen berstatus baik dan dihuni oleh Analis Pengelolaan Keuangan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "transfer ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-16"
+    "id": "BMN-16",
+    "foto_urls": "https://drive.google.com/uc?export=view&id=1WRC-_CH0r35Xjwlf0yyIX50S9GLPb4J1",
+    "is_pinned": ""
   },
   {
     "kode_satker": "063012200432954000KD",
@@ -333,11 +397,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46227.0",
     "HASIL JAWABAN": "telah di Transfer Keluar ke Balai POM di\nBuleleng sesuai Berita Acara nomor PL.03.03.17A.17A5.08.22.130 tanggal 10\nAgustus 2022 sebagaimana terlampir",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Anomali data/pencatatan atau perubahan organisasi",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "pernggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-17"
+    "id": "BMN-17",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "08901220050649000KD",
@@ -353,11 +421,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46160.0",
     "HASIL JAWABAN": "Tempat untuk parkir penghuni rumah dinas",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "pernggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-18"
+    "id": "BMN-18",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "08901220050649000KD",
@@ -373,11 +445,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46160.0",
     "HASIL JAWABAN": "Tempat untuk parkir penghuni rumah dinas",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "pernggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-19"
+    "id": "BMN-19",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "08901220050649000KD",
@@ -393,11 +469,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46160.0",
     "HASIL JAWABAN": "Surat ijin Penghunian KP.05.02/KEP-422 PW22/1/2C25\ndengan 23 Desember 2027",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "pernggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-20"
+    "id": "BMN-20",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "08901220050649000KD",
@@ -413,11 +493,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46160.0",
     "HASIL JAWABAN": "Surat Ijin Penghunian KP.05.02/KIEP-106/PW22/1/2C25 sampai dengan 17 April 2027",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "pernggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-21"
+    "id": "BMN-21",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "08901220050649000KD",
@@ -433,11 +517,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46160.0",
     "HASIL JAWABAN": "Surat Ijin Pengtunian KP.05.02/KEP-88/PW22/1/2025 sampai\ndengan 17 April 2027",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "pernggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-22"
+    "id": "BMN-22",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "08901220050649000KD",
@@ -453,11 +541,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46160.0",
     "HASIL JAWABAN": "Surat Ijin Pengtunian KP.05.02/KEP-88/PW22/1/2025 sampai\ndengan 28 Februari 2027",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "pernggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-23"
+    "id": "BMN-23",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "08901220050649000KD",
@@ -473,11 +565,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46160.0",
     "HASIL JAWABAN": "Surat Ijin Pengtunian KP.05.02/KEP-88/PW22/1/2025 sampai\ndengan 28 Februari 2027",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "pernggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-24"
+    "id": "BMN-24",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "006012200008678000KD",
@@ -493,11 +589,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46020.0",
     "HASIL JAWABAN": "BMN berupa Tanah Bangunan Peristitarahata/Bungalow/Cottage beserta BMN BMN berupa Bangunan Rumah Negara Golongan II Tipe C Permanen yang berdiri di atas tanah tersebut telah diajukan permohonan petunjuk pengelolaan kepada pengelola barang dengan surat nomor B-3988/N.1/Cpl.3/09/2025 dan akan dilakukan pemanfaatan berupa sewa",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut sedang/akan diproses",
-    "TAHAP_BERIKUT": "PEMANTAUAN",
+    "klasifikasi": "pernggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-25"
+    "id": "BMN-25",
+    "foto_urls": "https://drive.google.com/uc?export=view&id=1ZY-45JLpk3g3Ew_FBpMLbx4m7Tr3jI8h,https://drive.google.com/uc?export=view&id=12TWp5Nljx_162_pR27nZBJPnfD4-GH6f,https://drive.google.com/uc?export=view&id=1Vxd2MkYfONmGzuVPcDKeUgJWgDOjILMX,https://drive.google.com/uc?export=view&id=1UCbzFWitCMKitHric2AG29GZitqe74v0",
+    "is_pinned": ""
   },
   {
     "kode_satker": "006012200008750000KD",
@@ -513,11 +613,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46021.0",
     "HASIL JAWABAN": "telah dihapuskan berdasarkan surat Nomor : KEP-X- 453/C/Cpl.3/08/2021 tanggal 05 Agustus 2021",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "pernggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-26"
+    "id": "BMN-26",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "006012200008746000KD",
@@ -526,18 +630,22 @@ const RAW_BMN_DATASET = [
     "kode_barang": "4010202010",
     "nup": "1",
     "koordinat": "-8.31551, 115.08056",
-    "luas": "50.0",
+    "luas": 50,
     "jenis_barang": "Rumah Negara",
     "nama_barang": "Rumah Negara Golongan II Tipe D Permanen",
     "SURAT JAWABAN PENGGUNA BARANG": "B- 4306/N.1.17/Cpl.3/12/2025",
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46020.0",
     "HASIL JAWABAN": "Dipergunakan untuk Rumah Dinas Pejabat/Pegawai Kejaksaan Negeri Tabanan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "pernggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
-    "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-27"
+    "CATATAN_REKONSILIASI": "ada indikasi kesalahan penginputan koordinat atau alamat, alamat di siman tertulis di Jalan Majapahit, Dajan Peken, Tabanan, yang mana masih dekat dengan pusat kota Tabanan, sementara koordinat seperti yang tampil dalam layar berlokasi di Desa Pupuan, perlu konfirmasi ke satker terkait lokasi",
+    "id": "BMN-27",
+    "foto_urls": "https://drive.google.com/uc?export=view&id=1ICGC3xt6DbJ-I_zWQsjvVrq8BrXNaeAN,https://drive.google.com/uc?export=view&id=1QWbucZwpLOCpjDa3pn5bdtFvCoHXsX3x,https://drive.google.com/uc?export=view&id=1ivnzwyOMrQNxq3TBOP8pKNCtw5N5rm38,https://drive.google.com/uc?export=view&id=1eCPMhnGC4YsVLRdKtlfL5MPQ-ff0OWSJ",
+    "is_pinned": ""
   },
   {
     "kode_satker": "006012200008746000KD",
@@ -546,18 +654,22 @@ const RAW_BMN_DATASET = [
     "kode_barang": "4010202007",
     "nup": "1",
     "koordinat": "-8.541051, 115.131679",
-    "luas": "84.0",
+    "luas": 84,
     "jenis_barang": "Rumah Negara",
     "nama_barang": "Rumah Negara Golongan II Tipe C Permanen",
     "SURAT JAWABAN PENGGUNA BARANG": "B- 4306/N.1.17/Cpl.3/12/2025",
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46020.0",
     "HASIL JAWABAN": "Dipergunakan untuk Rumah Dinas Pejabat/Pegawai Kejaksaan Negeri Tabanan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "pernggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
-    "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-28"
+    "CATATAN_REKONSILIASI": "digunakan secara mandiri",
+    "id": "BMN-28",
+    "foto_urls": "https://drive.google.com/uc?export=view&id=1-Vt1a8hcZh_9p0zw-9uJKFGDzMSD5URX,https://drive.google.com/uc?export=view&id=1PtMXrHvQ2sy_gWBn7dC_5uHyYRtiA0cl,https://drive.google.com/uc?export=view&id=15CbdsQQsgZ_Edo23hmllxCx9FWtKn7PZ,https://drive.google.com/uc?export=view&id=1AkKi855VS4HjTdw0pJ0J8DNaLU9KX_dk,https://drive.google.com/uc?export=view&id=139VYGloEnaIZ38F7MTOVizthtKABVElm,https://drive.google.com/uc?export=view&id=1JssPMpwRNkSjnXV2JuyKVkOwlMs1N722,https://drive.google.com/uc?export=view&id=1KcenJbno8RQ6He_2HobjqEyT87Z89z8H",
+    "is_pinned": ""
   },
   {
     "kode_satker": "006012200008725000KD",
@@ -573,11 +685,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46029.0",
     "HASIL JAWABAN": "dalam kondisi rusak berat dan pada saat ini kami sedang dalam proses pengajuan ke Kejaksaan Agung RI untuk mengalihfungsikan menjadi Bangunan Gedung Barang Bukti dikarenakan kebutuhan dari satuan kerja.",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut sedang/akan diproses",
-    "TAHAP_BERIKUT": "PEMANTAUAN",
+    "klasifikasi": "renovasi",
+    "detil klasifikasi": "rencana renovasi",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-29"
+    "id": "BMN-29",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "006012200008678000KD",
@@ -593,11 +709,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46020.0",
     "HASIL JAWABAN": "Barang Milik Negara (BMN) berupa Rumah Negara Golongan II Tipe C Permanen telah\ndilakukan penghapusan dengan Surat Keputusan nomor : KEP-X-816/C/Cpl/11/2020",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah penghapusan",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-30"
+    "id": "BMN-30",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "006012200008682000KD",
@@ -613,11 +733,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46027.0",
     "HASIL JAWABAN": "Barang Milik Negara (BMN) berupa 1 (dua) unit Bangunan Rumah Negara Golongan I tipe A permanen tersebut sudah dilakukan pemanfaatan berupa sewa sejak tahun bulan November 2025 hingga saat ini dengan Lampiran Surat Keputusan Kepala Kejaksaan Negeri Denpasar Nomor : KEP-72/N.1.10/Cpl.3/11/2025.",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "pemanfaatan",
+    "detil klasifikasi": "pemanfaatan",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-31"
+    "id": "BMN-31",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "006012200008750000KD",
@@ -633,11 +757,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46021.0",
     "HASIL JAWABAN": "telah dihapuskan berdasarkan surat Nomor : KEP-X- 453/C/Cpl.3/08/2021 tanggal 05 Agustus 2021",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah penghapusan",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-32"
+    "id": "BMN-32",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "006012200008725000KD",
@@ -653,11 +781,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46029.0",
     "HASIL JAWABAN": "dalam kondisi rusak berat dan pada saat ini kami sedang dalam proses pengajuan ke Kejaksaan Agung RI untuk mengalihfungsikan menjadi Bangunan Gedung Barang Bukti dikarenakan kebutuhan dari satuan kerja.",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut sedang/akan diproses",
-    "TAHAP_BERIKUT": "PEMANTAUAN",
+    "klasifikasi": "renovasi",
+    "detil klasifikasi": "rencana renovasi",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-33"
+    "id": "BMN-33",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "006012200008678000KD",
@@ -673,11 +805,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46020.0",
     "HASIL JAWABAN": "Barang Milik Negara (BMN) berupa Rumah Negara Golongan I Tipe A Permanen telah\ndilakukan proses transfer keluar dari Kejaksaan Tinggi Bali ke Kejaksaan Negeri Denpasar\ndengan Surat Keputusan nomor : KEP-48/N.1/Cpl.3/5/2021",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Anomali data/pencatatan atau perubahan organisasi",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "transfer ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-34"
+    "id": "BMN-34",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "006012200008746000KD",
@@ -686,18 +822,22 @@ const RAW_BMN_DATASET = [
     "kode_barang": "2010104001",
     "nup": "2",
     "koordinat": "-8.53697, 115.117618",
-    "luas": "1980.0",
+    "luas": 1980,
     "jenis_barang": "Tanah Bangunan Kantor",
     "nama_barang": "Tanah Bangunan Kantor Pemerintah",
     "SURAT JAWABAN PENGGUNA BARANG": "B- 4306/N.1.17/Cpl.3/12/2025",
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46020.0",
     "HASIL JAWABAN": "Disewakan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tidak digunakan/berpotensi idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "pemanfaatan",
+    "detil klasifikasi": "rencana pemanfaatan",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
-    "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-35"
+    "CATATAN_REKONSILIASI": "tanah > 1000m2, memenuhi kriteria untuk Kopdes, daerah di sekitar aset merupakan daerah pasar tradisional Dauh Pala dan Pasar Tradisional Santi Pala, jika tidak ada rencana penggunaan satker, aset dapat dijadikan kandidat alih status ke K/L lain atau pemanfaatan",
+    "id": "BMN-35",
+    "foto_urls": "https://drive.google.com/uc?export=view&id=1rLjLZV3DHBIzVNXcSllnLHBB3HcWd-DY,https://drive.google.com/uc?export=view&id=1AKyAgs93fD1T3GUt4m6ngVowXdw2h1RP,https://drive.google.com/uc?export=view&id=1bOqfrU_hHeSbNEAIAI0UtBoy9g_1qNA2,https://drive.google.com/uc?export=view&id=1O2gsJkR5u-W13ikcZfZQN2Qpp5KxMLat",
+    "is_pinned": ""
   },
   {
     "kode_satker": "006012200008750000KD",
@@ -713,11 +853,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46021.0",
     "HASIL JAWABAN": "telah dihapuskan berdasarkan surat Nomor : KEP-X- 453/C/Cpl.3/08/2021 tanggal 05 Agustus 2021",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah penghapusan",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-36"
+    "id": "BMN-36",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "006012200008682000KD",
@@ -726,18 +870,22 @@ const RAW_BMN_DATASET = [
     "kode_barang": "2010101002",
     "nup": "3",
     "koordinat": "-8.6998402, 115.2266601",
-    "luas": "250.0",
+    "luas": 250,
     "jenis_barang": "Tanah Rumah Negara",
     "nama_barang": "Tanah Bangunan Rumah Negara Golongan II",
     "SURAT JAWABAN PENGGUNA BARANG": "B-51/N.1.10/Cpl.3/01/2026",
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46027.0",
     "HASIL JAWABAN": "Barang Milik Negara (BMN) berupa Tanah Bangunan Rumah Negara Golongan I beserta Barang Milik Negara (BMN) berupa 2 (dua) unit Bangunan Rumah Negara Golongan Il tipe D permanen yang berdiri diatas tanah tersebut sudah dilakukan pemanfaatan berupa sewa sejak tahun 2023 hingga saat ini, dan penghuni dari awal masih sama hingga saat ini.",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah penghapusan",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
-    "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-37"
+    "CATATAN_REKONSILIASI": "Terdapat rumah negara golongan II, perlu dioptimalisasi penggunaannya untuk satker",
+    "id": "BMN-37",
+    "foto_urls": "https://drive.google.com/uc?export=view&id=1BlQqfWs6UnN-KkMk4q69wCElc0YRVHBH,https://drive.google.com/uc?export=view&id=1AyGod3J-wwG0j5VZ_gfSbqM4Vm67Ta6k",
+    "is_pinned": ""
   },
   {
     "kode_satker": "006012200008678000KD",
@@ -753,11 +901,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46020.0",
     "HASIL JAWABAN": "Barang Milik Negara (BMN) berupa Rumah Negara Golongan II Tipe C Permanen telah dilakukan penghapusan dengan Surat Keputusan nomor : KEP-X-816/C/Cpl/11/2020",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah penghapusan",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-38"
+    "id": "BMN-38",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "006012200008678000KD",
@@ -773,11 +925,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46020.0",
     "HASIL JAWABAN": "Barang Milik Negara (BMN) berupa Rumah Negara Golongan II Tipe C Permanen telah dilakukan penghapusan dengan Surat Keputusan nomor : KEP-X-816/C/Cpl/11/2020.",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-39"
+    "id": "BMN-39",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "025012200419910000KD",
@@ -793,11 +949,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46106.0",
     "HASIL JAWABAN": "disesuaikan peruntukkannya menjadi Tanah Lapangan Parkir Lainnya dengan kode\nbarang 2010302999",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-40"
+    "id": "BMN-40",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "025012200419869000KD",
@@ -813,11 +973,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46107.0",
     "HASIL JAWABAN": "Akan dibangun KUA Mengwi, menunggu keetersediaan anggaran",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut sedang/akan diproses",
-    "TAHAP_BERIKUT": "PEMANTAUAN",
+    "klasifikasi": "renovasi",
+    "detil klasifikasi": "rusak berat perlu renovasi",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-41"
+    "id": "BMN-41",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "025032200568527000KD",
@@ -833,11 +997,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46098.0",
     "HASIL JAWABAN": "Bangunan Gedung Kantor Permanen (Gedung Kantor Urusan Agama Kecamatan Denpasar Selatan) NUP 4 milik satker Bimbingan Masyarakat Islam Kementerian Agama Kota Denpasar dengan luas dasar bangunan 131 m",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Dihuni/dikuasai pensiunan atau pihak eksternal",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-42"
+    "id": "BMN-42",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "025072200552762000KD",
@@ -853,11 +1021,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46036.0",
     "HASIL JAWABAN": "- Direncanakan untuk digunakan sebagai lahan penanaman tanaman obat herbal (Taman Praktikum Herbal pada Jurusan Yoga Kesehatan, Fakultas Brahma Widya, UHN I Gusti Bagus Sugriwa Denpasar) pada Tahun Anggaran 2026.\n- Akses terbatas; tidak dapat dilalui kendaraan bermotor, hanya dapat dicapai dengan berjalan kaki melalui pematang sawah.",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut sedang/akan diproses",
-    "TAHAP_BERIKUT": "PEMANTAUAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "rencana penggunaan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-43"
+    "id": "BMN-43",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "025072200552762000KD",
@@ -873,11 +1045,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46036.0",
     "HASIL JAWABAN": "- Direncanakan untuk digunakan sebagai lahan penanaman tanaman obat herbal (Taman Praktikum Herbal pada Jurusan Yoga Kesehatan, Fakultas Brahma Widya, UHN I Gusti Bagus Sugriwa Denpasar) pada Tahun Anggaran 2026.\n- Akses terbatas; tidak dapat dilalui kendaraan bermotor, hanya dapat dicapai dengan berjalan kaki melalui pematang sawah dan menyeberangi parit.",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut sedang/akan diproses",
-    "TAHAP_BERIKUT": "PEMANTAUAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "rencana penggunaan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-44"
+    "id": "BMN-44",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "025072200552762000KD",
@@ -893,11 +1069,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46036.0",
     "HASIL JAWABAN": "- Pemanfaatan atas objek tanah saat ini dilaksanakan melalui skema sewa dengan jangka sewa selama 3 (tiga) tahun, terhitung sejak tanggal 10 November 2023 sampai dengan tanggal 10 November 2026.\n- Tidak terdapat permasalahan admninistrasi, fisik, dan hukum",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "pemanfaatan",
+    "detil klasifikasi": "pemanfaatan",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-45"
+    "id": "BMN-45",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "056012200432122000KD",
@@ -913,11 +1093,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46162.0",
     "HASIL JAWABAN": "diusulkan pembangunan Rumah Negara Gol I pada RKBMN 2028",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "rencana penggunaan satker",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-46"
+    "id": "BMN-46",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "056012200432122000KD",
@@ -933,11 +1117,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46162.0",
     "HASIL JAWABAN": "Permohonan Pinjam Pakai dari Desa Banjar Anyar untuk Kopdes Merah Putih ",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "pemanfaatan",
+    "detil klasifikasi": "rencana pemanfaatan",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-47"
+    "id": "BMN-47",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "056012200552577000KD",
@@ -953,11 +1141,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46155.0",
     "HASIL JAWABAN": "berupa pagar bangunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-48"
+    "id": "BMN-48",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "056012200552577000KD",
@@ -973,11 +1165,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46155.0",
     "HASIL JAWABAN": "berupa rumah untuk genset",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-49"
+    "id": "BMN-49",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "056012200552577000KD",
@@ -993,11 +1189,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46155.0",
     "HASIL JAWABAN": "berupa gedung arsip",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tidak digunakan/berpotensi idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-50"
+    "id": "BMN-50",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "067092200350485000KD",
@@ -1013,11 +1213,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46226.0",
     "HASIL JAWABAN": "masih dimanfaatkan (tidak Idle) dan\ndipergunakan sebagai rumah tempat tinggal ",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-51"
+    "id": "BMN-51",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "067092200350485000KD",
@@ -1033,11 +1237,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46226.0",
     "HASIL JAWABAN": "masih dimanfaatkan (tidak Idle) dan\ndipergunakan sebagai rumah tempat tinggal ",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-52"
+    "id": "BMN-52",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "067092200350485000KD",
@@ -1053,11 +1261,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46226.0",
     "HASIL JAWABAN": "masih dimanfaatkan (tidak Idle) dan\ndipergunakan sebagai rumah tempat tinggal ",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-53"
+    "id": "BMN-53",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013052200407556000KD",
@@ -1073,11 +1285,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46036.0",
     "HASIL JAWABAN": "masih digunakan secara aktif sebagai fasilitas penunjang tugas dan fungsi Rumah Tahanan Negara Kelas IIB Klungkung, yakni sebagai tempat tinggal bagi pegawai yang bertugas, sesuai dengan ketentuan yang berlaku",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-54"
+    "id": "BMN-54",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013052200407519000KD",
@@ -1093,11 +1309,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46230.0",
     "HASIL JAWABAN": "masih digunakan sesuai dengan peruntukannya sebagai Rumah Negara",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-55"
+    "id": "BMN-55",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013062200409108000KD",
@@ -1113,11 +1333,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46154.0",
     "HASIL JAWABAN": "Dihuni Analis Keimigrasian a.n. Muhammad Subkhan Wibawa",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-56"
+    "id": "BMN-56",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013052200407556000KD",
@@ -1133,11 +1357,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46036.0",
     "HASIL JAWABAN": "masih digunakan secara aktif sebagai fasilitas penunjang tugas dan fungsi Rumah Tahanan Negara Kelas IIB Klungkung, yakni sebagai tempat tinggal bagi pegawai yang bertugas, sesuai dengan ketentuan yang berlaku",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "renovasi",
+    "detil klasifikasi": "rencana renovasi",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-57"
+    "id": "BMN-57",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013062200409108000KD",
@@ -1153,11 +1381,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46154.0",
     "HASIL JAWABAN": "diusulkan untuk direnovasi",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-58"
+    "id": "BMN-58",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013062200409108000KD",
@@ -1173,11 +1405,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46154.0",
     "HASIL JAWABAN": "Dihuni Analis Keimigrasian a.n. Mellisa Manurung",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-59"
+    "id": "BMN-59",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013052200407525000KD",
@@ -1193,11 +1429,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46227.0",
     "HASIL JAWABAN": "Digunakan sendiri untuk operasional. Di atas aset tersebut berdiri bangunan Rumah Khusus yang disewakan kepada pegawai berdasarkan SK Penghuni Nomor : \n1) WP.20.PAS.1-26.PB.03.04 TAHUN 2025\n2) WP.20.PAS.1-105.PB.03.04 TAHUN 2025\n3) WP.20.PAS.1-103.PB.03.04 TAHUN 2025\n4) WP.20.PAS.1-104.PB.03.04 TAHUN 2025",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-60"
+    "id": "BMN-60",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013012200408870000KD",
@@ -1213,11 +1453,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46059.0",
     "HASIL JAWABAN": "Kode barang ini berupa tanah di Jalan Ratna No. 19 Denpasar yang saat ini digunakan sebagai Rumah Dinas pegawai Kanwil Hukum, Kanwil HAM, Kanwil Ditjen Imigrasi dan Kanwil Ditjen Pemasyarakatan Bali serta Kantor Kanwil Ditjen Pemasyarakatan Bali ex Kantor Rupbasan Denpasar",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Dihuni/dikuasai pensiunan atau pihak eksternal",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-61"
+    "id": "BMN-61",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013052200407525000KD",
@@ -1233,11 +1477,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46227.0",
     "HASIL JAWABAN": "Aset tersebut telah dilakukan penghapusan pada tahun 2021 melalui Surat Keputusan Surat Keputusan Menteri Hukum dan Hak Asasi Manusia Nomor: SEK.4-39.PB.06.04 TAHUN 2021",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-62"
+    "id": "BMN-62",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013062200409108000KD",
@@ -1253,11 +1501,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46154.0",
     "HASIL JAWABAN": "Dihuni Kepala Seksi Pemeriksaan IV a.n Ardyansah",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-63"
+    "id": "BMN-63",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013052200407525000KD",
@@ -1273,11 +1525,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46227.0",
     "HASIL JAWABAN": "Digunakan sendiri untuk operasional. Di atas aset tersebut berdiri bangunan Rumah Khusus yang disewakan kepada pegawai berdasarkan SK Penghuni Nomor : \n1) WP.20.PAS.1-107.PB.03.04 TAHUN 2025\n2) WP.20.PAS.1-430.PB.03.04 TAHUN 2024\n3) WP.20.PAS.1-431.PB.03.04 TAHUN 2024\n4) WP.20.PAS.1-432.PB.03.04 TAHUN 2024\n5) WP.20.PAS.1-433.PB.03.04 TAHUN 2024",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-64"
+    "id": "BMN-64",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013052200407571000KD",
@@ -1293,11 +1549,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46210.0",
     "HASIL JAWABAN": "merupakan Aula Kantor yang digunakan\nsebagai gedung pertemuan dan rapat. BMN tersebut masih digunakan untuk\nmendukung pelaksanaan tugas pokok dan fungsi satker",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-65"
+    "id": "BMN-65",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013052200407525000KD",
@@ -1313,11 +1573,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46227.0",
     "HASIL JAWABAN": "Aset tersebut telah dilakukan penghapusan pada tahun 2021 melalui Surat Keputusan Surat Keputusan Menteri Hukum dan Hak Asasi Manusia Nomor: SEK.4-39.PB.06.04 TAHUN 2021",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-66"
+    "id": "BMN-66",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013052200407525000KD",
@@ -1333,11 +1597,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46227.0",
     "HASIL JAWABAN": "Aset tersebut telah dilakukan penghapusan pada tahun 2021 melalui Surat Keputusan Surat Keputusan Menteri Hukum dan Hak Asasi Manusia Nomor: SEK.4-39.PB.06.04 TAHUN 2021",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-67"
+    "id": "BMN-67",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013062200409108000KD",
@@ -1353,11 +1621,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46154.0",
     "HASIL JAWABAN": "diusulkan untuk direnovasi",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "renovasi",
+    "detil klasifikasi": "rencana renovasi",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-68"
+    "id": "BMN-68",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013052200407525000KD",
@@ -1373,11 +1645,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46227.0",
     "HASIL JAWABAN": "Aset tersebut telah dilakukan penghapusan pada tahun 2021 melalui Surat Keputusan Surat Keputusan Menteri Hukum dan Hak Asasi Manusia Nomor: SEK.4-39.PB.06.04 TAHUN 2021",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-69"
+    "id": "BMN-69",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013042200408870000KD",
@@ -1393,11 +1669,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46059.0",
     "HASIL JAWABAN": "Kode satker 013042200408870000KD yang tertera pada surat nomor S-259/MK/KNL. 1401/2025 bukan kode satker kami, kode satker kami 013012200408870000KD, mohon penjelasan lebih lanjut",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "permasalahan pencatatan",
+    "detil klasifikasi": "kode satker berbeda",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-70"
+    "id": "BMN-70",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013012200408870000KD",
@@ -1413,11 +1693,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46059.0",
     "HASIL JAWABAN": "Rumah tersebut berada di Jalan Dahlia No. 24 Denpasar, saat ini dihuni oleh pegawai dengan SIP Nomor W.20-14.PB.03.02 tahun 2026 tentang Penunjukan Penghuni Rumah Negara a.n. Dr. Parlindungan, S.H., M.H",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Dihuni/digunakan pegawai aktif",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-71"
+    "id": "BMN-71",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013052200407525000KD",
@@ -1433,11 +1717,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46227.0",
     "HASIL JAWABAN": "Aset tersebut telah dilakukan penghapusan pada tahun 2021 melalui Surat Keputusan Surat Keputusan Menteri Hukum dan Hak Asasi Manusia Nomor: SEK.4-39.PB.06.04 TAHUN 2021",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-72"
+    "id": "BMN-72",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013062200409108000KD",
@@ -1453,11 +1741,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46154.0",
     "HASIL JAWABAN": "diusulkan untuk direnovasi",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "renovasi",
+    "detil klasifikasi": "rencana renovasi",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-73"
+    "id": "BMN-73",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013052200407525000KD",
@@ -1473,11 +1765,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46227.0",
     "HASIL JAWABAN": "Digunakan sendiri untuk operasional. Di atas aset tersebut berdiri bangunan Rumah Khusus yang disewakan kepada pegawai berdasarkan SK Penghuni Nomor : \n1) WP.20.PAS.1-428.PB.03.04 TAHUN 2024",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-74"
+    "id": "BMN-74",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013042200408870000KD",
@@ -1493,11 +1789,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46059.0",
     "HASIL JAWABAN": "Kode satker 013042200408870000KD yang tertera pada surat nomor S-259/MK/KNL.\n1401/2025 bukan kode satker kami, kode satker kami 013012200408870000KD, mohon penjelasan lebih lanjut",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "permasalahan pencatatan",
+    "detil klasifikasi": "kode satker berbeda",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-75"
+    "id": "BMN-75",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013052200407525000KD",
@@ -1513,11 +1813,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46227.0",
     "HASIL JAWABAN": "Aset tersebut telah dilakukan penghapusan pada tahun 2021 melalui Surat Keputusan Surat Keputusan Menteri Hukum dan Hak Asasi Manusia Nomor: SEK.4-39.PB.06.04 TAHUN 2021",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-76"
+    "id": "BMN-76",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013052200407525000KD",
@@ -1533,11 +1837,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46227.0",
     "HASIL JAWABAN": "Aset tersebut telah dilakukan penghapusan pada tahun 2021 melalui Surat Keputusan Surat Keputusan Menteri Hukum dan Hak Asasi Manusia Nomor: SEK.4-39.PB.06.04 TAHUN 2021",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-77"
+    "id": "BMN-77",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013052200407571000KD",
@@ -1553,11 +1861,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46210.0",
     "HASIL JAWABAN": "sudah diajukan usulan\npembangunan Rumah Negara Golongan II Tipe E pada Rencana Kebutuhan\nBarang Milik Negara (RKBMN) tahun 2027",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut sedang/akan diproses",
-    "TAHAP_BERIKUT": "PEMANTAUAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "rencana penggunaan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-78"
+    "id": "BMN-78",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013052200407571000KD",
@@ -1573,11 +1885,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46210.0",
     "HASIL JAWABAN": "sudah diajukan usulan\npembangunan Rumah Negara Golongan II Tipe E pada Rencana Kebutuhan\nBarang Milik Negara (RKBMN) tahun 2027",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut sedang/akan diproses",
-    "TAHAP_BERIKUT": "PEMANTAUAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "rencana penggunaan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-79"
+    "id": "BMN-79",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013052200407571000KD",
@@ -1593,11 +1909,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46210.0",
     "HASIL JAWABAN": "sudah diajukan usulan\npembangunan Rumah Negara Golongan II Tipe E pada Rencana Kebutuhan\nBarang Milik Negara (RKBMN) tahun 2027",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut sedang/akan diproses",
-    "TAHAP_BERIKUT": "PEMANTAUAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "rencana penggunaan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-80"
+    "id": "BMN-80",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013062200409108000KD",
@@ -1613,11 +1933,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46154.0",
     "HASIL JAWABAN": "Dihuni Analis Keimigrasian an Dhia Khairunnisa",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-81"
+    "id": "BMN-81",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013062200409108000KD",
@@ -1633,11 +1957,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46154.0",
     "HASIL JAWABAN": "Dihuni Analis Keimigrasian an Allouisius Tanamera",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-82"
+    "id": "BMN-82",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013062200409108000KD",
@@ -1653,11 +1981,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46154.0",
     "HASIL JAWABAN": "Dihuni Analis Keimigrasian an Wiji Rahmawan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-83"
+    "id": "BMN-83",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013062200409108000KD",
@@ -1673,11 +2005,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46154.0",
     "HASIL JAWABAN": "Dihuni Analis Keimigrasian an Firmansyah Setyadji",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-84"
+    "id": "BMN-84",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013062200409108000KD",
@@ -1693,11 +2029,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46154.0",
     "HASIL JAWABAN": "diusulkan untuk direnovasi",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "renovasi",
+    "detil klasifikasi": "rencana renovasi",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-85"
+    "id": "BMN-85",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013062200409108000KD",
@@ -1713,11 +2053,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46154.0",
     "HASIL JAWABAN": "diusulkan untuk direnovasi",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "renovasi",
+    "detil klasifikasi": "rencana renovasi",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-86"
+    "id": "BMN-86",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013062200409108000KD",
@@ -1733,11 +2077,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46154.0",
     "HASIL JAWABAN": "Dihuni Analis Keimigrasian an Tarsisius Inosensius Anunu",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-87"
+    "id": "BMN-87",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013062200409108000KD",
@@ -1753,11 +2101,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46154.0",
     "HASIL JAWABAN": "diusulkan untuk direnovasi",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "renovasi",
+    "detil klasifikasi": "rencana renovasi",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-88"
+    "id": "BMN-88",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "013062200409108000KD",
@@ -1773,11 +2125,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46154.0",
     "HASIL JAWABAN": "diusulkan untuk direnovasi",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "renovasi",
+    "detil klasifikasi": "rencana renovasi",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-89"
+    "id": "BMN-89",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "032072200477419000KD",
@@ -1793,11 +2149,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46231.0",
     "HASIL JAWABAN": "Digunakan sendiri sesuai tusi (dihuni kepala kantor) ",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-90"
+    "id": "BMN-90",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "024042200415661000KD",
@@ -1813,11 +2173,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46162.0",
     "HASIL JAWABAN": "Sudah dihapuskan dan menjadi Gedung Kesehatan Ibu dan Anak",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-91"
+    "id": "BMN-91",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "024042200415661000KD",
@@ -1833,11 +2197,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46162.0",
     "HASIL JAWABAN": "Sudah dihapuskan dan rencana akan dibangun Gedung Cadever Center",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-92"
+    "id": "BMN-92",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "024042200415661000KD",
@@ -1853,11 +2221,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46162.0",
     "HASIL JAWABAN": " Sudah dihapuskan dan menjadi Gedung Kesehatan Ibu dan Anak",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-93"
+    "id": "BMN-93",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "024052200415871000KD",
@@ -1873,11 +2245,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "digunakan untuk mendukung tusi ",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-94"
+    "id": "BMN-94",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "024052200415871000KD",
@@ -1893,11 +2269,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "digunakan untuk mendukung tusi ",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-95"
+    "id": "BMN-95",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "024042200415661000KD",
@@ -1913,11 +2293,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46162.0",
     "HASIL JAWABAN": "Sudah dihapuskan dan menjadi Gedung Kesehatan Ibu dan Anak",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-96"
+    "id": "BMN-96",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "024052200415871000KD",
@@ -1933,11 +2317,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "digunakan untuk mendukung tusi ",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-97"
+    "id": "BMN-97",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015042800525606002KD",
@@ -1953,11 +2341,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46230.0",
     "HASIL JAWABAN": "Rumah Negara dengan NUP 1 sedang dalam proses renovasi.",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "renovasi",
+    "detil klasifikasi": "proses renovasi",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-98"
+    "id": "BMN-98",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015042800410016000KD",
@@ -1973,11 +2365,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46230.0",
     "HASIL JAWABAN": "BMN saat ini dipakai untuk Rumah Negara pegawai KPP Pratama Tabanan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-99"
+    "id": "BMN-99",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015051200561115000KD",
@@ -1993,11 +2389,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46155.0",
     "HASIL JAWABAN": "telah dihapuskan dari Daftar Barang Kuasa Pengguna pada KPPBC TMP A Denpasar",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-100"
+    "id": "BMN-100",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015112200675741000KD",
@@ -2013,11 +2413,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46231.0",
     "HASIL JAWABAN": "Penggunaan BMN untuk digunakan sendiri sesuai dengan tugas dan fungsi",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-101"
+    "id": "BMN-101",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015042800410016000KD",
@@ -2033,11 +2437,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46230.0",
     "HASIL JAWABAN": "BMN saat ini dipakai untuk Rumah Negara pegawai KPP Pratama Tabanan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-102"
+    "id": "BMN-102",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015051200561115000KD",
@@ -2053,11 +2461,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46155.0",
     "HASIL JAWABAN": "telah dihapuskan dari Daftar Barang Kuasa Pengguna pada KPPBC TMP A Denpasar",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-103"
+    "id": "BMN-103",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015042800410016001KD",
@@ -2073,11 +2485,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46230.0",
     "HASIL JAWABAN": "BMN saat ini berdiri di atas tanah milik Pemerintah Kabupaten Jembrana. Gedung tidak ada rencana untuk dilakukan pemanfaatan dan akan dihapuskan karena kondisi Rusak Berat.",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Kendala hukum/kepemilikan",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-104"
+    "id": "BMN-104",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015051200561115000KD",
@@ -2093,11 +2509,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46155.0",
     "HASIL JAWABAN": "difungsikan sebagai kantor bantu dan masih digunakan untuk mendukung tugas dan fungsi unit kerja",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-105"
+    "id": "BMN-105",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015042800410016000KD",
@@ -2105,19 +2525,23 @@ const RAW_BMN_DATASET = [
     "nama_satker": "KPP PRATAMA TABANAN",
     "kode_barang": "2010104001",
     "nup": "3",
-    "koordinat": "",
-    "luas": "",
+    "koordinat": "-8.3147179, 115.0048047",
+    "luas": 500,
     "jenis_barang": "Tanah Bangunan Kantor",
     "nama_barang": "Tanah Bangunan Kantor Pemerintah",
     "SURAT JAWABAN PENGGUNA BARANG": "ND-562/KPP.1708/2026",
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46230.0",
     "HASIL JAWABAN": "Tidak ada rencana penggunaan dan pemanfaatan BMN Tanah dikarenakan posisi tanah yang tidak strategis jika dijadikan tempat pelayanan dan tidak optimal jika dimanfaatkan menjadi rumah negara /mess.",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut sedang/akan diproses",
-    "TAHAP_BERIKUT": "PEMANTAUAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
-    "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-106"
+    "CATATAN_REKONSILIASI": "Aset berada persis di sebelah Koramil Pupuan, Koramil tidak muncul dalam daftar poi kemungkinan karena belum ada yang mendaftarkannya ke Open Street Map",
+    "id": "BMN-106",
+    "foto_urls": "https://drive.google.com/uc?export=view&id=19edrmAnSmXpxWT8Ty18lsS_rUoE0zV9-,https://drive.google.com/uc?export=view&id=13OoO2e9ZgljKzTRH5FPHTIb3YpLKSdj6,https://drive.google.com/uc?export=view&id=1Id93iOYee4-abi9pFlvlkJ_kv90kPDC-,https://drive.google.com/uc?export=view&id=16-Srocoen7tJcpDb68H3mI3cXcK5a2_m",
+    "is_pinned": true
   },
   {
     "kode_satker": "015042800410016000KD",
@@ -2133,11 +2557,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46230.0",
     "HASIL JAWABAN": "Digunakan sendiri untuk operasional",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-107"
+    "id": "BMN-107",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015051200561115000KD",
@@ -2153,11 +2581,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46155.0",
     "HASIL JAWABAN": "telah dihapuskan dari Daftar Barang Kuasa Pengguna pada KPPBC TMP A Denpasar",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-108"
+    "id": "BMN-108",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015051200561115000KD",
@@ -2173,11 +2605,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46155.0",
     "HASIL JAWABAN": "dalam rangka mendukung rencana strategis organisasi terkait pembangunan kantor yang membawahi wilayah kerja Bali Utara",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut sedang/akan diproses",
-    "TAHAP_BERIKUT": "PEMANTAUAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "rencana penggunaan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-109"
+    "id": "BMN-109",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015042800410016001KD",
@@ -2193,11 +2629,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46230.0",
     "HASIL JAWABAN": "Digunakan sendiri untuk operasional",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-110"
+    "id": "BMN-110",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015051200561115000KD",
@@ -2213,11 +2653,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46155.0",
     "HASIL JAWABAN": "telah dihapuskan dari Daftar Barang Kuasa Pengguna pada KPPBC TMP A Denpasar",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-111"
+    "id": "BMN-111",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015051200561115000KD",
@@ -2233,11 +2677,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46155.0",
     "HASIL JAWABAN": "Difungsikan sebagai kantor bantu dan masih digunakan untuk mendukung tugas dan fungsi unit kerja",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-112"
+    "id": "BMN-112",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015051200561115000KD",
@@ -2253,11 +2701,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46155.0",
     "HASIL JAWABAN": "telah dihapuskan dari Daftar Barang Kuasa Pengguna pada KPPBC TMP A Denpasar",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-113"
+    "id": "BMN-113",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015042800525584000KD",
@@ -2273,11 +2725,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46233.0",
     "HASIL JAWABAN": "Lokasi Kemuning. Akan dikoordinasikan ke Pengelola Barang dan BPN. Sengketa dikuasai pihak ketiga",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-114"
+    "id": "BMN-114",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015042800525606000KD",
@@ -2293,11 +2749,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46230.0",
     "HASIL JAWABAN": "Bangunan Gedung Kantor Permanen dengan NUP 5 digunakan sebagai Pos Pajak\nKlungkung.",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-115"
+    "id": "BMN-115",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015051200561115000KD",
@@ -2313,11 +2773,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46155.0",
     "HASIL JAWABAN": "telah dihapuskan dari Daftar Barang Kuasa Pengguna pada KPPBC TMP A Denpasar",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-116"
+    "id": "BMN-116",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015051200561115000KD",
@@ -2325,19 +2789,23 @@ const RAW_BMN_DATASET = [
     "nama_satker": "KPPBC TIPE MADYA PABEAN A DENPASAR",
     "kode_barang": "2010101002",
     "nup": "6",
-    "koordinat": "",
-    "luas": "",
+    "koordinat": "-8.333714, 115.64098",
+    "luas": 600,
     "jenis_barang": "Tanah Rumah Negara",
     "nama_barang": "Tanah Bangunan Rumah Negara Golongan II",
     "SURAT JAWABAN PENGGUNA BARANG": "ND-554/KBC.1302/2026",
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46155.0",
-    "HASIL JAWABAN": "belum ada rencana pengunaan ",
+    "HASIL JAWABAN": "belum ada rencana pengunaan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut sedang/akan diproses",
-    "TAHAP_BERIKUT": "PEMANTAUAN",
+    "klasifikasi": "tidak terencana",
+    "detil klasifikasi": "belum ada rencana penggunaan",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
-    "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-117"
+    "CATATAN_REKONSILIASI": "aset berada di pinggir jalan, aksesbilitas mudah",
+    "id": "BMN-117",
+    "foto_urls": "https://drive.google.com/uc?export=view&id=1joIXORN0K_F80TQc6tOo_haYEAZkqLpT,https://drive.google.com/uc?export=view&id=1S37xEVAReEiGvVVXMBvtfl4tnMk32RfV,https://drive.google.com/uc?export=view&id=18Us3oOvTDxs_mKtYJEiVktJqibiDUUXs,https://drive.google.com/uc?export=view&id=1DefMudv7Yc-UOHRc1bVUbi4GqTsntFXY,https://drive.google.com/uc?export=view&id=1CXM0JEKnwSp7zgnkZc-Nz3jcE6r9mF70",
+    "is_pinned": true
   },
   {
     "kode_satker": "015082000528544000KD",
@@ -2353,11 +2821,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46227.0",
     "HASIL JAWABAN": "Dihuni oleh Kepala Bidang PPA II Kanwil DJPB Bali Sesuai Kep-86/WPB.22/2025 tangal 30 Juni 2025",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-118"
+    "id": "BMN-118",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015051200561115000KD",
@@ -2373,11 +2845,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46155.0",
     "HASIL JAWABAN": "telah dihapuskan dari Daftar Barang Kuasa Pengguna pada KPPBC TMP A Denpasar",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-119"
+    "id": "BMN-119",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015051200561115000KD",
@@ -2393,11 +2869,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46155.0",
     "HASIL JAWABAN": "Difungsikan sebagai kantor bantu dan masih digunakan untuk mendukung tugas dan fungsi unit kerja",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-120"
+    "id": "BMN-120",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015042800410016000KD",
@@ -2413,11 +2893,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46230.0",
     "HASIL JAWABAN": "tidak terdapat nup 8 untuk kode aset dimaksud, namun ada nup 12: BMN statusnya tidak aktif dan sudah direklas menjadi Rumah Negara Golongan I Tipe C Permanen",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "masalah pencaatatan",
+    "detil klasifikasi": "tidak ditemukan di master aset",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-121"
+    "id": "BMN-121",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015051200561115000KD",
@@ -2433,11 +2917,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46155.0",
     "HASIL JAWABAN": "difungsikan sebagai kantor bantu dan masih digunakan untuk mendukung tugas dan fungsi unit kerja",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-122"
+    "id": "BMN-122",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015051200561115000KD",
@@ -2453,11 +2941,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46155.0",
     "HASIL JAWABAN": "telah dihapuskan dari Daftar Barang Kuasa Pengguna pada KPPBC TMP A Denpasar",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-123"
+    "id": "BMN-123",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015051200561115000KD",
@@ -2473,11 +2965,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46155.0",
     "HASIL JAWABAN": "telah dihapuskan dari Daftar Barang Kuasa Pengguna pada KPPBC TMP A Denpasar",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-124"
+    "id": "BMN-124",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015051200561115000KD",
@@ -2493,11 +2989,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46155.0",
     "HASIL JAWABAN": "telah dihapuskan dari Daftar Barang Kuasa Pengguna pada KPPBC TMP A Denpasar",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-125"
+    "id": "BMN-125",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015051200561115000KD",
@@ -2513,11 +3013,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46155.0",
     "HASIL JAWABAN": "telah dihapuskan dari Daftar Barang Kuasa Pengguna pada KPPBC TMP A Denpasar",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-126"
+    "id": "BMN-126",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015051200561115000KD",
@@ -2533,11 +3037,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46155.0",
     "HASIL JAWABAN": "telah dihapuskan dari Daftar Barang Kuasa Pengguna pada KPPBC TMP A Denpasar",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-127"
+    "id": "BMN-127",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015051200532572000KD",
@@ -2553,11 +3061,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46234.0",
     "HASIL JAWABAN": "Direncanakan digunakan untuk tusi KPPBC TMP A Denpasar",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "rencana penggunaan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-128"
+    "id": "BMN-128",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "015042800525584000KD",
@@ -2573,11 +3085,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46233.0",
     "HASIL JAWABAN": "Dobel Catat, Sudah dikoreksi ",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "masalah pencaatatan",
+    "detil klasifikasi": "dobel catat",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-129"
+    "id": "BMN-129",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "040012200427910000KD",
@@ -2593,11 +3109,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Digunakan sebagai ruang kerja oleh Dosen dan Tenaga\nPendidik",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-130"
+    "id": "BMN-130",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "040012200427910000KD",
@@ -2613,11 +3133,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Berdasarkan hasil penelusuran administrasi dan pencatatan\nBarang Milik Negara (BMN), diketahui bahwa terdapat\nkesalahan pencatatan atas Gedung Kantor Permanen NUP 3,\nyaitu Gedung Aula Joop Ave. Untuk menyesuaikan pencatatan\ndengan fungsi dan kondisi penggunaannya, pada tahun 2025\ntelah dilakukan reklasifikasi dari Gedung Kantor Permanen NUP\n3 menjadi Gedung Pertemuan Permanen NUP 1. Bukti atas\npelaksanaan reklasifikasi tersebut telah dilampirkan sebagai\nbukti pendukung.",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "pemindahtanganan",
+    "detil klasifikasi": "selesai hibah",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-131"
+    "id": "BMN-131",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "033042200498646000KP",
@@ -2633,11 +3157,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46230.0",
     "HASIL JAWABAN": "telah dilakukan pemindahtanganan dengan cara hibah antara kementerian PUPR dengan Pemprov Bali",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-132"
+    "id": "BMN-132",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "033062200633920000KP",
@@ -2653,11 +3181,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46233.0",
     "HASIL JAWABAN": "perubahan nup",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-133"
+    "id": "BMN-133",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "033112200279945000KP",
@@ -2673,11 +3205,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46111.0",
     "HASIL JAWABAN": "Satker berubah menjadi Satuan Kerja Perumahan dan Kawasan permukiman, digunakan sesuai tuga dan fungsi pada satker Perumahan dan Kawasan Permukiman provinsi Bali ",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-134"
+    "id": "BMN-134",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023172200677526000KD",
@@ -2693,11 +3229,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46149.0",
     "HASIL JAWABAN": "Digunakan untuk Bangunan Gedung Asrama Mahasiswa sesuai KIB Nomor 2",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-135"
+    "id": "BMN-135",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023172200677526000KD",
@@ -2713,11 +3253,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46149.0",
     "HASIL JAWABAN": "Sudah dihapuskan dari pencatatan sesuai Sk Nomor 725/UN14/HK/2024 tanggal 14 Mei 2024",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-136"
+    "id": "BMN-136",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023182200677608000KD",
@@ -2733,11 +3277,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46141.0",
     "HASIL JAWABAN": "Sudah Dihapuskan dari catatan sesuai SK Penghapusan Nomor 3669/PL8/KL/2022 Tanggal 16 September 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-137"
+    "id": "BMN-137",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023172200677526000KD",
@@ -2753,11 +3301,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46149.0",
     "HASIL JAWABAN": "Dimanfaatkan untuk perumahan pegawai UNUD (Pasraman UNUD), dimana bangunan rumah\ndibangun sendiri olch pegawai dan dosen sesuai Surat Keputusan Rektor Universitas Udayana Nomor 2282/314/LK.00.03/2004, Nomor 67/314/LK.00.03/2005 (16 Maret 2005), Nomor 223/J14/L.K.00.03/2005 (15 September 2005 Tentang pemanfaatan tanah untuk perumahan di Kampus Bukit Jimbaran.",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "pemanfaatan",
+    "detil klasifikasi": "pemanfaatan",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-138"
+    "id": "BMN-138",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023172200677526000KD",
@@ -2773,11 +3325,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46149.0",
     "HASIL JAWABAN": "Dimanfaatkan untuk perumahan pegawai UNUD (Pasraman UNUD), dimana bangunan rumah\ndibangun sendiri olch pegawai dan dosen sesuai Surat Keputusan Rektor Universitas Udayana Nomor 2282/314/LK.00.03/2004, Nomor 67/314/LK.00.03/2005 (16 Maret 2005), Nomor 223/J14/L.K.00.03/2005 (15 September 2005 Tentang pemanfaatan tanah untuk perumahan di Kampus Bukit Jimbaran.",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "pemanfaatan",
+    "detil klasifikasi": "pemanfaatan",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-139"
+    "id": "BMN-139",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023172200677526000KD",
@@ -2793,11 +3349,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46149.0",
     "HASIL JAWABAN": "Akan dikerjasamakan dalam bentuk BGS, saat ini sedang tahap penilaian nilai wajar tanah oleh KPKNL Denpasar, susuai surat permohonan penilaian Nomor B/2319/UN14/PL.13./2026 tanggal 16 Maret 2026.",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "pemanfaatan",
+    "detil klasifikasi": "rencana pemanfaatan",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-140"
+    "id": "BMN-140",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023172200677526000KD",
@@ -2813,11 +3373,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46149.0",
     "HASIL JAWABAN": "Akan dikerjasamakan dalam bentuk BGS, saat ini sedang tahap penilaian nilai wajar tanah oleh KPKNL. Denpasar, susuai surat permohonan penilaian Nomor B/2319/UN14/PL.13./2026 tanggal 16 Maret 2026.",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "pemanfaatan",
+    "detil klasifikasi": "rencana pemanfatan",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-141"
+    "id": "BMN-141",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023182200677608000KD",
@@ -2833,11 +3397,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46141.0",
     "HASIL JAWABAN": "Sudah Dihapuskan dari catatan sesuai SK Penghapusan Nomor 3669/PL8/KL/2022 Tanggal 16 September 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-142"
+    "id": "BMN-142",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023172200677526000KD",
@@ -2853,11 +3421,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46149.0",
     "HASIL JAWABAN": "Dimanfaatkan oleh tenaga Pendidik Unud untuk rumah dinas Sesuai SK Rektor 2388A/J14/LK.01.04/2001 tgl 9 Juli 2001.",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "pemanfaatan",
+    "detil klasifikasi": "pemanfaatan",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-143"
+    "id": "BMN-143",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023172200677526000KD",
@@ -2873,11 +3445,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46149.0",
     "HASIL JAWABAN": "Sudah terdapat Bangunan Gedung Mes Student Dormytori sesuai KIB Nomor 1, dan dipergunakan untuk praktikum mahasiswa Fakultas Pariwisata.",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-144"
+    "id": "BMN-144",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023182200677608000KD",
@@ -2893,11 +3469,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46141.0",
     "HASIL JAWABAN": "Sudah Dihapuskan dari catatan sesuai SK Penghapusan Nomor 3669/PL8/KL/2022 Tanggal 16 September 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-145"
+    "id": "BMN-145",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023172200677526000KD",
@@ -2913,11 +3493,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46149.0",
     "HASIL JAWABAN": "Sudah dikerjasamakan dalam bentuk BGS sesuai perjanjian Nomor 1 tanggal 8 Juli 2022.",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "pemanfaatan",
+    "detil klasifikasi": "pemanfaatan",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-146"
+    "id": "BMN-146",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023182200677608000KD",
@@ -2933,11 +3517,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46141.0",
     "HASIL JAWABAN": "Sudah Dihapuskan dari catatan sesuai SK Penghapusan Nomor 3669/PL8/KL/2022 Tanggal 16 September 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-147"
+    "id": "BMN-147",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023182200677608000KD",
@@ -2953,11 +3541,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46141.0",
     "HASIL JAWABAN": "Sudah Dihapuskan dari catatan sesuai SK Penghapusan Nomor 3669/PL8/KL/2022 Tanggal 16 September 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-148"
+    "id": "BMN-148",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023182200677608000KD",
@@ -2973,11 +3565,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46141.0",
     "HASIL JAWABAN": "Sudah Dihapuskan dari catatan sesuai SK Penghapusan Nomor 3669/PL8/KL/2022 Tanggal 16 September 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-149"
+    "id": "BMN-149",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023172200677526000KD",
@@ -2993,11 +3589,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46149.0",
     "HASIL JAWABAN": "Sebagian sudah dimanfaatkan untuk Bangunan Gedung SPBU seluas 4.056 M2, Bangunan Soung suas 275l as 9,056 m2, dan Stadion Sepakbola seluas 2750m2",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "pemanfaatan",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-150"
+    "id": "BMN-150",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023182200677608000KD",
@@ -3013,11 +3613,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46141.0",
     "HASIL JAWABAN": "Sudah Dihapuskan dari catatan sesuai SK Penghapusan Nomor 3669/PL8/KL/2022 Tanggal 16 September 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-151"
+    "id": "BMN-151",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023172200677526000KD",
@@ -3033,11 +3637,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46149.0",
     "HASIL JAWABAN": "Sudah dikerjasamakan dengan Pihak Genah Ring Jimbaran sesuai perjanjian nomor: 15709/UN14/KS/2018, 09/GRJ/NK/28/GRJ/PKS/18.",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "pemanfaatan",
+    "detil klasifikasi": "pemanfaatan",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-152"
+    "id": "BMN-152",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023182200677608000KD",
@@ -3053,11 +3661,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46141.0",
     "HASIL JAWABAN": "Sudah Dihapuskan dari catatan sesuai SK Penghapusan Nomor 3669/PL8/KL/2022 Tanggal 16 September 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-153"
+    "id": "BMN-153",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023182200677608000KD",
@@ -3073,11 +3685,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46141.0",
     "HASIL JAWABAN": "Sudah Dihapuskan dari catatan sesuai SK Penghapusan Nomor 3669/PL8/KL/2022 Tanggal 16 September 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-154"
+    "id": "BMN-154",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023182200677608000KD",
@@ -3093,11 +3709,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46141.0",
     "HASIL JAWABAN": "Sudah Dihapuskan dari catatan sesuai SK Penghapusan Nomor 3669/PL8/KL/2022 Tanggal 16 September 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-155"
+    "id": "BMN-155",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023032200419544000KD",
@@ -3113,11 +3733,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46108.0",
     "HASIL JAWABAN": "Satker LPMP telah dilikuidasi mendadi BPMP Provinsi Bali, NUP Berubah dari nomor 10 menjadi nomor 5, disewakan untuk kegiatan pelatihan ",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Anomali data/pencatatan atau perubahan organisasi",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "pemanfaatan",
+    "detil klasifikasi": "pemanfaatan",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-156"
+    "id": "BMN-156",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023182200677608000KD",
@@ -3133,11 +3757,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46141.0",
     "HASIL JAWABAN": "Sudah Dihapuskan dari catatan sesuai SK Penghapusan Nomor 3669/PL8/KL/2022 Tanggal 16 September 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-157"
+    "id": "BMN-157",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023182200677608000KD",
@@ -3153,11 +3781,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46141.0",
     "HASIL JAWABAN": "Sudah Dihapuskan dari catatan sesuai SK Penghapusan Nomor 3669/PL8/KL/2022 Tanggal 16 September 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-158"
+    "id": "BMN-158",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023182200677608000KD",
@@ -3173,11 +3805,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46141.0",
     "HASIL JAWABAN": "Sudah Dihapuskan dari catatan sesuai SK Penghapusan Nomor 3669/PL8/KL/2022 Tanggal 16 September 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-159"
+    "id": "BMN-159",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023182200677608000KD",
@@ -3193,11 +3829,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46141.0",
     "HASIL JAWABAN": "Sudah Dihapuskan dari catatan sesuai SK Penghapusan Nomor 3669/PL8/KL/2022 Tanggal 16 September 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-160"
+    "id": "BMN-160",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "023182200677608000KD",
@@ -3213,11 +3853,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46141.0",
     "HASIL JAWABAN": "Sudah Dihapuskan dari catatan sesuai SK Penghapusan Nomor 3669/PL8/KL/2022 Tanggal 16 September 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut final telah selesai",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-161"
+    "id": "BMN-161",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "022042200287612000KD",
@@ -3233,11 +3877,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46225.0",
     "HASIL JAWABAN": "Penghapusan BMN\nPersetujuan Penghapusan Nomor : S-146/MK.6/KNL.1401/2022\ntanggal 18 Oktober 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-162"
+    "id": "BMN-162",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "022042200287612000KD",
@@ -3253,11 +3901,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46225.0",
     "HASIL JAWABAN": "Penghapusan BMN\nPersetujuan Penghapusan Nomor : S-146/MK.6/KNL.1401/2022\ntanggal 18 Oktober 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-163"
+    "id": "BMN-163",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "022042200287612000KD",
@@ -3273,11 +3925,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46225.0",
     "HASIL JAWABAN": "Penghapusan BMN\nPersetujuan Penghapusan Nomor : S-146/MK.6/KNL.1401/2022\ntanggal 18 Oktober 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-164"
+    "id": "BMN-164",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "022042200287612000KD",
@@ -3293,11 +3949,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46225.0",
     "HASIL JAWABAN": "Penghapusan BMN\nPersetujuan Penghapusan Nomor : S-146/MK.6/KNL.1401/2022\ntanggal 18 Oktober 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-165"
+    "id": "BMN-165",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "022042200287612000KD",
@@ -3313,11 +3973,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46225.0",
     "HASIL JAWABAN": " Penghapusan BMN\nPersetujuan Penghapusan Nomor : S-146/MK.6/KNL.1401/2022\ntanggal 18 Oktober 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-166"
+    "id": "BMN-166",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "022042200287612000KD",
@@ -3333,11 +3997,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46225.0",
     "HASIL JAWABAN": " Penghapusan BMN\nPersetujuan Penghapusan Nomor : S-146/MK.6/KNL.1401/2022\ntanggal 18 Oktober 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-167"
+    "id": "BMN-167",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "022042200287612000KD",
@@ -3353,11 +4021,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46225.0",
     "HASIL JAWABAN": " Penghapusan BMN\nPersetujuan Penghapusan Nomor : S-146/MK.6/KNL.1401/2022\ntanggal 18 Oktober 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-168"
+    "id": "BMN-168",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "022042200521904000KD",
@@ -3373,11 +4045,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46227.0",
     "HASIL JAWABAN": "tidak ada tercatat pada Aplikasi SIMAN aset BMN Kantor UPP Kelas II Nusa Penida.",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "masalah pencatatan",
+    "detil klasifikasi": "tidak ditemukan di master aset",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-169"
+    "id": "BMN-169",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "022042200287612000KD",
@@ -3393,11 +4069,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46225.0",
     "HASIL JAWABAN": " Penghapusan BMN\nPersetujuan Penghapusan Nomor : S-146/MK.6/KNL.1401/2022\ntanggal 18 Oktober 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-170"
+    "id": "BMN-170",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "022042200287612000KD",
@@ -3413,11 +4093,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46225.0",
     "HASIL JAWABAN": " Penghapusan BMN\nPersetujuan Penghapusan Nomor : S-146/MK.6/KNL.1401/2022\ntanggal 18 Oktober 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-171"
+    "id": "BMN-171",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "022042200287612000KD",
@@ -3433,11 +4117,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46225.0",
     "HASIL JAWABAN": "Penghapusan BMN Risalah Lelang Nomor : 1182/65/2023 tanggal 9 November 2023",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-172"
+    "id": "BMN-172",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "022042200287612000KD",
@@ -3453,11 +4141,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46225.0",
     "HASIL JAWABAN": "Penghapusan BMN Risalah Lelang Nomor : 1182/65/2023 tanggal 9 November 2023",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-173"
+    "id": "BMN-173",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "022042200287612000KD",
@@ -3473,11 +4165,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46225.0",
     "HASIL JAWABAN": " Penghapusan BMN\nPersetujuan Penghapusan Nomor : S-146/MK.6/KNL.1401/2022\ntanggal 18 Oktober 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-174"
+    "id": "BMN-174",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "022042200287612000KD",
@@ -3493,11 +4189,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46225.0",
     "HASIL JAWABAN": " Penghapusan BMN\nPersetujuan Penghapusan Nomor : S-146/MK.6/KNL.1401/2022\ntanggal 18 Oktober 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-175"
+    "id": "BMN-175",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "022042200287612000KD",
@@ -3513,11 +4213,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46225.0",
     "HASIL JAWABAN": " Penghapusan BMN\nPersetujuan Penghapusan Nomor : S-146/MK.6/KNL.1401/2022\ntanggal 18 Oktober 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-176"
+    "id": "BMN-176",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "022042200287612000KD",
@@ -3533,11 +4237,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46225.0",
     "HASIL JAWABAN": " Penghapusan BMN\nPersetujuan Penghapusan Nomor : S-146/MK.6/KNL.1401/2022\ntanggal 18 Oktober 2022",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-177"
+    "id": "BMN-177",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "022042200287612000KD",
@@ -3553,11 +4261,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46225.0",
     "HASIL JAWABAN": "Penghapusan BMN Risalah Lelang Nomor : 8/68/2019 tanggal 23 Januari 2019",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-178"
+    "id": "BMN-178",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "022042200287612000KD",
@@ -3573,11 +4285,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46225.0",
     "HASIL JAWABAN": "Penghapusan BMN Risalah Lelang Nomor : 8/68/2019 tanggal 23 Januari 2019",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-179"
+    "id": "BMN-179",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "022042200287612000KD",
@@ -3593,11 +4309,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46225.0",
     "HASIL JAWABAN": "Penghapusan BMN Risalah Lelang Nomor : 8/68/2019 tanggal 23 Januari 2019",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-180"
+    "id": "BMN-180",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "022042200287612000KD",
@@ -3613,11 +4333,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46225.0",
     "HASIL JAWABAN": "Penghapusan BMN Risalah Lelang Nomor : 8/68/2019 tanggal 23 Januari 2019",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-181"
+    "id": "BMN-181",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "022042200287612000KD",
@@ -3633,11 +4357,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46225.0",
     "HASIL JAWABAN": "Penghapusan BMN Risalah Lelang Nomor : 8/68/2019 tanggal 23 Januari 2019",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-182"
+    "id": "BMN-182",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "019012200579342000KD",
@@ -3653,11 +4381,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46230.0",
     "HASIL JAWABAN": "telah dilakukan mekanisme Transfer Keluar BMN pada tahun 2023 kepada satuan kerja Direktorat Jenderal Industri Kecil, Menengah, dan Aneka (Kode Satker: 019.05.0100.247949.000.KP)",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Anomali data/pencatatan atau perubahan organisasi",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "transfer ke satker lain",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-183"
+    "id": "BMN-183",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "012222200344354000KD",
@@ -3673,11 +4405,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46233.0",
     "HASIL JAWABAN": "diperuntukkan untuk sebagai Mako Satgas Sektor Timur RI-RDTL",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-184"
+    "id": "BMN-184",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -3693,11 +4429,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-185"
+    "id": "BMN-185",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -3713,11 +4453,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-186"
+    "id": "BMN-186",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -3733,11 +4477,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-187"
+    "id": "BMN-187",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018062200220064000KD",
@@ -3753,11 +4501,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah dilakukan pemusnahan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penghapusan",
+    "detil klasifikasi": "sudah dihapus",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-188"
+    "id": "BMN-188",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -3773,11 +4525,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-189"
+    "id": "BMN-189",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -3793,11 +4549,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-190"
+    "id": "BMN-190",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018062200220064000KD",
@@ -3813,11 +4573,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "tidak ditemukan, sudah dilakukan koreksi pencatatan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "masalah pencaatatan",
+    "detil klasifikasi": "koreksi pencatatan",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-191"
+    "id": "BMN-191",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -3833,11 +4597,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-192"
+    "id": "BMN-192",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018062200220064000KD",
@@ -3853,11 +4621,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "tidak ditemukan, sudah dilakukan koreksi pencatatan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "masalah pencatatan",
+    "detil klasifikasi": "koreksi pencatatan",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-193"
+    "id": "BMN-193",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -3873,11 +4645,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-194"
+    "id": "BMN-194",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -3893,11 +4669,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-195"
+    "id": "BMN-195",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -3913,11 +4693,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-196"
+    "id": "BMN-196",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -3933,11 +4717,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-197"
+    "id": "BMN-197",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -3953,11 +4741,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-198"
+    "id": "BMN-198",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -3973,11 +4765,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-199"
+    "id": "BMN-199",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -3993,11 +4789,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-200"
+    "id": "BMN-200",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4013,11 +4813,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-201"
+    "id": "BMN-201",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4033,11 +4837,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-202"
+    "id": "BMN-202",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4053,11 +4861,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-203"
+    "id": "BMN-203",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4073,11 +4885,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-204"
+    "id": "BMN-204",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4093,11 +4909,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-205"
+    "id": "BMN-205",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4113,11 +4933,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-206"
+    "id": "BMN-206",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4133,11 +4957,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-207"
+    "id": "BMN-207",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4153,11 +4981,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-208"
+    "id": "BMN-208",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4173,11 +5005,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-209"
+    "id": "BMN-209",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4193,11 +5029,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-210"
+    "id": "BMN-210",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4213,11 +5053,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-211"
+    "id": "BMN-211",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4233,11 +5077,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-212"
+    "id": "BMN-212",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4253,11 +5101,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-213"
+    "id": "BMN-213",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4273,11 +5125,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-214"
+    "id": "BMN-214",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4293,11 +5149,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-215"
+    "id": "BMN-215",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4313,11 +5173,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-216"
+    "id": "BMN-216",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4333,11 +5197,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-217"
+    "id": "BMN-217",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4353,11 +5221,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-218"
+    "id": "BMN-218",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4373,11 +5245,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-219"
+    "id": "BMN-219",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4393,11 +5269,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-220"
+    "id": "BMN-220",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4413,11 +5293,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-221"
+    "id": "BMN-221",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4433,11 +5317,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-222"
+    "id": "BMN-222",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4453,11 +5341,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-223"
+    "id": "BMN-223",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4473,11 +5365,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-224"
+    "id": "BMN-224",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4493,11 +5389,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-225"
+    "id": "BMN-225",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4513,11 +5413,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-226"
+    "id": "BMN-226",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4533,11 +5437,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-227"
+    "id": "BMN-227",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4553,11 +5461,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-228"
+    "id": "BMN-228",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4573,11 +5485,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-229"
+    "id": "BMN-229",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4593,11 +5509,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-230"
+    "id": "BMN-230",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "018052200229061000DK",
@@ -4613,11 +5533,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Sudah Dialihstatuskan ke Satker Pusat Direktorat Jenderal Perkebunan",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "alih status ke satker lain",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-231"
+    "id": "BMN-231",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "027042200426650000KD",
@@ -4633,11 +5557,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46113.0",
     "HASIL JAWABAN": "Seluruh aset PSBN Mahatmiya dimigrasi ke Sentra Mahatmiya Bali dan tidak terdapat aset terindikasi idle",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tidak digunakan/berpotensi idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-232"
+    "id": "BMN-232",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "060012200644527000KD",
@@ -4653,11 +5581,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46232.0",
     "HASIL JAWABAN": "Digunakan satker sebagai Barak Dalmas dan Ruang kerja",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-233"
+    "id": "BMN-233",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "116012200700121000KD",
@@ -4673,11 +5605,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46147.0",
     "HASIL JAWABAN": "Rusak Berat, digunakan seniri untuk operasional, digunakan oleh pensiunan pegawai, Gol II Tipe D bukan C",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Dihuni/dikuasai pensiunan atau pihak eksternal",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "renovasi",
+    "detil klasifikasi": "rencana renovasi",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-234"
+    "id": "BMN-234",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "116012200700121000KD",
@@ -4693,11 +5629,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46147.0",
     "HASIL JAWABAN": "Rusak Berat, digunakan seniri untuk operasional, Belum ada anggaran renovasi/perbaikan ",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "renovasi",
+    "detil klasifikasi": "rencana renovasi",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-235"
+    "id": "BMN-235",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "116012200700121000KD",
@@ -4713,11 +5653,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46147.0",
     "HASIL JAWABAN": "Rusak Berat, digunakan seniri untuk operasional, Belum ada  rencan renovasi/perbaikan, Gol II Tipe D, Bukan C",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "renovasi",
+    "detil klasifikasi": "rencana renovasi",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-236"
+    "id": "BMN-236",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "116012200700121000KD",
@@ -4733,11 +5677,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46147.0",
     "HASIL JAWABAN": "Rusak Berat, digunakan seniri untuk operasional, Belum ada Anggaran untuk perbaikan ",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "renovasi",
+    "detil klasifikasi": "rencana renovasi",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-237"
+    "id": "BMN-237",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "116012200700121000KD",
@@ -4753,11 +5701,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46147.0",
     "HASIL JAWABAN": "Dobel",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tidak digunakan/berpotensi idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "masalah pencatatan",
+    "detil klasifikasi": "masalah pencatatan",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-238"
+    "id": "BMN-238",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "116012200700121000KD",
@@ -4773,11 +5725,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46147.0",
     "HASIL JAWABAN": "Rusak Berat, digunakan seniri untuk operasional, Belum ada  rencan renovasi/perbaikan, Gol II Tipe D, Bukan C",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Digunakan/dimanfaatkan—indikasi tidak idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-239"
+    "id": "BMN-239",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "116012200700121000KD",
@@ -4793,11 +5749,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46147.0",
     "HASIL JAWABAN": "Tidak ada NUP6 (sudah direklas ke NUP 1) ",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "masalah pencaatatan",
+    "detil klasifikasi": "koreksi pencatatan",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-240"
+    "id": "BMN-240",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "005012200402772000KD",
@@ -4813,11 +5773,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46227.0",
     "HASIL JAWABAN": "sedang dalam proses permohonan\npembanguan Rumah Dinas untuk Pimpinan di RKBMN pada aplikasi SIMAN dan e-Sadewa",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tindak lanjut sedang/akan diproses",
-    "TAHAP_BERIKUT": "PEMANTAUAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "rencana penggunaan satker",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-241"
+    "id": "BMN-241",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "005012200663335000KD",
@@ -4833,11 +5797,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46230.0",
     "HASIL JAWABAN": "menjadi 4010124013 NUP 1, gedung PnegadilanMiliter Tipe A ",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-242"
+    "id": "BMN-242",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "005012200614731000KD",
@@ -4853,11 +5821,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46231.0",
     "HASIL JAWABAN": "telah dilakukan pembangunan pagar permanen sebagai\nbatas dan pengamanan aset milik negara",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-243"
+    "id": "BMN-243",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "005012200402763000KD",
@@ -4873,11 +5845,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46230.0",
     "HASIL JAWABAN": "Barang Milik Negara (BMN) yang terindikasi Idle berupa Mess/Wisma/Bungalow/Tempat Peristirahatan Permanen dengan NUP 2 dan 3 pada tahun 2021 telah dilakukan Koreksi Nilai Bertambah dengan menggabungkan NUP 2 dan 3, ke NUP 1.",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tidak digunakan/berpotensi idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-244"
+    "id": "BMN-244",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "005012200663335000KD",
@@ -4893,11 +5869,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46230.0",
     "HASIL JAWABAN": "menjadi 4010124013 NUP 1, gedung PnegadilanMiliter Tipe A ",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Lainnya/perlu telaah manual",
-    "TAHAP_BERIKUT": "PENELUSURAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-245"
+    "id": "BMN-245",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "005012200402763000KD",
@@ -4913,11 +5893,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46230.0",
     "HASIL JAWABAN": "Barang Milik Negara (BMN) yang terindikasi Idle berupa Mess/Wisma/Bungalow/Tempat Peristirahatan Permanen dengan NUP 2 dan 3 pada tahun 2021 telah dilakukan Koreksi Nilai Bertambah dengan menggabungkan NUP 2 dan 3, ke NUP 1.",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Tidak digunakan/berpotensi idle",
-    "TAHAP_BERIKUT": "PENELITIAN",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-246"
+    "id": "BMN-246",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "005012200099773000KD",
@@ -4933,11 +5917,15 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46231.0",
     "HASIL JAWABAN": "Rumah Negara tersebut diajukan renovasi melalui RKBMN tahun 2026\nuntuk anggaran tahun 2028 sehingga dapat digunakan dan dihuni kembali",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "renovasi",
+    "detil klasifikasi": "rencana renovasi",
+    "TAHAP_BERIKUT": "Penelitian",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-247"
+    "id": "BMN-247",
+    "foto_urls": "",
+    "is_pinned": ""
   },
   {
     "kode_satker": "007012200403996000KP",
@@ -4953,10 +5941,14 @@ const RAW_BMN_DATASET = [
     "TANGGAL SURAT JAWABAN PENGGUNA BARANG": "46230.0",
     "HASIL JAWABAN": "Digunakan sendiri untuk operasiona (gedung kantor inventaris) ",
     "PEMETAAN AWAL BERBASIS KEYWORD": "Belum ada hasil jawaban",
-    "TAHAP_BERIKUT": "DATA TIDAK LENGKAP",
+    "klasifikasi": "penggunaan",
+    "detil klasifikasi": "digunakan satker",
+    "TAHAP_BERIKUT": "Pemantauan",
     "PENYAMPAIAN_KLARIFIKASI_REKAP": "SUDAH",
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
-    "id": "BMN-248"
+    "id": "BMN-248",
+    "foto_urls": "",
+    "is_pinned": ""
   }
 ];

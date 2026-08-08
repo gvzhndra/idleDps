@@ -112,10 +112,10 @@ body {
 /* KPI SUMMARY STATS BAR (2-ROW EXECUTIVE DASHBOARD) */
 .stats-bar {
   display: grid;
-  grid-template-columns: 1.18fr 1.18fr 1fr;
+  grid-template-columns: 1.1fr 1.1fr 1.55fr;
   grid-template-rows: auto auto;
-  gap: 8px;
-  padding: 8px 20px;
+  gap: 10px;
+  padding: 10px 20px;
   background: var(--bg-primary);
   border-bottom: 1px solid var(--border-subtle);
   z-index: 900;
@@ -132,7 +132,7 @@ body {
 @media (max-width: 768px) {
   .stats-bar {
     grid-template-columns: 1fr;
-    max-height: 280px;
+    max-height: 320px;
     overflow-y: auto;
   }
 }
@@ -141,7 +141,7 @@ body {
   background: #ffffff;
   border: 1px solid var(--border-subtle);
   border-radius: 10px;
-  padding: 7px 11px;
+  padding: 9px 13px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -168,19 +168,132 @@ body {
   box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.25), 0 4px 12px rgba(74, 144, 226, 0.15);
 }
 
-.stat-card.hero-pinned {
+/* HERO CARD: KLASIFIKASI BMN IDLE (SPANNING 2 ROWS ON RIGHT) */
+.stat-card.hero-classification {
   grid-row: span 2;
-  background: linear-gradient(145deg, #ffffff 0%, #fff8f8 100%);
-  border: 1.5px solid #fed7d7;
-  padding: 9px 12px;
+  background: linear-gradient(145deg, #ffffff 0%, #fbfdff 100%);
+  border: 1.5px solid #dbeafe;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
 }
 
-.stat-card.hero-pinned:hover {
+.stat-card.hero-classification:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.16);
+}
+
+.hero-cat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 10px;
+  margin-top: 8px;
+  flex: 1;
+}
+
+.hero-cat-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.hero-cat-item:hover {
+  transform: translateY(-1.5px);
+  filter: brightness(0.97);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+}
+
+.hero-cat-item .cat-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hero-cat-item .cat-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.hero-cat-item .cat-subtext {
+  font-size: 9.5px;
+  color: var(--text-muted);
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hero-cat-item .cat-badge-val {
+  font-size: 14px;
+  font-weight: 800;
+  font-family: var(--font-display);
+  padding: 2px 8px;
+  border-radius: 6px;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+.hero-cat-item.blue .cat-title i { color: #2563eb; }
+.hero-cat-item.blue .cat-badge-val { background: #dbeafe; color: #1e40af; }
+
+.hero-cat-item.red .cat-title i { color: #dc2626; }
+.hero-cat-item.red .cat-badge-val { background: #fee2e2; color: #991b1b; }
+
+.hero-cat-item.green .cat-title i { color: #16a34a; }
+.hero-cat-item.green .cat-badge-val { background: #dcfce7; color: #166534; }
+
+.hero-cat-item.orange .cat-title i { color: #ea580c; }
+.hero-cat-item.orange .cat-badge-val { background: #ffedd5; color: #9a3412; }
+
+.hero-cat-item.purple .cat-title i { color: #9333ea; }
+.hero-cat-item.purple .cat-badge-val { background: #f3e8ff; color: #6b21a8; }
+
+.hero-cat-item.cyan .cat-title i { color: #0891b2; }
+.hero-cat-item.cyan .cat-badge-val { background: #cffafe; color: #155e75; }
+
+/* SWAPPED PRIORITAS BMN IDLE CARD (ROW 2, COL 1) */
+.stat-card.pinned-card {
+  background: linear-gradient(145deg, #ffffff 0%, #fff8f8 100%);
+  border: 1.5px solid #fed7d7;
+}
+
+.stat-card.pinned-card:hover {
   border-color: #e74c3c;
-  box-shadow: 0 6px 18px rgba(231, 76, 60, 0.18);
+  box-shadow: 0 5px 14px rgba(231, 76, 60, 0.16);
+}
+
+.pinned-card-preview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  background: #fff5f5;
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 10px;
+  color: #c0392b;
+}
+
+.pinned-card-preview i {
+  font-size: 12px;
+}
+
+.pinned-card-preview span {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .stat-card-header {
@@ -191,7 +304,7 @@ body {
 }
 
 .stat-card-header label {
-  font-size: 9.5px;
+  font-size: 10px;
   color: var(--text-muted);
   font-weight: 800;
   text-transform: uppercase;

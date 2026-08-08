@@ -196,8 +196,8 @@ const DataEngine = {
     const allText = `${rawK} ${rawD} ${rawPemetaan} ${rawHasil} ${rawCatatan}`.toLowerCase();
 
     // 1. PENGHAPUSAN
-    if (allText.includes('hapus') || allText.includes('dihapuskan') || allText.includes('penghapusan') || allText.includes('final telah selesai')) {
-      const isRencana = allText.includes('rencana') || allText.includes('usul') || allText.includes('proses') || allText.includes('pengajuan');
+    if (rawK.includes('hapus') || allText.includes('hapus') || allText.includes('dihapuskan') || allText.includes('penghapusan')) {
+      const isRencana = rawD.includes('rencana') || rawD.includes('usul') || allText.includes('rencana') || allText.includes('usul');
       return {
         key: 'penghapusan',
         label: 'Penghapusan',
@@ -206,8 +206,8 @@ const DataEngine = {
     }
 
     // 2. PEMINDAHTANGANAN / HIBAH
-    if (allText.includes('hibah') || allText.includes('pemindahtanganan') || allText.includes('pemda') || allText.includes('pemkab')) {
-      const isRencana = allText.includes('rencana') || allText.includes('usul') || allText.includes('pembahasan') || allText.includes('proses');
+    if (rawK.includes('pindah') || rawK.includes('hibah') || allText.includes('hibah') || allText.includes('pemindahtanganan')) {
+      const isRencana = rawD.includes('rencana') || allText.includes('rencana') || allText.includes('usul') || allText.includes('pembahasan');
       return {
         key: 'pemindahtanganan',
         label: 'Pemindahtanganan',
@@ -216,8 +216,8 @@ const DataEngine = {
     }
 
     // 3. RENOVASI / RUSAK BERAT
-    if (allText.includes('renovasi') || allText.includes('rusak berat') || allText.includes('perbaikan') || allText.includes('alihfungsikan')) {
-      const isRusak = allText.includes('rusak berat') || allText.includes('rusak');
+    if (rawK.includes('renov') || rawK.includes('rusak') || allText.includes('renovasi') || allText.includes('rusak berat')) {
+      const isRusak = rawD.includes('rusak') || allText.includes('rusak berat');
       return {
         key: 'renovasi',
         label: 'Renovasi',
@@ -226,8 +226,8 @@ const DataEngine = {
     }
 
     // 4. PEMANFAATAN / SEWA
-    if (allText.includes('sewa') || allText.includes('manfaat') || allText.includes('pemanfaatan') || allText.includes('kontrak') || allText.includes('pihak ketiga')) {
-      const isRencana = allText.includes('rencana') || allText.includes('akan') || allText.includes('permohonan') || allText.includes('petunjuk');
+    if (rawK.includes('manfaat') || rawK.includes('sewa') || allText.includes('sewa') || allText.includes('pemanfaatan')) {
+      const isRencana = rawD.includes('rencana') || allText.includes('rencana') || allText.includes('permohonan');
       return {
         key: 'pemanfaatan',
         label: 'Pemanfaatan',
@@ -236,8 +236,8 @@ const DataEngine = {
     }
 
     // 5. MASALAH PENCATATAN / ANOMALI / REKLAS
-    if (allText.includes('tidak ditemukan') || allText.includes('master aset') || allText.includes('reklas') || allText.includes('koreksi') || allText.includes('anomali') || allText.includes('dobel')) {
-      if (allText.includes('tidak ditemukan') || allText.includes('master aset')) {
+    if (rawK.includes('catat') || rawK.includes('masalah') || rawK.includes('anomali') || allText.includes('tidak ditemukan') || allText.includes('master aset') || allText.includes('reklas')) {
+      if (rawD.includes('master') || rawD.includes('tidak ditemukan') || allText.includes('tidak ditemukan') || allText.includes('master aset')) {
         return {
           key: 'masalah_pencatatan',
           label: 'Masalah Pencatatan',
@@ -251,15 +251,15 @@ const DataEngine = {
       };
     }
 
-    // 6. PENGGUNAAN (DEFAULT)
-    if (allText.includes('alih status') || allText.includes('transfer') || allText.includes('satker lain') || allText.includes('pindah')) {
+    // 6. PENGGUNAAN (DEFAULT, matches penggunaan, pernggunaan, pengunaan)
+    if (rawD.includes('alih status') || rawD.includes('transfer') || allText.includes('alih status') || allText.includes('satker lain')) {
       return {
         key: 'penggunaan',
         label: 'Penggunaan',
         detil: 'Alih Status ke Satker Lain'
       };
     }
-    if (allText.includes('rencana') || allText.includes('akan') || allText.includes('proses')) {
+    if (rawD.includes('rencana') || allText.includes('rencana')) {
       return {
         key: 'penggunaan',
         label: 'Penggunaan',
@@ -296,10 +296,7 @@ const DataEngine = {
       'Masalah Pencatatan': { count: 0, key: 'masalah_pencatatan', details: {} },
       'Pemindahtanganan': { count: 0, key: 'pemindahtanganan', details: {} }
     };
-    const tahapMap = {
-      'PENELITIAN': 0,
-      'PEMANTAUAN': 0
-    };
+    const tahapMap = {};
     const pinnedAssets = [];
 
     this.activeAssets.forEach(a => {
@@ -334,7 +331,9 @@ const DataEngine = {
       const dLabel = a.detilKlasifikasi || 'Umum';
       hierarchy[kLabel].details[dLabel] = (hierarchy[kLabel].details[dLabel] || 0) + 1;
 
-      const th = (a.tahapBerikut || 'PENELITIAN').toUpperCase().trim();
+      // Dynamic Stage Extraction from Google Sheet
+      const rawTh = String(a.tahapBerikut || 'PENELITIAN').trim();
+      const th = rawTh ? rawTh.toUpperCase() : 'PENELITIAN';
       tahapMap[th] = (tahapMap[th] || 0) + 1;
     });
 

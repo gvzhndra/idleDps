@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   
   <!-- Soft Pastel Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=2.5.3">
+  <link rel="stylesheet" href="css/styles.css?v=2.5.4">
 </head>
 <body>
 
@@ -28,7 +28,7 @@
       </div>
       <div class="brand-text">
         <h1>BMN IDLE DASHBOARD</h1>
-        <p>KPKNL Denpasar <span class="badge badge-pastel-blue" style="font-size:9.5px; font-weight:800; padding:2px 6px; border-radius:6px; margin-left:4px;">v2.5.3</span></p>
+        <p>KPKNL Denpasar <span class="badge badge-pastel-blue" style="font-size:9.5px; font-weight:800; padding:2px 6px; border-radius:6px; margin-left:4px;">v2.5.4</span></p>
       </div>
     </div>
 
@@ -93,7 +93,7 @@
         <span class="stat-icon amber"><i class="fa-solid fa-location-crosshairs"></i></span>
       </div>
       <div class="d-flex align-items-baseline justify-content-between">
-        <div class="stat-value text-danger" id="stat-unmapped-unit">235 Unit</div>
+        <div class="stat-value text-danger" id="stat-unmapped-unit">200 Unit</div>
         <div class="stat-subtext text-danger" id="stat-unmapped-satker-sub">57 Satker</div>
       </div>
       <div class="stat-subtext" style="font-size:10px; color:#c2410c; margin-top:4px;">
@@ -101,62 +101,65 @@
       </div>
     </div>
 
-    <!-- ROW 1 & 2, COL 3 (CARD 5): PRIORITAS BMN IDLE (HERO 2-ROWS) -->
-    <div class="stat-card interactive hero-pinned" id="card-filter-pinned" onclick="App.toggleFilterPinned()" title="Klik untuk memfilter aset prioritas atensi pimpinan">
+    <!-- ROW 1 & 2, COL 3 (CARD 3): KLASIFIKASI BMN IDLE (HERO 2-ROWS ON RIGHT) -->
+    <div class="stat-card interactive hero-classification" id="card-filter-klasifikasi" onclick="App.cycleFilterKlasifikasi()" title="Klik untuk berganti filter klasifikasi aset">
+      <div class="stat-card-header">
+        <label><i class="fa-solid fa-tags text-primary"></i> Klasifikasi BMN Idle</label>
+        <span class="badge badge-pastel-blue" style="font-size:9.5px; font-weight:800; padding:2px 8px; border-radius:6px;">
+          Terindikasi Idle
+        </span>
+      </div>
+      <div id="stat-klasifikasi-breakdown" class="hero-cat-grid">
+        <!-- Dynamically rendered 6 generous category blocks with full sub-details -->
+      </div>
+    </div>
+
+    <!-- ROW 2, COL 1 (CARD 5): PRIORITAS BMN IDLE -->
+    <div class="stat-card interactive pinned-card" id="card-filter-pinned" onclick="App.toggleFilterPinned()" title="Klik untuk memfilter aset prioritas atensi pimpinan">
       <div class="stat-card-header">
         <label style="color:#c0392b;"><i class="fa-solid fa-star text-danger"></i> Prioritas BMN Idle</label>
         <span class="badge" style="background:#e74c3c; color:#fff; font-size:9px; font-weight:700; padding:2px 6px; border-radius:6px;">
           Atensi Pimpinan
         </span>
       </div>
-      <div class="d-flex align-items-baseline justify-content-between mt-1 mb-1">
+      <div class="d-flex align-items-baseline justify-content-between">
         <div style="font-size:16px; font-weight:800; font-family:var(--font-display); color:#c0392b;">
           <span id="stat-total-pinned">0</span> <span style="font-size:10.5px; font-weight:700; color:var(--text-muted);">Unit Prioritas</span>
         </div>
-        <span style="font-size:9px; color:var(--text-muted);"><i class="fa-solid fa-thumbtack"></i> 1-Klik Filter</span>
+        <span style="font-size:9.5px; color:var(--text-muted);"><i class="fa-solid fa-thumbtack"></i> 1-Klik Filter</span>
       </div>
-      <div id="stat-pinned-preview-list" class="hero-pinned-list custom-scrollbar">
-        <!-- Dynamically rendered with pinned asset items -->
-      </div>
-    </div>
-
-    <!-- ROW 2, COL 1 (CARD 3): KLASIFIKASI BMN IDLE (2-COLUMN GRID) -->
-    <div class="stat-card interactive" id="card-filter-klasifikasi" onclick="App.cycleFilterKlasifikasi()" title="Klik untuk berganti filter klasifikasi aset">
-      <div class="stat-card-header">
-        <label><i class="fa-solid fa-tags text-purple"></i> Klasifikasi BMN Idle</label>
-        <span class="stat-icon purple"><i class="fa-solid fa-list-check"></i></span>
-      </div>
-      <div id="stat-klasifikasi-breakdown" class="stat-2col-grid">
-        <!-- Dynamically rendered 2-column breakdown chips -->
+      <div class="pinned-card-preview" id="stat-pinned-preview-note">
+        <i class="fa-solid fa-thumbtack text-danger"></i>
+        <span>Klik tanda 📌 pada kartu aset untuk menandai prioritas</span>
       </div>
     </div>
 
-    <!-- ROW 2, COL 2 (CARD 4): RENCANA TINDAK LANJUT (DARI TAHAP_BERIKUT) -->
+    <!-- ROW 2, COL 2 (CARD 4): RENCANA TINDAK LANJUT -->
     <div class="stat-card interactive" id="card-filter-tahap" onclick="App.cycleFilterTahap()" title="Klik untuk memfilter berdasarkan rencana tindak lanjut">
       <div class="stat-card-header">
         <label><i class="fa-solid fa-diagram-next text-success"></i> Rencana Tindak Lanjut</label>
         <span class="stat-icon mint"><i class="fa-solid fa-arrows-split-up-and-left"></i></span>
       </div>
       <div class="stat-tahap-wrapper">
-        <div class="stat-tahap-cards">
-          <div class="tahap-box blue" onclick="event.stopPropagation(); App.setTahapFilter('PENELITIAN')" title="Penelitian Awal atas Surat Jawaban">
+        <div class="stat-tahap-cards" id="stat-tahap-cards-container">
+          <div class="tahap-box blue" onclick="event.stopPropagation(); App.setTahapFilter('PENELITIAN')" title="Penelitian Awal">
             <div class="tahap-box-info">
               <small>Tahap 1</small>
               <strong><i class="fa-solid fa-magnifying-glass"></i> Penelitian</strong>
             </div>
-            <div class="tahap-box-val" id="stat-tahap-penelitian">235</div>
+            <div class="tahap-box-val" id="stat-tahap-penelitian">0</div>
           </div>
-          <div class="tahap-box mint" onclick="event.stopPropagation(); App.setTahapFilter('PEMANTAUAN')" title="Pemantauan Berkala / Monitoring">
+          <div class="tahap-box mint" onclick="event.stopPropagation(); App.setTahapFilter('PEMANTAUAN')" title="Pemantauan Berkala">
             <div class="tahap-box-info">
               <small>Tahap 2</small>
               <strong><i class="fa-solid fa-eye"></i> Pemantauan</strong>
             </div>
-            <div class="tahap-box-val" id="stat-tahap-pemantauan">13</div>
+            <div class="tahap-box-val" id="stat-tahap-pemantauan">0</div>
           </div>
         </div>
         <div class="tahap-ratio-bar" title="Distribusi Rencana Tindak Lanjut">
-          <div class="tahap-ratio-blue" id="stat-tahap-ratio-blue" style="width: 94.8%;"></div>
-          <div class="tahap-ratio-mint" id="stat-tahap-ratio-mint" style="width: 5.2%;"></div>
+          <div class="tahap-ratio-blue" id="stat-tahap-ratio-blue" style="width: 80%;"></div>
+          <div class="tahap-ratio-mint" id="stat-tahap-ratio-mint" style="width: 20%;"></div>
         </div>
       </div>
     </div>
@@ -472,15 +475,15 @@
   <!-- PptxGenJS Library for PowerPoint Export -->
   <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 
-  <script src="js/config.js?v=2.5.3"></script>
-  <script src="js/spatial.js?v=2.5.3"></script>
-  <script src="js/bmn_dataset.js?v=2.5.3"></script>
-  <script src="js/data.js?v=2.5.3"></script>
-  <script src="js/recommendation.js?v=2.5.3"></script>
-  <script src="js/map.js?v=2.5.3"></script>
-  <script src="js/app.js?v=2.5.3"></script>
+  <script src="js/config.js?v=2.5.4"></script>
+  <script src="js/spatial.js?v=2.5.4"></script>
+  <script src="js/bmn_dataset.js?v=2.5.4"></script>
+  <script src="js/data.js?v=2.5.4"></script>
+  <script src="js/recommendation.js?v=2.5.4"></script>
+  <script src="js/map.js?v=2.5.4"></script>
+  <script src="js/app.js?v=2.5.4"></script>
 
   <!-- Auth Guard: redirect to login.html if no valid session -->
-  <script src="js/auth.js?v=2.5.3"></script>
+  <script src="js/auth.js?v=2.5.4"></script>
 </body>
 </html>

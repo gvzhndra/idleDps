@@ -5,8 +5,8 @@
 
 const CONFIG = {
   // Application Version & Release Metadata
-  VERSION: 'v2.5.3',
-  VERSION_NAME: 'Executive Clean UI & Robust Spatial Parser',
+  VERSION: 'v2.5.4',
+  VERSION_NAME: 'Hero Taxonomy Card & Swapped Executive Grid',
 
   // Office Reference for Distance Calculations (KPKNL Denpasar Official Coordinates)
   KPKNL_OFFICE: {
