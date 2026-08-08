@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   
   <!-- Soft Pastel Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=2.5.5">
+  <link rel="stylesheet" href="css/styles.css?v=2.5.6">
 </head>
 <body>
 
@@ -28,7 +28,7 @@
       </div>
       <div class="brand-text">
         <h1>BMN IDLE DASHBOARD</h1>
-        <p>KPKNL Denpasar <span class="badge badge-pastel-blue" style="font-size:9.5px; font-weight:800; padding:2px 6px; border-radius:6px; margin-left:4px;">v2.5.5</span></p>
+        <p>KPKNL Denpasar <span class="badge badge-pastel-blue" style="font-size:9.5px; font-weight:800; padding:2px 6px; border-radius:6px; margin-left:4px;">v2.5.6</span></p>
       </div>
     </div>
 
@@ -40,9 +40,6 @@
       </div>
       <button class="btn btn-secondary" onclick="App.openGoogleSheetsModal()" title="Integrasi Google Sheets & Apps Script">
         <i class="fa-solid fa-table text-success"></i> Google Sheets
-      </button>
-      <button class="btn btn-primary" onclick="App.exportSelectedToPPT()" title="Ekspor Slide PPTX untuk Aset Terpilih">
-        <i class="fa-solid fa-file-powerpoint text-light"></i> Ekspor PPT (<span id="selected-export-count">0</span> Aset)
       </button>
     </div>
   </header>
@@ -199,9 +196,7 @@
         <!-- TAB 1: KLUSTER ASET (ACCORDION) -->
         <div class="tab-sub-panel active" id="tab-cluster">
           <div class="cluster-toolbar mb-2 d-flex justify-content-between align-items-center">
-            <label style="font-size:11.5px; font-weight:700; color:var(--text-main); cursor:pointer;">
-              <input type="checkbox" class="custom-checkbox" id="cluster-select-all-cb" onchange="App.toggleSelectAll(this.checked)"> Select All Ekspor PPT
-            </label>
+            <span style="font-size:11.5px; font-weight:700; color:var(--text-main);"><i class="fa-solid fa-layer-group text-primary"></i> Kluster Kementerian & Satker</span>
             <span id="active-filter-indicator" class="badge badge-pastel-blue" style="font-size:9.5px; display:none;">Filter Aktif</span>
           </div>
           <div id="cluster-accordion-root">
@@ -231,14 +226,11 @@
               </select>
             </div>
             <div class="d-flex align-items-center justify-content-between mt-1">
-              <select class="filter-select" id="all-filter-tahap" style="flex:1; margin-right:6px;">
+              <select class="filter-select" id="all-filter-tahap" style="flex:1;">
                 <option value="all">Semua Rencana Tindak Lanjut</option>
                 <option value="PENELITIAN">Penelitian</option>
                 <option value="PEMANTAUAN">Pemantauan</option>
               </select>
-              <label style="font-size:11px; font-weight:700; color:var(--text-main); cursor:pointer; flex-shrink:0;">
-                <input type="checkbox" class="custom-checkbox" id="all-select-all-cb" onchange="App.toggleSelectAll(this.checked)"> Select All
-              </label>
             </div>
           </div>
           <div class="all-assets-list" id="all-assets-list">
@@ -475,15 +467,15 @@
   <!-- PptxGenJS Library for PowerPoint Export -->
   <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 
-  <script src="js/config.js?v=2.5.5"></script>
-  <script src="js/spatial.js?v=2.5.5"></script>
-  <script src="js/bmn_dataset.js?v=2.5.5"></script>
-  <script src="js/data.js?v=2.5.5"></script>
-  <script src="js/recommendation.js?v=2.5.5"></script>
-  <script src="js/map.js?v=2.5.5"></script>
-  <script src="js/app.js?v=2.5.5"></script>
+  <script src="js/config.js?v=2.5.6"></script>
+  <script src="js/spatial.js?v=2.5.6"></script>
+  <script src="js/bmn_dataset.js?v=2.5.6"></script>
+  <script src="js/data.js?v=2.5.6"></script>
+  <script src="js/recommendation.js?v=2.5.6"></script>
+  <script src="js/map.js?v=2.5.6"></script>
+  <script src="js/app.js?v=2.5.6"></script>
 
   <!-- Auth Guard: redirect to login.html if no valid session -->
-  <script src="js/auth.js?v=2.5.5"></script>
+  <script src="js/auth.js?v=2.5.6"></script>
 </body>
 </html>
