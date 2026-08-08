@@ -505,16 +505,16 @@ const App = {
     if (elUnmapped) elUnmapped.textContent = `${stats.unmappedCount} Unit`;
     if (elUnmappedSatker) elUnmappedSatker.textContent = `${stats.unmappedSatkersCount} Satker`;
 
-    // Card 3: Klasifikasi BMN Idle (Full Breakdown Hierarchy direct on card)
+    // Card 3: Klasifikasi BMN Idle (2-Column Grid Chips)
     const elKlasBreakdown = document.getElementById('stat-klasifikasi-breakdown');
     if (elKlasBreakdown && stats.hierarchy) {
       const items = [
-        { key: 'penggunaan', label: 'Penggunaan', color: '#1d4ed8', icon: 'fa-building-user', data: stats.hierarchy['Penggunaan'] },
-        { key: 'penghapusan', label: 'Penghapusan', color: '#b91c1c', icon: 'fa-trash-can', data: stats.hierarchy['Penghapusan'] },
-        { key: 'renovasi', label: 'Renovasi', color: '#c2410c', icon: 'fa-hammer', data: stats.hierarchy['Renovasi'] },
-        { key: 'pemanfaatan', label: 'Pemanfaatan', color: '#15803d', icon: 'fa-handshake', data: stats.hierarchy['Pemanfaatan'] },
-        { key: 'masalah_pencatatan', label: 'Masalah Catat', color: '#7e22ce', icon: 'fa-triangle-exclamation', data: stats.hierarchy['Masalah Pencatatan'] },
-        { key: 'pemindahtanganan', label: 'Pemindahtanganan', color: '#0e7490', icon: 'fa-gift', data: stats.hierarchy['Pemindahtanganan'] }
+        { key: 'penggunaan', label: 'Penggunaan', colorClass: 'blue', icon: 'fa-building-user', data: stats.hierarchy['Penggunaan'] },
+        { key: 'renovasi', label: 'Renovasi', colorClass: 'orange', icon: 'fa-hammer', data: stats.hierarchy['Renovasi'] },
+        { key: 'penghapusan', label: 'Penghapusan', colorClass: 'red', icon: 'fa-trash-can', data: stats.hierarchy['Penghapusan'] },
+        { key: 'masalah_pencatatan', label: 'Masalah Catat', colorClass: 'purple', icon: 'fa-triangle-exclamation', data: stats.hierarchy['Masalah Pencatatan'] },
+        { key: 'pemanfaatan', label: 'Pemanfaatan', colorClass: 'green', icon: 'fa-handshake', data: stats.hierarchy['Pemanfaatan'] },
+        { key: 'pemindahtanganan', label: 'Pemindahtanganan', colorClass: 'cyan', icon: 'fa-gift', data: stats.hierarchy['Pemindahtanganan'] }
       ];
 
       elKlasBreakdown.innerHTML = items.map(item => {
@@ -523,30 +523,44 @@ const App = {
         const detailSnippet = Object.entries(detailsObj)
           .slice(0, 2)
           .map(([dName, dCount]) => {
-            const shortName = dName.replace('Rencana / Usulan ', 'Rencana ').replace('ke Satker Lain', '').replace(' / Sewa', '').trim();
+            const shortName = dName.replace('Rencana / Usulan ', 'Rencana ').replace('ke Satker Lain', '').replace(' / Sewa', '').replace(' / Koreksi Catat', '').trim();
             return `${shortName} (${dCount})`;
           })
           .join(' • ');
 
         return `
-          <div class="stat-breakdown-row" onclick="event.stopPropagation(); App.setQuickFilter('${item.key}')" title="Filter klasifikasi: ${item.label}">
-            <span style="font-weight:700; color:${item.color}; white-space:nowrap;">
-              <i class="fa-solid ${item.icon}" style="margin-right:2px;"></i> ${item.label}: <strong>${count}</strong>
-            </span>
-            <span class="stat-breakdown-sub" style="text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
-              ${detailSnippet || '-'}
-            </span>
+          <div class="stat-cat-chip ${item.colorClass}" onclick="event.stopPropagation(); App.setQuickFilter('${item.key}')" title="Filter klasifikasi: ${item.label} (${count} Unit)">
+            <div class="chip-label">
+              <span class="chip-name"><i class="fa-solid ${item.icon}"></i> ${item.label}</span>
+              <span class="chip-sub">${detailSnippet || '-'}</span>
+            </div>
+            <span class="chip-count">${count}</span>
           </div>
         `;
       }).join('');
     }
 
-    // Card 4: Rencana Tindak Lanjut (diambil dari kolom TAHAP_BERIKUT)
+    // Card 4: Rencana Tindak Lanjut & Ratio Bar
     const elPenelitian = document.getElementById('stat-tahap-penelitian');
     const elPemantauan = document.getElementById('stat-tahap-pemantauan');
+    const cPenelitian = stats.tahapMap['PENELITIAN'] || 0;
+    const cPemantauan = stats.tahapMap['PEMANTAUAN'] || 0;
+    const totalTahap = cPenelitian + cPemantauan || 1;
 
-    if (elPenelitian) elPenelitian.textContent = stats.tahapMap['PENELITIAN'] || 0;
-    if (elPemantauan) elPemantauan.textContent = stats.tahapMap['PEMANTAUAN'] || 0;
+    if (elPenelitian) elPenelitian.textContent = cPenelitian;
+    if (elPemantauan) elPemantauan.textContent = cPemantauan;
+
+    const ratioBlue = ((cPenelitian / totalTahap) * 100).toFixed(1);
+    const ratioMint = ((cPemantauan / totalTahap) * 100).toFixed(1);
+
+    const barBlue = document.getElementById('stat-tahap-ratio-blue');
+    const barMint = document.getElementById('stat-tahap-ratio-mint');
+    if (barBlue) barBlue.style.width = `${ratioBlue}%`;
+    if (barMint) barMint.style.width = `${ratioMint}%`;
+
+    // Card 2 sub-description count
+    const elUnmappedDesc = document.getElementById('stat-unmapped-satker-desc');
+    if (elUnmappedDesc) elUnmappedDesc.textContent = `${stats.unmappedSatkersCount} Satker`;
 
     // Card 5: Prioritas BMN Idle (Hero 2-Row Card)
     const elPinned = document.getElementById('stat-total-pinned');
@@ -664,11 +678,16 @@ const App = {
           const isChecked = this.selectedExportAssetIds.has(asset.id) ? 'checked' : '';
           const isSelected = this.selectedAsset && this.selectedAsset.id === asset.id ? 'active' : '';
 
+          const firstPhoto = (asset.fotoList && asset.fotoList.length > 0) ? asset.fotoList[0] : '';
+          const thumbStyle = firstPhoto ? `background-image: url('${this.formatPhotoUrl(firstPhoto)}');` : `background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); display:flex; align-items:center; justify-content:center;`;
+          const thumbInner = firstPhoto ? '' : `<i class="fa-solid fa-camera-retro" style="color:#94a3b8; font-size:16px;"></i>`;
+
           return `
             <div class="asset-card ${isSelected} ${!asset.hasCoordinates ? 'unmapped-card' : ''}" style="position: relative;">
               ${asset.isPinned ? `<span class="pin-mini-badge" title="Prioritas Idle"><i class="fa-solid fa-thumbtack"></i></span>` : ''}
               <input type="checkbox" class="custom-checkbox asset-export-cb" data-asset-id="${asset.id}" ${isChecked} onchange="App.toggleSelectAssetForExport('${asset.id}', this.checked)">
-              <div class="asset-card-thumb" style="background-image: url('${this.formatPhotoUrl(asset.fotoList[0] || '')}')" onclick="App.selectAsset('${asset.id}')">
+              <div class="asset-card-thumb" style="${thumbStyle}" onclick="App.selectAsset('${asset.id}')">
+                ${thumbInner}
                 <span class="asset-card-category">${asset.kategori}</span>
               </div>
               <div class="asset-card-content" onclick="App.selectAsset('${asset.id}')">
@@ -797,11 +816,16 @@ const App = {
       const isChecked = this.selectedExportAssetIds.has(asset.id) ? 'checked' : '';
       const isSelected = this.selectedAsset && this.selectedAsset.id === asset.id ? 'active' : '';
 
+      const firstPhoto = (asset.fotoList && asset.fotoList.length > 0) ? asset.fotoList[0] : '';
+      const thumbStyle = firstPhoto ? `background-image: url('${this.formatPhotoUrl(firstPhoto)}');` : `background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); display:flex; align-items:center; justify-content:center;`;
+      const thumbInner = firstPhoto ? '' : `<i class="fa-solid fa-camera-retro" style="color:#94a3b8; font-size:16px;"></i>`;
+
       return `
         <div class="asset-card ${isSelected} mb-2 ${!asset.hasCoordinates ? 'unmapped-card' : ''}" style="position: relative;">
           ${asset.isPinned ? `<span class="pin-mini-badge" title="Prioritas Idle"><i class="fa-solid fa-thumbtack"></i></span>` : ''}
           <input type="checkbox" class="custom-checkbox asset-export-cb" data-asset-id="${asset.id}" ${isChecked} onchange="App.toggleSelectAssetForExport('${asset.id}', this.checked)">
-          <div class="asset-card-thumb" style="background-image: url('${this.formatPhotoUrl(asset.fotoList[0] || '')}')" onclick="App.selectAsset('${asset.id}')">
+          <div class="asset-card-thumb" style="${thumbStyle}" onclick="App.selectAsset('${asset.id}')">
+            ${thumbInner}
             <span class="asset-card-category">${asset.kategori}</span>
           </div>
           <div class="asset-card-content" onclick="App.selectAsset('${asset.id}')">
@@ -937,15 +961,23 @@ const App = {
     `).join('') : '';
 
     container.innerHTML = `
-      <div id="photo-carousel-box" class="photo-carousel-container" style="background-image: url('${activePhotoUrl}'); background-size: cover; background-position: center; position: relative; height: 190px; border-radius: 10px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-        <span id="photo-carousel-counter" class="photo-counter">${(this.currentPhotoIndex || 0) + 1} / ${totalPhotos}</span>
-        ${canEditOrUpload ? `
-          <button class="btn-delete-photo" title="Hapus foto ini" onclick="event.stopPropagation(); App.deletePhoto('${asset.id}')">
-            <i class="fa-solid fa-trash-can"></i>
-          </button>
-        ` : ''}
-        ${navArrows}
-      </div>
+      ${totalPhotos > 0 && activePhotoUrl ? `
+        <div id="photo-carousel-box" class="photo-carousel-container" style="background-image: url('${activePhotoUrl}'); background-size: cover; background-position: center; position: relative; height: 190px; border-radius: 10px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+          <span id="photo-carousel-counter" class="photo-counter">${(this.currentPhotoIndex || 0) + 1} / ${totalPhotos}</span>
+          ${canEditOrUpload ? `
+            <button class="btn-delete-photo" title="Hapus foto ini" onclick="event.stopPropagation(); App.deletePhoto('${asset.id}')">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          ` : ''}
+          ${navArrows}
+        </div>
+      ` : `
+        <div class="photo-placeholder-box">
+          <i class="fa-solid fa-camera-retro"></i>
+          <span>Belum Ada Foto Lapangan</span>
+          <small>Unggah foto aset melalui tombol upload foto di bawah</small>
+        </div>
+      `}
 
       <!-- UNMAPPED WARNING CALLOUT BOX (IF NO GPS) -->
       ${!hasCoords ? `
@@ -1126,15 +1158,23 @@ const App = {
     `;
 
     container.innerHTML = `
-      <div id="photo-carousel-box" class="photo-carousel-container" style="background-image: url('${activePhotoUrl}'); background-size: cover; background-position: center; position: relative; height: 190px; border-radius: 10px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-        <span id="photo-carousel-counter" class="photo-counter">${(this.currentPhotoIndex || 0) + 1} / ${totalPhotos}</span>
-        ${canEditOrUpload ? `
-          <button class="btn-delete-photo" title="Hapus foto ini" onclick="event.stopPropagation(); App.deletePhoto('${asset.id}')">
-            <i class="fa-solid fa-trash-can"></i>
-          </button>
-        ` : ''}
-        ${navArrows}
-      </div>
+      ${totalPhotos > 0 && activePhotoUrl ? `
+        <div id="photo-carousel-box" class="photo-carousel-container" style="background-image: url('${activePhotoUrl}'); background-size: cover; background-position: center; position: relative; height: 190px; border-radius: 10px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+          <span id="photo-carousel-counter" class="photo-counter">${(this.currentPhotoIndex || 0) + 1} / ${totalPhotos}</span>
+          ${canEditOrUpload ? `
+            <button class="btn-delete-photo" title="Hapus foto ini" onclick="event.stopPropagation(); App.deletePhoto('${asset.id}')">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          ` : ''}
+          ${navArrows}
+        </div>
+      ` : `
+        <div class="photo-placeholder-box">
+          <i class="fa-solid fa-camera-retro"></i>
+          <span>Belum Ada Foto Lapangan</span>
+          <small>Unggah foto aset melalui tombol upload foto di bawah</small>
+        </div>
+      `}
 
       <div class="mb-4">
         <span class="badge badge-pastel-blue">${asset.kategori} (${asset.jenisBarang})</span>

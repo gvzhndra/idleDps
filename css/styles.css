@@ -220,84 +220,255 @@ body {
 .stat-icon.rose { background: var(--pastel-rose-bg); color: var(--pastel-rose); }
 .stat-icon.amber { background: #fff3e0; color: #e65100; }
 
-.stat-pills-row {
+/* METRIC STRIP FOR CARD 1 */
+.stat-meta-strip {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 5px;
+  margin-top: 6px;
+}
+
+.meta-strip-item {
   display: flex;
   align-items: center;
-  gap: 5px;
-  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  font-size: 10px;
+}
+
+.meta-strip-item small {
+  display: block;
+  font-size: 8px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.meta-strip-item strong {
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.1;
+  font-family: var(--font-display);
+}
+
+.meta-strip-item.blue { background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8; }
+.meta-strip-item.mint { background: #f0fdf4; border-color: #bbf7d0; color: #15803d; }
+.meta-strip-item.rose { background: #fff1f2; border-color: #fecdd3; color: #be123c; }
+
+/* 2-COLUMN CLASSIFICATION GRID FOR CARD 3 */
+.stat-2col-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px 8px;
   margin-top: 4px;
 }
 
-.stat-mini-pill {
-  font-size: 9px;
-  font-weight: 600;
-  padding: 2px 6px;
-  border-radius: 5px;
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  color: var(--text-main);
-}
-
-.stat-mini-pill.blue { background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8; }
-.stat-mini-pill.mint { background: #f0fdf4; border-color: #bbf7d0; color: #15803d; }
-.stat-mini-pill.gray { background: #f8fafc; border-color: #e2e8f0; color: #64748b; }
-.stat-mini-pill.orange { background: #fff7ed; border-color: #fed7aa; color: #c2410c; }
-.stat-mini-pill.purple { background: #faf5ff; border-color: #e9d5ff; color: #7e22ce; }
-
-.stat-breakdown-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  font-size: 9.5px;
-  margin-top: 3px;
-}
-
-.stat-breakdown-row {
+.stat-cat-chip {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  line-height: 1.35;
-}
-
-.stat-breakdown-sub {
-  color: var(--text-muted);
-  font-size: 8.5px;
-  margin-left: 2px;
-}
-
-.stat-tahap-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4px;
-  margin-top: 3px;
-}
-
-.tahap-pill {
-  font-size: 9px;
-  font-weight: 600;
-  padding: 3px 6px;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  padding: 4px 7px;
+  border-radius: 6px;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   cursor: pointer;
   transition: all 0.15s ease;
+  font-size: 9.5px;
+  line-height: 1.2;
 }
 
-.tahap-pill:hover {
+.stat-cat-chip:hover {
   transform: translateY(-1px);
-  filter: brightness(0.96);
+  filter: brightness(0.97);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-.tahap-pill.blue { background: #eff6ff; border-color: #bfdbfe; color: #1e40af; }
-.tahap-pill.orange { background: #fff7ed; border-color: #fed7aa; color: #9a3412; }
-.tahap-pill.purple { background: #faf5ff; border-color: #e9d5ff; color: #6b21a8; }
-.tahap-pill.mint { background: #f0fdf4; border-color: #bbf7d0; color: #166534; }
+.stat-cat-chip .chip-label {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.stat-cat-chip .chip-name {
+  font-weight: 700;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.stat-cat-chip .chip-sub {
+  font-size: 8px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stat-cat-chip .chip-count {
+  font-size: 11.5px;
+  font-weight: 800;
+  font-family: var(--font-display);
+  margin-left: 6px;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.stat-cat-chip.blue .chip-name i { color: #2563eb; }
+.stat-cat-chip.blue .chip-count { background: #dbeafe; color: #1e40af; }
+
+.stat-cat-chip.red .chip-name i { color: #dc2626; }
+.stat-cat-chip.red .chip-count { background: #fee2e2; color: #991b1b; }
+
+.stat-cat-chip.green .chip-name i { color: #16a34a; }
+.stat-cat-chip.green .chip-count { background: #dcfce7; color: #166534; }
+
+.stat-cat-chip.orange .chip-name i { color: #ea580c; }
+.stat-cat-chip.orange .chip-count { background: #ffedd5; color: #9a3412; }
+
+.stat-cat-chip.purple .chip-name i { color: #9333ea; }
+.stat-cat-chip.purple .chip-count { background: #f3e8ff; color: #6b21a8; }
+
+.stat-cat-chip.cyan .chip-name i { color: #0891b2; }
+.stat-cat-chip.cyan .chip-count { background: #cffafe; color: #155e75; }
+
+/* TAHAP TINDAK LANJUT CONTAINER & RATIO BAR FOR CARD 4 */
+.stat-tahap-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(100% - 22px);
+  margin-top: 4px;
+}
+
+.stat-tahap-cards {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 6px;
+}
+
+.tahap-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+}
+
+.tahap-box:hover {
+  transform: translateY(-1px);
+  filter: brightness(0.97);
+}
+
+.tahap-box.blue {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border-color: #bfdbfe;
+  color: #1e40af;
+}
+
+.tahap-box.mint {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.tahap-box-info small {
+  display: block;
+  font-size: 8.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  opacity: 0.85;
+}
+
+.tahap-box-info strong {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.tahap-box-val {
+  font-size: 16px;
+  font-weight: 800;
+  font-family: var(--font-display);
+}
+
+.tahap-ratio-bar {
+  display: flex;
+  height: 6px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #e2e8f0;
+  margin-top: 6px;
+}
+
+.tahap-ratio-blue {
+  background: #3b82f6;
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.tahap-ratio-mint {
+  background: #10b981;
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+/* VECTOR PLACEHOLDER FOTO */
+.photo-placeholder-box {
+  width: 100%;
+  height: 190px;
+  border-radius: 10px;
+  background: linear-gradient(145deg, #f1f5f9 0%, #e2e8f0 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  border: 1.5px dashed #cbd5e1;
+  margin-bottom: 12px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
+  text-align: center;
+  padding: 15px;
+}
+
+.photo-placeholder-box i {
+  font-size: 32px;
+  color: #94a3b8;
+  margin-bottom: 6px;
+}
+
+.photo-placeholder-box span {
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.photo-placeholder-box small {
+  font-size: 10px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+/* HIDE PPT EXPORT AND PPT CHECKBOXES ACCORDING TO USER REQUEST */
+#export-ppt-btn,
+.btn-export-ppt,
+#cluster-select-all-cb,
+#all-select-all-cb,
+.asset-export-cb,
+.asset-card-select-cb,
+.ppt-cb-label {
+  display: none !important;
+}
 
 .hero-pinned-list {
   flex: 1;
