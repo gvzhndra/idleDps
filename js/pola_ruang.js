@@ -156,9 +156,10 @@ const PolaRuangEngine = {
         // Decompose MultiPolygons into Atomic Polygon Features for local catchment filtering
         this.geoFeatures = [];
         rawFeatures.forEach(f => {
+          if (!f || !f.geometry) return;
           if (f.geometry.type === 'Polygon') {
             this.geoFeatures.push(f);
-          } else if (f.geometry.type === 'MultiPolygon') {
+          } else if (f.geometry.type === 'MultiPolygon' && Array.isArray(f.geometry.coordinates)) {
             f.geometry.coordinates.forEach(polyCoords => {
               this.geoFeatures.push({
                 type: 'Feature',
@@ -251,19 +252,8 @@ const PolaRuangEngine = {
         continue;
       }
 
-      // Check if feature ring has at least one coordinate within catchment
-      const ring = item.feature.geometry.coordinates[0];
-      if (ring && Array.isArray(ring)) {
-        const touches = ring.some(pt => {
-          return pt[0] >= catchmentBBox.minLng && pt[0] <= catchmentBBox.maxLng &&
-                 pt[1] >= catchmentBBox.minLat && pt[1] <= catchmentBBox.maxLat;
-        });
-        if (touches) {
-          matchingFeatures.push(item.feature);
-        }
-      }
-
-      if (matchingFeatures.length >= 35) break; // Keep UI ultra lightweight
+      matchingFeatures.push(item.feature);
+      if (matchingFeatures.length >= 60) break; // Keep UI ultra lightweight
     }
 
     return matchingFeatures;

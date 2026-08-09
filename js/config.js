@@ -5,8 +5,8 @@
 
 const CONFIG = {
   // Application Version & Release Metadata
-  VERSION: 'v2.7.3',
-  VERSION_NAME: 'Bug Fix: Null Coordinate Sanitization on Turf Geometry Intersect',
+  VERSION: 'v2.7.4',
+  VERSION_NAME: 'Guaranteed 500m Geometric Pola Ruang Radar Crop & Zero Leaflet Error Fix',
 
   // Office Reference for Distance Calculations (KPKNL Denpasar Official Coordinates)
   KPKNL_OFFICE: {

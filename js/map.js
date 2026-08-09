@@ -85,6 +85,11 @@ const MapEngine = {
     this.markersLayer.clearLayers();
 
     assetList.forEach(asset => {
+      // Guard against assets without GPS coordinates (lat/lng null)
+      if (!asset || typeof asset.lat !== 'number' || typeof asset.lng !== 'number' || isNaN(asset.lat) || isNaN(asset.lng)) {
+        return;
+      }
+
       const isTanah = asset.isTanah;
       const iconHtml = isTanah ? '<i class="fa-solid fa-vector-square"></i>' : '<i class="fa-solid fa-house-flag"></i>';
       const isSelected = asset.id === this.activeAssetId ? 'selected-marker' : '';
@@ -357,7 +362,7 @@ const MapEngine = {
     } else if (this.activeAssetId) {
       const asset = DataEngine.getAssetById(this.activeAssetId);
       if (asset) {
-        this.renderCatchmentPolaRuang(asset, 1000);
+        this.renderCatchmentPolaRuang(asset, 500);
       }
     }
     return this.isPolaRuangEnabled;
