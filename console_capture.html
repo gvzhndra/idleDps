@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script>
+    window.onerror = function(msg, url, line, col, err) {
+      document.body.innerHTML += `<div style="color:red">ERR: ${msg}</div>`;
+    };
+    const originalConsoleError = console.error;
+    console.error = function(...args) {
+      document.body.innerHTML += `<div style="color:red">CON_ERR: ${args.join(' ')}</div>`;
+      originalConsoleError.apply(console, args);
+    };
+  </script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/topojson-client@3/dist/topojson-client.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+  <script src="js/turf.min.js?v=2.7.1"></script>
+  <script src="js/config.js?v=2.7.1"></script>
+  <script src="js/pola_ruang.js?v=2.7.1"></script>
+  <script src="js/spatial.js?v=2.7.1"></script>
+  <script src="js/bmn_dataset.js?v=2.7.1"></script>
+  <script src="js/data.js?v=2.7.1"></script>
+  <script src="js/recommendation.js?v=2.7.1"></script>
+  <script src="js/map.js?v=2.7.1"></script>
+  <script src="js/app.js?v=2.7.1"></script>
+  <script src="js/auth.js?v=2.7.1"></script>
+</head>
+<body>
+  <h1>Test Load</h1>
+  <div id="map" style="height: 400px; width: 400px;"></div>
+  <script>
+    setTimeout(() => {
+      try {
+        App.init();
+        document.body.innerHTML += `<div style="color:green">App initialized successfully!</div>`;
+      } catch(e) {
+        document.body.innerHTML += `<div style="color:red">INIT_ERR: ${e.message}</div>`;
+      }
+    }, 1000);
+  </script>
+</body>
+</html>

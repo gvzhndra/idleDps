@@ -286,19 +286,31 @@ const PolaRuangEngine = {
 
       rawFeatures.forEach(f => {
         try {
-          const intersection = turf.intersect(f, circlePoly);
+          let intersection = null;
+          try {
+            // Turf v7 / v6 syntax
+            intersection = turf.intersect(turf.featureCollection([f, circlePoly]));
+          } catch (e1) {
+            // Fallback for v6 specific direct intersect
+            intersection = turf.intersect(f, circlePoly);
+          }
+
           if (intersection && intersection.geometry) {
+            // Successfully cropped
             intersection.properties = f.properties;
             clipped.push(intersection);
           }
         } catch (e) {
-          clipped.push(f);
+          // If complex geometry fails intersection, skip or push original
+          // To ensure crop effect, we DO NOT push original uncropped polygons
+          console.warn('[PolaRuangEngine] Turf intersect geometry skipped', e.message);
         }
       });
 
-      return clipped.length > 0 ? clipped : rawFeatures;
+      // If nothing intersected, return empty array so we don't draw uncropped map
+      return clipped;
     } catch (err) {
-      console.warn('[PolaRuangEngine] Turf clipping fallback:', err);
+      console.warn('[PolaRuangEngine] Turf circle/clipping error:', err);
       return rawFeatures;
     }
   },

@@ -5,8 +5,8 @@
 
 const CONFIG = {
   // Application Version & Release Metadata
-  VERSION: 'v2.7.1',
-  VERSION_NAME: 'Detail Drawer Bottom Padding & Effortless Full Content Scrolling',
+  VERSION: 'v2.7.2',
+  VERSION_NAME: 'Bug Fix: Pola Ruang Catchment Crop & Basemap Toggle Issue',
 
   // Office Reference for Distance Calculations (KPKNL Denpasar Official Coordinates)
   KPKNL_OFFICE: {

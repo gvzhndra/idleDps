@@ -393,13 +393,15 @@ const App = {
       });
     }
 
-    document.querySelectorAll('.btn-tile-switch').forEach(btn => {
+    document.querySelectorAll('.btn-tile-switch:not(#btn-toggle-pola-ruang)').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        document.querySelectorAll('.btn-tile-switch').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.btn-tile-switch:not(#btn-toggle-pola-ruang)').forEach(b => b.classList.remove('active'));
         const target = e.currentTarget;
         target.classList.add('active');
         const layerKey = target.getAttribute('data-layer');
-        MapEngine.switchTileLayer(layerKey);
+        if (layerKey) {
+          MapEngine.switchTileLayer(layerKey);
+        }
       });
     });
   },
