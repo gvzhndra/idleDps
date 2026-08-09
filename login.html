@@ -3,573 +3,155 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Masuk — BMN Idle Dashboard · KPKNL Denpasar</title>
-  <meta name="description" content="Login ke BMN Idle Interactive Dashboard KPKNL Denpasar – DJKN Kemenkeu RI">
-  <meta name="robots" content="noindex, nofollow">
-
-  <!-- FontAwesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Config -->
+  <title>Masuk — Dashboard BMN Idle</title>
   <script src="js/config.js?v=1.0.0-stable1"></script>
-
+  <script src="js/auth.js?v=1.0.0-stable1"></script>
+  <script>redirectIfLoggedIn();</script>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --font: 'Plus Jakarta Sans', system-ui, sans-serif;
-      --font-display: 'Outfit', sans-serif;
+      --navy: #1B3A5C;
+      --navy-dark: #122A44;
+      --border: #DCE1E6;
+      --text: #1F2937;
+      --text-mut: #6B7280;
+      --masalah: #B23A3A;
     }
-
+    * {
+      box-sizing: border-box;
+    }
     body {
-      font-family: var(--font);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 45%, #0c4a6e 100%);
-      overflow: hidden;
+      background: #F1F5F9;
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    .login-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px 30px;
+      width: 360px;
+      max-width: 90vw;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
       position: relative;
+      z-index: 100;
     }
-
-    /* Animated blobs */
-    .blob {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(90px);
-      opacity: 0.15;
-      animation: blobFloat 14s ease-in-out infinite;
-      pointer-events: none;
+    .login-card h3 {
+      margin: 0 0 4px;
+      font-size: 18px;
+      color: var(--navy);
+      font-weight: 700;
     }
-    .blob-1 { width: 500px; height: 500px; background: #4a90e2; top: -130px; left: -100px; animation-duration: 16s; }
-    .blob-2 { width: 420px; height: 420px; background: #2ecc71; bottom: -100px; right: -80px; animation-duration: 12s; animation-delay: -4s; }
-    .blob-3 { width: 360px; height: 360px; background: #9b59b6; top: 45%; right: 12%; animation-duration: 18s; animation-delay: -9s; }
-    .blob-4 { width: 280px; height: 280px; background: #f39c12; bottom: 20%; left: 8%; animation-duration: 11s; animation-delay: -2s; }
-
-    @keyframes blobFloat {
-      0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
-      30%       { transform: translateY(-28px) scale(1.05) rotate(6deg); }
-      60%       { transform: translateY(20px) scale(0.97) rotate(-4deg); }
+    .login-card p.small-note {
+      margin: 0 0 20px;
+      font-size: 12px;
+      color: var(--text-mut);
     }
-
-    /* Grid overlay texture */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-      background-size: 48px 48px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* Login Card */
-    .login-wrapper {
+    .login-card input {
+      width: 100%;
+      box-sizing: border-box;
       position: relative;
       z-index: 10;
-      width: 100%;
-      max-width: 440px;
-      padding: 20px;
-      animation: cardIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+      pointer-events: auto;
+      cursor: text;
+      padding: 9px 12px;
+      font-size: 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #ffffff;
+      color: var(--text);
+      font-family: inherit;
     }
-
-    @keyframes cardIn {
-      from { opacity: 0; transform: translateY(36px) scale(0.95); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .login-card {
-      background: rgba(255, 255, 255, 0.065);
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
-      border: 1px solid rgba(255, 255, 255, 0.13);
-      border-radius: 28px;
-      padding: 44px 40px 40px;
-      box-shadow:
-        0 32px 80px rgba(0, 0, 0, 0.55),
-        0 0 0 1px rgba(255,255,255,0.05),
-        inset 0 1px 0 rgba(255,255,255,0.1);
-    }
-
-    /* Logo ring */
-    .logo-ring {
-      width: 76px;
-      height: 76px;
-      border-radius: 22px;
-      background: linear-gradient(135deg, #4a90e2 0%, #2568c8 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      color: #fff;
-      margin: 0 auto 22px;
-      box-shadow: 0 10px 32px rgba(74, 144, 226, 0.5), inset 0 1px 0 rgba(255,255,255,0.2);
-      position: relative;
-    }
-
-    .logo-ring::after {
-      content: '';
-      position: absolute;
-      inset: -4px;
-      border-radius: 26px;
-      border: 2px solid rgba(74, 144, 226, 0.3);
-      animation: ringPulse 2.5s ease-in-out infinite;
-    }
-
-    @keyframes ringPulse {
-      0%, 100% { opacity: 0.6; transform: scale(1); }
-      50%       { opacity: 0.15; transform: scale(1.08); }
-    }
-
-    .login-title {
-      font-family: var(--font-display);
-      font-size: 26px;
-      font-weight: 800;
-      color: #ffffff;
-      text-align: center;
-      letter-spacing: -0.6px;
-      margin-bottom: 4px;
-    }
-
-    .login-subtitle {
-      font-size: 11.5px;
-      color: rgba(255,255,255,0.45);
-      text-align: center;
-      line-height: 1.6;
-      margin-bottom: 34px;
-    }
-
-    /* Divider with label */
-    .section-divider {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 24px;
-    }
-    .section-divider::before, .section-divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: rgba(255,255,255,0.1);
-    }
-    .section-divider span {
-      font-size: 10px;
-      color: rgba(255,255,255,0.35);
-      font-weight: 600;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-    }
-
-    /* Input fields */
-    .field-group {
-      margin-bottom: 16px;
-    }
-
-    .field-label {
-      display: block;
-      font-size: 10.5px;
-      font-weight: 700;
-      color: rgba(255,255,255,0.55);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin-bottom: 7px;
-    }
-
-    .field-wrap {
-      position: relative;
-    }
-
-    .field-icon {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: rgba(255,255,255,0.3);
-      font-size: 13px;
-      pointer-events: none;
-    }
-
-    .field-input {
-      width: 100%;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 12px;
-      padding: 12px 40px 12px 40px;
-      color: #ffffff;
-      font-family: var(--font);
-      font-size: 13.5px;
+    .login-card input:focus {
       outline: none;
-      transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+      border-color: var(--navy);
+      box-shadow: 0 0 0 3px rgba(27, 58, 92, 0.12);
     }
-
-    .field-input::placeholder { color: rgba(255,255,255,0.25); }
-
-    .field-input:focus {
-      border-color: #4a90e2;
-      background: rgba(74, 144, 226, 0.1);
-      box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.18);
+    .login-card .field {
+      margin-bottom: 14px;
     }
-
-    .toggle-pw {
+    .login-card .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-mut);
+      margin-bottom: 5px;
+    }
+    .password-wrap {
+      position: relative;
+      width: 100%;
+    }
+    .password-wrap input {
+      padding-right: 40px;
+    }
+    .toggle-password-btn {
       position: absolute;
-      right: 13px;
+      right: 4px;
       top: 50%;
       transform: translateY(-50%);
+      z-index: 20;
       background: none;
       border: none;
       cursor: pointer;
-      color: rgba(255,255,255,0.3);
-      font-size: 14px;
-      padding: 4px;
-      transition: color 0.15s;
+      font-size: 16px;
+      padding: 6px 8px;
+      color: var(--text-mut);
     }
-    .toggle-pw:hover { color: rgba(255,255,255,0.6); }
-
-    /* Error message */
-    .error-msg {
-      background: rgba(231, 76, 60, 0.16);
-      border: 1px solid rgba(231, 76, 60, 0.35);
-      border-radius: 10px;
-      padding: 10px 14px;
-      color: #ff8585;
-      font-size: 12px;
-      font-weight: 600;
-      margin-bottom: 14px;
-      display: none;
-      text-align: center;
-      gap: 6px;
-      align-items: center;
-      justify-content: center;
+    button.primary {
+      background: var(--navy);
+      color: #fff;
+      border: 1px solid var(--navy);
+      border-radius: 6px;
+      transition: background 0.15s ease;
     }
-
-    .error-msg.visible {
-      display: flex;
+    button.primary:hover {
+      background: var(--navy-dark);
     }
-
-    /* Submit button */
-    .submit-btn {
-      width: 100%;
-      padding: 13px 16px;
-      background: linear-gradient(135deg, #4a90e2 0%, #2568c8 100%);
-      border: none;
-      border-radius: 13px;
-      color: #ffffff;
-      font-family: var(--font);
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 6px;
-      box-shadow: 0 8px 28px rgba(74, 144, 226, 0.5), inset 0 1px 0 rgba(255,255,255,0.15);
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      letter-spacing: 0.1px;
-    }
-
-    .submit-btn:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 36px rgba(74, 144, 226, 0.6);
-    }
-
-    .submit-btn:active:not(:disabled) { transform: translateY(0); }
-
-    .submit-btn:disabled {
-      opacity: 0.75;
+    button.primary:disabled {
+      opacity: 0.6;
       cursor: not-allowed;
     }
-
-    .submit-btn.success {
-      background: linear-gradient(135deg, #2ecc71, #1aab5f);
-      box-shadow: 0 8px 28px rgba(46, 204, 113, 0.5);
-    }
-
-    /* Footer info */
-    .card-footer {
-      margin-top: 24px;
+    .back-link {
+      display: block;
       text-align: center;
+      margin-top: 18px;
+      font-size: 12.5px;
+      color: var(--text-mut);
+      text-decoration: none;
+      transition: color 0.15s ease;
     }
-
-    .footer-label {
-      font-size: 10px;
-      color: rgba(255,255,255,0.22);
-      letter-spacing: 0.5px;
-      line-height: 1.7;
+    .back-link:hover {
+      color: var(--navy);
+      text-decoration: underline;
     }
-
-    .security-badges {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .sec-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 20px;
-      padding: 3px 10px;
-      font-size: 9.5px;
-      color: rgba(255,255,255,0.4);
-    }
-
-    .sec-badge i { font-size: 9px; }
   </style>
 </head>
 <body>
 
-  <!-- Background blobs -->
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
-  <div class="blob blob-3"></div>
-  <div class="blob blob-4"></div>
-
-  <div class="login-wrapper">
-    <div class="login-card">
-
-      <div class="logo-ring">
-        <i class="fa-solid fa-landmark-flag"></i>
-      </div>
-
-      <h1 class="login-title">BMN IDLE DASHBOARD</h1>
-      <p class="login-subtitle">KPKNL Denpasar</p>
-
-      <div class="section-divider"><span>Masuk ke sistem</span></div>
-
-      <form id="login-form" onsubmit="handleLogin(event)" novalidate>
-
-        <div class="field-group">
-          <label class="field-label" for="ls-username">Username</label>
-          <div class="field-wrap">
-            <i class="fa-solid fa-user field-icon"></i>
-            <input
-              type="text"
-              id="ls-username"
-              class="field-input"
-              placeholder="Masukkan username..."
-              autocomplete="username"
-              required
-            >
-          </div>
-        </div>
-
-        <div class="field-group">
-          <label class="field-label" for="ls-password">Password</label>
-          <div class="field-wrap">
-            <i class="fa-solid fa-lock field-icon"></i>
-            <input
-              type="password"
-              id="ls-password"
-              class="field-input"
-              placeholder="Masukkan password..."
-              autocomplete="current-password"
-              required
-            >
-            <button type="button" class="toggle-pw" id="toggle-pw-btn" aria-label="Tampilkan/sembunyikan password" onclick="togglePassword()">
-              <i class="fa-solid fa-eye" id="toggle-pw-icon"></i>
-            </button>
-          </div>
-        </div>
-
-        <div class="error-msg" id="error-msg">
-          <i class="fa-solid fa-triangle-exclamation"></i>
-          <span id="error-text">Username atau password salah. Silakan coba lagi.</span>
-        </div>
-
-        <button type="submit" class="submit-btn" id="submit-btn">
-          <i class="fa-solid fa-right-to-bracket"></i>
-          Masuk ke Dashboard
-        </button>
-
-      </form>
-
-      <div class="card-footer">
-        <p class="footer-label">KPKNL Denpasar</p>
-      </div>
-
+  <div class="login-card">
+    <h3>Masuk ke Dashboard</h3>
+    <p class="small-note">Dashboard BMN Idle — KPKNL Denpasar</p>
+    <div class="field">
+      <label for="loginUsername">Username</label>
+      <input type="text" id="loginUsername" autocomplete="username" placeholder="Masukkan username">
     </div>
+    <div class="field">
+      <label for="loginPassword">Password</label>
+      <div class="password-wrap">
+        <input type="password" id="loginPassword" autocomplete="current-password" placeholder="Masukkan password">
+        <button type="button" id="togglePassword" class="toggle-password-btn" aria-label="Tampilkan password">👁</button>
+      </div>
+    </div>
+    <div id="loginError" style="color:var(--masalah);font-size:12px;margin-bottom:12px;display:none;background:#FEF2F2;border:1px solid #FCA5A5;padding:8px 10px;border-radius:6px;"></div>
+    <div class="modal-actions" style="margin-top:16px;">
+      <button class="primary" id="btnLogin" style="width:100%;padding:10px 16px;font-size:14px;font-weight:600;cursor:pointer;">Masuk</button>
+    </div>
+    <a href="https://gvzhndra.github.io/landing_page_geospasial_dps/" class="back-link">← Kembali ke Halaman Depan Portal</a>
   </div>
 
-  <script>
-    // SHA-256 via Web Crypto API
-    async function sha256(text) {
-      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
-      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    // Pre-hashed credentials and alias mappings for maximum login reliability
-    const USER_ACCOUNTS = {
-      'admin_kpknl':    { plain: 'bmnidle2026', hash: '590909dbb0422b9a7e6cd906900ec3a6da7f6937ce1f52dc821f4d0ed8a99dd1', name: 'Admin KPKNL Denpasar',   role: 'Admin KPKNL' },
-      'admin':          { plain: 'bmnidle2026', hash: '590909dbb0422b9a7e6cd906900ec3a6da7f6937ce1f52dc821f4d0ed8a99dd1', name: 'Admin KPKNL Denpasar',   role: 'Admin KPKNL' },
-      'kpknl':          { plain: 'bmnidle2026', hash: '590909dbb0422b9a7e6cd906900ec3a6da7f6937ce1f52dc821f4d0ed8a99dd1', name: 'Admin KPKNL Denpasar',   role: 'Admin KPKNL' },
-      'petugas_satker': { plain: 'satker2026',  hash: '7e765589b3df7c27c77ec54b5a661a800e8016fd78c9f8a909e415992e0e8a20', name: 'Verifikator Satker BMN',  role: 'Verifikator Satker' },
-      'satker':         { plain: 'satker2026',  hash: '7e765589b3df7c27c77ec54b5a661a800e8016fd78c9f8a909e415992e0e8a20', name: 'Verifikator Satker BMN',  role: 'Verifikator Satker' },
-      'viewer':         { plain: 'viewer2026',  hash: '35cbe0aaf4e558ac53847cf7b057f4a3a86a427e08935bffdf81d7b4ed7cd9f3', name: 'Tamu / Executive Viewer', role: 'Viewer' },
-      'tamu':           { plain: 'viewer2026',  hash: '35cbe0aaf4e558ac53847cf7b057f4a3a86a427e08935bffdf81d7b4ed7cd9f3', name: 'Tamu / Executive Viewer', role: 'Viewer' }
-    };
-
-    // Check for expired session query param
-    (function checkExpiredNotice() {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('expired') === '1') {
-        const errorMsg = document.getElementById('error-msg');
-        const errorText = document.getElementById('error-text');
-        if (errorMsg && errorText) {
-          errorText.textContent = 'Sesi Anda telah berakhir karena batas waktu login (8 jam). Silakan login kembali.';
-          errorMsg.classList.add('visible');
-        }
-      }
-    })();
-
-    // Redirect to dashboard if already logged in
-    (function checkExistingSession() {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('expired') === '1') return; // Don't auto-redirect if just expired
-
-      const saved = localStorage.getItem('bmn_idle_user');
-      if (saved) {
-        try {
-          const user = JSON.parse(saved);
-          if (user && user.username) {
-            const MAX_SESSION_MS = 8 * 60 * 60 * 1000;
-            if (user.loginTime && (Date.now() - user.loginTime > MAX_SESSION_MS)) {
-              localStorage.removeItem('bmn_idle_user');
-            } else {
-              window.location.replace('index.html');
-            }
-          }
-        } catch(e) { localStorage.removeItem('bmn_idle_user'); }
-      }
-    })();
-
-    async function handleLogin(event) {
-      event.preventDefault();
-
-      const usernameInput = document.getElementById('ls-username').value.trim();
-      const password = document.getElementById('ls-password').value.trim();
-      const errorMsg = document.getElementById('error-msg');
-      const errorText = document.getElementById('error-text');
-      const submitBtn = document.getElementById('submit-btn');
-
-      // Loading state
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Memverifikasi...';
-      errorMsg.classList.remove('visible');
-
-      const hash = await sha256(password);
-      const userKey = usernameInput.toLowerCase();
-      const account = USER_ACCOUNTS[userKey];
-
-      // Local match check (hash or plain-text)
-      let isMatch = account && (account.hash === hash || account.plain === password);
-
-      // Global admin fallback (bmnidle2026)
-      if (!isMatch && (password === 'bmnidle2026' || hash === '590909dbb0422b9a7e6cd906900ec3a6da7f6937ce1f52dc821f4d0ed8a99dd1')) {
-        isMatch = true;
-      }
-
-      if (isMatch) {
-        const userObj = account ? {
-          username: userKey,
-          name: account.name,
-          role: account.role,
-          loginTime: Date.now()
-        } : {
-          username: usernameInput || 'admin_kpknl',
-          name: 'Admin KPKNL Denpasar',
-          role: 'Admin KPKNL',
-          loginTime: Date.now()
-        };
-
-        submitBtn.classList.add('success');
-        submitBtn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Berhasil! Mengalihkan...';
-        localStorage.setItem('bmn_idle_user', JSON.stringify(userObj));
-
-        setTimeout(() => {
-          window.location.replace('index.html');
-        }, 600);
-        return;
-      }
-
-      // Backend Google Apps Script check fallback
-      const webAppUrl = (typeof CONFIG !== 'undefined' && CONFIG.APPS_SCRIPT && CONFIG.APPS_SCRIPT.WEB_APP_URL) || localStorage.getItem('bmn_idle_apps_script_url');
-      if (webAppUrl) {
-        try {
-          const resp = await fetch(webAppUrl, {
-            method: 'POST',
-            body: JSON.stringify({ action: 'login', username: usernameInput, passwordHash: hash })
-          });
-          const json = await resp.json();
-          if (json.status === 'success') {
-            const userObj = {
-              username: json.user.username,
-              name: json.user.name || json.user.username,
-              role: json.user.role || 'Admin KPKNL',
-              loginTime: Date.now()
-            };
-            localStorage.setItem('bmn_idle_user', JSON.stringify(userObj));
-            submitBtn.classList.add('success');
-            submitBtn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Berhasil! Mengalihkan...';
-            setTimeout(() => window.location.replace('index.html'), 600);
-            return;
-          }
-        } catch(e) {
-          console.warn('Backend login check error:', e);
-        }
-      }
-
-      // Failed
-      errorText.textContent = `Username atau password salah. Silakan periksa kembali.`;
-      errorMsg.classList.add('visible');
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk ke Dashboard';
-
-      // Shake card
-      const card = document.querySelector('.login-card');
-      card.style.animation = 'none';
-      void card.offsetHeight;
-      card.style.animation = 'cardShake 0.4s ease';
-    }
-
-    function togglePassword() {
-      const input = document.getElementById('ls-password');
-      const icon = document.getElementById('toggle-pw-icon');
-      if (input.type === 'password') {
-        input.type = 'text';
-        icon.className = 'fa-solid fa-eye-slash';
-      } else {
-        input.type = 'password';
-        icon.className = 'fa-solid fa-eye';
-      }
-    }
-
-    // Shake keyframes
-    const styleEl = document.createElement('style');
-    styleEl.textContent = `
-      @keyframes cardShake {
-        0%, 100% { transform: translateX(0); }
-        20%  { transform: translateX(-10px); }
-        40%  { transform: translateX(10px); }
-        60%  { transform: translateX(-7px); }
-        80%  { transform: translateX(7px); }
-      }
-    `;
-    document.head.appendChild(styleEl);
-
-    // Allow Enter key to submit
-    document.getElementById('ls-password').addEventListener('keydown', e => {
-      if (e.key === 'Enter') document.getElementById('login-form').requestSubmit();
-    });
-  </script>
-
+  <script src="js/login.js"></script>
 </body>
 </html>

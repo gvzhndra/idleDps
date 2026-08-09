@@ -1705,10 +1705,18 @@ const App = {
   },
 
   checkUserSession() {
-    const savedUser = localStorage.getItem('bmn_idle_user');
-    if (savedUser) {
-      this.currentUser = JSON.parse(savedUser);
+    const session = typeof getSession === 'function' ? getSession() : null;
+    if (session) {
+      this.currentUser = session;
       this.updateUserUI();
+    } else {
+      const savedUser = localStorage.getItem('bmn_idle_user');
+      if (savedUser) {
+        try {
+          this.currentUser = JSON.parse(savedUser);
+          this.updateUserUI();
+        } catch (e) {}
+      }
     }
   },
 
@@ -1748,12 +1756,28 @@ const App = {
 
   handleLogout() {
     this.currentUser = null;
-    localStorage.removeItem('bmn_idle_user');
+    if (typeof clearSession === 'function') {
+      clearSession();
+    } else {
+      localStorage.removeItem('bmn_idle_user');
+    }
     this.updateUserUI();
     this.showToast('Berhasil logout dari sesi. Mengalihkan ke halaman login...');
     setTimeout(() => {
       window.location.href = 'login.html';
     }, 400);
+  },
+
+  handleExitToLanding(event) {
+    if (event) event.preventDefault();
+    this.currentUser = null;
+    if (typeof clearSession === 'function') {
+      clearSession();
+    } else {
+      localStorage.removeItem('bmn_idle_user');
+    }
+    this.updateUserUI();
+    window.location.href = 'https://gvzhndra.github.io/landing_page_geospasial_dps/';
   },
 
   updateUserUI() {

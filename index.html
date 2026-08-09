@@ -7,6 +7,11 @@
   
   <meta name="description" content="Dashboard Spatial Analytics BMN Idle KPKNL Denpasar">
   
+  <!-- Config & Auth Guard -->
+  <script src="js/config.js?v=1.0.0-stable1"></script>
+  <script src="js/auth.js?v=1.0.0-stable1"></script>
+  <script>guardDashboardPage();</script>
+
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
@@ -14,7 +19,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   
   <!-- Soft Pastel Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=2.5.7">
+  <link rel="stylesheet" href="css/styles.css?v=2.5.8">
 </head>
 <body>
 
@@ -23,6 +28,9 @@
        ========================================================================== -->
   <header class="app-header">
     <div class="brand-container">
+      <button class="btn btn-secondary btn-landing" id="btn-back-landing" onclick="App.handleExitToLanding(event)" title="Keluar dari sesi dan kembali ke Halaman Depan Portal">
+        <i class="fa-solid fa-arrow-left"></i> <span>Halaman Depan</span>
+      </button>
       <div class="brand-logo-icon">
         <i class="fa-solid fa-landmark-flag"></i>
       </div>
@@ -501,7 +509,6 @@
   <!-- Turf.js Library for Geometric Polygon Catchment Clipping -->
   <script src="js/turf.min.js?v=1.0.0-stable1"></script>
 
-  <script src="js/config.js?v=1.0.0-stable1"></script>
   <script src="js/pola_ruang.js?v=1.0.0-stable1"></script>
   <script src="js/spatial.js?v=1.0.0-stable1"></script>
   <script src="js/bmn_dataset.js?v=1.0.0-stable1"></script>
@@ -509,8 +516,5 @@
   <script src="js/recommendation.js?v=1.0.0-stable1"></script>
   <script src="js/map.js?v=1.0.0-stable1"></script>
   <script src="js/app.js?v=1.0.0-stable1"></script>
-
-  <!-- Auth Guard: redirect to login.html if no valid session -->
-  <script src="js/auth.js?v=1.0.0-stable1"></script>
 </body>
 </html>
