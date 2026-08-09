@@ -5,8 +5,8 @@
 
 const CONFIG = {
   // Application Version & Release Metadata
-  VERSION: 'v2.6.0',
-  VERSION_NAME: 'Pola Tata Ruang Bali Spatial Zoning Catchment Integration',
+  VERSION: 'v2.6.2',
+  VERSION_NAME: 'Executive High-Contrast Typography & Accurate Regency Classification',
 
   // Office Reference for Distance Calculations (KPKNL Denpasar Official Coordinates)
   KPKNL_OFFICE: {

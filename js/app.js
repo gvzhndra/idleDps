@@ -524,7 +524,6 @@ const App = {
         const count = item.data ? item.data.count : 0;
         const detailsObj = item.data ? item.data.details : {};
         const detailSnippet = Object.entries(detailsObj)
-          .slice(0, 2)
           .map(([dName, dCount]) => {
             const shortName = dName.replace('Rencana / Usulan ', 'Rencana ').replace('ke Satker Lain', '').replace(' / Sewa', '').replace(' / Koreksi Catat', '').trim();
             return `${shortName} (${dCount})`;
@@ -716,11 +715,11 @@ const App = {
 
           return `
             <div class="asset-card ${isSelected} ${!asset.hasCoordinates ? 'unmapped-card' : ''}" style="position: relative;">
-              ${asset.isPinned ? `<span class="pin-mini-badge" title="Prioritas Idle"><i class="fa-solid fa-thumbtack"></i></span>` : ''}
               <input type="checkbox" class="custom-checkbox asset-export-cb" data-asset-id="${asset.id}" ${isChecked} onchange="App.toggleSelectAssetForExport('${asset.id}', this.checked)">
               <div class="asset-card-thumb" style="${thumbStyle}" onclick="App.selectAsset('${asset.id}')">
                 ${thumbInner}
                 <span class="asset-card-category">${asset.kategori}</span>
+                ${asset.isPinned ? `<span class="thumb-pin-badge" title="Prioritas Idle"><i class="fa-solid fa-thumbtack"></i></span>` : ''}
               </div>
               <div class="asset-card-content" onclick="App.selectAsset('${asset.id}')">
                 <h5 class="asset-card-title">${asset.namaBarang}</h5>
@@ -854,11 +853,11 @@ const App = {
 
       return `
         <div class="asset-card ${isSelected} mb-2 ${!asset.hasCoordinates ? 'unmapped-card' : ''}" style="position: relative;">
-          ${asset.isPinned ? `<span class="pin-mini-badge" title="Prioritas Idle"><i class="fa-solid fa-thumbtack"></i></span>` : ''}
           <input type="checkbox" class="custom-checkbox asset-export-cb" data-asset-id="${asset.id}" ${isChecked} onchange="App.toggleSelectAssetForExport('${asset.id}', this.checked)">
           <div class="asset-card-thumb" style="${thumbStyle}" onclick="App.selectAsset('${asset.id}')">
             ${thumbInner}
             <span class="asset-card-category">${asset.kategori}</span>
+            ${asset.isPinned ? `<span class="thumb-pin-badge" title="Prioritas Idle"><i class="fa-solid fa-thumbtack"></i></span>` : ''}
           </div>
           <div class="asset-card-content" onclick="App.selectAsset('${asset.id}')">
             <h5 class="asset-card-title">${asset.namaBarang}</h5>
@@ -1163,17 +1162,9 @@ const App = {
             <span style="line-height:1.5;"><i class="fa-solid fa-building-flag text-danger" style="margin-right:10px; margin-left:2px;"></i> <strong>Jarak ke Ibukota Prov. Bali (Denpasar):</strong></span>
             <span class="badge badge-pastel-blue" style="font-size:11px; padding:6px 12px; border-radius:12px; margin-left:8px; flex-shrink:0;">${multiDist.provincialCapital.distanceKm} km</span>
           </div>
-          <div class="d-flex justify-content-between align-items-center" style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:10px; margin-bottom:10px;">
+          <div class="d-flex justify-content-between align-items-center" style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:10px;">
             <span style="line-height:1.5;"><i class="fa-solid fa-landmark text-secondary" style="margin-right:10px; margin-left:2px;"></i> <strong>Jarak ke Ibukota Kab. Terdekat (${multiDist.regencyCapital ? multiDist.regencyCapital.name : asset.kabupaten}):</strong></span>
             <span class="badge badge-pastel-purple" style="font-size:11px; padding:6px 12px; border-radius:12px; margin-left:8px; flex-shrink:0;">${multiDist.regencyCapital ? multiDist.regencyCapital.distanceKm + ' km' : '-'}</span>
-          </div>
-          <div class="d-flex justify-content-between align-items-center" style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:10px; margin-bottom:10px;">
-            <span style="line-height:1.5;"><i class="fa-solid fa-store text-warning" style="margin-right:10px; margin-left:2px;"></i> <strong>Jarak ke ${multiDist.districtCenter.name}:</strong></span>
-            <span class="badge badge-pastel-orange" style="font-size:11px; padding:6px 12px; border-radius:12px; margin-left:8px; flex-shrink:0;">${multiDist.districtCenter.distanceKm} km</span>
-          </div>
-          <div class="d-flex justify-content-between align-items-center" style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:10px;">
-            <span style="line-height:1.5;"><i class="fa-solid fa-house-user text-success" style="margin-right:10px; margin-left:2px;"></i> <strong>Jarak ke ${multiDist.villageCenter.name}:</strong></span>
-            <span class="badge badge-pastel-mint" style="font-size:11px; padding:6px 12px; border-radius:12px; margin-left:8px; flex-shrink:0;">${multiDist.villageCenter.distanceKm} km</span>
           </div>
         </div>
       </div>
@@ -1878,6 +1869,47 @@ const App = {
       localStorage.setItem('bmn_idle_apps_script_url', url);
       this.showToast('URL Google Apps Script berhasil disimpan!');
       this.closeGoogleSheetsModal();
+    }
+  },
+
+  async syncLiveDatasetManual() {
+    const btn = document.getElementById('btn-sync-sheet');
+    const icon = btn ? btn.querySelector('i') : null;
+    const label = btn ? btn.querySelector('span') : null;
+
+    if (btn) {
+      btn.disabled = true;
+      if (icon) icon.className = 'fa-solid fa-arrows-rotate fa-spin text-primary';
+      if (label) label.textContent = 'Menyinkronkan...';
+    }
+
+    this.showToast('🔄 Menghubungkan ke Google Sheets...', 'info');
+
+    try {
+      const synced = await DataEngine.syncLiveDatasetFromSheet();
+      if (synced) {
+        this.activeAssets = DataEngine.activeAssets || [];
+        this.populateKabupatenOptions();
+        this.updateKPIStats();
+        this.renderClusterAccordion();
+        this.renderAllAssetsList();
+
+        const mapped = this.activeAssets.filter(a => a.hasCoordinates);
+        MapEngine.renderBMNMarkers(mapped, (asset) => this.selectAsset(asset.id));
+
+        this.showToast(`✅ Data Google Sheets tersinkron! (${this.activeAssets.length} unit)`, 'success');
+      } else {
+        this.showToast('⚠️ Gagal sinkron otomatis. Menggunakan data cache.', 'warning');
+      }
+    } catch (err) {
+      console.warn('Manual sync error:', err);
+      this.showToast('⚠️ Gagal menghubungi server Google Sheets.', 'warning');
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        if (icon) icon.className = 'fa-solid fa-arrows-rotate text-success';
+        if (label) label.textContent = 'Sync Sheets';
+      }
     }
   },
 

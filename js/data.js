@@ -118,7 +118,7 @@ const DataEngine = {
         fotoList = fotoUrlsVal.split(',').map(u => u.trim()).filter(u => u.length > 0 && !u.includes('images.unsplash.com'));
       }
 
-      const kabupaten = this.detectKabupaten(satkerName, barangName, lat, lng);
+      const kabupaten = this.detectKabupaten(row, satkerName, barangName, lat, lng);
       const kecamatan = this.detectKecamatan(satkerName, barangName, lat, lng);
       const kelurahan = this.detectKelurahan(satkerName, barangName, lat, lng);
 
@@ -416,8 +416,65 @@ const DataEngine = {
     return asset.isPinned;
   },
 
-  detectKabupaten(satker, namaBarang, lat, lng) {
-    // 1. Primary & Most Accurate: GPS Coordinate Distance to Regency Capitals
+  detectKabupaten(row, satker, namaBarang, lat, lng) {
+    // 1. Direct Column Check from Google Sheet if provided
+    if (row) {
+      const explicitKab = row.kabupaten || row.Kabupaten || row.KABUPATEN || row.kota || row.Kota || '';
+      if (explicitKab && String(explicitKab).trim().length > 2) {
+        const kabStr = String(explicitKab).trim();
+        if (!kabStr.toLowerCase().startsWith('kabupaten') && !kabStr.toLowerCase().startsWith('kota')) {
+          return kabStr.toLowerCase().includes('denpasar') ? `Kota ${kabStr}` : `Kabupaten ${kabStr}`;
+        }
+        return kabStr;
+      }
+    }
+
+    // 2. High-Precision GIS Boundary Check from Pola Ruang (ATR/BPN)
+    if (lat !== null && lng !== null && typeof PolaRuangEngine !== 'undefined' && PolaRuangEngine.isLoaded) {
+      const zoning = PolaRuangEngine.getZoningForPoint(lat, lng);
+      if (zoning && zoning.kabupaten && zoning.kabupaten !== 'Provinsi Bali') {
+        return zoning.kabupaten;
+      }
+    }
+
+    // 3. Keyword Match on Satker, Nama Barang, Alamat, and Catatan
+    const text = (
+      String(satker || '') + ' ' +
+      String(namaBarang || '') + ' ' +
+      String(row?.alamat || '') + ' ' +
+      String(row?.hasil_jawaban || '') + ' ' +
+      String(row?.catatan_tim || '')
+    ).toLowerCase();
+
+    if (text.includes('tabanan') || text.includes('pupuan') || text.includes('baturiti') || text.includes('selemadeg') || text.includes('marga') || text.includes('penebel') || text.includes('kediri tabanan') || text.includes('kerambitan')) {
+      return 'Kabupaten Tabanan';
+    }
+    if (text.includes('buleleng') || text.includes('singaraja') || text.includes('sukasada') || text.includes('seririt') || text.includes('gerokgak') || text.includes('kubutambahan') || text.includes('sawan') || text.includes('busungbiu')) {
+      return 'Kabupaten Buleleng';
+    }
+    if (text.includes('gianyar') || text.includes('ubud') || text.includes('sukawati') || text.includes('blahbatuh') || text.includes('tampaksiring') || text.includes('payangan') || text.includes('tegallalang')) {
+      return 'Kabupaten Gianyar';
+    }
+    if (text.includes('badung') || text.includes('kuta') || text.includes('tuban') || text.includes('canggu') || text.includes('berawa') || text.includes('mengwi') || text.includes('abiansemal') || text.includes('petang') || text.includes('jimbaran') || text.includes('nusa dua')) {
+      return 'Kabupaten Badung';
+    }
+    if (text.includes('karangasem') || text.includes('amlapura') || text.includes('manggis') || text.includes('rendang') || text.includes('sidemen') || text.includes('selat') || text.includes('bebandem') || text.includes('kubu')) {
+      return 'Kabupaten Karangasem';
+    }
+    if (text.includes('klungkung') || text.includes('semarapura') || text.includes('nusa penida') || text.includes('banjarangkan') || text.includes('dawan')) {
+      return 'Kabupaten Klungkung';
+    }
+    if (text.includes('bangli') || text.includes('kintamani') || text.includes('susut') || text.includes('tembuku')) {
+      return 'Kabupaten Bangli';
+    }
+    if (text.includes('jembrana') || text.includes('negara') || text.includes('mendoyo') || text.includes('pekutatan') || text.includes('melaya')) {
+      return 'Kabupaten Jembrana';
+    }
+    if (text.includes('denpasar') || text.includes('renon') || text.includes('sanur') || text.includes('sesetan') || text.includes('suwung') || text.includes('pemecutan') || text.includes('kesiman') || text.includes('panjer')) {
+      return 'Kota Denpasar';
+    }
+
+    // 4. GPS Distance Fallback
     if (lat !== null && lng !== null && typeof SpatialEngine !== 'undefined') {
       const regencyCapitals = {
         'Kota Denpasar': { lat: -8.6705, lng: 115.2260 },
@@ -445,17 +502,6 @@ const DataEngine = {
 
       return closestKabupaten;
     }
-
-    // 2. Keyword Fallback (Explicit regency names ONLY, no ambiguous words like "negara")
-    const text = (String(satker) + ' ' + String(namaBarang)).toLowerCase();
-    if (text.includes('tabanan')) return 'Kabupaten Tabanan';
-    if (text.includes('buleleng') || text.includes('singaraja')) return 'Kabupaten Buleleng';
-    if (text.includes('gianyar') || text.includes('ubud')) return 'Kabupaten Gianyar';
-    if (text.includes('badung') || text.includes('kuta') || text.includes('tuban') || text.includes('canggu') || text.includes('berawa')) return 'Kabupaten Badung';
-    if (text.includes('karangasem') || text.includes('amlapura')) return 'Kabupaten Karangasem';
-    if (text.includes('klungkung') || text.includes('semarapura')) return 'Kabupaten Klungkung';
-    if (text.includes('bangli')) return 'Kabupaten Bangli';
-    if (text.includes('jembrana')) return 'Kabupaten Jembrana';
 
     return 'Kota Denpasar';
   },

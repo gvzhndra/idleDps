@@ -217,29 +217,30 @@ body {
 }
 
 .hero-cat-item .cat-title {
-  font-size: 11.5px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 800;
   color: var(--text-main);
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
 
 .hero-cat-item .cat-subtext {
-  font-size: 9.5px;
-  color: var(--text-muted);
-  margin-top: 1px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 11px;
+  color: #475569;
+  font-weight: 500;
+  margin-top: 2px;
+  line-height: 1.35;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .hero-cat-item .cat-badge-val {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 800;
   font-family: var(--font-display);
-  padding: 2px 8px;
-  border-radius: 6px;
+  padding: 3px 9px;
+  border-radius: 7px;
   margin-left: 8px;
   flex-shrink: 0;
 }
@@ -304,25 +305,25 @@ body {
 }
 
 .stat-card-header label {
-  font-size: 10px;
-  color: var(--text-muted);
+  font-size: 12.5px;
+  color: var(--text-main);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.3px;
   margin-bottom: 0;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
 
 .stat-icon {
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 13px;
   flex-shrink: 0;
 }
 
@@ -345,16 +346,16 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 6px;
+  padding: 5px 7px;
   border-radius: 6px;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .meta-strip-item small {
   display: block;
-  font-size: 8px;
+  font-size: 9.5px;
   color: var(--text-muted);
   text-transform: uppercase;
   font-weight: 700;
@@ -362,7 +363,7 @@ body {
 }
 
 .meta-strip-item strong {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 800;
   line-height: 1.1;
   font-family: var(--font-display);
@@ -494,7 +495,7 @@ body {
 
 .tahap-box-info small {
   display: block;
-  font-size: 8.5px;
+  font-size: 9.5px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -505,12 +506,12 @@ body {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 11px;
+  font-size: 12.5px;
   font-weight: 800;
 }
 
 .tahap-box-val {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 800;
   font-family: var(--font-display);
 }
@@ -613,7 +614,7 @@ body {
 }
 
 .stat-info .stat-value {
-  font-size: 13.5px;
+  font-size: 22px;
   font-weight: 800;
   font-family: var(--font-display);
   color: var(--text-main);
@@ -621,9 +622,10 @@ body {
 }
 
 .stat-subtext {
-  font-size: 9px;
+  font-size: 11px;
   color: var(--text-muted);
-  margin-top: 1px;
+  margin-top: 2px;
+  font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -968,17 +970,51 @@ body {
 
 .asset-card-content {
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
 .asset-card-title {
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 700;
   color: var(--text-main);
-  line-height: 1.25;
-  margin-bottom: 2px;
+  line-height: 1.3;
+  margin-bottom: 3px;
+  word-break: break-word;
+}
+
+.badge-klasifikasi {
+  max-width: 100%;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.35;
+  display: inline-flex;
+  align-items: center;
+  font-size: 10.5px;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+/* THUMBNAIL PIN BADGE: NEVER OVERLAPS TITLE TEXT */
+.thumb-pin-badge {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  z-index: 5;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: #ffffff;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9.5px;
+  box-shadow: 0 2px 6px rgba(231, 76, 60, 0.45);
+  border: 1.5px solid #ffffff;
 }
 
 .asset-card-meta {
