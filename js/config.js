@@ -5,8 +5,8 @@
 
 const CONFIG = {
   // Application Version & Release Metadata
-  VERSION: 'v2.6.2',
-  VERSION_NAME: 'Executive High-Contrast Typography & Accurate Regency Classification',
+  VERSION: 'v2.6.3',
+  VERSION_NAME: 'Clean Map View & Drawer-Integrated Zoning Legends',
 
   // Office Reference for Distance Calculations (KPKNL Denpasar Official Coordinates)
   KPKNL_OFFICE: {

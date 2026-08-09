@@ -1108,6 +1108,28 @@ const App = {
             <span style="color:#64748b; display:block; margin-bottom:2px;"><i class="fa-solid fa-triangle-exclamation text-danger"></i> Kerawanan Bencana (KRB):</span>
             <strong style="${zoningInfo.rawanBencana !== 'Tidak Ada Riwayat Rawan Tinggi' ? 'color:#c0392b;' : 'color:#10b981;'}">${zoningInfo.rawanBencana}</strong>
           </div>
+
+          <!-- PANDUAN WARNA ZONASI ATR/BPN (DRAWER ACCORDION) -->
+          <details class="mt-3" style="background:#ffffff; border:1px solid #e2e8f0; border-radius:8px; padding:7px 10px; font-size:11px;">
+            <summary style="font-weight:700; color:var(--text-main); cursor:pointer; display:flex; align-items:center; justify-content:space-between;">
+              <span style="display:flex; align-items:center; gap:6px;">
+                <i class="fa-solid fa-palette" style="color:var(--pastel-blue);"></i> <strong>Panduan Warna Zonasi ATR/BPN</strong>
+              </span>
+              <i class="fa-solid fa-chevron-down" style="font-size:10px; color:#94a3b8;"></i>
+            </summary>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:8px; padding-top:8px; border-top:1px dashed #cbd5e1;">
+              <div style="display:flex; align-items:center; gap:6px; font-size:10px;"><span style="width:11px; height:11px; border-radius:3px; background:#e91e63; display:inline-block; flex-shrink:0;"></span> Pariwisata</div>
+              <div style="display:flex; align-items:center; gap:6px; font-size:10px;"><span style="width:11px; height:11px; border-radius:3px; background:#e67e22; display:inline-block; flex-shrink:0;"></span> Permukiman</div>
+              <div style="display:flex; align-items:center; gap:6px; font-size:10px;"><span style="width:11px; height:11px; border-radius:3px; background:#27ae60; display:inline-block; flex-shrink:0;"></span> Pertanian</div>
+              <div style="display:flex; align-items:center; gap:6px; font-size:10px;"><span style="width:11px; height:11px; border-radius:3px; background:#00bcd4; display:inline-block; flex-shrink:0;"></span> Perikanan</div>
+              <div style="display:flex; align-items:center; gap:6px; font-size:10px;"><span style="width:11px; height:11px; border-radius:3px; background:#1b5e20; display:inline-block; flex-shrink:0;"></span> Konservasi</div>
+              <div style="display:flex; align-items:center; gap:6px; font-size:10px;"><span style="width:11px; height:11px; border-radius:3px; background:#004d40; display:inline-block; flex-shrink:0;"></span> Mangrove</div>
+              <div style="display:flex; align-items:center; gap:6px; font-size:10px;"><span style="width:11px; height:11px; border-radius:3px; background:#c0392b; display:inline-block; flex-shrink:0;"></span> Transportasi</div>
+              <div style="display:flex; align-items:center; gap:6px; font-size:10px;"><span style="width:11px; height:11px; border-radius:3px; background:#00897b; display:inline-block; flex-shrink:0;"></span> Perlindungan Setempat</div>
+              <div style="display:flex; align-items:center; gap:6px; font-size:10px;"><span style="width:11px; height:11px; border-radius:3px; background:#546e7a; display:inline-block; flex-shrink:0;"></span> Industri</div>
+              <div style="display:flex; align-items:center; gap:6px; font-size:10px;"><span style="width:11px; height:11px; border-radius:3px; background:#0288d1; display:inline-block; flex-shrink:0;"></span> Badan Air</div>
+            </div>
+          </details>
         </div>
       </div>
       ` : ''}
@@ -1207,8 +1229,17 @@ const App = {
 
       <div class="detail-section-card mb-4">
         <div class="d-flex justify-content-between align-items-center mb-2">
-          <h4 class="section-title mb-0"><i class="fa-solid fa-bullseye text-primary" style="margin-right:6px;"></i> Proksimitas POI Real-Time (OSM Overpass API)</h4>
+          <h4 class="section-title mb-0"><i class="fa-solid fa-bullseye text-primary" style="margin-right:6px;"></i> Proksimitas POI (Radius 500m)</h4>
           <span class="badge badge-pastel-blue">${catchmentData ? catchmentData.totalCount : 0} POI Ditemukan</span>
+        </div>
+        <!-- MINI POI CATEGORY STRIP -->
+        <div style="display:flex; flex-wrap:wrap; gap:4px 8px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:6px 10px; margin-bottom:8px; font-size:9.5px; color:#475569;">
+          <span style="display:inline-flex; align-items:center; gap:4px;"><span style="width:8px; height:8px; border-radius:50%; background:#e67e22; display:inline-block;"></span> Pendidikan</span>
+          <span style="display:inline-flex; align-items:center; gap:4px;"><span style="width:8px; height:8px; border-radius:50%; background:#3498db; display:inline-block;"></span> Keamanan</span>
+          <span style="display:inline-flex; align-items:center; gap:4px;"><span style="width:8px; height:8px; border-radius:50%; background:#9b59b6; display:inline-block;"></span> Instansi</span>
+          <span style="display:inline-flex; align-items:center; gap:4px;"><span style="width:8px; height:8px; border-radius:50%; background:#e74c3c; display:inline-block;"></span> Kesehatan</span>
+          <span style="display:inline-flex; align-items:center; gap:4px;"><span style="width:8px; height:8px; border-radius:50%; background:#f1c40f; display:inline-block;"></span> Komersial</span>
+          <span style="display:inline-flex; align-items:center; gap:4px;"><span style="width:8px; height:8px; border-radius:50%; background:#1abc9c; display:inline-block;"></span> Transportasi</span>
         </div>
         <div class="poi-list-container">
           ${catchmentPoiHtml || `<p class="text-muted text-center p-3" style="font-size:11px; background:#f8fafc; border-radius:8px;"><i class="fa-solid fa-info-circle"></i> Tidak ada POI utama dalam radius 500m.</p>`}
@@ -1264,10 +1295,6 @@ const App = {
       btn.innerHTML = isEnabled 
         ? '<i class="fa-solid fa-map-location-dot text-primary"></i> Pola Ruang: ON' 
         : '<i class="fa-regular fa-map text-muted"></i> Pola Ruang: OFF';
-    }
-    const legend = document.getElementById('pola-ruang-legend-card');
-    if (legend) {
-      legend.style.display = isEnabled ? 'block' : 'none';
     }
     this.showToast(isEnabled ? '🗺️ Layer Pola Ruang Catchment diaktifkan' : '🗺️ Layer Pola Ruang dinonaktifkan', 'info');
   },
