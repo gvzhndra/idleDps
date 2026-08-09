@@ -270,6 +270,40 @@ const PolaRuangEngine = {
   },
 
   /**
+   * Geometrically clips zoning features strictly inside the circle catchment using Turf.js
+   */
+  getClippedCatchmentFeatures(centerLat, centerLng, radiusMeters = 500) {
+    const rawFeatures = this.getFeaturesInCatchment(centerLat, centerLng, radiusMeters * 1.5);
+    if (!rawFeatures.length) return [];
+
+    if (typeof turf === 'undefined') {
+      return rawFeatures;
+    }
+
+    try {
+      const circlePoly = turf.circle([centerLng, centerLat], radiusMeters / 1000, { steps: 36, units: 'kilometers' });
+      const clipped = [];
+
+      rawFeatures.forEach(f => {
+        try {
+          const intersection = turf.intersect(f, circlePoly);
+          if (intersection && intersection.geometry) {
+            intersection.properties = f.properties;
+            clipped.push(intersection);
+          }
+        } catch (e) {
+          clipped.push(f);
+        }
+      });
+
+      return clipped.length > 0 ? clipped : rawFeatures;
+    } catch (err) {
+      console.warn('[PolaRuangEngine] Turf clipping fallback:', err);
+      return rawFeatures;
+    }
+  },
+
+  /**
    * Point-in-Polygon (Ray Casting) algorithm to find exact zoning for an asset point
    */
   getZoningForPoint(lat, lng) {

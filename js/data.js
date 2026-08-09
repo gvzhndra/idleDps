@@ -164,7 +164,7 @@ const DataEngine = {
         fotoList: fotoList,
         isPinned: isPinnedFromRow,
         suratJawaban: row['SURAT JAWABAN PENGGUNA BARANG'] || row.surat_jawaban || '-',
-        tglSurat: row['TANGGAL SURAT JAWABAN PENGGUNA BARANG'] || row.tgl_surat || '-',
+        tglSurat: this.formatSuratDate(row['TANGGAL SURAT JAWABAN PENGGUNA BARANG'] || row.tgl_surat || '-'),
         hasilJawaban: row['HASIL JAWABAN'] || row.hasil_jawaban || row.kondisi || '',
         tahapBerikut: normTahap,
         penyampaianKlarifikasi: row['PENYAMPAIAN_KLARIFIKASI_REKAP'] || 'SUDAH'
@@ -178,6 +178,51 @@ const DataEngine = {
     });
 
     this.loadCustomOverrides();
+  },
+
+  /**
+   * Converts Excel/Google Sheets Serial Date numbers (e.g. 46155.0) and date strings into human Indonesian date
+   */
+  formatSuratDate(val) {
+    if (!val || val === '-' || val === 'null' || val === 'undefined') return '-';
+    const strVal = String(val).trim();
+
+    // 1. Excel/Sheets Date Serial (e.g. 46155.0 or 46155)
+    const num = parseFloat(strVal);
+    if (!isNaN(num) && num > 30000 && num < 60000) {
+      const jsDate = new Date(Math.round((num - 25569) * 86400 * 1000));
+      if (!isNaN(jsDate.getTime())) {
+        const d = jsDate.getUTCDate();
+        const m = jsDate.getUTCMonth() + 1;
+        const y = jsDate.getUTCFullYear();
+        const monthNames = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        return `${d} ${monthNames[m] || ''} ${y}`;
+      }
+    }
+
+    // 2. Format YYYY-MM-DD or MM/DD/YYYY or DD/MM/YYYY
+    if (strVal.includes('/') || strVal.includes('-')) {
+      const parts = strVal.split(/[\/\-]/);
+      if (parts.length === 3) {
+        let d, m, y;
+        if (parts[0].length === 4) {
+          // YYYY-MM-DD
+          y = parts[0]; m = parseInt(parts[1], 10); d = parseInt(parts[2], 10);
+        } else if (parseInt(parts[0], 10) > 12) {
+          // DD/MM/YYYY
+          d = parseInt(parts[0], 10); m = parseInt(parts[1], 10); y = parts[2];
+        } else {
+          // MM/DD/YYYY or M/D/YYYY
+          m = parseInt(parts[0], 10); d = parseInt(parts[1], 10); y = parts[2];
+        }
+        const monthNames = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        if (m >= 1 && m <= 12) {
+          return `${d} ${monthNames[m]} ${y}`;
+        }
+      }
+    }
+
+    return strVal;
   },
 
   /**
@@ -446,10 +491,13 @@ const DataEngine = {
       String(row?.catatan_tim || '')
     ).toLowerCase();
 
-    if (text.includes('tabanan') || text.includes('pupuan') || text.includes('baturiti') || text.includes('selemadeg') || text.includes('marga') || text.includes('penebel') || text.includes('kediri tabanan') || text.includes('kerambitan')) {
+    if (text.includes('tabanan') || text.includes('pupuan') || text.includes('baturiti') || text.includes('bedugul') || text.includes('selemadeg') || text.includes('marga') || text.includes('penebel') || text.includes('kediri tabanan') || text.includes('kerambitan')) {
       return 'Kabupaten Tabanan';
     }
-    if (text.includes('buleleng') || text.includes('singaraja') || text.includes('sukasada') || text.includes('seririt') || text.includes('gerokgak') || text.includes('kubutambahan') || text.includes('sawan') || text.includes('busungbiu')) {
+    if (text.includes('karangasem') || text.includes('amed') || text.includes('candidasa') || text.includes('tulamben') || text.includes('purwakerti') || text.includes('amlapura') || text.includes('manggis') || text.includes('rendang') || text.includes('sidemen') || text.includes('selat') || text.includes('bebandem') || text.includes('kubu')) {
+      return 'Kabupaten Karangasem';
+    }
+    if (text.includes('buleleng') || text.includes('seririt') || text.includes('lovina') || text.includes('singaraja') || text.includes('sukasada') || text.includes('gerokgak') || text.includes('kubutambahan') || text.includes('sawan') || text.includes('busungbiu') || text.includes('tejakula')) {
       return 'Kabupaten Buleleng';
     }
     if (text.includes('gianyar') || text.includes('ubud') || text.includes('sukawati') || text.includes('blahbatuh') || text.includes('tampaksiring') || text.includes('payangan') || text.includes('tegallalang')) {
@@ -458,16 +506,13 @@ const DataEngine = {
     if (text.includes('badung') || text.includes('kuta') || text.includes('tuban') || text.includes('canggu') || text.includes('berawa') || text.includes('mengwi') || text.includes('abiansemal') || text.includes('petang') || text.includes('jimbaran') || text.includes('nusa dua')) {
       return 'Kabupaten Badung';
     }
-    if (text.includes('karangasem') || text.includes('amlapura') || text.includes('manggis') || text.includes('rendang') || text.includes('sidemen') || text.includes('selat') || text.includes('bebandem') || text.includes('kubu')) {
-      return 'Kabupaten Karangasem';
-    }
     if (text.includes('klungkung') || text.includes('semarapura') || text.includes('nusa penida') || text.includes('banjarangkan') || text.includes('dawan')) {
       return 'Kabupaten Klungkung';
     }
     if (text.includes('bangli') || text.includes('kintamani') || text.includes('susut') || text.includes('tembuku')) {
       return 'Kabupaten Bangli';
     }
-    if (text.includes('jembrana') || text.includes('negara') || text.includes('mendoyo') || text.includes('pekutatan') || text.includes('melaya')) {
+    if (text.includes('jembrana') || text.includes('mendoyo') || text.includes('pekutatan') || text.includes('melaya') || text.includes('gilimanuk') || (/\bkota negara\b|\bkecamatan negara\b/.test(text))) {
       return 'Kabupaten Jembrana';
     }
     if (text.includes('denpasar') || text.includes('renon') || text.includes('sanur') || text.includes('sesetan') || text.includes('suwung') || text.includes('pemecutan') || text.includes('kesiman') || text.includes('panjer')) {

@@ -269,9 +269,9 @@ const MapEngine = {
   },
 
   /**
-   * Render Pola Tata Ruang polygons inside the asset's catchment focus area
+   * Render Pola Tata Ruang polygons strictly clipped inside the asset's catchment radius (500m)
    */
-  async renderCatchmentPolaRuang(asset, radiusMeters = 1000) {
+  async renderCatchmentPolaRuang(asset, radiusMeters = 500) {
     this.clearPolaRuang();
 
     if (!this.isPolaRuangEnabled || !asset || !asset.lat || !asset.lng) return;
@@ -281,7 +281,7 @@ const MapEngine = {
       await PolaRuangEngine.loadDataset();
     }
 
-    const features = PolaRuangEngine.getFeaturesInCatchment(asset.lat, asset.lng, radiusMeters);
+    const features = PolaRuangEngine.getClippedCatchmentFeatures(asset.lat, asset.lng, radiusMeters);
     if (!features || !features.length) return;
 
     const featureCollection = {

@@ -5,8 +5,8 @@
 
 const CONFIG = {
   // Application Version & Release Metadata
-  VERSION: 'v2.6.9',
-  VERSION_NAME: 'Ultra-Fast 60FPS Catchment Pola Ruang GeoJSON Rendering',
+  VERSION: 'v2.7.0',
+  VERSION_NAME: 'Geometric Catchment Clipping Mask, Date Serial Formatting, & Regency Accuracy',
 
   // Office Reference for Distance Calculations (KPKNL Denpasar Official Coordinates)
   KPKNL_OFFICE: {
