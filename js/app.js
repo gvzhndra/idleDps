@@ -79,7 +79,9 @@ const App = {
     this.loadPhotosFromSheet();
     this.loadLiveDatasetFromSheet();
     if (typeof PolaRuangEngine !== 'undefined') {
-      PolaRuangEngine.loadDataset();
+      PolaRuangEngine.loadDataset().then(() => {
+        this.enrichAssetLocationsWithPolaRuang();
+      });
     }
   },
 
@@ -563,10 +565,9 @@ const App = {
         return `
           <div class="tahap-box ${colorClass}" onclick="event.stopPropagation(); App.setTahapFilter('${tCode}')" title="Filter: ${tCode} (${tCount} Unit)">
             <div class="tahap-box-info">
-              <small>Tahap ${tIdx + 1}</small>
-              <strong style="font-size:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"><i class="fa-solid ${iconClass}"></i> ${tCode}</strong>
+              <strong style="font-size:11.5px; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"><i class="fa-solid ${iconClass}"></i> ${tCode}</strong>
             </div>
-            <div class="tahap-box-val" style="font-size:14px;">${tCount}</div>
+            <div class="tahap-box-val" style="font-size:16px;">${tCount}</div>
           </div>
         `;
       }).join('');
@@ -975,6 +976,11 @@ const App = {
       ? PolaRuangEngine.getZoningForPoint(asset.lat, asset.lng)
       : null;
 
+    // Perfect synchronization: ensure asset kabupaten matches the official GIS polygon
+    if (zoningInfo && zoningInfo.kabupaten && zoningInfo.kabupaten !== 'Provinsi Bali') {
+      asset.kabupaten = zoningInfo.kabupaten;
+    }
+
     const rawPhotoUrl = (asset.fotoList && asset.fotoList.length > 0) ? asset.fotoList[this.currentPhotoIndex || 0] : '';
     const activePhotoUrl = this.formatPhotoUrl(rawPhotoUrl);
     const totalPhotos = asset.fotoList ? asset.fotoList.length : 0;
@@ -1049,7 +1055,7 @@ const App = {
         ${asset.isPinned ? `<span class="badge" style="background:linear-gradient(135deg, #e74c3c, #c0392b); color:#ffffff; font-size:10.5px; padding:4px 8px; border-radius:6px; margin-left:6px;"><i class="fa-solid fa-thumbtack"></i> Prioritas Idle</span>` : ''}
         <h3 style="font-size:15px; font-weight:800; margin-top:6px; color:var(--text-main); line-height:1.4;">${asset.namaBarang}</h3>
         <p style="font-size:11.5px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-building-user text-primary" style="margin-right:6px;"></i> ${asset.namaSatker}</p>
-        <p style="font-size:11.5px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-id-card text-secondary" style="margin-right:6px;"></i> Kode Satker: <strong style="color:var(--text-main);">${asset.kodeSatker || '-'}</strong> &bull; <i class="fa-solid fa-location-dot text-danger" style="margin-left:4px; margin-right:4px;"></i> ${asset.kabupaten}</p>
+        <p style="font-size:11.5px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-id-card text-secondary" style="margin-right:6px;"></i> Kode Satker: <strong style="color:var(--text-main);">${asset.kodeSatker || '-'}</strong> &bull; <i class="fa-solid fa-location-dot text-danger" style="margin-left:4px; margin-right:4px;"></i> <strong>${asset.kabupaten}</strong></p>
       </div>
 
       <!-- SURAT JAWABAN & TANGGAL SURAT CARD -->
@@ -1896,6 +1902,30 @@ const App = {
       localStorage.setItem('bmn_idle_apps_script_url', url);
       this.showToast('URL Google Apps Script berhasil disimpan!');
       this.closeGoogleSheetsModal();
+    }
+  },
+
+  enrichAssetLocationsWithPolaRuang() {
+    if (typeof PolaRuangEngine === 'undefined' || !PolaRuangEngine.isLoaded) return;
+
+    let updatedCount = 0;
+    this.activeAssets.forEach(asset => {
+      if (asset.hasCoordinates && typeof asset.lat === 'number' && typeof asset.lng === 'number') {
+        const zoning = PolaRuangEngine.getZoningForPoint(asset.lat, asset.lng);
+        if (zoning && zoning.kabupaten && zoning.kabupaten !== 'Provinsi Bali') {
+          if (asset.kabupaten !== zoning.kabupaten) {
+            asset.kabupaten = zoning.kabupaten;
+            updatedCount++;
+          }
+        }
+      }
+    });
+
+    if (updatedCount > 0) {
+      console.log(`[PolaRuangEngine] Automatically synchronized and perfected ${updatedCount} asset regency boundaries.`);
+      this.populateKabupatenOptions();
+      this.renderClusterAccordion();
+      this.renderAllAssetsList();
     }
   },
 

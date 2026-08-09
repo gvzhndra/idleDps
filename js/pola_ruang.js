@@ -151,9 +151,28 @@ const PolaRuangEngine = {
 
         const objectKey = Object.keys(topoData.objects)[0] || 'pola_ruang_bali';
         const geojson = topojson.feature(topoData, topoData.objects[objectKey]);
-        this.geoFeatures = geojson.features || [];
+        const rawFeatures = geojson.features || [];
 
-        // Precompute Bounding Box for ultra-fast spatial indexing
+        // Decompose MultiPolygons into Atomic Polygon Features for local catchment filtering
+        this.geoFeatures = [];
+        rawFeatures.forEach(f => {
+          if (f.geometry.type === 'Polygon') {
+            this.geoFeatures.push(f);
+          } else if (f.geometry.type === 'MultiPolygon') {
+            f.geometry.coordinates.forEach(polyCoords => {
+              this.geoFeatures.push({
+                type: 'Feature',
+                properties: f.properties,
+                geometry: {
+                  type: 'Polygon',
+                  coordinates: polyCoords
+                }
+              });
+            });
+          }
+        });
+
+        // Precompute Bounding Box for every atomic polygon
         this.indexedFeatures = this.geoFeatures.map(feat => {
           const bbox = this.calculateFeatureBBox(feat);
           return {
@@ -164,7 +183,7 @@ const PolaRuangEngine = {
 
         this.isLoaded = true;
         this.isLoading = false;
-        console.log(`[PolaRuangEngine] Loaded & indexed ${this.geoFeatures.length} spatial zones successfully.`);
+        console.log(`[PolaRuangEngine] Loaded & indexed ${this.indexedFeatures.length} atomic spatial zones successfully.`);
         return this.geoFeatures;
       } catch (err) {
         console.warn('[PolaRuangEngine] Error loading Pola Tata Ruang:', err);
@@ -204,16 +223,14 @@ const PolaRuangEngine = {
   },
 
   /**
-   * Get all zoning features that intersect with a circle catchment (lat, lng, radiusMeters)
-   * Super fast: uses Bounding Box filter + distance test
+   * Get all zoning features that intersect strictly with circle catchment
    */
-  getFeaturesInCatchment(centerLat, centerLng, radiusMeters = 1500) {
+  getFeaturesInCatchment(centerLat, centerLng, radiusMeters = 1000) {
     if (!this.isLoaded || !this.indexedFeatures.length) return [];
 
-    // Convert meters to approximate degree offsets
-    // 1 deg lat ~= 111.32 km = 111,320 m
-    const latOffset = (radiusMeters * 1.5) / 111320;
-    const lngOffset = (radiusMeters * 1.5) / (111320 * Math.cos(centerLat * Math.PI / 180));
+    // Degree offsets for catchment circle radius
+    const latOffset = (radiusMeters * 1.1) / 111320;
+    const lngOffset = (radiusMeters * 1.1) / (111320 * Math.cos(centerLat * Math.PI / 180));
 
     const catchmentBBox = {
       minLng: centerLng - lngOffset,
@@ -228,14 +245,25 @@ const PolaRuangEngine = {
       const item = this.indexedFeatures[i];
       const b = item.bbox;
 
-      // Bounding Box Overlap Check (Ultra fast, skips 99% of polygons)
+      // Ultra-fast Bounding Box Overlap Check
       if (b.maxLng < catchmentBBox.minLng || b.minLng > catchmentBBox.maxLng ||
           b.maxLat < catchmentBBox.minLat || b.minLat > catchmentBBox.maxLat) {
         continue;
       }
 
-      // Inside or touching catchment
-      matchingFeatures.push(item.feature);
+      // Check if feature ring has at least one coordinate within catchment
+      const ring = item.feature.geometry.coordinates[0];
+      if (ring && Array.isArray(ring)) {
+        const touches = ring.some(pt => {
+          return pt[0] >= catchmentBBox.minLng && pt[0] <= catchmentBBox.maxLng &&
+                 pt[1] >= catchmentBBox.minLat && pt[1] <= catchmentBBox.maxLat;
+        });
+        if (touches) {
+          matchingFeatures.push(item.feature);
+        }
+      }
+
+      if (matchingFeatures.length >= 35) break; // Keep UI ultra lightweight
     }
 
     return matchingFeatures;

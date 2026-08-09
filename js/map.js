@@ -282,66 +282,64 @@ const MapEngine = {
     }
 
     const features = PolaRuangEngine.getFeaturesInCatchment(asset.lat, asset.lng, radiusMeters);
-    if (!features || !features.length) return;
+    const featureCollection = {
+      type: 'FeatureCollection',
+      features: features
+    };
 
-    features.forEach(feat => {
-      const p = feat.properties || {};
-      const zoneName = p.NAMOBJ || 'Kawasan Terbuka';
-      const style = PolaRuangEngine.getZoningStyle(zoneName);
-
-      const geoLayer = L.geoJSON(feat, {
-        style: () => ({
+    const geoLayer = L.geoJSON(featureCollection, {
+      style: (feature) => {
+        const zoneName = feature.properties?.NAMOBJ || 'Kawasan Terbuka';
+        const style = PolaRuangEngine.getZoningStyle(zoneName);
+        return {
           color: style.color,
           fillColor: style.fillColor,
           fillOpacity: 0.35,
           weight: 1.5,
           opacity: 0.85,
           dashArray: '3, 3'
-        }),
-        onEachFeature: (feature, layer) => {
-          // Hover highlighting
-          layer.on({
-            mouseover: (e) => {
-              const l = e.target;
-              l.setStyle({
-                fillOpacity: 0.65,
-                weight: 3,
-                opacity: 1
-              });
-              if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-                l.bringToFront();
-              }
-            },
-            mouseout: (e) => {
-              geoLayer.resetStyle(e.target);
+        };
+      },
+      onEachFeature: (feature, layer) => {
+        const p = feature.properties || {};
+        const zoneName = p.NAMOBJ || 'Kawasan Terbuka';
+        const style = PolaRuangEngine.getZoningStyle(zoneName);
+
+        layer.on({
+          mouseover: (e) => {
+            const l = e.target;
+            l.setStyle({ fillOpacity: 0.65, weight: 2.5, opacity: 1 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+              l.bringToFront();
             }
-          });
+          },
+          mouseout: (e) => {
+            geoLayer.resetStyle(e.target);
+          }
+        });
 
-          // Tooltip info
-          const remarkHtml = (p.REMARK && p.REMARK !== 'Tidak Ada')
-            ? `<div style="font-size:10px; color:#e67e22; margin-top:2px;"><i class="fa-solid fa-circle-info"></i> ${p.REMARK}</div>`
-            : '';
-          const disasterHtml = (p.KRB_03 && p.KRB_03 !== 'Tidak Ada')
-            ? `<div style="font-size:9.5px; color:#e74c3c; margin-top:2px;"><i class="fa-solid fa-triangle-exclamation"></i> Rawan: ${p.KRB_03.split(',')[0]}</div>`
-            : '';
+        const remarkHtml = (p.REMARK && p.REMARK !== 'Tidak Ada')
+          ? `<div style="font-size:10px; color:#e67e22; margin-top:2px;"><i class="fa-solid fa-circle-info"></i> ${p.REMARK}</div>`
+          : '';
+        const disasterHtml = (p.KRB_03 && p.KRB_03 !== 'Tidak Ada')
+          ? `<div style="font-size:9.5px; color:#e74c3c; margin-top:2px;"><i class="fa-solid fa-triangle-exclamation"></i> Rawan: ${p.KRB_03.split(',')[0]}</div>`
+          : '';
 
-          const tooltipContent = `
-            <div class="pola-ruang-map-tooltip">
-              <div style="font-weight:700; font-size:12px; color:${style.color}; display:flex; align-items:center; gap:5px;">
-                <i class="fa-solid ${style.icon}"></i> ${zoneName}
-              </div>
-              <div style="font-size:11px; color:#64748b;">${p.WADMKK || 'Provinsi Bali'}</div>
-              ${remarkHtml}
-              ${disasterHtml}
+        const tooltipContent = `
+          <div class="pola-ruang-map-tooltip">
+            <div style="font-weight:700; font-size:12px; color:${style.color}; display:flex; align-items:center; gap:5px;">
+              <i class="fa-solid ${style.icon}"></i> ${zoneName}
             </div>
-          `;
-
-          layer.bindTooltip(tooltipContent, { sticky: true, className: 'pola-ruang-leaflet-tooltip' });
-        }
-      });
-
-      geoLayer.addTo(this.polaRuangLayerGroup);
+            <div style="font-size:11px; color:#64748b;">${p.WADMKK || 'Provinsi Bali'}</div>
+            ${remarkHtml}
+            ${disasterHtml}
+          </div>
+        `;
+        layer.bindTooltip(tooltipContent, { sticky: true, className: 'pola-ruang-leaflet-tooltip' });
+      }
     });
+
+    geoLayer.addTo(this.polaRuangLayerGroup);
   },
 
   clearPolaRuang() {
