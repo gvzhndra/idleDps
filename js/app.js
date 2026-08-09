@@ -911,9 +911,9 @@ const App = {
       MapEngine.drawKPKNLConnector(asset);
       MapEngine.drawCatchmentCircle(asset.lat, asset.lng, 500);
 
-      // Render Pola Tata Ruang inside Catchment Focus (High Performance & Beautiful Aesthetic)
+      // Render Pola Tata Ruang inside Catchment Focus Area (1km Radius)
       if (typeof MapEngine.renderCatchmentPolaRuang === 'function') {
-        MapEngine.renderCatchmentPolaRuang(asset, 1500);
+        MapEngine.renderCatchmentPolaRuang(asset, 1000);
       }
 
       // Temporary loading state for drawer body

@@ -5,8 +5,8 @@
 
 const CONFIG = {
   // Application Version & Release Metadata
-  VERSION: 'v2.6.7',
-  VERSION_NAME: 'Automated 100% GIS Regency Vector Boundary Synchronization',
+  VERSION: 'v2.6.9',
+  VERSION_NAME: 'Ultra-Fast 60FPS Catchment Pola Ruang GeoJSON Rendering',
 
   // Office Reference for Distance Calculations (KPKNL Denpasar Official Coordinates)
   KPKNL_OFFICE: {
