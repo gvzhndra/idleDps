@@ -5,8 +5,8 @@
 
 const CONFIG = {
   // Application Version & Release Metadata
-  VERSION: 'v2.7.4',
-  VERSION_NAME: 'Guaranteed 500m Geometric Pola Ruang Radar Crop & Zero Leaflet Error Fix',
+  VERSION: 'v1.0.0-stable1',
+  VERSION_NAME: 'BMN Idle Dashboard - Production Stable 1.0 (500m Radar Catchment, Pola Ruang ATR/BPN, Dynamic OSM POIs, Multi-Level Spatial)',
 
   // Office Reference for Distance Calculations (KPKNL Denpasar Official Coordinates)
   KPKNL_OFFICE: {
