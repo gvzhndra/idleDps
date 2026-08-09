@@ -5,8 +5,8 @@
 
 const CONFIG = {
   // Application Version & Release Metadata
-  VERSION: 'v2.7.0',
-  VERSION_NAME: 'Geometric Catchment Clipping Mask, Date Serial Formatting, & Regency Accuracy',
+  VERSION: 'v2.7.1',
+  VERSION_NAME: 'Detail Drawer Bottom Padding & Effortless Full Content Scrolling',
 
   // Office Reference for Distance Calculations (KPKNL Denpasar Official Coordinates)
   KPKNL_OFFICE: {

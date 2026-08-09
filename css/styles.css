@@ -1909,9 +1909,10 @@ body {
 
 /* DRAWER & METRICS CARD SPACING IMPROVEMENTS */
 .detail-drawer-body {
-  padding: 20px 18px !important;
+  padding: 20px 18px 80px 18px !important;
   overflow-y: auto;
   flex: 1;
+  scrollbar-gutter: stable;
 }
 
 .detail-metrics-grid {

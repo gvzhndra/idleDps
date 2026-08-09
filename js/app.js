@@ -1289,6 +1289,9 @@ const App = {
           </div>
         ` : ''}
       </div>
+
+      <!-- GENEROUS BOTTOM WHITESPACE SPACER FOR SMOOTH SCROLL -->
+      <div style="height: 60px; width: 100%;" aria-hidden="true"></div>
     `;
   },
 
