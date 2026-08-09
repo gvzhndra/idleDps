@@ -1585,10 +1585,10 @@ body {
   font-weight: 600;
 }
 
-.zoning-legend-card {
+/* FLOATING MAP LEGENDS (BOTTOM-LEFT & BOTTOM-RIGHT) */
+.map-floating-legend {
   position: absolute;
   bottom: 16px;
-  left: 16px;
   background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(10px);
   border: 1px solid var(--border-subtle);
@@ -1596,9 +1596,18 @@ body {
   padding: 8px 12px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   z-index: 800;
-  max-width: 290px;
   font-size: 10.5px;
-  transition: all 0.25s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.map-floating-legend.legend-bottom-left {
+  left: 16px;
+  max-width: 250px;
+}
+
+.map-floating-legend.legend-bottom-right {
+  right: 16px;
+  max-width: 280px;
 }
 
 .legend-header {
@@ -1608,7 +1617,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
+  gap: 8px;
   border-bottom: 1px solid var(--border-subtle);
   padding-bottom: 4px;
   cursor: pointer;
@@ -1623,8 +1632,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 3.5px;
-  max-height: 220px;
-  overflow-y: auto;
   transition: max-height 0.3s ease, opacity 0.25s ease;
 }
 
@@ -1634,6 +1641,12 @@ body {
   opacity: 0;
   margin: 0;
   padding: 0;
+}
+
+.legend-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3.5px 8px;
 }
 
 .legend-item {

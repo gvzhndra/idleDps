@@ -271,11 +271,15 @@ const MapEngine = {
   /**
    * Render Pola Tata Ruang polygons only inside the asset's catchment radius
    */
-  renderCatchmentPolaRuang(asset, radiusMeters = 1500) {
+  async renderCatchmentPolaRuang(asset, radiusMeters = 1500) {
     this.clearPolaRuang();
 
     if (!this.isPolaRuangEnabled || !asset || !asset.lat || !asset.lng) return;
     if (typeof PolaRuangEngine === 'undefined') return;
+
+    if (!PolaRuangEngine.isLoaded) {
+      await PolaRuangEngine.loadDataset();
+    }
 
     const features = PolaRuangEngine.getFeaturesInCatchment(asset.lat, asset.lng, radiusMeters);
     if (!features || !features.length) return;

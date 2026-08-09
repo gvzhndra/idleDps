@@ -5,8 +5,8 @@
 
 const CONFIG = {
   // Application Version & Release Metadata
-  VERSION: 'v2.6.3',
-  VERSION_NAME: 'Clean Map View & Drawer-Integrated Zoning Legends',
+  VERSION: 'v2.6.4',
+  VERSION_NAME: 'Asynchronous Pola Ruang Catchment & Left/Right Legends',
 
   // Office Reference for Distance Calculations (KPKNL Denpasar Official Coordinates)
   KPKNL_OFFICE: {

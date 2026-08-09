@@ -28,7 +28,7 @@
       </div>
       <div class="brand-text">
         <h1>BMN IDLE DASHBOARD</h1>
-        <p>KPKNL Denpasar <span class="badge badge-pastel-blue" style="font-size:9.5px; font-weight:800; padding:2px 6px; border-radius:6px; margin-left:4px;">v2.6.3</span></p>
+        <p>KPKNL Denpasar <span class="badge badge-pastel-blue" style="font-size:9.5px; font-weight:800; padding:2px 6px; border-radius:6px; margin-left:4px;">v2.6.4</span></p>
       </div>
     </div>
 
@@ -275,6 +275,44 @@
           <i class="fa-solid fa-map-location-dot text-primary"></i> Pola Ruang: ON
         </button>
       </div>
+
+      <!-- FLOATING POI 500M LEGEND (BOTTOM-LEFT) -->
+      <div class="map-floating-legend legend-bottom-left" id="poi-legend-card">
+        <div class="legend-header" onclick="document.getElementById('poi-legend-body').classList.toggle('collapsed')">
+          <span><i class="fa-solid fa-bullseye" style="color:var(--pastel-blue);"></i> <strong>Legenda POI (500m)</strong></span>
+          <i class="fa-solid fa-chevron-down" style="font-size:10px; cursor:pointer;"></i>
+        </div>
+        <div class="legend-body" id="poi-legend-body">
+          <div class="legend-item"><span class="legend-color" style="background:#e67e22;"></span> Pendidikan (Sekolah/Kampus)</div>
+          <div class="legend-item"><span class="legend-color" style="background:#3498db;"></span> Keamanan (Polsek/TNI)</div>
+          <div class="legend-item"><span class="legend-color" style="background:#9b59b6;"></span> Instansi (Desa/Pemda/KUA)</div>
+          <div class="legend-item"><span class="legend-color" style="background:#e74c3c;"></span> Kesehatan (RS/Puskesmas)</div>
+          <div class="legend-item"><span class="legend-color" style="background:#f1c40f;"></span> Komersial (Pasar/Pusat Bisnis)</div>
+          <div class="legend-item"><span class="legend-color" style="background:#1abc9c;"></span> Transportasi (Dermaga/Bandara)</div>
+        </div>
+      </div>
+
+      <!-- FLOATING POLA RUANG LEGEND (BOTTOM-RIGHT) -->
+      <div class="map-floating-legend legend-bottom-right" id="pola-ruang-legend-card">
+        <div class="legend-header" onclick="document.getElementById('pola-ruang-legend-body').classList.toggle('collapsed')">
+          <span><i class="fa-solid fa-map-location-dot" style="color:#e91e63;"></i> <strong>Legenda Pola Ruang</strong></span>
+          <i class="fa-solid fa-chevron-down" style="font-size:10px; cursor:pointer;"></i>
+        </div>
+        <div class="legend-body" id="pola-ruang-legend-body">
+          <div class="legend-grid-2col">
+            <div class="legend-item"><span class="legend-color" style="background:#e91e63;"></span> Pariwisata</div>
+            <div class="legend-item"><span class="legend-color" style="background:#e67e22;"></span> Permukiman</div>
+            <div class="legend-item"><span class="legend-color" style="background:#27ae60;"></span> Pertanian</div>
+            <div class="legend-item"><span class="legend-color" style="background:#00bcd4;"></span> Perikanan</div>
+            <div class="legend-item"><span class="legend-color" style="background:#1b5e20;"></span> Konservasi</div>
+            <div class="legend-item"><span class="legend-color" style="background:#004d40;"></span> Mangrove</div>
+            <div class="legend-item"><span class="legend-color" style="background:#c0392b;"></span> Transportasi</div>
+            <div class="legend-item"><span class="legend-color" style="background:#00897b;"></span> Lindung</div>
+            <div class="legend-item"><span class="legend-color" style="background:#546e7a;"></span> Industri</div>
+            <div class="legend-item"><span class="legend-color" style="background:#0288d1;"></span> Badan Air</div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- SLIDE-OVER DETAIL PANEL DRAWER -->
@@ -462,16 +500,16 @@
   <!-- PptxGenJS Library for PowerPoint Export -->
   <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 
-  <script src="js/config.js?v=2.6.3"></script>
-  <script src="js/pola_ruang.js?v=2.6.3"></script>
-  <script src="js/spatial.js?v=2.6.3"></script>
-  <script src="js/bmn_dataset.js?v=2.6.3"></script>
-  <script src="js/data.js?v=2.6.3"></script>
-  <script src="js/recommendation.js?v=2.6.3"></script>
-  <script src="js/map.js?v=2.6.3"></script>
-  <script src="js/app.js?v=2.6.3"></script>
+  <script src="js/config.js?v=2.6.4"></script>
+  <script src="js/pola_ruang.js?v=2.6.4"></script>
+  <script src="js/spatial.js?v=2.6.4"></script>
+  <script src="js/bmn_dataset.js?v=2.6.4"></script>
+  <script src="js/data.js?v=2.6.4"></script>
+  <script src="js/recommendation.js?v=2.6.4"></script>
+  <script src="js/map.js?v=2.6.4"></script>
+  <script src="js/app.js?v=2.6.4"></script>
 
   <!-- Auth Guard: redirect to login.html if no valid session -->
-  <script src="js/auth.js?v=2.6.3"></script>
+  <script src="js/auth.js?v=2.6.4"></script>
 </body>
 </html>
