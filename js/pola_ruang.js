@@ -295,15 +295,20 @@ const PolaRuangEngine = {
             intersection = turf.intersect(f, circlePoly);
           }
 
-          if (intersection && intersection.geometry) {
-            // Successfully cropped
-            intersection.properties = f.properties;
-            clipped.push(intersection);
+          if (intersection && intersection.geometry && Array.isArray(intersection.geometry.coordinates)) {
+            // Turf sometimes returns empty or malformed geometries on edge intersections
+            const coordsStr = JSON.stringify(intersection.geometry.coordinates);
+            const hasNulls = coordsStr.includes('null') || coordsStr.includes('NaN');
+            const isEmpty = intersection.geometry.coordinates.length === 0 || (intersection.geometry.coordinates[0] && intersection.geometry.coordinates[0].length === 0);
+            
+            if (!hasNulls && !isEmpty) {
+              // Successfully cropped and sanitized
+              intersection.properties = f.properties;
+              clipped.push(intersection);
+            }
           }
         } catch (e) {
-          // If complex geometry fails intersection, skip or push original
-          // To ensure crop effect, we DO NOT push original uncropped polygons
-          console.warn('[PolaRuangEngine] Turf intersect geometry skipped', e.message);
+          // If complex geometry fails intersection, skip silently to preserve clean crop effect
         }
       });
 

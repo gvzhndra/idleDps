@@ -5,8 +5,8 @@
 
 const CONFIG = {
   // Application Version & Release Metadata
-  VERSION: 'v2.7.2',
-  VERSION_NAME: 'Bug Fix: Pola Ruang Catchment Crop & Basemap Toggle Issue',
+  VERSION: 'v2.7.3',
+  VERSION_NAME: 'Bug Fix: Null Coordinate Sanitization on Turf Geometry Intersect',
 
   // Office Reference for Distance Calculations (KPKNL Denpasar Official Coordinates)
   KPKNL_OFFICE: {
