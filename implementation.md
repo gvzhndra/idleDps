@@ -68,20 +68,40 @@ Membangun **Single-Page Application (SPA) Interactive Presentation Dashboard** u
 > [!TIP]
 > Rencana pengembangan fitur selanjutnya setelah fase MVP ini disetujui pimpinan:
 
-### 1. 📌 Quick Priority Filter & Summary Stat Bar (Prioritas 1)
-- **Konsep**: Menambahkan tombol filter cepat di bagian atas panel kiri: *"Tampilkan Hanya Aset Prioritas (Pinned)"*.
-- **Indikator KPI**: Menambahkan counter `📌 X Aset Prioritas` pada Header KPI Stats Bar di bagian atas dashboard.
+### 1. 📄 Generator Laporan Hasil Penelitian BMN Idle (PMK 120/2024) (Prioritas Utama)
+- **Acuan Template**: [`format laporan penelitian /draft_laporan-hasil-penelitian-bmn-idle.docx`](file:///Users/putuharjaya/Desktop/repo/idleDps/format%20laporan%20penelitian%20/draft_laporan-hasil-penelitian-bmn-idle.docx).
+- **Dual Export Support**:
+  - **Export Word (`.docx`)**: Menggunakan `docx.js` client-side untuk menghasilkan file `.docx` siap edit di MS Word dengan format presisi (Kop Surat, BAB A-E, Tabel Permasalahan, Lampiran I & II, serta Tanda Tangan Tim).
+  - **Export PDF / Printable View**: Modal preview HTML dengan styling CSS `@media print` (Times New Roman 12pt, A4 Margins, Page Breaks rapi, Kop Surat) yang langsung dapat disimpan ke PDF via dialog print browser.
+- **Form Modal Input & Autofill**:
+  - Auto-fill data aset: Kode Barang, NUP, Satker, Alamat, Luas, Nilai Buku, Jarak Spasial, VIIRS Index, & Rekomendasi Pemanfaatan.
+  - Input Tim Penelitian: Ketua Tim & Anggota (Nama, NIP, Jabatan) dengan fitur **Auto-Save Presets** di `localStorage` agar tidak perlu mengetik ulang.
+  - Input Nomor Surat Tugas, Surat Klarifikasi, & Surat Balasan.
+- **Skema Kolom Dinamis Google Sheets Backend**:
+  - Frontend (`js/data.js`) & Apps Script (`Code.gs`) dirancang dinamis & *backward-compatible*.
+  - Pengguna dapat menambahkan kolom baru di Google Sheet `BMN_Idle` kapan saja (misal: `no_surat_klarifikasi`, `tgl_surat_klarifikasi`, `no_surat_balasan`, `tgl_surat_balasan`, `no_surat_tugas`, `tgl_surat_tugas`). Aplikasi akan langsung mengenali dan mengisi form secara otomatis tanpa merusak data lama.
 
-### 2. 🗺️ Real GeoJSON Layer RTRW Tata Ruang Bali (Prioritas 2)
+### 2. 🔍 Real-Time Search Bar Global (Prioritas 2)
+- **Konsep**: Menambahkan kolom pencarian interaktif di bagian atas Panel Kiri.
+- **Kemampuan Filter**: Pencarian instan berdasar Nama Aset/Uraian BMN, Nama Satker/Kementerian, Kode Barang/NUP, dan Wilayah (Kecamatan/Kabupaten).
+- **Dual Sync**: Menyaring card di sidebar dan marker ikon di Peta Leaflet secara sinkron.
+
+### 3. 🖼️ Interactive Lightbox Photo Viewer Modal (Prioritas 3)
+- **Konsep**: Saat thumbnail foto di panel detail diklik, gambar akan terbuka dalam modal popup *full-screen* dengan latar gelap.
+- **Fitur**: Zoom resolusi tinggi dari Google Drive CDN, navigasi Next/Prev foto, caption nama foto, serta navigasi keyboard (ESC/Arrow keys).
+
+### 4. 📱 Optimization Layout Mobile (< 768px) (Prioritas 4)
+- **Konsep**: Memperbaiki tampilan responsive pada perangkat smartphone dan tablet.
+- **Solusi**: Bottom Navigation Bar (`[ 🗺️ Peta ]` | `[ 📋 Daftar Aset ]` | `[ 📊 Detail & Laporan ]`) dan panel drawer slide-over yang *touch-friendly*.
+
+### 5. 📌 Quick Priority Filter & Summary Stat Bar (Prioritas 5)
+- **Konsep**: Menambahkan tombol filter cepat di bagian atas panel kiri: *"Tampilkan Hanya Aset Prioritas (Pinned)"* dan counter `📌 X Aset Prioritas` pada Header KPI Stats Bar.
+
+### 6. 🗺️ Real GeoJSON Layer RTRW Tata Ruang Bali (Prioritas 6)
 - **Konsep**: Mengintegrasikan file GeoJSON resmi RTRW Pemprov Bali (`data/zonasi-bali.geojson`).
-- **Visualisasi**: Menampilkan polygon interaktif zonasi K-1 (Perdagangan), K-2 (Pariwisata), K-3 (Pemerintahan), dll. pada peta Leaflet saat diproyeksikan.
 
-### 3. 🗺️ Interactive Map Picker / Drag-and-Drop Pin Coordinate Editor (Prioritas 3)
-- **Konsep**: Memungkinkan Admin untuk menggeser pin aset langsung di peta Leaflet jika koordinat kurang presisi, lalu menyimpan koordinat baru tersebut kembali ke Google Sheets.
-
-### 4. 📊 PowerPoint (.pptx) & Google Slides Priority Export Enhancements (Prioritas 4)
-- **Konsep**: Menambahkan badge `📌 Prioritas Idle` dan menyertakan foto resolusi tinggi dari Google Drive pada file slide presentasi `.pptx` hasil unduhan.
-- **Batch Export Filter**: Opsi centang otomatis seluruh aset ber-pin untuk diekspor menjadi slide PowerPoint dalam 1x klik.
+### 7. 🗺️ Interactive Map Picker / Drag-and-Drop Pin Coordinate Editor (Prioritas 7)
+- **Konsep**: Memungkinkan Admin untuk menggeser pin aset langsung di peta Leaflet.
 
 ---
 
