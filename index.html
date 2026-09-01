@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   
   <!-- Soft Pastel Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=2.5.8">
+  <link rel="stylesheet" href="css/styles.css?v=3.0.0">
 </head>
 <body>
 
@@ -177,6 +177,17 @@
   <main class="main-workspace">
     <!-- LEFT PANEL: TABS & CONTROLS -->
     <aside class="left-tab-panel" id="left-tab-panel">
+      <!-- GLOBAL PROMINENT SEARCH BAR (ALWAYS VISIBLE) -->
+      <div class="global-search-wrapper">
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" id="global-search-input" placeholder="🔍 Cari Nama Barang, NUP, Satker, Alamat, Wilayah..." oninput="App.handleGlobalSearch(this.value)">
+          <button class="btn-clear-search" id="btn-clear-search" onclick="App.clearSearch()" style="display:none;" title="Bersihkan Pencarian">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
       <!-- Nav Tabs -->
       <nav class="nav-tabs-bar">
         <button class="tab-btn active" data-tab="tab-cluster" onclick="App.switchTab('tab-cluster')">
@@ -626,13 +637,13 @@
   <!-- Turf.js Library for Geometric Polygon Catchment Clipping -->
   <script src="js/turf.min.js?v=1.0.0-stable1"></script>
 
-  <script src="js/pola_ruang.js?v=1.0.0-stable1"></script>
-  <script src="js/spatial.js?v=1.0.0-stable1"></script>
-  <script src="js/bmn_dataset.js?v=1.0.0-stable1"></script>
-  <script src="js/data.js?v=1.0.0-stable1"></script>
-  <script src="js/recommendation.js?v=1.0.0-stable1"></script>
-  <script src="js/map.js?v=1.0.0-stable1"></script>
-  <script src="js/laporan.js?v=1.0.0-stable1"></script>
-  <script src="js/app.js?v=1.0.0-stable1"></script>
+  <script src="js/pola_ruang.js?v=3.0.0"></script>
+  <script src="js/spatial.js?v=3.0.0"></script>
+  <script src="js/bmn_dataset.js?v=3.0.0"></script>
+  <script src="js/data.js?v=3.0.0"></script>
+  <script src="js/recommendation.js?v=3.0.0"></script>
+  <script src="js/map.js?v=3.0.0"></script>
+  <script src="js/laporan.js?v=3.0.0"></script>
+  <script src="js/app.js?v=3.0.0"></script>
 </body>
 </html>

@@ -240,6 +240,11 @@ const App = {
 
     const sInput = document.getElementById('all-search-input');
     if (sInput) sInput.value = '';
+    const gInput = document.getElementById('global-search-input');
+    if (gInput) gInput.value = '';
+    const clearBtn = document.getElementById('btn-clear-search');
+    if (clearBtn) clearBtn.style.display = 'none';
+
     const selKab = document.getElementById('all-filter-kabupaten');
     if (selKab) selKab.value = 'all';
     const selKlas = document.getElementById('all-filter-klasifikasi');
@@ -251,6 +256,32 @@ const App = {
     this.updateActiveStatCard(null);
     this.applyFilters();
     this.showToast('📋 Menampilkan seluruh 248 unit BMN Idle (60 Satker)', 'info');
+  },
+
+  handleGlobalSearch(query) {
+    const val = (query || '').trim();
+    this.filters.search = val;
+
+    const clearBtn = document.getElementById('btn-clear-search');
+    if (clearBtn) clearBtn.style.display = val ? 'flex' : 'none';
+
+    const secInput = document.getElementById('all-search-input');
+    if (secInput && secInput.value !== query) secInput.value = query;
+
+    this.applyFilters();
+  },
+
+  clearSearch() {
+    const mainInput = document.getElementById('global-search-input');
+    const secInput = document.getElementById('all-search-input');
+    const clearBtn = document.getElementById('btn-clear-search');
+
+    if (mainInput) mainInput.value = '';
+    if (secInput) secInput.value = '';
+    if (clearBtn) clearBtn.style.display = 'none';
+
+    this.filters.search = '';
+    this.applyFilters();
   },
 
   toggleFilterUnmapped() {
