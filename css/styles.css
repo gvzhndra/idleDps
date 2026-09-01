@@ -2265,20 +2265,13 @@ body {
     z-index: 500;
   }
 
-  /* Unclutter map view: hide map legend floating cards on mobile */
+  /* Unclutter map view: hide POI and Pola Ruang map legend floating cards on mobile */
+  #poi-legend-card,
+  #pola-ruang-legend-card,
+  .map-floating-legend,
   .poi-legend-card,
-  .pola-ruang-legend-card,
-  #pola-ruang-legend-card {
+  .pola-ruang-legend-card {
     display: none !important;
-  }
-
-  .panel-toggle-btn {
-    display: none !important;
-  }
-    bottom: 60px;
-    width: 100% !important;
-    height: calc(100% - 60px) !important;
-    z-index: 500;
   }
 
   .panel-toggle-btn {
