@@ -2048,6 +2048,10 @@ body {
   display: none;
 }
 
+.mobile-burger-btn {
+  display: none;
+}
+
 @media (max-width: 768px) {
   body {
     height: 100vh;
@@ -2057,54 +2061,119 @@ body {
   }
 
   .app-header {
-    height: 56px;
+    height: 52px;
     padding: 0 12px;
   }
 
   .brand-logo-icon {
-    width: 34px;
-    height: 34px;
-    font-size: 15px;
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
     border-radius: 8px;
   }
 
   .brand-text h1 {
-    font-size: 14px;
+    font-size: 13.5px;
   }
 
   .brand-text p {
-    font-size: 10px;
+    font-size: 9.5px;
   }
 
-  .btn-landing span,
-  .header-right .btn span {
-    display: none;
+  .btn-landing,
+  .header-right .btn:not(.mobile-burger-btn) {
+    display: none !important;
   }
 
   .header-right {
     gap: 6px;
   }
 
-  .stats-bar {
+  .mobile-burger-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 16px;
+    color: var(--text-main);
+    cursor: pointer;
+  }
+
+  .mobile-burger-dropdown {
+    position: absolute;
+    top: 52px;
+    right: 12px;
+    background: #ffffff;
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+    padding: 8px;
+    z-index: 3500;
     display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 190px;
+  }
+
+  .mobile-burger-dropdown .btn {
+    display: flex !important;
+    align-items: center;
     gap: 8px;
+    width: 100%;
+    text-align: left;
     padding: 8px 12px;
-    max-height: 110px;
+    font-size: 12px;
+    border-radius: 8px;
+  }
+
+  /* Global Search Bar directly under Header */
+  .global-search-wrapper {
+    padding: 6px 12px;
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-subtle);
+    z-index: 1000;
+    position: relative;
+  }
+
+  /* Hide KPI Stats Bar from top on mobile to keep top clean */
+  .stats-bar {
+    display: none !important;
+  }
+
+  /* Full-Screen Mobile Stats Dashboard Tab */
+  .stats-bar.mobile-active {
+    display: flex !important;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 60px;
+    width: 100% !important;
+    height: calc(100% - 60px) !important;
+    z-index: 1300;
+    background: var(--bg-primary);
+    overflow-y: auto;
+    padding: 12px;
+    gap: 12px;
+    max-height: none !important;
     -webkit-overflow-scrolling: touch;
   }
 
-  .stat-card {
-    min-width: 220px;
-    scroll-snap-align: start;
-    padding: 8px 10px;
+  .stats-bar.mobile-active .stat-card {
+    min-width: 0 !important;
+    width: 100% !important;
   }
 
   .main-workspace {
     position: relative;
     flex: 1;
-    height: calc(100vh - 126px);
+    height: calc(100vh - 104px);
+    height: calc(100dvh - 104px);
     overflow: hidden;
   }
 
@@ -2148,6 +2217,22 @@ body {
     top: 0;
     left: 0;
     right: 0;
+    bottom: 60px;
+    width: 100% !important;
+    height: calc(100% - 60px) !important;
+    z-index: 500;
+  }
+
+  /* Unclutter map view: hide map legend floating cards on mobile */
+  .poi-legend-card,
+  .pola-ruang-legend-card,
+  #pola-ruang-legend-card {
+    display: none !important;
+  }
+
+  .panel-toggle-btn {
+    display: none !important;
+  }
     bottom: 60px;
     width: 100% !important;
     height: calc(100% - 60px) !important;

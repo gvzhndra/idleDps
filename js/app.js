@@ -1848,18 +1848,31 @@ const App = {
     }
   },
 
+  toggleMobileBurgerMenu() {
+    const dropdown = document.getElementById('mobile-burger-dropdown');
+    if (dropdown) {
+      const isVisible = dropdown.style.display === 'flex';
+      dropdown.style.display = isVisible ? 'none' : 'flex';
+    }
+  },
+
   switchMobileTab(targetTab) {
     this.mobileTab = targetTab;
+    const mnavStats = document.getElementById('mnav-stats');
     const mnavMap = document.getElementById('mnav-map');
     const mnavList = document.getElementById('mnav-list');
     const mnavDetail = document.getElementById('mnav-detail');
+
+    const statsBar = document.getElementById('executive-stats-bar');
     const leftPanel = document.getElementById('left-tab-panel');
     const drawerPanel = document.getElementById('drawer-panel');
 
+    if (mnavStats) mnavStats.classList.toggle('active', targetTab === 'stats');
     if (mnavMap) mnavMap.classList.toggle('active', targetTab === 'map');
     if (mnavList) mnavList.classList.toggle('active', targetTab === 'list');
     if (mnavDetail) mnavDetail.classList.toggle('active', targetTab === 'detail');
 
+    if (statsBar) statsBar.classList.toggle('mobile-active', targetTab === 'stats');
     if (leftPanel) leftPanel.classList.toggle('mobile-active', targetTab === 'list');
     if (drawerPanel) drawerPanel.classList.toggle('mobile-active', targetTab === 'detail');
 
