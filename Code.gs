@@ -255,17 +255,20 @@ function handleUpdateAssetInSheet(contents) {
     return createJsonResponse({ status: 'error', message: 'Sheet kosong.' });
   }
 
-  var headers = data[0];
-  var idCol = headers.indexOf('id');
-  var satkerCol = headers.indexOf('kode_satker');
-  var barangCol = headers.indexOf('kode_barang');
-  var nupCol = headers.indexOf('nup');
-  var namaBarangCol = headers.indexOf('nama_barang');
-  var kondisiCol = headers.indexOf('HASIL JAWABAN');
-  var rekomendasiCol = headers.indexOf('rekomendasi_user');
-  var catatanCol = headers.indexOf('CATATAN_REKONSILIASI');
-  var luasCol = headers.indexOf('luas');
-  var pinCol = headers.indexOf('is_pinned');
+  var lowerHeaders = headers.map(function(h) { return String(h).trim().toLowerCase(); });
+  var idCol = lowerHeaders.indexOf('id');
+  var satkerCol = lowerHeaders.indexOf('kode_satker');
+  var barangCol = lowerHeaders.indexOf('kode_barang');
+  var nupCol = lowerHeaders.indexOf('nup');
+  var namaBarangCol = lowerHeaders.indexOf('nama_barang');
+  var alamatCol = lowerHeaders.indexOf('alamat');
+  var nilaiBukuCol = lowerHeaders.indexOf('nilai_buku');
+  var koordinatCol = lowerHeaders.indexOf('koordinat');
+  var kondisiCol = lowerHeaders.indexOf('hasil jawaban') >= 0 ? lowerHeaders.indexOf('hasil jawaban') : lowerHeaders.indexOf('kondisi');
+  var rekomendasiCol = lowerHeaders.indexOf('rekomendasi_user') >= 0 ? lowerHeaders.indexOf('rekomendasi_user') : lowerHeaders.indexOf('rekomendasi');
+  var catatanCol = lowerHeaders.indexOf('catatan_rekonsiliasi') >= 0 ? lowerHeaders.indexOf('catatan_rekonsiliasi') : lowerHeaders.indexOf('catatan_tim');
+  var luasCol = lowerHeaders.indexOf('luas');
+  var pinCol = lowerHeaders.indexOf('is_pinned');
   if (pinCol === -1 && contents.isPinned !== undefined) {
     pinCol = headers.length;
     sheet.getRange(1, pinCol + 1).setValue('is_pinned');
@@ -281,8 +284,11 @@ function handleUpdateAssetInSheet(contents) {
 
     if (matchById || matchByKeys) {
       if (namaBarangCol >= 0 && contents.namaBarang) sheet.getRange(i + 1, namaBarangCol + 1).setValue(contents.namaBarang);
+      if (alamatCol >= 0 && contents.alamat) sheet.getRange(i + 1, alamatCol + 1).setValue(contents.alamat);
+      if (nilaiBukuCol >= 0 && contents.nilaiBuku !== undefined) sheet.getRange(i + 1, nilaiBukuCol + 1).setValue(contents.nilaiBuku);
+      if (koordinatCol >= 0 && contents.koordinat) sheet.getRange(i + 1, koordinatCol + 1).setValue(contents.koordinat);
       if (kondisiCol >= 0 && contents.kondisi) sheet.getRange(i + 1, kondisiCol + 1).setValue(contents.kondisi);
-      if (rekomendasiCol >= 0 && contents.rekomendasiUser) sheet.getRange(i + 1, rekomendasiCol + 1).setValue(contents.rekomendasiUser);
+      if (rekomendasiCol >= 0 && (contents.rekomendasiUser || contents.rekomendasi)) sheet.getRange(i + 1, rekomendasiCol + 1).setValue(contents.rekomendasiUser || contents.rekomendasi);
       if (catatanCol >= 0 && contents.catatanTim) sheet.getRange(i + 1, catatanCol + 1).setValue(contents.catatanTim);
       if (luasCol >= 0 && contents.luas !== undefined) sheet.getRange(i + 1, luasCol + 1).setValue(contents.luas);
       if (pinCol >= 0 && contents.isPinned !== undefined) sheet.getRange(i + 1, pinCol + 1).setValue(contents.isPinned ? 'TRUE' : 'FALSE');

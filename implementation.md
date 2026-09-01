@@ -61,46 +61,41 @@ Membangun **Single-Page Application (SPA) Interactive Presentation Dashboard** u
 - Label zona (*Rendah <50*, *Sedang 50-70*, *Tinggi 70-85*, *Sangat Tinggi >85*).
 - Penjelasan ilmiah metodologi *VIIRS Nighttime Light Index* (NASA/NOAA).
 
+### 7. 🗺️ Pola Ruang & RTRW Spatial Zoning Engine (`js/pola_ruang.js` & `pola_ruang_bali_.json`)
+- TopoJSON/GeoJSON Spatial Catchment & Zoning Layer Provinsi Bali.
+- Standard ATR/BPN Zoning Color Palette (Kawasan Pariwisata, Permukiman, Pertanian, Perikanan, Konservasi, Mangrove, Transportasi).
+- Spatial indexing berbasis bounding box & Turf.js untuk klasifikasi zona RTRW aset BMN Idle secara instan.
+
+### 8. 📱 Optimization Layout Mobile (< 768px) & Bottom Navigation Bar
+- Responsive Layout Engine (`css/styles.css`) dengan Bottom Navigation Bar (`[ 🗺️ Peta ]` | `[ 📋 Daftar Aset ]` | `[ 📊 Detail ]`).
+- Full-width sliding drawer & smooth view transition pada layar smartphone/tablet.
+
+### 9. 🖼️ Interactive Lightbox Photo Viewer Modal (`#photo-lightbox-modal`)
+- Full-screen high-res photo modal viewer berlatar gelap (*backdrop blur*).
+- Tombol navigasi Next/Prev, caption nama aset, serta navigasi keyboard (ESC/Arrow keys).
+
+### 10. 🔍 Real-Time Global Search Bar & Dual Filter Engine
+- Filter pencarian instan pada sidebar & marker Leaflet berdasarkan Nama Barang, Satker, NUP/Kode Barang, dan Wilayah.
+
+### 11. ✏️ Modal Edit Informasi Aset Frontend (`#edit-asset-modal`)
+- Form pengeditan Nama Barang, Alamat, Luas, Nilai Buku, Koordinat, Rekomendasi Official, & Catatan Tim.
+- Real-time sync ke state `DataEngine`, persistence `localStorage`, & backend Google Apps Script.
+
+### 12. 📄 Generator Laporan Hasil Penelitian BMN Idle (PMK 120/2024) (`js/laporan.js`)
+- Dual Export Support: File Word (`.docx`) via `docx.js` & Printable PDF View via `@media print`.
+- Auto-preset Tim Penelitian (Nama & NIP) di `localStorage`.
+
 ---
 
 ## 📋 NEXT FEATURE ACTION PLAN (FUTURE ROADMAP & BACKLOG)
 
 > [!TIP]
-> Rencana pengembangan fitur selanjutnya setelah fase MVP ini disetujui pimpinan:
+> Rencana pengembangan fitur selanjutnya:
 
-### 1. 📄 Generator Laporan Hasil Penelitian BMN Idle (PMK 120/2024) (Prioritas Utama)
-- **Acuan Template**: [`format laporan penelitian /draft_laporan-hasil-penelitian-bmn-idle.docx`](file:///Users/putuharjaya/Desktop/repo/idleDps/format%20laporan%20penelitian%20/draft_laporan-hasil-penelitian-bmn-idle.docx).
-- **Dual Export Support**:
-  - **Export Word (`.docx`)**: Menggunakan `docx.js` client-side untuk menghasilkan file `.docx` siap edit di MS Word dengan format presisi (Kop Surat, BAB A-E, Tabel Permasalahan, Lampiran I & II, serta Tanda Tangan Tim).
-  - **Export PDF / Printable View**: Modal preview HTML dengan styling CSS `@media print` (Times New Roman 12pt, A4 Margins, Page Breaks rapi, Kop Surat) yang langsung dapat disimpan ke PDF via dialog print browser.
-- **Form Modal Input & Autofill**:
-  - Auto-fill data aset: Kode Barang, NUP, Satker, Alamat, Luas, Nilai Buku, Jarak Spasial, VIIRS Index, & Rekomendasi Pemanfaatan.
-  - Input Tim Penelitian: Ketua Tim & Anggota (Nama, NIP, Jabatan) dengan fitur **Auto-Save Presets** di `localStorage` agar tidak perlu mengetik ulang.
-  - Input Nomor Surat Tugas, Surat Klarifikasi, & Surat Balasan.
-- **Skema Kolom Dinamis Google Sheets Backend**:
-  - Frontend (`js/data.js`) & Apps Script (`Code.gs`) dirancang dinamis & *backward-compatible*.
-  - Pengguna dapat menambahkan kolom baru di Google Sheet `BMN_Idle` kapan saja (misal: `no_surat_klarifikasi`, `tgl_surat_klarifikasi`, `no_surat_balasan`, `tgl_surat_balasan`, `no_surat_tugas`, `tgl_surat_tugas`). Aplikasi akan langsung mengenali dan mengisi form secara otomatis tanpa merusak data lama.
-
-### 2. 🔍 Real-Time Search Bar Global (Prioritas 2)
-- **Konsep**: Menambahkan kolom pencarian interaktif di bagian atas Panel Kiri.
-- **Kemampuan Filter**: Pencarian instan berdasar Nama Aset/Uraian BMN, Nama Satker/Kementerian, Kode Barang/NUP, dan Wilayah (Kecamatan/Kabupaten).
-- **Dual Sync**: Menyaring card di sidebar dan marker ikon di Peta Leaflet secara sinkron.
-
-### 3. 🖼️ Interactive Lightbox Photo Viewer Modal (Prioritas 3)
-- **Konsep**: Saat thumbnail foto di panel detail diklik, gambar akan terbuka dalam modal popup *full-screen* dengan latar gelap.
-- **Fitur**: Zoom resolusi tinggi dari Google Drive CDN, navigasi Next/Prev foto, caption nama foto, serta navigasi keyboard (ESC/Arrow keys).
-
-### 4. 📱 Optimization Layout Mobile (< 768px) (Prioritas 4)
-- **Konsep**: Memperbaiki tampilan responsive pada perangkat smartphone dan tablet.
-- **Solusi**: Bottom Navigation Bar (`[ 🗺️ Peta ]` | `[ 📋 Daftar Aset ]` | `[ 📊 Detail & Laporan ]`) dan panel drawer slide-over yang *touch-friendly*.
-
-### 5. 📌 Quick Priority Filter & Summary Stat Bar (Prioritas 5)
+### 1. 📌 Quick Priority Filter & Summary Stat Bar (Prioritas 1)
 - **Konsep**: Menambahkan tombol filter cepat di bagian atas panel kiri: *"Tampilkan Hanya Aset Prioritas (Pinned)"* dan counter `📌 X Aset Prioritas` pada Header KPI Stats Bar.
 
-### 6. 🗺️ Real GeoJSON Layer RTRW Tata Ruang Bali (Prioritas 6)
-- **Konsep**: Mengintegrasikan file GeoJSON resmi RTRW Pemprov Bali (`data/zonasi-bali.geojson`).
-
-### 7. 🗺️ Interactive Map Picker / Drag-and-Drop Pin Coordinate Editor (Prioritas 7)
+### 2. 🗺️ Interactive Map Picker / Drag-and-Drop Pin Coordinate Editor (Prioritas 2)
 - **Konsep**: Memungkinkan Admin untuk menggeser pin aset langsung di peta Leaflet.
 
 ---
@@ -127,7 +122,12 @@ Membangun **Single-Page Application (SPA) Interactive Presentation Dashboard** u
 /Users/putuharjaya/Desktop/repo/idleDps/
 ├── Code.gs                    # Backend Script Google Apps Script, Sheet Sync, Drive Photo & Pinning
 ├── index.html                 # Single-Page Application Layout (Soft Pastel Theme & PptxGenJS)
+├── login.html                 # Authentication & User Login Page
 ├── implementation.md          # Dokumen Histori, MVP Milestone, & Next Feature Action Plan
+├── reminder.md                # Panduan Deployment Google Apps Script (Code.gs)
+├── pola_ruang_bali_.json      # Data TopoJSON GeoJSON Pola Ruang RTRW Provinsi Bali
+├── format laporan penelitian / # Template Resmi Docx Laporan Penelitian PMK 120/2024
+│   └── draft_laporan-hasil-penelitian-bmn-idle.docx
 ├── css/
 │   └── styles.css             # System Style Soft Pastel Palette & Responsive Layout
 └── js/
@@ -135,10 +135,13 @@ Membangun **Single-Page Application (SPA) Interactive Presentation Dashboard** u
     ├── bmn_dataset.js         # Fallback Offline Dataset BMN Idle
     ├── data.js                # Data Engine, Live Sync, Pinning & Clustered Hierarchy
     ├── spatial.js             # Engine Jarak Spasial Haversine & 57 Centroid Kecamatan Bali
+    ├── pola_ruang.js          # Pola Ruang (RTRW Zoning) Analytics Engine & TopoJSON Loader
+    ├── turf.min.js            # Turf.js Spatial Analysis Library
     ├── recommendation.js      # Smart Recommendation Rule Engine (Official + Backend Helper)
     ├── map.js                 # Leaflet GIS Map Controller (Soft Pastel Basemap)
     ├── presentation.js        # Spotlight / Tour Presentation Mode Controller
     ├── auth.js                # Navigation Auth Redirect Guard
+    ├── login.js               # Login Form Authentication Logic
     └── app.js                 # Main App Controller, UI Renderer & PowerPoint (.pptx) Exporter
 ```
 

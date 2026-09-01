@@ -1997,3 +1997,329 @@ body {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
   margin-bottom: 24px !important;
 }
+
+/* ==========================================================================
+   MOBILE BOTTOM NAVIGATION BAR & RESPONSIVE LAYOUT (< 768px)
+   ========================================================================== */
+.mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  body {
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .app-header {
+    height: 56px;
+    padding: 0 12px;
+  }
+
+  .brand-logo-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 15px;
+    border-radius: 8px;
+  }
+
+  .brand-text h1 {
+    font-size: 14px;
+  }
+
+  .brand-text p {
+    font-size: 10px;
+  }
+
+  .btn-landing span,
+  .header-right .btn span {
+    display: none;
+  }
+
+  .header-right {
+    gap: 6px;
+  }
+
+  .stats-bar {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 8px;
+    padding: 8px 12px;
+    max-height: 110px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .stat-card {
+    min-width: 220px;
+    scroll-snap-align: start;
+    padding: 8px 10px;
+  }
+
+  .main-workspace {
+    position: relative;
+    flex: 1;
+    height: calc(100vh - 126px);
+    overflow: hidden;
+  }
+
+  .left-tab-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: calc(100% - 60px);
+    z-index: 1100;
+    background: #ffffff;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .left-tab-panel.mobile-active {
+    transform: translateX(0);
+  }
+
+  .drawer-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    width: 100% !important;
+    height: calc(100% - 60px);
+    z-index: 1200;
+    background: #ffffff;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .drawer-panel.active,
+  .drawer-panel.mobile-active {
+    transform: translateY(0);
+  }
+
+  .map-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 60px;
+    width: 100% !important;
+    height: calc(100% - 60px) !important;
+    z-index: 500;
+  }
+
+  .panel-toggle-btn {
+    display: none !important;
+  }
+
+  /* Bottom Navigation Bar */
+  .mobile-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: #ffffff;
+    border-top: 1px solid var(--border-subtle);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+    z-index: 2500;
+    padding: 0 8px;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  .mobile-nav-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 600;
+    gap: 4px;
+    cursor: pointer;
+    padding: 6px 0;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .mobile-nav-btn i {
+    font-size: 17px;
+  }
+
+  .mobile-nav-btn.active {
+    color: var(--pastel-blue);
+    background: var(--pastel-blue-bg);
+    font-weight: 800;
+  }
+}
+
+/* ==========================================================================
+   INTERACTIVE LIGHTBOX PHOTO VIEWER MODAL STYLING
+   ========================================================================== */
+#photo-lightbox-modal {
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 9999;
+}
+
+.lightbox-content-box {
+  position: relative;
+  max-width: 90vw;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-img-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-main-img {
+  max-width: 85vw;
+  max-height: 75vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lightbox-close-btn {
+  position: absolute;
+  top: -45px;
+  right: 0;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.lightbox-close-btn:hover {
+  background: rgba(231, 76, 60, 0.8);
+  transform: scale(1.1);
+}
+
+.lightbox-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  transition: all 0.2s ease;
+}
+
+.lightbox-nav-btn:hover {
+  background: #ffffff;
+  color: #1e293b;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.lightbox-nav-btn.prev { left: 16px; }
+.lightbox-nav-btn.next { right: 16px; }
+
+.lightbox-caption-bar {
+  margin-top: 14px;
+  background: rgba(30, 41, 59, 0.85);
+  color: #ffffff;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Clickable Thumbnail Cursor */
+.photo-thumbnail-clickable {
+  cursor: zoom-in;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.photo-thumbnail-clickable:hover {
+  transform: scale(1.04);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* ==========================================================================
+   PRINTABLE LAPORAN STYLING (@media print)
+   ========================================================================== */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  
+  #printable-laporan-container, #printable-laporan-container * {
+    visibility: visible;
+  }
+
+  #printable-laporan-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    font-family: 'Times New Roman', Times, serif !important;
+    font-size: 12pt;
+    line-height: 1.5;
+    color: #000000 !important;
+    background: #ffffff !important;
+  }
+
+  .laporan-kop-table {
+    width: 100%;
+    border-bottom: 3px double #000;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+  }
+
+  .laporan-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+  }
+
+  .laporan-table th, .laporan-table td {
+    border: 1px solid #000000;
+    padding: 6px 8px;
+    font-size: 11pt;
+    text-align: left;
+  }
+
+  .page-break {
+    page-break-before: always;
+  }
+}

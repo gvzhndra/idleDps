@@ -393,6 +393,15 @@ const App = {
       });
     }
 
+    document.addEventListener('keydown', (e) => {
+      const modal = document.getElementById('photo-lightbox-modal');
+      if (modal && modal.style.display === 'flex') {
+        if (e.key === 'Escape') this.closePhotoLightbox();
+        if (e.key === 'ArrowLeft') this.navigateLightbox(-1);
+        if (e.key === 'ArrowRight') this.navigateLightbox(1);
+      }
+    });
+
     document.querySelectorAll('.btn-tile-switch:not(#btn-toggle-pola-ruang)').forEach(btn => {
       btn.addEventListener('click', (e) => {
         document.querySelectorAll('.btn-tile-switch:not(#btn-toggle-pola-ruang)').forEach(b => b.classList.remove('active'));
@@ -1011,7 +1020,7 @@ const App = {
 
     container.innerHTML = `
       ${totalPhotos > 0 && activePhotoUrl ? `
-        <div id="photo-carousel-box" class="photo-carousel-container" style="background-image: url('${activePhotoUrl}'); background-size: cover; background-position: center; position: relative; height: 190px; border-radius: 10px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+        <div id="photo-carousel-box" class="photo-carousel-container photo-thumbnail-clickable" onclick="App.openPhotoLightbox('${asset.id}')" title="Klik untuk perbesar foto (Lightbox)" style="background-image: url('${activePhotoUrl}'); background-size: cover; background-position: center; position: relative; height: 190px; border-radius: 10px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
           <span id="photo-carousel-counter" class="photo-counter">${(this.currentPhotoIndex || 0) + 1} / ${totalPhotos}</span>
           ${canEditOrUpload ? `
             <button class="btn-delete-photo" title="Hapus foto ini" onclick="event.stopPropagation(); App.deletePhoto('${asset.id}')">
@@ -1283,13 +1292,16 @@ const App = {
           </div>
         </div>
 
-        ${isAdmin ? `
-          <div class="mt-3 pt-2 border-top" style="border-top:1px dashed rgba(243, 156, 18, 0.4) !important;">
+        <div class="mt-3 pt-2 border-top d-flex flex-column gap-2" style="border-top:1px dashed rgba(243, 156, 18, 0.4) !important;">
+          <button class="btn btn-primary btn-block" style="background:linear-gradient(135deg, #4a90e2, #2575fc); color:#ffffff; border:none; font-weight:700; padding:10px 14px; width:100%; box-shadow: 0 4px 14px rgba(74, 144, 226, 0.35); border-radius:8px; cursor:pointer;" onclick="App.openLaporanModal('${asset.id}')">
+            <i class="fa-solid fa-file-contract" style="font-size:14px; margin-right:6px;"></i> Buat Laporan Penelitian (PMK 120/2024)
+          </button>
+          ${isAdmin ? `
             <button class="btn btn-warning btn-block" style="background:linear-gradient(135deg, #f39c12, #d35400); color:#ffffff; border:none; font-weight:700; padding:10px 14px; width:100%; box-shadow: 0 4px 14px rgba(243, 156, 18, 0.35); border-radius:8px; cursor:pointer;" onclick="App.openEditAssetModal('${asset.id}')">
               <i class="fa-solid fa-pen-to-square" style="font-size:14px; margin-right:6px;"></i> Edit Data & Rekomendasi Aset (Admin KPKNL)
             </button>
-          </div>
-        ` : ''}
+          ` : ''}
+        </div>
       </div>
 
       <!-- GENEROUS BOTTOM WHITESPACE SPACER FOR SMOOTH SCROLL -->
@@ -1805,34 +1817,168 @@ const App = {
     }
   },
 
+  switchMobileTab(targetTab) {
+    this.mobileTab = targetTab;
+    const mnavMap = document.getElementById('mnav-map');
+    const mnavList = document.getElementById('mnav-list');
+    const mnavDetail = document.getElementById('mnav-detail');
+    const leftPanel = document.getElementById('left-tab-panel');
+    const drawerPanel = document.getElementById('drawer-panel');
+
+    if (mnavMap) mnavMap.classList.toggle('active', targetTab === 'map');
+    if (mnavList) mnavList.classList.toggle('active', targetTab === 'list');
+    if (mnavDetail) mnavDetail.classList.toggle('active', targetTab === 'detail');
+
+    if (leftPanel) leftPanel.classList.toggle('mobile-active', targetTab === 'list');
+    if (drawerPanel) drawerPanel.classList.toggle('mobile-active', targetTab === 'detail');
+
+    if (targetTab === 'map' && typeof MapEngine !== 'undefined' && MapEngine.map) {
+      setTimeout(() => { MapEngine.map.invalidateSize(); }, 300);
+    }
+  },
+
+  openPhotoLightbox(assetId) {
+    const asset = this.getAsset(assetId);
+    if (!asset || !asset.fotoList || asset.fotoList.length === 0) return;
+    this.lightboxAsset = asset;
+    this.lightboxIndex = this.currentPhotoIndex || 0;
+    this.updateLightboxContent();
+
+    const modal = document.getElementById('photo-lightbox-modal');
+    if (modal) modal.style.display = 'flex';
+  },
+
+  updateLightboxContent() {
+    if (!this.lightboxAsset || !this.lightboxAsset.fotoList) return;
+    const total = this.lightboxAsset.fotoList.length;
+    if (this.lightboxIndex < 0) this.lightboxIndex = total - 1;
+    if (this.lightboxIndex >= total) this.lightboxIndex = 0;
+
+    const rawUrl = this.lightboxAsset.fotoList[this.lightboxIndex];
+    const activeUrl = this.formatPhotoUrl(rawUrl);
+    const imgEl = document.getElementById('lightbox-img');
+    const captionEl = document.getElementById('lightbox-caption');
+
+    if (imgEl) imgEl.src = activeUrl;
+    if (captionEl) {
+      captionEl.textContent = `${this.lightboxAsset.namaBarang || 'Aset BMN'} (${this.lightboxIndex + 1} dari ${total})`;
+    }
+  },
+
+  navigateLightbox(dir) {
+    this.lightboxIndex = (this.lightboxIndex || 0) + dir;
+    this.updateLightboxContent();
+  },
+
+  closePhotoLightbox(event) {
+    if (event && event.target.id !== 'photo-lightbox-modal' && !event.target.classList.contains('lightbox-close-btn') && !event.target.closest('.lightbox-close-btn')) return;
+    const modal = document.getElementById('photo-lightbox-modal');
+    if (modal) modal.style.display = 'none';
+  },
+
+  openLaporanModal(assetId) {
+    const asset = this.getAsset(assetId);
+    if (!asset) return;
+    this.laporanAssetId = assetId;
+
+    const presets = typeof LaporanEngine !== 'undefined' ? LaporanEngine.loadTeamPresets() : {};
+
+    const idEl = document.getElementById('laporan-asset-id');
+    const stEl = document.getElementById('lap-no-st');
+    const tglStEl = document.getElementById('lap-tgl-st');
+    const knEl = document.getElementById('lap-ketua-nama');
+    const knipEl = document.getElementById('lap-ketua-nip');
+    const anEl = document.getElementById('lap-anggota-nama');
+    const anipEl = document.getElementById('lap-anggota-nip');
+
+    if (idEl) idEl.value = assetId;
+    if (stEl) stEl.value = presets.noSuratTugas || 'ST-101/KPKNL.1401/2026';
+    if (tglStEl) tglStEl.value = presets.tglSuratTugas || '15 Januari 2026';
+    if (knEl) knEl.value = presets.ketuaNama || 'I Putu Harjaya';
+    if (knipEl) knipEl.value = presets.ketuaNip || '19850101 201012 1 001';
+    if (anEl) anEl.value = presets.anggota1Nama || 'Gede Shendra';
+    if (anipEl) anipEl.value = presets.anggota1Nip || '19900202 201402 1 002';
+
+    const modal = document.getElementById('laporan-pmk-modal');
+    if (modal) modal.style.display = 'flex';
+  },
+
+  closeLaporanModal() {
+    const modal = document.getElementById('laporan-pmk-modal');
+    if (modal) modal.style.display = 'none';
+  },
+
+  getLaporanFormValues() {
+    return {
+      noSuratTugas: document.getElementById('lap-no-st')?.value || '',
+      tglSuratTugas: document.getElementById('lap-tgl-st')?.value || '',
+      ketuaNama: document.getElementById('lap-ketua-nama')?.value || '',
+      ketuaNip: document.getElementById('lap-ketua-nip')?.value || '',
+      anggota1Nama: document.getElementById('lap-anggota-nama')?.value || '',
+      anggota1Nip: document.getElementById('lap-anggota-nip')?.value || ''
+    };
+  },
+
+  handleGenerateLaporan(event) {
+    if (event) event.preventDefault();
+    const asset = this.getAsset(this.laporanAssetId);
+    if (!asset) return;
+    const formVals = this.getLaporanFormValues();
+
+    if (typeof LaporanEngine !== 'undefined') {
+      LaporanEngine.generateDocx(asset, formVals);
+      this.showToast('📄 Menghasilkan file Word Laporan PMK 120/2024...', 'info');
+      this.closeLaporanModal();
+    }
+  },
+
+  triggerPrintLaporan() {
+    const asset = this.getAsset(this.laporanAssetId);
+    if (!asset) return;
+    const formVals = this.getLaporanFormValues();
+
+    if (typeof LaporanEngine !== 'undefined') {
+      LaporanEngine.generatePrintView(asset, formVals);
+      this.closeLaporanModal();
+    }
+  },
+
   openEditAssetModal(assetId) {
-    const asset = DataEngine.activeAssets.find(a => a.id === assetId) || DataEngine.pendingAssets.find(a => a.id === assetId);
+    const asset = this.getAsset(assetId);
     if (!asset) return;
 
     const idInput = document.getElementById('edit-asset-id');
     const namaInput = document.getElementById('edit-nama-barang');
+    const satkerInput = document.getElementById('edit-satker');
+    const alamatInput = document.getElementById('edit-alamat');
+    const luasInput = document.getElementById('edit-luas');
+    const nilaiInput = document.getElementById('edit-nilai-buku');
+    const coordInput = document.getElementById('edit-koordinat');
     const kondisiInput = document.getElementById('edit-kondisi');
     const recSelect = document.getElementById('edit-rekomendasi');
     const catatanInput = document.getElementById('edit-catatan-tim');
-    const luasInput = document.getElementById('edit-luas');
 
     if (idInput) idInput.value = asset.id;
-    if (namaInput) namaInput.value = asset.namaBarang || '';
-    if (kondisiInput) kondisiInput.value = asset.kondisi || '';
-    if (catatanInput) catatanInput.value = asset.catatanTim || '';
-    if (luasInput) luasInput.value = asset.luas || 0;
+    if (namaInput) namaInput.value = asset.namaBarang || asset.uraian_bmn || '';
+    if (satkerInput) satkerInput.value = asset.namaSatker || asset.satker || '';
+    if (alamatInput) alamatInput.value = asset.alamat || '';
+    if (luasInput) luasInput.value = asset.luas || asset.luas_m2 || 0;
+    if (nilaiInput) nilaiInput.value = asset.nilaiBuku || asset.nilai_buku || 0;
+    if (coordInput) coordInput.value = (asset.lat && asset.lng) ? `${asset.lat}, ${asset.lng}` : (asset.koordinat || '');
+    if (kondisiInput) kondisiInput.value = asset.kondisi || asset.hasilJawaban || '';
+    if (catatanInput) catatanInput.value = asset.catatanTim || asset.rekomendasiUser || '';
 
-    if (recSelect && asset.rekomendasiUser) {
-      recSelect.value = asset.rekomendasiUser;
+    if (recSelect) {
+      recSelect.value = asset.rekomendasi || asset.rekomendasiUser || 'Sewa Komersial / Kerja Sama Pemanfaatan (KSP)';
     }
 
     const modal = document.getElementById('edit-asset-modal');
-    if (modal) modal.classList.add('show');
+    if (modal) modal.style.display = 'flex';
   },
 
   closeEditAssetModal() {
     const modal = document.getElementById('edit-asset-modal');
-    if (modal) modal.classList.remove('show');
+    if (modal) modal.style.display = 'none';
   },
 
   handleSaveEditAsset(event) {
@@ -1846,26 +1992,40 @@ const App = {
     }
 
     const namaVal = document.getElementById('edit-nama-barang').value.trim();
+    const alamatVal = document.getElementById('edit-alamat').value.trim();
+    const luasVal = parseFloat(document.getElementById('edit-luas').value) || 0;
+    const nilaiVal = parseFloat(document.getElementById('edit-nilai-buku').value) || 0;
+    const coordStr = document.getElementById('edit-koordinat').value.trim();
     const kondisiVal = document.getElementById('edit-kondisi').value.trim();
     const recVal = document.getElementById('edit-rekomendasi').value;
     const catatanVal = document.getElementById('edit-catatan-tim').value.trim();
-    const luasVal = parseFloat(document.getElementById('edit-luas').value) || 0;
 
     asset.namaBarang = namaVal || asset.namaBarang;
+    asset.uraian_bmn = asset.namaBarang;
+    asset.alamat = alamatVal || asset.alamat;
+    asset.luas = luasVal;
+    asset.luas_m2 = luasVal;
+    asset.nilaiBuku = nilaiVal;
+    asset.nilai_buku = nilaiVal;
     asset.kondisi = kondisiVal || asset.kondisi;
+    asset.rekomendasi = recVal;
     asset.rekomendasiUser = recVal;
     asset.catatanTim = catatanVal;
-    asset.luas = luasVal;
-    asset.luasTanah = luasVal;
+
+    if (coordStr && coordStr.includes(',')) {
+      const parts = coordStr.split(',').map(s => parseFloat(s.trim()));
+      if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+        asset.lat = parts[0];
+        asset.lng = parts[1];
+        asset.koordinat = `${parts[0]}, ${parts[1]}`;
+        asset.hasCoordinates = true;
+      }
+    }
 
     // Save to DataEngine instance
     const deAsset = DataEngine.activeAssets.find(a => a.id === asset.id) || DataEngine.pendingAssets.find(a => a.id === asset.id);
     if (deAsset) {
-      deAsset.namaBarang = asset.namaBarang;
-      deAsset.kondisi = asset.kondisi;
-      deAsset.rekomendasiUser = asset.rekomendasiUser;
-      deAsset.catatanTim = asset.catatanTim;
-      deAsset.luas = asset.luas;
+      Object.assign(deAsset, asset);
     }
 
     // 1. Save edit to localStorage for persistent session survival
@@ -1873,10 +2033,14 @@ const App = {
       const storedEdits = JSON.parse(localStorage.getItem('bmn_custom_edits') || '{}');
       storedEdits[asset.id] = {
         namaBarang: asset.namaBarang,
+        alamat: asset.alamat,
+        luas: asset.luas,
+        nilaiBuku: asset.nilaiBuku,
+        koordinat: asset.koordinat,
         kondisi: asset.kondisi,
+        rekomendasi: asset.rekomendasi,
         rekomendasiUser: asset.rekomendasiUser,
-        catatanTim: asset.catatanTim,
-        luas: asset.luas
+        catatanTim: asset.catatanTim
       };
       localStorage.setItem('bmn_custom_edits', JSON.stringify(storedEdits));
     } catch(e) {
@@ -1894,10 +2058,13 @@ const App = {
           kodeBarang: asset.kodeBarang,
           nup: asset.nup,
           namaBarang: asset.namaBarang,
+          alamat: asset.alamat,
+          luas: asset.luas,
+          nilaiBuku: asset.nilaiBuku,
+          koordinat: asset.koordinat,
           kondisi: asset.kondisi,
           rekomendasiUser: asset.rekomendasiUser,
-          catatanTim: asset.catatanTim,
-          luas: asset.luas
+          catatanTim: asset.catatanTim
         })
       }).catch(err => console.log('Apps Script update error:', err));
     }
