@@ -71,7 +71,7 @@ const App = {
 
     // Map Engine init on right stage
     MapEngine.init('map');
-    MapEngine.renderBMNMarkers(this.activeAssets, (asset) => this.selectAsset(asset.id));
+    MapEngine.renderBMNMarkers(this.activeAssets, (asset) => this.selectAsset(asset.id, false));
     this.bindEvents();
     this.updateExportCountBadge();
 
@@ -106,7 +106,7 @@ const App = {
 
       if (typeof MapEngine !== 'undefined' && MapEngine.map) {
         const mapped = this.activeAssets.filter(a => a.hasCoordinates);
-        MapEngine.renderBMNMarkers(mapped, (asset) => this.selectAsset(asset.id));
+        MapEngine.renderBMNMarkers(mapped, (asset) => this.selectAsset(asset.id, false));
       }
     }
   },
@@ -211,7 +211,7 @@ const App = {
     const filtered = this.getFilteredAssets();
     const mappedAssets = filtered.filter(a => a.hasCoordinates);
     if (typeof MapEngine !== 'undefined' && MapEngine.map) {
-      MapEngine.renderBMNMarkers(mappedAssets, (asset) => this.selectAsset(asset.id));
+      MapEngine.renderBMNMarkers(mappedAssets, (asset) => this.selectAsset(asset.id, false));
       if (mappedAssets.length > 0 && typeof L !== 'undefined') {
         const bounds = L.latLngBounds(mappedAssets.map(a => [a.lat, a.lng]));
         if (bounds.isValid()) {
@@ -850,7 +850,7 @@ const App = {
     if (kemKey && typeof MapEngine !== 'undefined') {
       const filteredAssets = this.getFilteredAssets().filter(a => a.kementerian === kemKey && a.hasCoordinates);
       if (filteredAssets.length > 0) {
-        MapEngine.renderBMNMarkers(filteredAssets, (asset) => this.selectAsset(asset.id));
+        MapEngine.renderBMNMarkers(filteredAssets, (asset) => this.selectAsset(asset.id, false));
         if (typeof L !== 'undefined') {
           const bounds = L.latLngBounds(filteredAssets.map(a => [a.lat, a.lng]));
           if (bounds.isValid() && MapEngine.map) {
@@ -865,7 +865,7 @@ const App = {
     const filteredAssets = this.getFilteredAssets().filter(a => a.kementerian === kemKey && a.namaSatker === satkerName);
     const mappedAssets = filteredAssets.filter(a => a.hasCoordinates);
     if (mappedAssets.length > 0 && typeof MapEngine !== 'undefined') {
-      MapEngine.renderBMNMarkers(mappedAssets, (asset) => this.selectAsset(asset.id));
+      MapEngine.renderBMNMarkers(mappedAssets, (asset) => this.selectAsset(asset.id, false));
       if (typeof L !== 'undefined') {
         const bounds = L.latLngBounds(mappedAssets.map(a => [a.lat, a.lng]));
         if (bounds.isValid() && MapEngine.map) {
@@ -936,7 +936,7 @@ const App = {
     this.syncCheckboxesUI();
   },
 
-  async selectAsset(assetId) {
+  async selectAsset(assetId, openDrawer = true) {
     const asset = this.activeAssets.find(a => a.id === assetId);
     if (!asset) return;
 
@@ -948,14 +948,16 @@ const App = {
 
     const drawer = document.getElementById('detail-drawer');
     const rightToggleBtn = document.getElementById('right-panel-toggle-btn');
-    if (drawer) {
-      drawer.classList.add('open');
-      drawer.classList.add('mobile-active');
-    }
-    if (rightToggleBtn) rightToggleBtn.style.display = 'none';
+    if (openDrawer) {
+      if (drawer) {
+        drawer.classList.add('open');
+        drawer.classList.add('mobile-active');
+      }
+      if (rightToggleBtn) rightToggleBtn.style.display = 'none';
 
-    if (window.innerWidth <= 768) {
-      this.switchMobileTab('detail');
+      if (window.innerWidth <= 768) {
+        this.switchMobileTab('detail');
+      }
     }
 
     let catchmentData = { pois: [], totalCount: 0 };
@@ -2216,7 +2218,7 @@ const App = {
         this.renderAllAssetsList();
 
         const mapped = this.activeAssets.filter(a => a.hasCoordinates);
-        MapEngine.renderBMNMarkers(mapped, (asset) => this.selectAsset(asset.id));
+        MapEngine.renderBMNMarkers(mapped, (asset) => this.selectAsset(asset.id, false));
 
         this.showToast(`✅ Data Google Sheets tersinkron! (${this.activeAssets.length} unit)`, 'success');
       } else {

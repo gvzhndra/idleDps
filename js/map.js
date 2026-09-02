@@ -126,8 +126,8 @@ const MapEngine = {
               <span><i class="fa-solid fa-chart-area text-primary"></i> Luas: ${SpatialEngine.formatLuas(asset.luas)}</span>
             </div>
             <div class="d-flex gap-1 mt-2">
-              <button class="btn btn-sm btn-primary" style="flex:1;" onclick="App.selectAsset('${asset.id}')">
-                <i class="fa-solid fa-eye"></i> Detail
+              <button class="btn btn-sm btn-primary" style="flex:1;" onclick="App.selectAsset('${asset.id}', true)">
+                <i class="fa-solid fa-circle-info"></i> Detail Aset
               </button>
               <a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-secondary" style="background:#eafaf1; color:#27ae60; border-color:#2ecc71;" title="Buka di Google Maps">
                 <i class="fa-solid fa-arrow-up-right-from-square"></i> Maps
