@@ -114,8 +114,9 @@ const MapEngine = {
 
       const popupHtml = `
         <div class="custom-popup-card">
-          <div class="popup-image" style="background-image: url('${asset.fotoList[0] || ''}');">
+          <div class="popup-image photo-thumbnail-clickable" style="background-image: url('${asset.fotoList && asset.fotoList[0] ? asset.fotoList[0] : ''}'); cursor: pointer;" onclick="App.openPhotoLightbox('${asset.id}')" title="Klik untuk memperbesar foto">
             <span class="popup-category-badge">${asset.kategori}</span>
+            ${asset.fotoList && asset.fotoList.length > 0 ? `<span style="position: absolute; bottom: 6px; right: 6px; background: rgba(0,0,0,0.55); color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 4px; pointer-events: none;"><i class="fa-solid fa-expand"></i></span>` : ''}
           </div>
           <div class="popup-body">
             <h4 class="popup-title">${asset.namaBarang}</h4>

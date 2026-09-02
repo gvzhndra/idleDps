@@ -91,6 +91,22 @@
        2. KPI SUMMARY METRICS BAR (2-ROW EXECUTIVE DASHBOARD)
        ========================================================================== -->
   <section class="stats-bar" id="executive-stats-bar">
+    <!-- STATS VIEW TITLE BAR (SPECIALLY OPTIMIZED FOR MOBILE STATS TAB & DASHBOARD) -->
+    <div class="stats-view-header">
+      <div class="stats-view-title-group">
+        <div class="stats-view-icon"><i class="fa-solid fa-chart-pie"></i></div>
+        <div>
+          <h2 class="stats-view-title">Ringkasan Statistik & KPI BMN Idle</h2>
+          <p class="stats-view-subtitle">Dashboard Analisis Spasial & Pemantauan Aset KPKNL Denpasar</p>
+        </div>
+      </div>
+      <div class="stats-view-actions">
+        <button class="btn btn-sm btn-secondary" onclick="App.resetAllFilters()" title="Reset Semua Filter">
+          <i class="fa-solid fa-rotate-left"></i> Reset Filter
+        </button>
+      </div>
+    </div>
+
     <!-- ROW 1, COL 1 (CARD 1): TOTAL PERMINTAAN KLARIFIKASI -->
     <div class="stat-card interactive" id="card-filter-all" onclick="App.resetAllFilters()" title="Klik untuk reset & menampilkan seluruh 248 unit BMN">
       <div class="stat-card-header">

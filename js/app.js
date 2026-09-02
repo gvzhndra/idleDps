@@ -476,16 +476,24 @@ const App = {
     const rightToggleBtn = document.getElementById('right-panel-toggle-btn');
     if (!drawer) return;
 
-    this.isRightDrawerOpen = drawer.classList.contains('open');
+    this.isRightDrawerOpen = drawer.classList.contains('open') || drawer.classList.contains('mobile-active');
 
     if (this.isRightDrawerOpen) {
       drawer.classList.remove('open');
+      drawer.classList.remove('mobile-active');
       if (rightToggleBtn) rightToggleBtn.style.display = 'flex';
       MapEngine.resetView();
+      if (window.innerWidth <= 768) {
+        this.switchMobileTab('map');
+      }
     } else {
       if (this.selectedAsset) {
         drawer.classList.add('open');
+        drawer.classList.add('mobile-active');
         if (rightToggleBtn) rightToggleBtn.style.display = 'none';
+        if (window.innerWidth <= 768) {
+          this.switchMobileTab('detail');
+        }
       }
     }
 
@@ -940,8 +948,15 @@ const App = {
 
     const drawer = document.getElementById('detail-drawer');
     const rightToggleBtn = document.getElementById('right-panel-toggle-btn');
-    if (drawer) drawer.classList.add('open');
+    if (drawer) {
+      drawer.classList.add('open');
+      drawer.classList.add('mobile-active');
+    }
     if (rightToggleBtn) rightToggleBtn.style.display = 'none';
+
+    if (window.innerWidth <= 768) {
+      this.switchMobileTab('detail');
+    }
 
     let catchmentData = { pois: [], totalCount: 0 };
     let recommendation = typeof RecommendationEngine !== 'undefined'
@@ -986,10 +1001,16 @@ const App = {
   closeDetailPanel() {
     const drawer = document.getElementById('detail-drawer');
     const rightToggleBtn = document.getElementById('right-panel-toggle-btn');
-    if (drawer) drawer.classList.remove('open');
+    if (drawer) {
+      drawer.classList.remove('open');
+      drawer.classList.remove('mobile-active');
+    }
     if (rightToggleBtn) rightToggleBtn.style.display = 'flex';
     this.selectedAsset = null;
     MapEngine.resetView();
+    if (window.innerWidth <= 768) {
+      this.switchMobileTab('map');
+    }
   },
 
   renderDetailPanel(asset, catchmentData, recommendation) {
@@ -1865,7 +1886,7 @@ const App = {
 
     const statsBar = document.getElementById('executive-stats-bar');
     const leftPanel = document.getElementById('left-tab-panel');
-    const drawerPanel = document.getElementById('drawer-panel');
+    const detailDrawer = document.getElementById('detail-drawer');
 
     if (mnavStats) mnavStats.classList.toggle('active', targetTab === 'stats');
     if (mnavMap) mnavMap.classList.toggle('active', targetTab === 'map');
@@ -1874,7 +1895,10 @@ const App = {
 
     if (statsBar) statsBar.classList.toggle('mobile-active', targetTab === 'stats');
     if (leftPanel) leftPanel.classList.toggle('mobile-active', targetTab === 'list');
-    if (drawerPanel) drawerPanel.classList.toggle('mobile-active', targetTab === 'detail');
+    if (detailDrawer) {
+      detailDrawer.classList.toggle('mobile-active', targetTab === 'detail');
+      detailDrawer.classList.toggle('open', targetTab === 'detail');
+    }
 
     if (targetTab === 'map' && typeof MapEngine !== 'undefined' && MapEngine.map) {
       setTimeout(() => { MapEngine.map.invalidateSize(); }, 300);
