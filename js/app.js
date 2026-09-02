@@ -1960,6 +1960,10 @@ const App = {
     }
     this.laporanAssetId = assetId;
 
+    if (typeof LaporanEngine !== 'undefined') {
+      LaporanEngine.populateSTDropdown();
+    }
+
     const presets = typeof LaporanEngine !== 'undefined' ? LaporanEngine.loadTeamPresets() : {};
 
     const idEl = document.getElementById('laporan-asset-id');
@@ -1983,6 +1987,166 @@ const App = {
       modal.style.display = 'flex';
       modal.classList.add('show');
     }
+  },
+
+  handleSelectPresetST(stId) {
+    if (!stId || typeof LaporanEngine === 'undefined') return;
+    const found = LaporanEngine.masterTimSTList.find(s => s.id_st === stId || s.no_st === stId);
+    if (!found) return;
+
+    const stEl = document.getElementById('lap-no-st');
+    const tglStEl = document.getElementById('lap-tgl-st');
+    const knEl = document.getElementById('lap-ketua-nama');
+    const knipEl = document.getElementById('lap-ketua-nip');
+    const anEl = document.getElementById('lap-anggota-nama');
+    const anipEl = document.getElementById('lap-anggota-nip');
+
+    if (stEl) stEl.value = found.no_st || '';
+    if (tglStEl) tglStEl.value = found.tgl_st || '';
+    if (knEl) knEl.value = found.ketua_nama || '';
+    if (knipEl) knipEl.value = found.ketua_nip || '';
+    if (anEl) anEl.value = found.anggota1_nama || '';
+    if (anipEl) anipEl.value = found.anggota1_nip || '';
+
+    this.showToast(`✅ Menggunakan data Surat Tugas: ${found.no_st}`, 'info');
+  },
+
+  openManageTimSTModal() {
+    if (typeof LaporanEngine !== 'undefined') {
+      LaporanEngine.renderTimSTTable();
+    }
+    const modal = document.getElementById('manage-tim-st-modal');
+    if (modal) {
+      modal.style.display = 'flex';
+      modal.classList.add('show');
+    }
+  },
+
+  closeManageTimSTModal() {
+    const modal = document.getElementById('manage-tim-st-modal');
+    if (modal) {
+      modal.style.display = 'none';
+      modal.classList.remove('show');
+    }
+  },
+
+  toggleAddSTForm(show) {
+    const container = document.getElementById('form-st-container');
+    if (!container) return;
+    container.style.display = show ? 'block' : 'none';
+    if (!show) {
+      document.getElementById('form-manage-tim-st')?.reset();
+      document.getElementById('st-form-id').value = '';
+      const linkDisp = document.getElementById('st-pdf-link-display');
+      if (linkDisp) linkDisp.innerHTML = '';
+    }
+  },
+
+  editTimSTRow(stId) {
+    if (typeof LaporanEngine === 'undefined') return;
+    const found = LaporanEngine.masterTimSTList.find(s => s.id_st === stId || s.no_st === stId);
+    if (!found) return;
+
+    this.toggleAddSTForm(true);
+    document.getElementById('st-form-id').value = found.id_st || '';
+    document.getElementById('st-input-no').value = found.no_st || '';
+    document.getElementById('st-input-tgl').value = found.tgl_st || '';
+    document.getElementById('st-input-sk').value = found.no_sk_tim || '';
+    document.getElementById('st-input-wilayah').value = found.wilayah_satker || '';
+    document.getElementById('st-input-ketua-nama').value = found.ketua_nama || '';
+    document.getElementById('st-input-ketua-nip').value = found.ketua_nip || '';
+    document.getElementById('st-input-ketua-jabatan').value = found.ketua_jabatan || '';
+    document.getElementById('st-input-anggota1-nama').value = found.anggota1_nama || '';
+    document.getElementById('st-input-anggota1-nip').value = found.anggota1_nip || '';
+    document.getElementById('st-input-anggota1-jabatan').value = found.anggota1_jabatan || '';
+    document.getElementById('st-input-anggota2-nama').value = found.anggota2_nama || '';
+    document.getElementById('st-input-anggota2-nip').value = found.anggota2_nip || '';
+
+    const linkDisp = document.getElementById('st-pdf-link-display');
+    if (linkDisp && found.pdf_st_url) {
+      linkDisp.innerHTML = `Dokumen saat ini: <a href="${found.pdf_st_url}" target="_blank">Lihat PDF ST</a>`;
+    }
+  },
+
+  async handleSaveTimSTForm(event) {
+    if (event) event.preventDefault();
+    const btn = document.getElementById('btn-save-st');
+    if (btn) btn.disabled = true;
+
+    const id = document.getElementById('st-form-id').value.trim() || `ST-${Date.now()}`;
+    const no_st = document.getElementById('st-input-no').value.trim();
+    const tgl_st = document.getElementById('st-input-tgl').value.trim();
+    const no_sk_tim = document.getElementById('st-input-sk').value.trim();
+    const wilayah_satker = document.getElementById('st-input-wilayah').value.trim();
+    const ketua_nama = document.getElementById('st-input-ketua-nama').value.trim();
+    const ketua_nip = document.getElementById('st-input-ketua-nip').value.trim();
+    const ketua_jabatan = document.getElementById('st-input-ketua-jabatan').value.trim();
+    const anggota1_nama = document.getElementById('st-input-anggota1-nama').value.trim();
+    const anggota1_nip = document.getElementById('st-input-anggota1-nip').value.trim();
+    const anggota1_jabatan = document.getElementById('st-input-anggota1-jabatan').value.trim();
+    const anggota2_nama = document.getElementById('st-input-anggota2-nama').value.trim();
+    const anggota2_nip = document.getElementById('st-input-anggota2-nip').value.trim();
+
+    let pdf_st_url = '';
+    const fileInput = document.getElementById('st-input-pdf-file');
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+      this.showToast('📤 Mengunggah berkas PDF ST ke Google Drive...', 'info');
+      try {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        const base64Promise = new Promise((resolve) => {
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(file);
+        });
+        const base64Data = await base64Promise;
+        const uploadedUrl = await LaporanEngine.uploadDocumentPDFToDrive(`ST_${no_st.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`, base64Data);
+        if (uploadedUrl) {
+          pdf_st_url = uploadedUrl;
+        }
+      } catch (e) {
+        console.warn('Upload PDF ST error:', e);
+      }
+    }
+
+    const payload = {
+      id_st: id,
+      no_st: no_st,
+      tgl_st: tgl_st,
+      no_sk_tim: no_sk_tim,
+      wilayah_satker: wilayah_satker,
+      ketua_nama: ketua_nama,
+      ketua_nip: ketua_nip,
+      ketua_jabatan: ketua_jabatan,
+      anggota1_nama: anggota1_nama,
+      anggota1_nip: anggota1_nip,
+      anggota1_jabatan: anggota1_jabatan,
+      anggota2_nama: anggota2_nama,
+      anggota2_nip: anggota2_nip,
+      pdf_st_url: pdf_st_url,
+      status_aktif: 'AKTIF'
+    };
+
+    // Update local state
+    const existingIdx = LaporanEngine.masterTimSTList.findIndex(s => s.id_st === id || s.no_st === no_st);
+    if (existingIdx >= 0) {
+      if (!pdf_st_url && LaporanEngine.masterTimSTList[existingIdx].pdf_st_url) {
+        payload.pdf_st_url = LaporanEngine.masterTimSTList[existingIdx].pdf_st_url;
+      }
+      LaporanEngine.masterTimSTList[existingIdx] = payload;
+    } else {
+      LaporanEngine.masterTimSTList.push(payload);
+    }
+
+    LaporanEngine.saveMasterTimSTToLocal();
+    LaporanEngine.renderTimSTTable();
+    LaporanEngine.populateSTDropdown();
+
+    // Sync to Google Sheets
+    LaporanEngine.saveTimSTToSheet(payload);
+
+    this.toggleAddSTForm(false);
+    if (btn) btn.disabled = false;
+    this.showToast(`✅ Data Surat Tugas ${no_st} berhasil disimpan!`, 'success');
   },
 
   closeLaporanModal() {

@@ -88,6 +88,7 @@ function onOpen() {
     .addItem('🔑 Inisialisasi Sheet Users & Akses', 'initUsersSheet')
     .addItem('🔐 Hash Semua Password Lama di Sheet Users', 'hashAllPlaintextPasswords')
     .addSeparator()
+    .addItem('📋 Inisialisasi Sheet Master Tim & Surat Tugas', 'initMasterTimSTSheet')
     .addItem('🗺️ Setup/Reset Tab Master Kecamatan Bali', 'setupMasterKecamatan')
     .addSeparator()
     .addItem('🌐 Buka Dashboard Web App', 'openDashboardDialog')
@@ -105,6 +106,10 @@ function doGet(e) {
 
   if (e && e.parameter && e.parameter.action === 'getPhotos') {
     return fetchPhotoMapAsJSON();
+  }
+
+  if (e && e.parameter && e.parameter.action === 'getTimST') {
+    return fetchTimSTDataAsJSON();
   }
 
   return HtmlService.createHtmlOutputFromFile('index')
@@ -166,6 +171,14 @@ function doPost(e) {
 
     if (action === 'updateAsset') {
       return handleUpdateAssetInSheet(contents);
+    }
+
+    if (action === 'saveTimST') {
+      return handleSaveTimST(contents);
+    }
+
+    if (action === 'uploadBase64PDF') {
+      return handleDocumentPDFUploadToDrive(contents);
     }
 
     return createJsonResponse({ status: 'error', message: 'Aksi tidak dikenal.' });
@@ -761,3 +774,209 @@ function fetchCentroidsAsJSON() {
     return createJsonResponse({ status: 'error', message: err.toString() });
   }
 }
+
+// ============================================================================
+// MASTER TIM PENELITIAN & SURAT TUGAS (ST / SK) MODULE
+// ============================================================================
+
+/**
+ * Inisialisasi sheet "Master_Tim_ST" dengan styling dan default row
+ */
+function initMasterTimSTSheet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName('Master_Tim_ST');
+
+  if (!sheet) {
+    sheet = ss.insertSheet('Master_Tim_ST');
+  }
+
+  sheet.clear();
+
+  var headers = [
+    'id_st', 'no_st', 'tgl_st', 'no_sk_tim', 'wilayah_satker',
+    'ketua_nama', 'ketua_nip', 'ketua_jabatan',
+    'anggota1_nama', 'anggota1_nip', 'anggota1_jabatan',
+    'anggota2_nama', 'anggota2_nip', 'anggota2_jabatan',
+    'pdf_st_url', 'pdf_sk_url', 'status_aktif'
+  ];
+
+  sheet.appendRow(headers);
+
+  var headerRange = sheet.getRange(1, 1, 1, headers.length);
+  headerRange.setBackground('#0f172a');
+  headerRange.setFontColor('#ffffff');
+  headerRange.setFontWeight('bold');
+  headerRange.setFontSize(10.5);
+
+  sheet.appendRow([
+    'ST-2026-001',
+    'ST-101/KPKNL.1401/2026',
+    '15 Januari 2026',
+    'KEP-45/KPKNL.14/2026',
+    'Seluruh Wilayah Provinsi Bali',
+    'I Putu Harjaya',
+    '19850101 201012 1 001',
+    'Kepala Seksi PKN KPKNL Denpasar',
+    'Gede Shendra',
+    '19900202 201402 1 002',
+    'Penata Muda PKN',
+    '', '', '',
+    '', '',
+    'AKTIF'
+  ]);
+
+  SpreadsheetApp.getActiveSpreadsheet().toast(
+    '✅ Tab "Master_Tim_ST" berhasil disiapkan untuk manajemen Surat Tugas & SK!',
+    '📋 Setup Selesai',
+    5
+  );
+}
+
+/**
+ * Fetch semua daftar Surat Tugas & Tim sebagai JSON
+ * Endpoint: ?action=getTimST
+ */
+function fetchTimSTDataAsJSON() {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName('Master_Tim_ST');
+
+    if (!sheet) {
+      initMasterTimSTSheet();
+      sheet = ss.getSheetByName('Master_Tim_ST');
+    }
+
+    var data = sheet.getDataRange().getValues();
+    if (data.length <= 1) {
+      return createJsonResponse({ status: 'success', data: [] });
+    }
+
+    var headers = data[0];
+    var result = [];
+
+    for (var i = 1; i < data.length; i++) {
+      var row = data[i];
+      if (!row[0] && !row[1]) continue;
+
+      var item = {};
+      for (var h = 0; h < headers.length; h++) {
+        item[headers[h]] = row[h];
+      }
+      result.push(item);
+    }
+
+    return createJsonResponse({ status: 'success', data: result });
+  } catch (err) {
+    return createJsonResponse({ status: 'error', message: err.toString() });
+  }
+}
+
+/**
+ * Simpan / Update data Surat Tugas & Tim ke sheet Master_Tim_ST
+ */
+function handleSaveTimST(payload) {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName('Master_Tim_ST');
+
+    if (!sheet) {
+      initMasterTimSTSheet();
+      sheet = ss.getSheetByName('Master_Tim_ST');
+    }
+
+    var data = sheet.getDataRange().getValues();
+    var headers = data[0];
+    var targetRowIndex = -1;
+
+    var reqId = String(payload.id_st || payload.id || '').trim();
+    var reqNoST = String(payload.no_st || payload.noSuratTugas || '').trim();
+
+    if (reqId || reqNoST) {
+      for (var i = 1; i < data.length; i++) {
+        if ((reqId && String(data[i][0]).trim() === reqId) ||
+            (reqNoST && String(data[i][1]).trim() === reqNoST)) {
+          targetRowIndex = i + 1;
+          break;
+        }
+      }
+    }
+
+    var rowValues = [
+      reqId || ('ST-' + Utilities.formatDate(new Date(), 'GMT+8', 'yyyyMMdd-HHmmss')),
+      reqNoST || 'ST-Draft/2026',
+      String(payload.tgl_st || payload.tglSuratTugas || '').trim(),
+      String(payload.no_sk_tim || payload.noSkTim || '').trim(),
+      String(payload.wilayah_satker || payload.wilayah || 'Provinsi Bali').trim(),
+      String(payload.ketua_nama || payload.ketuaNama || '').trim(),
+      String(payload.ketua_nip || payload.ketuaNip || '').trim(),
+      String(payload.ketua_jabatan || payload.ketuaJabatan || 'Ketua Tim').trim(),
+      String(payload.anggota1_nama || payload.anggota1Nama || '').trim(),
+      String(payload.anggota1_nip || payload.anggota1Nip || '').trim(),
+      String(payload.anggota1_jabatan || payload.anggota1Jabatan || 'Anggota Tim').trim(),
+      String(payload.anggota2_nama || payload.anggota2Nama || '').trim(),
+      String(payload.anggota2_nip || payload.anggota2Nip || '').trim(),
+      String(payload.anggota2_jabatan || payload.anggota2Jabatan || '').trim(),
+      String(payload.pdf_st_url || '').trim(),
+      String(payload.pdf_sk_url || '').trim(),
+      String(payload.status_aktif || 'AKTIF').trim()
+    ];
+
+    if (targetRowIndex > 0) {
+      sheet.getRange(targetRowIndex, 1, 1, rowValues.length).setValues([rowValues]);
+    } else {
+      sheet.appendRow(rowValues);
+    }
+
+    return createJsonResponse({
+      status: 'success',
+      message: 'Data Surat Tugas berhasil disimpan ke Master_Tim_ST.',
+      data: { id_st: rowValues[0], no_st: rowValues[1] }
+    });
+  } catch (err) {
+    return createJsonResponse({ status: 'error', message: err.toString() });
+  }
+}
+
+/**
+ * Upload dokumen PDF (Surat Tugas / SK) ke Google Drive Folder "BMN_Idle_Documents"
+ */
+function handleDocumentPDFUploadToDrive(contents) {
+  try {
+    var fileName = contents.fileName || ('Dokumen_ST_' + new Date().getTime() + '.pdf');
+    var base64Data = contents.base64Data;
+    var docType = contents.docType || 'SURAT_TUGAS';
+
+    if (!base64Data) {
+      return createJsonResponse({ status: 'error', message: 'Tidak ada data base64 dokumen.' });
+    }
+
+    var cleanBase64 = base64Data.replace(/^data:application\/pdf;base64,/, '').replace(/^data:.*;base64,/, '');
+    var decoded = Utilities.base64Decode(cleanBase64);
+    var blob = Utilities.newBlob(decoded, 'application/pdf', fileName);
+
+    var folderName = 'BMN_Idle_Documents';
+    var folders = DriveApp.getFoldersByName(folderName);
+    var targetFolder;
+    if (folders.hasNext()) {
+      targetFolder = folders.next();
+    } else {
+      targetFolder = DriveApp.createFolder(folderName);
+    }
+
+    var file = targetFolder.createFile(blob);
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+
+    var fileUrl = file.getUrl();
+
+    return createJsonResponse({
+      status: 'success',
+      fileId: file.getId(),
+      fileUrl: fileUrl,
+      fileName: fileName,
+      message: 'Dokumen PDF berhasil diunggah ke Google Drive!'
+    });
+  } catch (err) {
+    return createJsonResponse({ status: 'error', message: err.toString() });
+  }
+}
+

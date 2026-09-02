@@ -87,6 +87,45 @@ Membangun **Single-Page Application (SPA) Interactive Presentation Dashboard** u
 
 ---
 
+## 📅 CATATAN DISKUSI & PERKEMBANGAN TERAKHIR (STAMP: 2 SEPTEMBER 2026)
+
+### 1. 📱 Penyempurnaan UI Mobile & Interaksi Spasial Peta (Completed)
+- **Perapihan Layout Mobile Detail Drawer**: Memperbaiki selector CSS `.detail-drawer` di mobile (`width: 100% !important`, `left: 0`, `overflow-x: hidden`) sehingga teks dan kartu detail tidak lagi terpotong di layar HP.
+- **Title Bar Statistik Seragam**: Menyesuaikan posisi `.stats-bar.mobile-active` di bawah header utama (`top: 96px`) serta menyelaraskan toolbar judul statistik (`stats-view-header`) agar seragam dengan header panel *Detail* dan *Kluster*.
+- **Alur Interaksi Peta & Catchment Radius 500m**:
+  - Saat titik/marker di peta diklik: Peta langsung menampilkan fokus visual, **lingkaran radius 500m (*catchment area*)**, garis konektor ke KPKNL, zonasi pola ruang, dan titik-titik POI OSM, **tanpa langsung menutupi layar dengan sidebar/drawer**.
+  - Sidebar detail baru akan terbuka ketika tombol **"Detail Aset"** pada kartu popup peta diklik oleh pengguna.
+- **Tombol Quick Refresh Data di Header Mobile**:
+  - Ditetapkan menggunakan tombol ikon bulat `[ 🔄 ]` (`#btn-mobile-sync`) di kanan atas header (di samping profil/burger menu).
+  - Menghapus teks/elemen *Pull-to-Refresh* statis yang sebelumnya sempat muncul mengganggu tata letak header.
+- **Perbaikan Modal Dialog Overlay**:
+  - Memperbaiki kelas CSS `.modal-overlay.show` dan `.modal-overlay[style*="display: flex"]` (`opacity: 1 !important; pointer-events: auto !important`).
+  - Tombol **"Buat Laporan Penelitian (PMK 120/2024)"** dan **"Edit Data & Rekomendasi Aset (Admin KPKNL)"** kini merespon cepat dan membuka modal dialog secara instan.
+
+### 2. 🛣️ Diskusi Identifikasi Aset "Di Pinggir Jalan" (Aksesibilitas Frontage)
+- **Latar Belakang & Masalah Teknis (*Centroid vs Area Luas*)**:
+  - Titik GPS di SIMAN merupakan **Centroid (titik tengah lahan)**.
+  - Pada aset tanah berukuran luas (misal 5.000 m² – 10.000 m²), jarak dari centroid ke jalan raya bisa mencapai 50–70 meter. Jika dihitung matematis murni, sistem berpotensi salah mengklasifikasikan lahan tersebut sebagai *"tidak ada akses/di dalam"*, padahal batas pagar depannya persis menempel di bahu jalan raya.
+- **Kesepakatan & Keputusan Akhir (User Consensus)**:
+  - **Memilih Pendekatan Input Lapangan Langsung (*Ground Truth Verification*): "Ya / Tidak"**.
+  - **Alasan**: Jauh lebih aman, 100% akurat sesuai justifikasi survei fisik tim KPKNL/Satker, bebas risiko komputasi bias titik centroid, dan menjaga basis kode dashboard tetap bersih dan stabil.
+- **Rencana Alur Kerja (Next Action Plan saat diterapkan)**:
+  1. Menambahkan kolom `pinggir_jalan` (*"Ya"* / *"Tidak"*) pada master Google Sheets `BMN_Idle`.
+  2. Menambahkan pilihan dropdown *Posisi Pinggir Jalan* di Modal Edit Aset (`#edit-asset-modal`).
+### 3. 👥 Manajemen Tim Penelitian & Surat Tugas (ST/SK) Terintegrasi Google Drive & Sheets (Completed)
+- **Otomatisasi Tab `Master_Tim_ST` di Google Sheets**:
+  - Menyediakan fungsi `initMasterTimSTSheet()` di `Code.gs` untuk auto-provisioning tab database Surat Tugas & SK Tim.
+  - Endpoint API `GET ?action=getTimST`, `POST action=saveTimST`, dan `POST action=uploadBase64PDF` (unggah dokumen ST/SK PDF ke Google Drive folder `BMN_Idle_Documents`).
+- **Modal Manajemen Tim & ST Frontend (`#manage-tim-st-modal`)**:
+  - Dapat diakses dari tombol *Tim & ST* di Header dan Mobile Burger Menu.
+  - Menyimpan data No ST, Tanggal ST, No SK Tim, Wilayah/Satker, Ketua, NIP, Anggota 1, Anggota 2, dan file PDF asli.
+- **Auto-Preset Dropdown pada Generator Laporan PMK 120/2024**:
+  - Pada modal generator laporan, terdapat dropdown *Pilih Surat Tugas*. Memilih salah satu ST otomatis mengisi 100% data Ketua, Anggota, NIP, No ST, dan Tanggal tanpa ketik manual.
+- **Penyelarasan Format Laporan PMK 120/2024**:
+  - Menyesuaikan struktur output Print View PDF dan Word (.docx) di `js/laporan.js` persis sesuai 5 bab standar resmi PMK (Pendahuluan, Objek Penelitian, Analisis Data & Dokumen, Analisis Fisik/Spasial BMN, Penutup & Rekomendasi).
+
+---
+
 ## 📋 NEXT FEATURE ACTION PLAN (FUTURE ROADMAP & BACKLOG)
 
 > [!TIP]

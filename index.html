@@ -49,6 +49,10 @@
           <i class="fa-solid fa-user-lock text-primary"></i> <span id="user-btn-label">Login User</span>
         </button>
       </div>
+      <!-- TIM & SURAT TUGAS MANAGEMENT BUTTON -->
+      <button class="btn btn-secondary" onclick="App.openManageTimSTModal()" title="Manajemen Tim Penelitian & Surat Tugas (ST/SK)">
+        <i class="fa-solid fa-users-gear text-primary"></i> <span>Tim & ST</span>
+      </button>
       <button class="btn btn-secondary" onclick="App.openGoogleSheetsModal()" title="Konfigurasi URL Google Sheets & Apps Script">
         <i class="fa-solid fa-table text-success"></i> <span>Settings</span>
       </button>
@@ -68,6 +72,9 @@
     <div class="mobile-burger-dropdown" id="mobile-burger-dropdown" style="display:none;">
       <button class="btn btn-secondary" onclick="App.syncLiveDatasetManual(); App.toggleMobileBurgerMenu();">
         <i class="fa-solid fa-arrows-rotate text-success"></i> Sync Sheets
+      </button>
+      <button class="btn btn-secondary" onclick="App.openManageTimSTModal(); App.toggleMobileBurgerMenu();">
+        <i class="fa-solid fa-users-gear text-primary"></i> Tim & ST
       </button>
       <button class="btn btn-secondary" onclick="App.openLoginModal(); App.toggleMobileBurgerMenu();">
         <i class="fa-solid fa-user-lock text-primary"></i> <span id="user-btn-label-mobile">Login User</span>
@@ -598,6 +605,16 @@
             <span>Data Laporan ini mengacu pada format resmi PMK 120/2024 dan siap di-export ke Word (.docx) atau Dicetak ke PDF.</span>
           </div>
 
+          <!-- SMART PRESET DROPDOWN -->
+          <div class="form-group mb-3 p-2 border rounded" style="background:#f8fafc;">
+            <label style="font-size:11.5px; font-weight:700; color:var(--text-main); display:block;" class="mb-1">
+              <i class="fa-solid fa-file-signature text-primary"></i> Pilih Surat Tugas (Preset Otomatis Tim):
+            </label>
+            <select class="form-control" id="lap-select-preset-st" onchange="App.handleSelectPresetST(this.value)">
+              <option value="">-- Gunakan Data Input Manual / Terakhir --</option>
+            </select>
+          </div>
+
           <h4 style="font-size:13px; font-weight:700; color:var(--text-main);" class="mb-2"><i class="fa-solid fa-scroll text-warning"></i> Data Surat Tugas & Klarifikasi</h4>
           <div class="row d-flex gap-2 mb-2">
             <div class="form-group flex-1">
@@ -639,6 +656,133 @@
           <button type="submit" class="btn btn-primary"><i class="fa-solid fa-file-word"></i> Unduh Word (.docx)</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- MODAL MANAJEMEN TIM PENELITIAN & SURAT TUGAS (ST / SK) -->
+  <div class="modal-overlay" id="manage-tim-st-modal" style="display:none;">
+    <div class="modal-card" style="max-width:680px;">
+      <div class="modal-header d-flex justify-content-between align-items-center mb-3">
+        <h3 style="font-size:16px; font-weight:700;"><i class="fa-solid fa-users-gear text-primary"></i> Manajemen Tim Penelitian & Surat Tugas (ST/SK)</h3>
+        <button class="btn btn-icon btn-secondary" onclick="App.closeManageTimSTModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="modal-body" style="max-height:75vh; overflow-y:auto; padding-right:6px;">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span style="font-size:12px; color:var(--text-muted);">Kelola data penugasan resmi, pejabat tim, dan berkas PDF SK/ST.</span>
+          <button class="btn btn-sm btn-primary" onclick="App.toggleAddSTForm(true)">
+            <i class="fa-solid fa-plus"></i> Tambah Surat Tugas
+          </button>
+        </div>
+
+        <!-- FORM TAMBAH / EDIT SURAT TUGAS -->
+        <div id="form-st-container" style="display:none; background:#f8fafc; padding:14px; border-radius:10px; border:1px solid var(--border-subtle); margin-bottom:16px;">
+          <h4 style="font-size:13px; font-weight:700; margin-bottom:10px; color:var(--text-main);" id="form-st-title">
+            <i class="fa-solid fa-pen-to-square text-primary"></i> Form Surat Tugas & Tim
+          </h4>
+          <form id="form-manage-tim-st" onsubmit="App.handleSaveTimSTForm(event)">
+            <input type="hidden" id="st-form-id">
+            <div class="row d-flex gap-2 mb-2">
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Nomor Surat Tugas (ST)</label>
+                <input type="text" class="form-control" id="st-input-no" placeholder="ST-101/KPKNL.1401/2026" required>
+              </div>
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Tanggal Surat Tugas</label>
+                <input type="text" class="form-control" id="st-input-tgl" placeholder="15 Januari 2026" required>
+              </div>
+            </div>
+            <div class="row d-flex gap-2 mb-2">
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Nomor SK Tim Penelitian</label>
+                <input type="text" class="form-control" id="st-input-sk" placeholder="KEP-45/KPKNL.14/2026">
+              </div>
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Wilayah / Ruang Lingkup Satker</label>
+                <input type="text" class="form-control" id="st-input-wilayah" placeholder="Contoh: Seluruh Prov. Bali / Kab. Tabanan">
+              </div>
+            </div>
+
+            <div class="row d-flex gap-2 mb-2 mt-2">
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Ketua Tim (Nama)</label>
+                <input type="text" class="form-control" id="st-input-ketua-nama" placeholder="I Putu Harjaya" required>
+              </div>
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">NIP Ketua Tim</label>
+                <input type="text" class="form-control" id="st-input-ketua-nip" placeholder="19850101 201012 1 001" required>
+              </div>
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Jabatan Ketua</label>
+                <input type="text" class="form-control" id="st-input-ketua-jabatan" placeholder="Kepala Seksi PKN">
+              </div>
+            </div>
+
+            <div class="row d-flex gap-2 mb-2">
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Anggota Tim 1 (Nama)</label>
+                <input type="text" class="form-control" id="st-input-anggota1-nama" placeholder="Gede Shendra">
+              </div>
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">NIP Anggota 1</label>
+                <input type="text" class="form-control" id="st-input-anggota1-nip" placeholder="19900202 201402 1 002">
+              </div>
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Jabatan Anggota 1</label>
+                <input type="text" class="form-control" id="st-input-anggota1-jabatan" placeholder="Penata Muda PKN">
+              </div>
+            </div>
+
+            <div class="row d-flex gap-2 mb-2">
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Anggota Tim 2 (Nama - Opsional)</label>
+                <input type="text" class="form-control" id="st-input-anggota2-nama" placeholder="Nama Anggota 2">
+              </div>
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">NIP Anggota 2</label>
+                <input type="text" class="form-control" id="st-input-anggota2-nip" placeholder="NIP Anggota 2">
+              </div>
+            </div>
+
+            <div class="form-group mb-3">
+              <label style="font-size:11px; color:var(--text-muted); display:block;" class="mb-1">Unggah Berkas Dokumen ST / SK (PDF)</label>
+              <input type="file" id="st-input-pdf-file" accept="application/pdf" class="form-control" style="padding:4px 8px; font-size:11px;">
+              <small id="st-pdf-link-display" style="font-size:10.5px; color:var(--pastel-blue); display:block; margin-top:4px;"></small>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-sm btn-secondary" onclick="App.toggleAddSTForm(false)">Batal</button>
+              <button type="submit" class="btn btn-sm btn-primary" id="btn-save-st"><i class="fa-solid fa-floppy-disk"></i> Simpan ke Google Sheets</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- DAFTAR SURAT TUGAS TABLE -->
+        <div class="table-responsive">
+          <table class="table table-bordered" style="width:100%; font-size:11.5px; border-collapse:collapse;" id="tim-st-table">
+            <thead>
+              <tr style="background:#f1f5f9; text-align:left;">
+                <th style="padding:8px;">No. ST & Tanggal</th>
+                <th style="padding:8px;">Susunan Tim</th>
+                <th style="padding:8px;">Wilayah / SK</th>
+                <th style="padding:8px;">Dokumen PDF</th>
+                <th style="padding:8px; text-align:center;">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tim-st-table-body">
+              <tr>
+                <td colspan="5" style="text-align:center; padding:12px; color:var(--text-muted);">Memuat data master tim & ST...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end gap-2 mt-3 pt-2 border-top">
+        <button type="button" class="btn btn-secondary" onclick="App.closeManageTimSTModal()">Tutup</button>
+      </div>
     </div>
   </div>
 
