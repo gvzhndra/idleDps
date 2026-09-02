@@ -1965,12 +1965,29 @@ body {
 }
 
 /* ==========================================================================
-   EXPLICIT GAP & MARGIN UTILITIES (PREVENTS VERTICAL SQUEEZING IN DRAWER)
+   EXPLICIT FLEX, GAP & MARGIN UTILITIES (PREVENTS SQUEEZING & TOUCHING)
    ========================================================================== */
-.gap-1 { gap: 4px !important; }
-.gap-2 { gap: 8px !important; }
-.gap-3 { gap: 14px !important; }
-.gap-4 { gap: 20px !important; }
+.d-flex { display: flex !important; }
+.d-inline-flex { display: inline-flex !important; }
+.d-none { display: none !important; }
+.d-block { display: block !important; }
+.flex-column { flex-direction: column !important; }
+.flex-row { flex-direction: row !important; }
+.align-items-center { align-items: center !important; }
+.align-items-start { align-items: flex-start !important; }
+.align-items-end { align-items: flex-end !important; }
+.justify-content-between { justify-content: space-between !important; }
+.justify-content-center { justify-content: center !important; }
+.justify-content-end { justify-content: flex-end !important; }
+.justify-content-start { justify-content: flex-start !important; }
+.flex-wrap { flex-wrap: wrap !important; }
+.flex-1 { flex: 1 !important; }
+.w-100 { width: 100% !important; }
+
+.gap-1 { gap: 6px !important; }
+.gap-2 { gap: 12px !important; }
+.gap-3 { gap: 18px !important; }
+.gap-4 { gap: 24px !important; }
 
 .mt-1 { margin-top: 4px !important; }
 .mt-2 { margin-top: 8px !important; }

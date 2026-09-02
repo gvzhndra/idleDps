@@ -1347,12 +1347,12 @@ const App = {
           </div>
         </div>
 
-        <div class="mt-3 pt-2 border-top d-flex flex-column gap-2" style="border-top:1px dashed rgba(243, 156, 18, 0.4) !important;">
-          <button class="btn btn-primary btn-block" style="background:linear-gradient(135deg, #4a90e2, #2575fc); color:#ffffff; border:none; font-weight:700; padding:10px 14px; width:100%; box-shadow: 0 4px 14px rgba(74, 144, 226, 0.35); border-radius:8px; cursor:pointer;" onclick="App.openLaporanModal('${asset.id}')">
+        <div style="display:flex; flex-direction:column; gap:12px; margin-top:16px; padding-top:14px; border-top:1px dashed rgba(243, 156, 18, 0.4) !important;">
+          <button class="btn btn-primary" style="background:linear-gradient(135deg, #4a90e2, #2575fc); color:#ffffff; border:none; font-weight:700; padding:11px 16px; width:100%; box-shadow: 0 4px 14px rgba(74, 144, 226, 0.28); border-radius:10px; cursor:pointer; font-size:12px;" onclick="App.openLaporanModal('${asset.id}')">
             <i class="fa-solid fa-file-contract" style="font-size:14px; margin-right:6px;"></i> Buat Laporan Penelitian (PMK 120/2024)
           </button>
           ${isAdmin ? `
-            <button class="btn btn-warning btn-block" style="background:linear-gradient(135deg, #f39c12, #d35400); color:#ffffff; border:none; font-weight:700; padding:10px 14px; width:100%; box-shadow: 0 4px 14px rgba(243, 156, 18, 0.35); border-radius:8px; cursor:pointer;" onclick="App.openEditAssetModal('${asset.id}')">
+            <button class="btn btn-warning" style="background:linear-gradient(135deg, #f39c12, #d35400); color:#ffffff; border:none; font-weight:700; padding:11px 16px; width:100%; box-shadow: 0 4px 14px rgba(243, 156, 18, 0.28); border-radius:10px; cursor:pointer; font-size:12px;" onclick="App.openEditAssetModal('${asset.id}')">
               <i class="fa-solid fa-pen-to-square" style="font-size:14px; margin-right:6px;"></i> Edit Data & Rekomendasi Aset (Admin KPKNL)
             </button>
           ` : ''}
@@ -1360,7 +1360,7 @@ const App = {
       </div>
 
       <!-- GENEROUS BOTTOM WHITESPACE SPACER FOR SMOOTH SCROLL -->
-      <div style="height: 60px; width: 100%;" aria-hidden="true"></div>
+      <div style="height: 80px; width: 100%;" aria-hidden="true"></div>
     `;
   },
 
