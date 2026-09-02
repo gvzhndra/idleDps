@@ -1419,7 +1419,7 @@ const App = {
   },
 
   openUploadPhotoModal(assetId) {
-    const asset = this.activeAssets.find(a => a.id === assetId);
+    const asset = this.getAsset(assetId) || this.activeAssets.find(a => a.id === assetId);
     if (!asset) return;
 
     document.getElementById('upload-asset-id').value = asset.id;
@@ -1429,12 +1429,18 @@ const App = {
     this.compressedPhotoBlobs = [];
 
     const modal = document.getElementById('upload-photo-modal');
-    if (modal) modal.classList.add('show');
+    if (modal) {
+      modal.style.display = 'flex';
+      modal.classList.add('show');
+    }
   },
 
   closeUploadPhotoModal() {
     const modal = document.getElementById('upload-photo-modal');
-    if (modal) modal.classList.remove('show');
+    if (modal) {
+      modal.style.display = 'none';
+      modal.classList.remove('show');
+    }
   },
 
   async handleFileSelect(event) {
@@ -1947,8 +1953,11 @@ const App = {
   },
 
   openLaporanModal(assetId) {
-    const asset = this.getAsset(assetId);
-    if (!asset) return;
+    const asset = this.getAsset(assetId) || (this.selectedAsset && this.selectedAsset.id === assetId ? this.selectedAsset : null);
+    if (!asset) {
+      this.showToast('Gagal memuat data aset untuk laporan.', 'warning');
+      return;
+    }
     this.laporanAssetId = assetId;
 
     const presets = typeof LaporanEngine !== 'undefined' ? LaporanEngine.loadTeamPresets() : {};
@@ -1970,12 +1979,18 @@ const App = {
     if (anipEl) anipEl.value = presets.anggota1Nip || '19900202 201402 1 002';
 
     const modal = document.getElementById('laporan-pmk-modal');
-    if (modal) modal.style.display = 'flex';
+    if (modal) {
+      modal.style.display = 'flex';
+      modal.classList.add('show');
+    }
   },
 
   closeLaporanModal() {
     const modal = document.getElementById('laporan-pmk-modal');
-    if (modal) modal.style.display = 'none';
+    if (modal) {
+      modal.style.display = 'none';
+      modal.classList.remove('show');
+    }
   },
 
   getLaporanFormValues() {
@@ -2014,8 +2029,11 @@ const App = {
   },
 
   openEditAssetModal(assetId) {
-    const asset = this.getAsset(assetId);
-    if (!asset) return;
+    const asset = this.getAsset(assetId) || (this.selectedAsset && this.selectedAsset.id === assetId ? this.selectedAsset : null);
+    if (!asset) {
+      this.showToast('Gagal memuat data aset untuk diedit.', 'warning');
+      return;
+    }
 
     const idInput = document.getElementById('edit-asset-id');
     const namaInput = document.getElementById('edit-nama-barang');
@@ -2043,12 +2061,18 @@ const App = {
     }
 
     const modal = document.getElementById('edit-asset-modal');
-    if (modal) modal.style.display = 'flex';
+    if (modal) {
+      modal.style.display = 'flex';
+      modal.classList.add('show');
+    }
   },
 
   closeEditAssetModal() {
     const modal = document.getElementById('edit-asset-modal');
-    if (modal) modal.style.display = 'none';
+    if (modal) {
+      modal.style.display = 'none';
+      modal.classList.remove('show');
+    }
   },
 
   handleSaveEditAsset(event) {
