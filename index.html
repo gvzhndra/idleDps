@@ -76,6 +76,14 @@
     </div>
   </header>
 
+  <!-- MOBILE PULL TO REFRESH INDICATOR -->
+  <div id="ptr-indicator" class="ptr-indicator">
+    <div class="ptr-content">
+      <i class="fa-solid fa-arrows-rotate ptr-icon" id="ptr-icon"></i>
+      <span id="ptr-text">Tarik untuk refresh</span>
+    </div>
+  </div>
+
   <!-- GLOBAL PROMINENT SEARCH BAR (DIRECTLY BELOW HEADER) -->
   <div class="global-search-wrapper">
     <div class="search-box">
@@ -91,20 +99,15 @@
        2. KPI SUMMARY METRICS BAR (2-ROW EXECUTIVE DASHBOARD)
        ========================================================================== -->
   <section class="stats-bar" id="executive-stats-bar">
-    <!-- STATS VIEW TITLE BAR (SPECIALLY OPTIMIZED FOR MOBILE STATS TAB & DASHBOARD) -->
+    <!-- STATS VIEW TITLE BAR (UNIFIED WITH OTHER PANELS) -->
     <div class="stats-view-header">
-      <div class="stats-view-title-group">
-        <div class="stats-view-icon"><i class="fa-solid fa-chart-pie"></i></div>
-        <div>
-          <h2 class="stats-view-title">Ringkasan Statistik & KPI BMN Idle</h2>
-          <p class="stats-view-subtitle">Dashboard Analisis Spasial & Pemantauan Aset KPKNL Denpasar</p>
-        </div>
+      <div class="d-flex align-items-center gap-2">
+        <i class="fa-solid fa-chart-pie" style="color:var(--pastel-blue); font-size:14px;"></i>
+        <span style="font-size:13px; font-weight:700; color:var(--text-main);">Ringkasan Statistik & KPI BMN</span>
       </div>
-      <div class="stats-view-actions">
-        <button class="btn btn-sm btn-secondary" onclick="App.resetAllFilters()" title="Reset Semua Filter">
-          <i class="fa-solid fa-rotate-left"></i> Reset Filter
-        </button>
-      </div>
+      <button class="btn btn-sm btn-secondary" onclick="App.resetAllFilters()" title="Reset Semua Filter" style="padding:4px 10px; font-size:11px;">
+        <i class="fa-solid fa-rotate-left"></i> Reset Filter
+      </button>
     </div>
 
     <!-- ROW 1, COL 1 (CARD 1): TOTAL PERMINTAAN KLARIFIKASI -->
