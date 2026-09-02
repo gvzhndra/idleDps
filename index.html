@@ -53,6 +53,11 @@
         <i class="fa-solid fa-table text-success"></i> <span>Settings</span>
       </button>
 
+      <!-- MOBILE QUICK REFRESH BUTTON -->
+      <button class="btn btn-icon btn-secondary mobile-refresh-btn" id="btn-mobile-sync" onclick="App.syncLiveDatasetManual()" title="Refresh & Sync Data Google Sheets">
+        <i class="fa-solid fa-arrows-rotate text-primary"></i>
+      </button>
+
       <!-- MOBILE BURGER MENU BUTTON -->
       <button class="mobile-burger-btn" id="mobile-burger-btn" onclick="App.toggleMobileBurgerMenu()" title="Menu Navigasi">
         <i class="fa-solid fa-bars"></i>
@@ -75,14 +80,6 @@
       </button>
     </div>
   </header>
-
-  <!-- MOBILE PULL TO REFRESH INDICATOR -->
-  <div id="ptr-indicator" class="ptr-indicator">
-    <div class="ptr-content">
-      <i class="fa-solid fa-arrows-rotate ptr-icon" id="ptr-icon"></i>
-      <span id="ptr-text">Tarik untuk refresh</span>
-    </div>
-  </div>
 
   <!-- GLOBAL PROMINENT SEARCH BAR (DIRECTLY BELOW HEADER) -->
   <div class="global-search-wrapper">

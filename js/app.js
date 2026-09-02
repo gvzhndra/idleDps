@@ -73,7 +73,6 @@ const App = {
     MapEngine.init('map');
     MapEngine.renderBMNMarkers(this.activeAssets, (asset) => this.selectAsset(asset.id, false));
     this.bindEvents();
-    this.initPullToRefresh();
     this.updateExportCountBadge();
 
     // Load permanent photos, live dataset, and Pola Tata Ruang Bali in background
@@ -2200,11 +2199,17 @@ const App = {
     const btn = document.getElementById('btn-sync-sheet');
     const icon = btn ? btn.querySelector('i') : null;
     const label = btn ? btn.querySelector('span') : null;
+    const mobileBtn = document.getElementById('btn-mobile-sync');
+    const mobileIcon = mobileBtn ? mobileBtn.querySelector('i') : null;
 
     if (btn) {
       btn.disabled = true;
       if (icon) icon.className = 'fa-solid fa-arrows-rotate fa-spin text-primary';
       if (label) label.textContent = 'Menyinkronkan...';
+    }
+    if (mobileBtn) {
+      mobileBtn.disabled = true;
+      if (mobileIcon) mobileIcon.className = 'fa-solid fa-arrows-rotate fa-spin text-primary';
     }
 
     this.showToast('🔄 Menghubungkan ke Google Sheets...', 'info');
@@ -2234,6 +2239,10 @@ const App = {
         if (icon) icon.className = 'fa-solid fa-arrows-rotate text-success';
         if (label) label.textContent = 'Sync Sheets';
       }
+      if (mobileBtn) {
+        mobileBtn.disabled = false;
+        if (mobileIcon) mobileIcon.className = 'fa-solid fa-arrows-rotate text-primary';
+      }
     }
   },
 
@@ -2246,92 +2255,6 @@ const App = {
     `;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 4000);
-  },
-
-  initPullToRefresh() {
-    const ptrIndicator = document.getElementById('ptr-indicator');
-    const ptrText = document.getElementById('ptr-text');
-    if (!ptrIndicator) return;
-
-    let startY = 0;
-    let currentY = 0;
-    let isPulling = false;
-    let isRefreshing = false;
-
-    const getScrollTop = (target) => {
-      let el = target;
-      while (el && el !== document.body && el !== document.documentElement) {
-        if (el.scrollTop > 0) return el.scrollTop;
-        el = el.parentElement;
-      }
-      return window.scrollY || document.documentElement.scrollTop || 0;
-    };
-
-    window.addEventListener('touchstart', (e) => {
-      if (isRefreshing) return;
-      if (getScrollTop(e.target) <= 0) {
-        startY = e.touches[0].clientY;
-        isPulling = true;
-      } else {
-        isPulling = false;
-      }
-    }, { passive: true });
-
-    window.addEventListener('touchmove', (e) => {
-      if (!isPulling || isRefreshing) return;
-      currentY = e.touches[0].clientY;
-      const diff = currentY - startY;
-
-      if (diff > 0 && getScrollTop(e.target) <= 0) {
-        const pullDistance = Math.min(diff * 0.45, 90);
-        ptrIndicator.classList.add('visible');
-        ptrIndicator.style.top = `${-50 + pullDistance}px`;
-
-        if (pullDistance >= 55) {
-          ptrIndicator.classList.add('ready');
-          if (ptrText) ptrText.textContent = 'Lepaskan untuk refresh data';
-        } else {
-          ptrIndicator.classList.remove('ready');
-          if (ptrText) ptrText.textContent = 'Tarik untuk refresh';
-        }
-      } else {
-        ptrIndicator.classList.remove('visible', 'ready');
-        ptrIndicator.style.top = '-60px';
-      }
-    }, { passive: true });
-
-    const handleTouchEnd = async () => {
-      if (!isPulling || isRefreshing) return;
-      isPulling = false;
-
-      const isReady = ptrIndicator.classList.contains('ready');
-      ptrIndicator.classList.remove('ready');
-
-      if (isReady) {
-        isRefreshing = true;
-        ptrIndicator.classList.add('refreshing');
-        if (ptrText) ptrText.textContent = 'Menyinkronkan data...';
-
-        try {
-          await this.syncLiveDatasetManual();
-        } catch (err) {
-          console.warn('PTR sync error:', err);
-        } finally {
-          setTimeout(() => {
-            ptrIndicator.classList.remove('refreshing', 'visible');
-            ptrIndicator.style.top = '-60px';
-            if (ptrText) ptrText.textContent = 'Tarik untuk refresh';
-            isRefreshing = false;
-          }, 600);
-        }
-      } else {
-        ptrIndicator.classList.remove('visible');
-        ptrIndicator.style.top = '-60px';
-      }
-    };
-
-    window.addEventListener('touchend', handleTouchEnd);
-    window.addEventListener('touchcancel', handleTouchEnd);
   }
 };
 
