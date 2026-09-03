@@ -76,16 +76,10 @@ const App = {
     this.bindEvents();
     this.updateExportCountBadge();
 
-    // Non-blocking deferred background loading (Zero-delay instant dashboard startup)
+    // Background photo sync in background without blocking UI
     setTimeout(() => {
-      this.loadLiveDatasetFromSheet();
       this.loadPhotosFromSheet();
-      if (typeof PolaRuangEngine !== 'undefined') {
-        PolaRuangEngine.loadDataset().then(() => {
-          this.enrichAssetLocationsWithPolaRuang();
-        });
-      }
-    }, 400);
+    }, 1500);
   },
 
   /**
@@ -757,7 +751,7 @@ const App = {
           const thumbInner = firstPhoto ? '' : `<i class="fa-solid fa-camera-retro" style="color:#94a3b8; font-size:16px;"></i>`;
 
           return `
-            <div class="asset-card ${isSelected} ${!asset.hasCoordinates ? 'unmapped-card' : ''}" style="position: relative;">
+            <div class="asset-card ${isSelected} ${!asset.hasCoordinates ? 'unmapped-card' : ''}" data-asset-id="${asset.id}" style="position: relative;">
               <input type="checkbox" class="custom-checkbox asset-export-cb" data-asset-id="${asset.id}" ${isChecked} onchange="App.toggleSelectAssetForExport('${asset.id}', this.checked)">
               <div class="asset-card-thumb" style="${thumbStyle}" onclick="App.selectAsset('${asset.id}')">
                 ${thumbInner}
@@ -895,7 +889,7 @@ const App = {
       const thumbInner = firstPhoto ? '' : `<i class="fa-solid fa-camera-retro" style="color:#94a3b8; font-size:16px;"></i>`;
 
       return `
-        <div class="asset-card ${isSelected} mb-2 ${!asset.hasCoordinates ? 'unmapped-card' : ''}" style="position: relative;">
+        <div class="asset-card ${isSelected} mb-2 ${!asset.hasCoordinates ? 'unmapped-card' : ''}" data-asset-id="${asset.id}" style="position: relative;">
           <input type="checkbox" class="custom-checkbox asset-export-cb" data-asset-id="${asset.id}" ${isChecked} onchange="App.toggleSelectAssetForExport('${asset.id}', this.checked)">
           <div class="asset-card-thumb" style="${thumbStyle}" onclick="App.selectAsset('${asset.id}')">
             ${thumbInner}
@@ -935,8 +929,9 @@ const App = {
     this.selectedAsset = asset;
     MapEngine.activeAssetId = assetId;
 
-    this.renderClusterAccordion();
-    this.renderAllAssetsList();
+    // Fast DOM class toggle without destroying and rebuilding 248 DOM cards
+    document.querySelectorAll('.asset-card.active').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll(`.asset-card[data-asset-id="${assetId}"]`).forEach(el => el.classList.add('active'));
 
     const drawer = document.getElementById('detail-drawer');
     const rightToggleBtn = document.getElementById('right-panel-toggle-btn');
