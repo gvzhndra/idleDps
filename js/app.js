@@ -3110,14 +3110,14 @@ const App = {
                 const hasDoc = doc && (doc.nomor || doc.fileData || doc.fileUrl);
                 if (hasDoc) {
                   return `
-                    <button class="btn btn-sm btn-primary" onclick="App.openUploadDokumenModal('${a.id}')" title="Dokumen TTD Tersedia: ${doc.nomor || ''}" style="padding:4px 8px; font-size:11px; background:#2563eb; color:#ffffff; font-weight:700; border:none; border-radius:6px; box-shadow:0 1px 3px rgba(37,99,235,0.3);">
-                      <i class="fa-solid fa-file-circle-check"></i> Dokumen (TTD)
+                    <button class="btn btn-sm btn-primary" onclick="App.openUploadDokumenModal('${a.id}')" title="Dokumen Output PMK 120 (TTD) Tersedia: ${doc.nomor || ''}" style="padding:4px 8px; font-size:11px; background:#2563eb; color:#ffffff; font-weight:700; border:none; border-radius:6px; box-shadow:0 1px 3px rgba(37,99,235,0.3);">
+                      <i class="fa-solid fa-file-circle-check"></i> Output PMK 120 (TTD)
                     </button>
                   `;
                 } else {
                   return `
-                    <button class="btn btn-sm" onclick="App.openUploadDokumenModal('${a.id}')" title="Klik untuk upload dokumen yang sudah ditandatangani" style="padding:4px 8px; font-size:11px; background:#eff6ff; color:#3b82f6; border:1px solid #bfdbfe; border-radius:6px; font-weight:600;">
-                      <i class="fa-solid fa-cloud-arrow-up"></i> Upload Dok
+                    <button class="btn btn-sm" onclick="App.openUploadDokumenModal('${a.id}')" title="Klik untuk upload Dokumen Output PMK 120 yang menyatakan BMN Idle / Tidak Idle (TTD)" style="padding:4px 8px; font-size:11px; background:#eff6ff; color:#3b82f6; border:1px solid #bfdbfe; border-radius:6px; font-weight:600;">
+                      <i class="fa-solid fa-cloud-arrow-up"></i> Upload PMK 120
                     </button>
                   `;
                 }
@@ -3223,14 +3223,15 @@ const App = {
 
     if (doc && (doc.nomor || doc.fileData || doc.fileUrl)) {
       if (statusCard) statusCard.style.display = 'block';
-      if (descEl) descEl.textContent = `No: ${doc.nomor || '-'} | Tgl: ${doc.tanggal || '-'} (${doc.jenis || 'Dokumen TTD'})`;
+      if (descEl) descEl.textContent = `No: ${doc.nomor || '-'} | Tgl: ${doc.tanggal || '-'} (${doc.jenis || 'Dokumen Output PMK 120'})`;
       if (viewBtn) {
         viewBtn.href = doc.fileData || doc.fileUrl || '#';
         viewBtn.style.display = (doc.fileData || doc.fileUrl) ? 'inline-flex' : 'none';
       }
 
       // Pre-fill form
-      document.getElementById('doc-modal-jenis').value = doc.jenis || 'Surat Jawaban / Klarifikasi Satker (TTD)';
+      document.getElementById('doc-modal-kesimpulan-status').value = doc.statusKesimpulan || asset.statusKesimpulanIdle || 'TIDAK_IDLE';
+      document.getElementById('doc-modal-jenis').value = doc.jenis || 'Surat Kesimpulan BMN Tidak Idle (KPKNL)';
       document.getElementById('doc-modal-nomor').value = doc.nomor || '';
       document.getElementById('doc-modal-tanggal').value = doc.tanggal || '';
       document.getElementById('doc-modal-perihal').value = doc.perihal || '';
@@ -3239,9 +3240,13 @@ const App = {
       if (statusCard) statusCard.style.display = 'none';
       document.getElementById('form-upload-dokumen-tindak').reset();
       // Smart default values from asset
-      document.getElementById('doc-modal-nomor').value = asset.suratJawaban && asset.suratJawaban !== '-' ? asset.suratJawaban : '';
-      document.getElementById('doc-modal-tanggal').value = asset.tglSurat && asset.tglSurat !== '-' ? asset.tglSurat : '';
-      document.getElementById('doc-modal-perihal').value = `Tindak Lanjut ${asset.namaBarang}`;
+      document.getElementById('doc-modal-kesimpulan-status').value = asset.statusKesimpulanIdle || 'TIDAK_IDLE';
+      document.getElementById('doc-modal-jenis').value = (asset.statusKesimpulanIdle === 'IDLE')
+        ? 'Surat Keputusan Penetapan BMN Idle (KPKNL)'
+        : 'Surat Kesimpulan BMN Tidak Idle (KPKNL)';
+      document.getElementById('doc-modal-nomor').value = '';
+      document.getElementById('doc-modal-tanggal').value = new Date().toISOString().split('T')[0];
+      document.getElementById('doc-modal-perihal').value = asset.alasanKesimpulanIdle || `Hasil penertiban dan pemantauan tindak lanjut PMK 120 untuk ${asset.namaBarang}`;
     }
 
     modal.style.display = 'flex';
@@ -3257,12 +3262,23 @@ const App = {
     const assetId = document.getElementById('doc-modal-asset-id').value;
     if (!assetId) return;
 
+    const statusKesimpulan = document.getElementById('doc-modal-kesimpulan-status').value;
     const jenis = document.getElementById('doc-modal-jenis').value;
     const nomor = document.getElementById('doc-modal-nomor').value.trim();
     const tanggal = document.getElementById('doc-modal-tanggal').value;
     const perihal = document.getElementById('doc-modal-perihal').value.trim();
     const fileUrl = document.getElementById('doc-modal-url-input').value.trim();
     const fileInput = document.getElementById('doc-modal-file-input');
+
+    const asset = this.activeAssets.find(a => a.id === assetId);
+    if (asset) {
+      asset.statusKesimpulanIdle = statusKesimpulan;
+      if (perihal) asset.alasanKesimpulanIdle = perihal;
+      // Persist to custom edits
+      if (typeof DataEngine !== 'undefined' && typeof DataEngine.saveCustomEditsToLocal === 'function') {
+        DataEngine.saveCustomEditsToLocal(asset);
+      }
+    }
 
     const existingDoc = this.getUploadedDoc(assetId) || {};
     let fileData = existingDoc.fileData || '';
@@ -3282,6 +3298,7 @@ const App = {
 
     this.uploadedDocsMap[assetId] = {
       assetId,
+      statusKesimpulan,
       jenis,
       nomor,
       tanggal,
@@ -3293,7 +3310,7 @@ const App = {
     };
 
     this.saveUploadedDocs();
-    this.showToast(`✅ Dokumen TTD untuk aset berhasil disimpan!`, 'success');
+    this.showToast(`✅ Dokumen Output PMK 120 (${statusKesimpulan}) berhasil disimpan!`, 'success');
     this.closeUploadDokumenModal();
     this.renderTindakLanjutTable();
   },
