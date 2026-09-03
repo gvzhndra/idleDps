@@ -501,73 +501,258 @@
     </div>
   </div>
 
-  <!-- Modal Edit Data Aset & Rekomendasi (Khusus Admin KPKNL) -->
+  <!-- Modal Edit Data Aset & Parameter PMK 120/2024 (Smart 4-Tab Management) -->
   <div class="modal-overlay" id="edit-asset-modal">
-    <div class="modal-card" style="max-width:580px;">
-      <div class="modal-header d-flex justify-content-between align-items-center mb-3">
-        <h3 style="font-size:16px; font-weight:700;"><i class="fa-solid fa-pen-to-square" style="color:var(--pastel-blue);"></i> Edit Data & Rekomendasi Aset BMN</h3>
+    <div class="modal-card" style="max-width:680px;">
+      <div class="modal-header d-flex justify-content-between align-items-center mb-2">
+        <div>
+          <h3 style="font-size:15.5px; font-weight:700; margin:0;"><i class="fa-solid fa-pen-to-square text-primary"></i> Kelola Data & Parameter PMK 120/2024</h3>
+          <span style="font-size:11px; color:var(--text-muted);" id="edit-modal-subtitle">Detail identitas, legalitas sertipikat, fakta fisik, dan alur tindak lanjut</span>
+        </div>
         <button class="btn btn-icon btn-secondary" onclick="App.closeEditAssetModal()">
           <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- DATA COMPLETION SCORE METER -->
+      <div class="mb-3 p-2 border rounded" style="background:#f8fafc;">
+        <div class="d-flex justify-content-between align-items-center mb-1" style="font-size:11px;">
+          <span style="font-weight:700; color:var(--text-main);"><i class="fa-solid fa-shield-halved text-success"></i> Kelengkapan Parameter PMK 120:</span>
+          <span id="edit-completion-score" style="font-weight:800; color:var(--pastel-blue);">85%</span>
+        </div>
+        <div style="width:100%; height:6px; background:#e2e8f0; border-radius:10px; overflow:hidden;">
+          <div id="edit-completion-bar" style="width:85%; height:100%; background:linear-gradient(90deg, #3b82f6, #10b981); transition:width 0.3s ease;"></div>
+        </div>
+      </div>
+
+      <!-- 4-TAB NAVIGATION BUTTONS -->
+      <div class="d-flex gap-1 mb-3 border-bottom pb-2" style="overflow-x:auto;">
+        <button type="button" class="btn btn-sm edit-tab-btn active" id="tab-btn-1" onclick="App.switchEditAssetTab(1)">
+          <i class="fa-solid fa-circle-info"></i> 1. Identitas & Lokasi
+        </button>
+        <button type="button" class="btn btn-sm edit-tab-btn" id="tab-btn-2" onclick="App.switchEditAssetTab(2)">
+          <i class="fa-solid fa-file-contract"></i> 2. Legalitas & Batas
+        </button>
+        <button type="button" class="btn btn-sm edit-tab-btn" id="tab-btn-3" onclick="App.switchEditAssetTab(3)">
+          <i class="fa-solid fa-location-crosshairs"></i> 3. Fisik Lapangan
+        </button>
+        <button type="button" class="btn btn-sm edit-tab-btn" id="tab-btn-4" onclick="App.switchEditAssetTab(4)">
+          <i class="fa-solid fa-scale-balanced"></i> 4. Alur PMK & Rekomendasi
         </button>
       </div>
 
       <form id="edit-asset-form" onsubmit="App.handleSaveEditAsset(event)">
         <input type="hidden" id="edit-asset-id">
 
-        <div class="row d-flex gap-2 mb-2">
-          <div class="form-group flex-1">
-            <label style="font-size:11.5px; color:var(--text-muted); display:block;" class="mb-1">Nama Barang / Aset</label>
-            <input type="text" class="form-control" id="edit-nama-barang" required>
+        <div class="modal-body" style="max-height:60vh; overflow-y:auto; padding-right:4px;">
+          
+          <!-- TAB 1: IDENTITAS & LOKASI -->
+          <div class="edit-tab-content" id="edit-tab-content-1">
+            <div class="row d-flex gap-2 mb-2">
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Nama Barang / Uraian BMN</label>
+                <input type="text" class="form-control" id="edit-nama-barang" required>
+              </div>
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Satuan Kerja (Satker)</label>
+                <input type="text" class="form-control" id="edit-satker" readonly style="background:#f1f5f9;">
+              </div>
+            </div>
+
+            <div class="row d-flex gap-2 mb-2">
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Kode Barang</label>
+                <input type="text" class="form-control" id="edit-kode-barang" placeholder="2010104001">
+              </div>
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">NUP</label>
+                <input type="text" class="form-control" id="edit-nup" placeholder="1">
+              </div>
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Posisi Pinggir Jalan</label>
+                <select class="form-control" id="edit-pinggir-jalan">
+                  <option value="Ya">🛣️ Ya (Pinggir Jalan Utama)</option>
+                  <option value="Tidak">🛤️ Tidak (Masuk Gang / Di Dalam)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group mb-2">
+              <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Alamat Lengkap Aset</label>
+              <input type="text" class="form-control" id="edit-alamat" required>
+            </div>
+
+            <div class="row d-flex gap-2 mb-2">
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Luas Aset (m²)</label>
+                <input type="number" class="form-control" id="edit-luas" step="any" required>
+              </div>
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Nilai Buku Saat Ini (Rp)</label>
+                <input type="number" class="form-control" id="edit-nilai-buku" step="any">
+              </div>
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Koordinat (Lat, Lng)</label>
+                <input type="text" class="form-control" id="edit-koordinat" placeholder="-8.67, 115.21">
+              </div>
+            </div>
           </div>
-          <div class="form-group flex-1">
-            <label style="font-size:11.5px; color:var(--text-muted); display:block;" class="mb-1">Satuan Kerja (Satker)</label>
-            <input type="text" class="form-control" id="edit-satker" readonly style="background:#f1f5f9;">
+
+          <!-- TAB 2: DOKUMEN LEGALITAS & BATAS TANAH -->
+          <div class="edit-tab-content" id="edit-tab-content-2" style="display:none;">
+            <div class="row d-flex gap-2 mb-2">
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Status Penguasaan</label>
+                <select class="form-control" id="edit-status-penguasaan">
+                  <option value="Sertifikat Hak Pakai a.n. Pemerintah RI">Sertifikat Hak Pakai a.n. Pemerintah RI</option>
+                  <option value="Hak Pengelolaan (HPL)">Hak Pengelolaan (HPL)</option>
+                  <option value="Belum Bersertipikat (Letter C / Girik)">Belum Bersertipikat (Letter C / Girik)</option>
+                  <option value="Dalam Proses Sertifikasi">Dalam Proses Sertifikasi</option>
+                </select>
+              </div>
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Jenis Dokumen Kepemilikan</label>
+                <input type="text" class="form-control" id="edit-jenis-dokumen" placeholder="Contoh: Sertipikat Hak Pakai (SHP)">
+              </div>
+            </div>
+
+            <div class="row d-flex gap-2 mb-2">
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Nomor Dokumen / Sertipikat</label>
+                <input type="text" class="form-control" id="edit-no-dokumen" placeholder="SHP No. 12/Desa Pupuan">
+              </div>
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Tanggal Terbit Dokumen</label>
+                <input type="text" class="form-control" id="edit-tgl-dokumen" placeholder="12 Mei 1998">
+              </div>
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Atas Nama Dokumen</label>
+                <input type="text" class="form-control" id="edit-atas-nama-dokumen" placeholder="Pemerintah RI c.q. Kementerian">
+              </div>
+            </div>
+
+            <h5 style="font-size:12px; font-weight:700; color:var(--text-main); margin-top:14px; margin-bottom:6px;">
+              <i class="fa-solid fa-compass text-primary"></i> Batas-Batas Bidang Tanah (Sesuai PMK 120/2024)
+            </h5>
+            <div class="row d-flex gap-2 mb-2">
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Batas Utara (U)</label>
+                <input type="text" class="form-control" id="edit-batas-utara" placeholder="Jalan Raya / Saluran Air">
+              </div>
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Batas Timur (T)</label>
+                <input type="text" class="form-control" id="edit-batas-timur" placeholder="Tanah Milik Warga">
+              </div>
+            </div>
+            <div class="row d-flex gap-2 mb-2">
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Batas Selatan (S)</label>
+                <input type="text" class="form-control" id="edit-batas-selatan" placeholder="Lahan Perkebunan">
+              </div>
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Batas Barat (B)</label>
+                <input type="text" class="form-control" id="edit-batas-barat" placeholder="Kantor Koramil / Instansi">
+              </div>
+            </div>
+
+            <div class="row d-flex gap-2 mb-2 mt-2">
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Tanggal / Tahun Perolehan Awal</label>
+                <input type="text" class="form-control" id="edit-tgl-perolehan" placeholder="10 Januari 1995">
+              </div>
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Nilai Perolehan Awal (Rp)</label>
+                <input type="number" class="form-control" id="edit-nilai-perolehan" step="any" placeholder="Nilai Awal SAKTI">
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div class="form-group mb-2">
-          <label style="font-size:11.5px; color:var(--text-muted); display:block;" class="mb-1">Alamat Lengkap Aset</label>
-          <input type="text" class="form-control" id="edit-alamat" required>
-        </div>
+          <!-- TAB 3: FAKTA FISIK & PENGAMANAN LAPANGAN -->
+          <div class="edit-tab-content" id="edit-tab-content-3" style="display:none;">
+            <div class="row d-flex gap-2 mb-2">
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Peruntukan / Penggunaan Eksisting</label>
+                <select class="form-control" id="edit-peruntukan-saat-ini">
+                  <option value="Tanah Kosong / Belum Dimanfaatkan Penuh">Tanah Kosong / Belum Dimanfaatkan Penuh</option>
+                  <option value="Dihuni / Dikuasai Warga Tanpa Izin">Dihuni / Dikuasai Warga Tanpa Izin</option>
+                  <option value="Kebun / Lahan Pertanian Warga Setempat">Kebun / Lahan Pertanian Warga Setempat</option>
+                  <option value="Digunakan Sebagian untuk Tugas dan Fungsi">Digunakan Sebagian untuk Tugas dan Fungsi</option>
+                  <option value="Gedung / Bangunan Rusak & Tidak Digunakan">Gedung / Bangunan Rusak & Tidak Digunakan</option>
+                  <option value="Gudang Tak Terpakai / Arsip">Gudang Tak Terpakai / Arsip</option>
+                  <option value="Lain-lain">Lain-lain</option>
+                </select>
+              </div>
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Jumlah Bangunan di Atas Tanah (Unit)</label>
+                <input type="number" class="form-control" id="edit-jumlah-bangunan" min="0" value="0">
+              </div>
+            </div>
 
-        <div class="row d-flex gap-2 mb-2">
-          <div class="form-group flex-1">
-            <label style="font-size:11.5px; color:var(--text-muted); display:block;" class="mb-1">Luas Aset (m²)</label>
-            <input type="number" class="form-control" id="edit-luas" step="any" required>
+            <div class="form-group mb-2">
+              <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Kondisi Fisik Lapangan</label>
+              <input type="text" class="form-control" id="edit-kondisi" placeholder="Baik / Terawat / Rusak Ringan / Terbengkalai">
+            </div>
+
+            <h5 style="font-size:12px; font-weight:700; color:var(--text-main); margin-top:14px; margin-bottom:6px;">
+              <i class="fa-solid fa-shield-halved text-success"></i> Pengamanan & Pemeliharaan Fisik
+            </h5>
+            <div class="d-flex gap-3 mb-2 p-2 border rounded" style="background:#f8fafc; font-size:11.5px;">
+              <label class="d-flex align-items-center gap-1" style="cursor:pointer;">
+                <input type="checkbox" id="edit-pengamanan-pagar"> Ada Pagar Keliling
+              </label>
+              <label class="d-flex align-items-center gap-1" style="cursor:pointer;">
+                <input type="checkbox" id="edit-pengamanan-plang"> Terpasang Plang BMN
+              </label>
+              <label class="d-flex align-items-center gap-1" style="cursor:pointer;">
+                <input type="checkbox" id="edit-pengamanan-penjaga"> Ada Petugas Penjaga
+              </label>
+            </div>
+
+            <div class="form-group mb-2">
+              <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Permasalahan / Indikasi Sengketa Aset</label>
+              <textarea class="form-control" id="edit-permasalahan-sengketa" rows="2" placeholder="Bebas sengketa atau sebutkan klaim pihak ketiga jika ada..."></textarea>
+            </div>
           </div>
-          <div class="form-group flex-1">
-            <label style="font-size:11.5px; color:var(--text-muted); display:block;" class="mb-1">Nilai Buku (Rp)</label>
-            <input type="number" class="form-control" id="edit-nilai-buku" step="any">
+
+          <!-- TAB 4: ALUR TAHAP PMK & REKOMENDASI -->
+          <div class="edit-tab-content" id="edit-tab-content-4" style="display:none;">
+            <div class="form-group mb-2">
+              <label style="font-size:11px; font-weight:700; color:var(--pastel-blue);" class="mb-1">
+                <i class="fa-solid fa-arrows-split-up-and-left"></i> Posisi Tahapan Penanganan PMK 120/2024:
+              </label>
+              <select class="form-control" id="edit-tahap-berikut" style="font-weight:700;">
+                <option value="PENELITIAN">🔵 Tahap PENELITIAN (Investigasi Menuju Penetapan BMN Idle - Format H)</option>
+                <option value="PENELUSURAN">🟡 Tahap PENELUSURAN (Verifikasi Fisik Awal / Data Minim - Format G)</option>
+                <option value="PEMANTAUAN">🟢 Tahap PEMANTAUAN (Monitoring Rencana Satker - Format C/D)</option>
+              </select>
+            </div>
+
+            <div class="form-group mb-2">
+              <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Rekomendasi Rencana Pengguna Barang (Satker)</label>
+              <textarea class="form-control" id="edit-rekomendasi-user" rows="2" placeholder="Jawaban resmi satker mengenai rencana penggunaan..."></textarea>
+            </div>
+
+            <div class="form-group mb-2">
+              <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Rekomendasi Resmi Pengelola Barang (KPKNL Denpasar)</label>
+              <select class="form-control" id="edit-rekomendasi">
+                <option value="Sewa Komersial / Kerja Sama Pemanfaatan (KSP)">Sewa Komersial / Kerja Sama Pemanfaatan (KSP)</option>
+                <option value="Pinjam Pakai / Alih Status Penggunaan">Pinjam Pakai / Alih Status Penggunaan</option>
+                <option value="Penjualan / Pemindahtanganan Aset">Penjualan / Pemindahtanganan Aset</option>
+                <option value="Optimalisasi Penggunaan Mandiri Satker">Optimalisasi Penggunaan Mandiri Satker</option>
+              </select>
+            </div>
+
+            <div class="form-group mb-2">
+              <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Catatan Tambahan Tim Rekonsiliasi</label>
+              <textarea class="form-control" id="edit-catatan-tim" rows="2" placeholder="Masukkan catatan teknis lapangan..."></textarea>
+            </div>
           </div>
-          <div class="form-group flex-1">
-            <label style="font-size:11.5px; color:var(--text-muted); display:block;" class="mb-1">Koordinat (Lat, Lng)</label>
-            <input type="text" class="form-control" id="edit-koordinat" placeholder="-8.67, 115.21">
-          </div>
+
         </div>
 
-        <div class="form-group mb-2">
-          <label style="font-size:11.5px; color:var(--text-muted); display:block;" class="mb-1">Hasil Penelitian / Kondisi Aset</label>
-          <input type="text" class="form-control" id="edit-kondisi" placeholder="Contoh: Terindikasi Idle / Digunakan sebagian">
-        </div>
-
-        <div class="form-group mb-2">
-          <label style="font-size:11.5px; color:var(--text-muted); display:block;" class="mb-1">Rekomendasi Tim (Official)</label>
-          <select class="form-control" id="edit-rekomendasi">
-            <option value="Sewa Komersial / Kerja Sama Pemanfaatan (KSP)">Sewa Komersial / Kerja Sama Pemanfaatan (KSP)</option>
-            <option value="Pinjam Pakai / Alih Status Penggunaan">Pinjam Pakai / Alih Status Penggunaan</option>
-            <option value="Penjualan / Pemindahtanganan Aset">Penjualan / Pemindahtanganan Aset</option>
-            <option value="Optimalisasi Penggunaan Mandiri Satker">Optimalisasi Penggunaan Mandiri Satker</option>
-          </select>
-        </div>
-
-        <div class="form-group mb-3">
-          <label style="font-size:11.5px; color:var(--text-muted); display:block;" class="mb-1">Catatan Tim Rekonsiliasi</label>
-          <textarea class="form-control" id="edit-catatan-tim" rows="3" placeholder="Masukkan catatan teknis lapangan..."></textarea>
-        </div>
-
-        <div class="d-flex justify-content-end gap-2 mt-3">
+        <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
           <button type="button" class="btn btn-secondary" onclick="App.closeEditAssetModal()">Batal</button>
-          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Simpan ke Database Google Sheets</button>
         </div>
       </form>
     </div>
@@ -586,11 +771,14 @@
     </div>
   </div>
 
-  <!-- MODAL GENERATOR LAPORAN HASIL PENELITIAN BMN IDLE (PMK 120/2024) -->
+  <!-- MODAL GENERATOR LAPORAN HASIL PENELITIAN BMN IDLE (PMK 120/2024 MULTI-FORMAT HUB) -->
   <div class="modal-overlay" id="laporan-pmk-modal" style="display:none;">
-    <div class="modal-card" style="max-width:620px;">
+    <div class="modal-card" style="max-width:640px;">
       <div class="modal-header d-flex justify-content-between align-items-center mb-3">
-        <h3 style="font-size:16px; font-weight:700;"><i class="fa-solid fa-file-contract text-primary"></i> Generator Laporan Penelitian (PMK 120/2024)</h3>
+        <div>
+          <h3 style="font-size:16px; font-weight:700; margin:0;"><i class="fa-solid fa-file-contract text-primary"></i> Generator Dokumen Legal PMK 120/2024</h3>
+          <span style="font-size:11px; color:var(--text-muted);">Ekspor Word (.docx) dan Cetak PDF untuk seluruh tahapan regulasi</span>
+        </div>
         <button class="btn btn-icon btn-secondary" onclick="App.closeLaporanModal()">
           <i class="fa-solid fa-xmark"></i>
         </button>
@@ -600,9 +788,18 @@
         <input type="hidden" id="laporan-asset-id">
 
         <div class="modal-body" style="max-height:70vh; overflow-y:auto; padding-right:6px;">
-          <div class="alert alert-info mb-3 d-flex align-items-center gap-2" style="font-size:11.5px; background:var(--pastel-blue-bg); border-color:#bbe1fa; color:#1e3799; padding:8px 12px; border-radius:8px;">
-            <i class="fa-solid fa-circle-info font-size:16px;"></i>
-            <span>Data Laporan ini mengacu pada format resmi PMK 120/2024 dan siap di-export ke Word (.docx) atau Dicetak ke PDF.</span>
+          
+          <!-- REPORT FORMAT TYPE SELECTOR -->
+          <div class="form-group mb-3 p-2 border rounded" style="background:#f0f9ff; border-color:#bae6fd !important;">
+            <label style="font-size:11.5px; font-weight:700; color:#0369a1; display:block;" class="mb-1">
+              <i class="fa-solid fa-list-check"></i> Pilih Jenis Laporan / Dokumen PMK 120:
+            </label>
+            <select class="form-control" id="lap-format-type" style="font-weight:700; font-size:12px;">
+              <option value="FORMAT_H">📋 Laporan Hasil Penelitian (Format H - Rekomendasi Penetapan Idle)</option>
+              <option value="FORMAT_G">🔍 Laporan Hasil Penelusuran (Format G - Investigasi Awal & Matriks)</option>
+              <option value="FORMAT_D">🟢 Laporan Hasil Pemantauan Lapangan (Format D - Monitoring Satker)</option>
+              <option value="FORMAT_F">📝 Berita Acara Peninjauan Lapangan (Format F)</option>
+            </select>
           </div>
 
           <!-- SMART PRESET DROPDOWN -->
@@ -615,7 +812,7 @@
             </select>
           </div>
 
-          <h4 style="font-size:13px; font-weight:700; color:var(--text-main);" class="mb-2"><i class="fa-solid fa-scroll text-warning"></i> Data Surat Tugas & Klarifikasi</h4>
+          <h4 style="font-size:13px; font-weight:700; color:var(--text-main);" class="mb-2"><i class="fa-solid fa-scroll text-warning"></i> Data Surat Tugas & Penugasan</h4>
           <div class="row d-flex gap-2 mb-2">
             <div class="form-group flex-1">
               <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Nomor Surat Tugas</label>
@@ -627,7 +824,7 @@
             </div>
           </div>
 
-          <h4 style="font-size:13px; font-weight:700; color:var(--text-main);" class="mt-3 mb-2"><i class="fa-solid fa-users text-primary"></i> Tim Penelitian BMN Idle (KPKNL Denpasar)</h4>
+          <h4 style="font-size:13px; font-weight:700; color:var(--text-main);" class="mt-3 mb-2"><i class="fa-solid fa-users text-primary"></i> Tim Pelaksana (KPKNL Denpasar)</h4>
           <div class="row d-flex gap-2 mb-2">
             <div class="form-group flex-1">
               <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Ketua Tim (Nama)</label>

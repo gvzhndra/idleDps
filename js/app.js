@@ -1347,9 +1347,27 @@ const App = {
         </div>
 
         <div style="display:flex; flex-direction:column; gap:12px; margin-top:16px; padding-top:14px; border-top:1px dashed rgba(243, 156, 18, 0.4) !important;">
-          <button class="btn btn-primary" style="background:linear-gradient(135deg, #4a90e2, #2575fc); color:#ffffff; border:none; font-weight:700; padding:11px 16px; width:100%; box-shadow: 0 4px 14px rgba(74, 144, 226, 0.28); border-radius:10px; cursor:pointer; font-size:12px;" onclick="App.openLaporanModal('${asset.id}')">
-            <i class="fa-solid fa-file-contract" style="font-size:14px; margin-right:6px;"></i> Buat Laporan Penelitian (PMK 120/2024)
-          </button>
+          ${(() => {
+            let reportBtnText = 'Buat Laporan Penelitian (PMK 120/2024)';
+            let reportBtnBg = 'linear-gradient(135deg, #4a90e2, #2575fc)';
+            let reportBtnIcon = 'fa-file-contract';
+
+            if (asset.tahapBerikut === 'PEMANTAUAN') {
+              reportBtnText = 'Buat Laporan Pemantauan (PMK 120/2024)';
+              reportBtnBg = 'linear-gradient(135deg, #10b981, #059669)';
+              reportBtnIcon = 'fa-clipboard-check';
+            } else if (asset.tahapBerikut === 'PENELUSURAN') {
+              reportBtnText = 'Buat Laporan Penelusuran (PMK 120/2024)';
+              reportBtnBg = 'linear-gradient(135deg, #f59e0b, #d97706)';
+              reportBtnIcon = 'fa-magnifying-glass-location';
+            }
+
+            return `
+              <button class="btn btn-primary" style="background:${reportBtnBg}; color:#ffffff; border:none; font-weight:700; padding:11px 16px; width:100%; box-shadow: 0 4px 14px rgba(0,0,0,0.15); border-radius:10px; cursor:pointer; font-size:12px;" onclick="App.openLaporanModal('${asset.id}')">
+                <i class="fa-solid ${reportBtnIcon}" style="font-size:14px; margin-right:6px;"></i> ${reportBtnText}
+              </button>
+            `;
+          })()}
           ${isAdmin ? `
             <button class="btn btn-warning" style="background:linear-gradient(135deg, #f39c12, #d35400); color:#ffffff; border:none; font-weight:700; padding:11px 16px; width:100%; box-shadow: 0 4px 14px rgba(243, 156, 18, 0.28); border-radius:10px; cursor:pointer; font-size:12px;" onclick="App.openEditAssetModal('${asset.id}')">
               <i class="fa-solid fa-pen-to-square" style="font-size:14px; margin-right:6px;"></i> Edit Data & Rekomendasi Aset (Admin KPKNL)
@@ -1974,13 +1992,16 @@ const App = {
     const anEl = document.getElementById('lap-anggota-nama');
     const anipEl = document.getElementById('lap-anggota-nip');
 
-    if (idEl) idEl.value = assetId;
-    if (stEl) stEl.value = presets.noSuratTugas || 'ST-101/KPKNL.1401/2026';
-    if (tglStEl) tglStEl.value = presets.tglSuratTugas || '15 Januari 2026';
-    if (knEl) knEl.value = presets.ketuaNama || 'I Putu Harjaya';
-    if (knipEl) knipEl.value = presets.ketuaNip || '19850101 201012 1 001';
-    if (anEl) anEl.value = presets.anggota1Nama || 'Gede Shendra';
-    if (anipEl) anipEl.value = presets.anggota1Nip || '19900202 201402 1 002';
+    const formatSelect = document.getElementById('lap-format-type');
+    if (formatSelect) {
+      if (asset.tahapBerikut === 'PEMANTAUAN') {
+        formatSelect.value = 'FORMAT_D';
+      } else if (asset.tahapBerikut === 'PENELUSURAN') {
+        formatSelect.value = 'FORMAT_G';
+      } else {
+        formatSelect.value = 'FORMAT_H';
+      }
+    }
 
     const modal = document.getElementById('laporan-pmk-modal');
     if (modal) {
@@ -2162,6 +2183,13 @@ const App = {
       noSuratTugas: document.getElementById('lap-no-st')?.value || '',
       tglSuratTugas: document.getElementById('lap-tgl-st')?.value || '',
       ketuaNama: document.getElementById('lap-ketua-nama')?.value || '',
+    const formatType = document.getElementById('lap-format-type')?.value || 'FORMAT_H';
+
+    return {
+      formatType: formatType,
+      noSuratTugas: document.getElementById('lap-no-st')?.value || '',
+      tglSuratTugas: document.getElementById('lap-tgl-st')?.value || '',
+      ketuaNama: document.getElementById('lap-ketua-nama')?.value || '',
       ketuaNip: document.getElementById('lap-ketua-nip')?.value || '',
       anggota1Nama: document.getElementById('lap-anggota-nama')?.value || '',
       anggota1Nip: document.getElementById('lap-anggota-nip')?.value || ''
@@ -2176,7 +2204,7 @@ const App = {
 
     if (typeof LaporanEngine !== 'undefined') {
       LaporanEngine.generateDocx(asset, formVals);
-      this.showToast('📄 Menghasilkan file Word Laporan PMK 120/2024...', 'info');
+      this.showToast(`📄 Menghasilkan file Word Dokumen ${formVals.formatType}...`, 'info');
       this.closeLaporanModal();
     }
   },
@@ -2192,6 +2220,48 @@ const App = {
     }
   },
 
+  switchEditAssetTab(tabIndex) {
+    for (let i = 1; i <= 4; i++) {
+      const content = document.getElementById(`edit-tab-content-${i}`);
+      const btn = document.getElementById(`tab-btn-${i}`);
+      if (content) content.style.display = (i === tabIndex) ? 'block' : 'none';
+      if (btn) {
+        if (i === tabIndex) btn.classList.add('active');
+        else btn.classList.remove('active');
+      }
+    }
+  },
+
+  calculateCompletionScore(asset) {
+    let totalPoints = 0;
+    const maxPoints = 12;
+
+    if (asset.namaBarang) totalPoints++;
+    if (asset.alamat) totalPoints++;
+    if (asset.luas > 0) totalPoints++;
+    if (asset.lat && asset.lng) totalPoints++;
+    if (asset.kondisi) totalPoints++;
+    if (asset.noDokumen) totalPoints++;
+    if (asset.jenisDokumen) totalPoints++;
+    if (asset.batasUtara || asset.batasTimur) totalPoints++;
+    if (asset.peruntukanSaatIni) totalPoints++;
+    if (asset.rekomendasi || asset.rekomendasiUser) totalPoints++;
+    if (asset.tahapBerikut) totalPoints++;
+    if (asset.pinggirJalan) totalPoints++;
+
+    const percent = Math.round((totalPoints / maxPoints) * 100);
+    const scoreEl = document.getElementById('edit-completion-score');
+    const barEl = document.getElementById('edit-completion-bar');
+    if (scoreEl) scoreEl.textContent = `${percent}%`;
+    if (barEl) {
+      barEl.style.width = `${percent}%`;
+      barEl.style.background = percent >= 80 ? 'linear-gradient(90deg, #3b82f6, #10b981)' :
+                               percent >= 50 ? 'linear-gradient(90deg, #f59e0b, #3b82f6)' :
+                               'linear-gradient(90deg, #ef4444, #f59e0b)';
+    }
+    return percent;
+  },
+
   openEditAssetModal(assetId) {
     const asset = this.getAsset(assetId) || (this.selectedAsset && this.selectedAsset.id === assetId ? this.selectedAsset : null);
     if (!asset) {
@@ -2199,30 +2269,48 @@ const App = {
       return;
     }
 
-    const idInput = document.getElementById('edit-asset-id');
-    const namaInput = document.getElementById('edit-nama-barang');
-    const satkerInput = document.getElementById('edit-satker');
-    const alamatInput = document.getElementById('edit-alamat');
-    const luasInput = document.getElementById('edit-luas');
-    const nilaiInput = document.getElementById('edit-nilai-buku');
-    const coordInput = document.getElementById('edit-koordinat');
-    const kondisiInput = document.getElementById('edit-kondisi');
-    const recSelect = document.getElementById('edit-rekomendasi');
-    const catatanInput = document.getElementById('edit-catatan-tim');
+    this.switchEditAssetTab(1);
+    this.calculateCompletionScore(asset);
 
-    if (idInput) idInput.value = asset.id;
-    if (namaInput) namaInput.value = asset.namaBarang || asset.uraian_bmn || '';
-    if (satkerInput) satkerInput.value = asset.namaSatker || asset.satker || '';
-    if (alamatInput) alamatInput.value = asset.alamat || '';
-    if (luasInput) luasInput.value = asset.luas || asset.luas_m2 || 0;
-    if (nilaiInput) nilaiInput.value = asset.nilaiBuku || asset.nilai_buku || 0;
-    if (coordInput) coordInput.value = (asset.lat && asset.lng) ? `${asset.lat}, ${asset.lng}` : (asset.koordinat || '');
-    if (kondisiInput) kondisiInput.value = asset.kondisi || asset.hasilJawaban || '';
-    if (catatanInput) catatanInput.value = asset.catatanTim || asset.rekomendasiUser || '';
+    // Tab 1: Identitas & Lokasi
+    document.getElementById('edit-asset-id').value = asset.id;
+    document.getElementById('edit-nama-barang').value = asset.namaBarang || asset.uraian_bmn || '';
+    document.getElementById('edit-satker').value = `${asset.kodeSatker || ''} - ${asset.namaSatker || asset.satker || ''}`;
+    document.getElementById('edit-kode-barang').value = asset.kodeBarang || '';
+    document.getElementById('edit-nup').value = asset.nup || '';
+    document.getElementById('edit-pinggir-jalan').value = asset.pinggirJalan || 'Ya';
+    document.getElementById('edit-alamat').value = asset.alamat || '';
+    document.getElementById('edit-luas').value = asset.luas || asset.luas_m2 || 0;
+    document.getElementById('edit-nilai-buku').value = asset.nilaiBuku || asset.nilai_buku || 0;
+    document.getElementById('edit-koordinat').value = (asset.lat && asset.lng) ? `${asset.lat}, ${asset.lng}` : (asset.koordinat || '');
 
-    if (recSelect) {
-      recSelect.value = asset.rekomendasi || asset.rekomendasiUser || 'Sewa Komersial / Kerja Sama Pemanfaatan (KSP)';
-    }
+    // Tab 2: Legalitas & Batas
+    document.getElementById('edit-status-penguasaan').value = asset.statusPenguasaan || 'Sertifikat Hak Pakai a.n. Pemerintah RI';
+    document.getElementById('edit-jenis-dokumen').value = asset.jenisDokumen || 'Sertipikat Hak Pakai (SHP)';
+    document.getElementById('edit-no-dokumen').value = asset.noDokumen || '';
+    document.getElementById('edit-tgl-dokumen').value = asset.tglDokumen || '';
+    document.getElementById('edit-atas-nama-dokumen').value = asset.atasNamaDokumen || 'Pemerintah Republik Indonesia';
+    document.getElementById('edit-batas-utara').value = asset.batasUtara || '';
+    document.getElementById('edit-batas-timur').value = asset.batasTimur || '';
+    document.getElementById('edit-batas-selatan').value = asset.batasSelatan || '';
+    document.getElementById('edit-batas-barat').value = asset.batasBarat || '';
+    document.getElementById('edit-tgl-perolehan').value = asset.tglPerolehan || '';
+    document.getElementById('edit-nilai-perolehan').value = asset.nilaiPerolehan || asset.nilaiBuku || 0;
+
+    // Tab 3: Fisik & Pengamanan
+    document.getElementById('edit-peruntukan-saat-ini').value = asset.peruntukanSaatIni || 'Tanah Kosong / Belum Dimanfaatkan Penuh';
+    document.getElementById('edit-jumlah-bangunan').value = asset.jumlahBangunan || 0;
+    document.getElementById('edit-kondisi').value = asset.kondisi || asset.hasilJawaban || 'Baik / Terawat';
+    document.getElementById('edit-pengamanan-pagar').checked = !!asset.pengamananPagar;
+    document.getElementById('edit-pengamanan-plang').checked = !!asset.pengamananPlang;
+    document.getElementById('edit-pengamanan-penjaga').checked = !!asset.pengamananPenjaga;
+    document.getElementById('edit-permasalahan-sengketa').value = asset.permasalahanSengketa || 'Bebas Sengketa / Tidak ada klaim pihak ketiga';
+
+    // Tab 4: Tahapan & Rekomendasi
+    document.getElementById('edit-tahap-berikut').value = asset.tahapBerikut || 'PENELITIAN';
+    document.getElementById('edit-rekomendasi-user').value = asset.rekomendasiUser || asset.hasilJawaban || '';
+    document.getElementById('edit-rekomendasi').value = asset.rekomendasi || 'Sewa Komersial / Kerja Sama Pemanfaatan (KSP)';
+    document.getElementById('edit-catatan-tim').value = asset.catatanTim || '';
 
     const modal = document.getElementById('edit-asset-modal');
     if (modal) {
@@ -2249,27 +2337,19 @@ const App = {
       return;
     }
 
-    const namaVal = document.getElementById('edit-nama-barang').value.trim();
-    const alamatVal = document.getElementById('edit-alamat').value.trim();
-    const luasVal = parseFloat(document.getElementById('edit-luas').value) || 0;
-    const nilaiVal = parseFloat(document.getElementById('edit-nilai-buku').value) || 0;
-    const coordStr = document.getElementById('edit-koordinat').value.trim();
-    const kondisiVal = document.getElementById('edit-kondisi').value.trim();
-    const recVal = document.getElementById('edit-rekomendasi').value;
-    const catatanVal = document.getElementById('edit-catatan-tim').value.trim();
-
-    asset.namaBarang = namaVal || asset.namaBarang;
+    // Read Tab 1
+    asset.namaBarang = document.getElementById('edit-nama-barang').value.trim() || asset.namaBarang;
     asset.uraian_bmn = asset.namaBarang;
-    asset.alamat = alamatVal || asset.alamat;
-    asset.luas = luasVal;
-    asset.luas_m2 = luasVal;
-    asset.nilaiBuku = nilaiVal;
-    asset.nilai_buku = nilaiVal;
-    asset.kondisi = kondisiVal || asset.kondisi;
-    asset.rekomendasi = recVal;
-    asset.rekomendasiUser = recVal;
-    asset.catatanTim = catatanVal;
+    asset.kodeBarang = document.getElementById('edit-kode-barang').value.trim() || asset.kodeBarang;
+    asset.nup = document.getElementById('edit-nup').value.trim() || asset.nup;
+    asset.pinggirJalan = document.getElementById('edit-pinggir-jalan').value;
+    asset.alamat = document.getElementById('edit-alamat').value.trim() || asset.alamat;
+    asset.luas = parseFloat(document.getElementById('edit-luas').value) || 0;
+    asset.luas_m2 = asset.luas;
+    asset.nilaiBuku = parseFloat(document.getElementById('edit-nilai-buku').value) || 0;
+    asset.nilai_buku = asset.nilaiBuku;
 
+    const coordStr = document.getElementById('edit-koordinat').value.trim();
     if (coordStr && coordStr.includes(',')) {
       const parts = coordStr.split(',').map(s => parseFloat(s.trim()));
       if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
@@ -2280,35 +2360,54 @@ const App = {
       }
     }
 
+    // Read Tab 2
+    asset.statusPenguasaan = document.getElementById('edit-status-penguasaan').value;
+    asset.jenisDokumen = document.getElementById('edit-jenis-dokumen').value.trim();
+    asset.noDokumen = document.getElementById('edit-no-dokumen').value.trim();
+    asset.tglDokumen = document.getElementById('edit-tgl-dokumen').value.trim();
+    asset.atasNamaDokumen = document.getElementById('edit-atas-nama-dokumen').value.trim();
+    asset.batasUtara = document.getElementById('edit-batas-utara').value.trim();
+    asset.batasTimur = document.getElementById('edit-batas-timur').value.trim();
+    asset.batasSelatan = document.getElementById('edit-batas-selatan').value.trim();
+    asset.batasBarat = document.getElementById('edit-batas-barat').value.trim();
+    asset.tglPerolehan = document.getElementById('edit-tgl-perolehan').value.trim();
+    asset.nilaiPerolehan = parseFloat(document.getElementById('edit-nilai-perolehan').value) || asset.nilaiBuku;
+
+    // Read Tab 3
+    asset.peruntukanSaatIni = document.getElementById('edit-peruntukan-saat-ini').value;
+    asset.jumlahBangunan = parseInt(document.getElementById('edit-jumlah-bangunan').value) || 0;
+    asset.kondisi = document.getElementById('edit-kondisi').value.trim() || asset.kondisi;
+    asset.pengamananPagar = document.getElementById('edit-pengamanan-pagar').checked;
+    asset.pengamananPlang = document.getElementById('edit-pengamanan-plang').checked;
+    asset.pengamananPenjaga = document.getElementById('edit-pengamanan-penjaga').checked;
+    asset.permasalahanSengketa = document.getElementById('edit-permasalahan-sengketa').value.trim();
+
+    // Read Tab 4
+    asset.tahapBerikut = document.getElementById('edit-tahap-berikut').value;
+    asset.rekomendasiUser = document.getElementById('edit-rekomendasi-user').value.trim();
+    asset.rekomendasi = document.getElementById('edit-rekomendasi').value;
+    asset.catatanTim = document.getElementById('edit-catatan-tim').value.trim();
+
     // Save to DataEngine instance
     const deAsset = DataEngine.activeAssets.find(a => a.id === asset.id) || DataEngine.pendingAssets.find(a => a.id === asset.id);
     if (deAsset) {
       Object.assign(deAsset, asset);
     }
 
-    // 1. Save edit to localStorage for persistent session survival
+    // 1. Save edit to localStorage
     try {
       const storedEdits = JSON.parse(localStorage.getItem('bmn_custom_edits') || '{}');
-      storedEdits[asset.id] = {
-        namaBarang: asset.namaBarang,
-        alamat: asset.alamat,
-        luas: asset.luas,
-        nilaiBuku: asset.nilaiBuku,
-        koordinat: asset.koordinat,
-        kondisi: asset.kondisi,
-        rekomendasi: asset.rekomendasi,
-        rekomendasiUser: asset.rekomendasiUser,
-        catatanTim: asset.catatanTim
-      };
+      storedEdits[asset.id] = { ...asset };
       localStorage.setItem('bmn_custom_edits', JSON.stringify(storedEdits));
     } catch(e) {
       console.warn('LocalStorage save edit error:', e);
     }
 
-    // 2. Post edit to Google Apps Script Web App if URL is present
+    // 2. Post edit to Google Apps Script Web App
     if (CONFIG.APPS_SCRIPT.WEB_APP_URL) {
       fetch(CONFIG.APPS_SCRIPT.WEB_APP_URL, {
         method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({
           action: 'updateAsset',
           assetId: asset.id,
@@ -2322,7 +2421,26 @@ const App = {
           koordinat: asset.koordinat,
           kondisi: asset.kondisi,
           rekomendasiUser: asset.rekomendasiUser,
-          catatanTim: asset.catatanTim
+          catatanTim: asset.catatanTim,
+          peruntukanSaatIni: asset.peruntukanSaatIni,
+          statusPenguasaan: asset.statusPenguasaan,
+          jenisDokumen: asset.jenisDokumen,
+          noDokumen: asset.noDokumen,
+          tglDokumen: asset.tglDokumen,
+          atasNamaDokumen: asset.atasNamaDokumen,
+          batasUtara: asset.batasUtara,
+          batasTimur: asset.batasTimur,
+          batasSelatan: asset.batasSelatan,
+          batasBarat: asset.batasBarat,
+          jumlahBangunan: asset.jumlahBangunan,
+          tglPerolehan: asset.tglPerolehan,
+          nilaiPerolehan: asset.nilaiPerolehan,
+          pengamananPagar: asset.pengamananPagar,
+          pengamananPlang: asset.pengamananPlang,
+          pengamananPenjaga: asset.pengamananPenjaga,
+          permasalahanSengketa: asset.permasalahanSengketa,
+          tahapBerikut: asset.tahapBerikut,
+          pinggirJalan: asset.pinggirJalan
         })
       }).catch(err => console.log('Apps Script update error:', err));
     }
@@ -2334,7 +2452,7 @@ const App = {
     this.updateKPIStats();
 
     this.closeEditAssetModal();
-    this.showToast(`Berhasil memperbarui data BMN Idle: ${asset.namaBarang}`);
+    this.showToast(`✅ Data & Parameter PMK 120 untuk ${asset.namaBarang} berhasil disimpan!`, 'success');
   },
 
   openGoogleSheetsModal() {

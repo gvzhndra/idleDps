@@ -1,9 +1,12 @@
 /**
- * Generator Laporan Hasil Penelitian BMN Idle (PMK 120/2024)
- * Supports:
- * - Word (.docx) Export via docx.js
- * - Printable PDF View via @media print matching PMK 120/2024 official structure
- * - Master Tim & Surat Tugas (ST/SK) Management with Google Drive Document Integration
+ * Generator Laporan & Dokumen Legal PMK 120/2024 Engine
+ * Mendukung:
+ * 1. Format H: Laporan Hasil Penelitian BMN Terindikasi Idle (+ Matriks)
+ * 2. Format G: Laporan Hasil Penelusuran BMN Terindikasi Idle (+ Matriks)
+ * 3. Format D: Laporan Hasil Pemantauan Lapangan
+ * 4. Format F: Berita Acara Peninjauan Lapangan
+ * 5. Format C: Rekapitulasi Pemantauan Kolektif per Satker / Kementerian
+ * Output: Print PDF View (@media print) & Microsoft Word (.docx via docx.js)
  */
 
 const LaporanEngine = {
@@ -22,13 +25,12 @@ const LaporanEngine = {
       if (stored) {
         this.masterTimSTList = JSON.parse(stored);
       } else {
-        // Initial fallback default
         this.masterTimSTList = [{
           id_st: 'ST-2026-001',
           no_st: 'ST-101/KPKNL.1401/2026',
           tgl_st: '15 Januari 2026',
           no_sk_tim: 'KEP-45/KPKNL.14/2026',
-          wilayah_satker: 'Seluruh Wilayah Provinsi Bali',
+          wilayah_satker: 'Provinsi Bali',
           ketua_nama: 'I Putu Harjaya',
           ketua_nip: '19850101 201012 1 001',
           ketua_jabatan: 'Kepala Seksi PKN KPKNL Denpasar',
@@ -39,7 +41,6 @@ const LaporanEngine = {
           anggota2_nip: '',
           anggota2_jabatan: '',
           pdf_st_url: '',
-          pdf_sk_url: '',
           status_aktif: 'AKTIF'
         }];
         this.saveMasterTimSTToLocal();
@@ -142,7 +143,7 @@ const LaporanEngine = {
       return;
     }
 
-    tbody.innerHTML = this.masterTimSTList.map((st, idx) => `
+    tbody.innerHTML = this.masterTimSTList.map((st) => `
       <tr style="border-bottom:1px solid var(--border-subtle);">
         <td style="padding:8px 10px; font-weight:700; color:var(--text-main);">
           <div>${st.no_st || '-'}</div>
@@ -211,26 +212,38 @@ const LaporanEngine = {
   },
 
   /**
-   * Generates printable HTML preview window/modal strictly following PMK 120/2024
+   * Generates Printable PDF View (@media print) strictly following PMK 120/2024
    */
   generatePrintView(asset, formValues) {
+    const formatType = formValues.formatType || 'FORMAT_H';
     const preset = {
       ketuaNama: formValues.ketuaNama || 'I Putu Harjaya',
       ketuaNip: formValues.ketuaNip || '-',
       ketuaJabatan: formValues.ketuaJabatan || 'Ketua Tim Penelitian BMN',
       anggota1Nama: formValues.anggota1Nama || 'Gede Shendra',
       anggota1Nip: formValues.anggota1Nip || '-',
-      anggota2Nama: formValues.anggota2Nama || '',
-      anggota2Nip: formValues.anggota2Nip || '',
       noSuratTugas: formValues.noSuratTugas || 'ST-101/KPKNL.1401/2026',
-      tglSuratTugas: formValues.tglSuratTugas || '15 Januari 2026',
-      noSuratKlarifikasi: asset.suratJawaban || 'S-50/KPKNL.1401/2026',
-      tglSuratKlarifikasi: asset.tglSurat || '10 Januari 2026',
-      noSuratJawaban: asset.suratJawaban || '-',
-      tglSuratJawaban: asset.tglSurat || '-'
+      tglSuratTugas: formValues.tglSuratTugas || '15 Januari 2026'
     };
-
     this.saveTeamPresets(preset);
+
+    let docTitle = 'LAPORAN HASIL PENELITIAN';
+    let docSub = 'BARANG MILIK NEGARA TERINDIKASI IDLE';
+    let docCode = 'PMK 120/2024 (Lampiran H)';
+
+    if (formatType === 'FORMAT_G') {
+      docTitle = 'LAPORAN HASIL PENELUSURAN';
+      docSub = 'ATAS BMN YANG TERINDIKASI SEBAGAI BMN IDLE';
+      docCode = 'PMK 120/2024 (Lampiran G)';
+    } else if (formatType === 'FORMAT_D') {
+      docTitle = 'LAPORAN HASIL PEMANTAUAN PENINJAUAN LAPANGAN';
+      docSub = 'ATAS BMN YANG TERINDIKASI SEBAGAI BMN IDLE';
+      docCode = 'PMK 120/2024 (Lampiran D)';
+    } else if (formatType === 'FORMAT_F') {
+      docTitle = 'BERITA ACARA PENINJAUAN LAPANGAN';
+      docSub = 'ATAS BMN YANG TERINDIKASI SEBAGAI BMN IDLE';
+      docCode = 'PMK 120/2024 (Lampiran F)';
+    }
 
     const printWin = window.open('', '_blank');
     if (!printWin) {
@@ -238,18 +251,20 @@ const LaporanEngine = {
       return;
     }
 
+    const batasText = `Utara: ${asset.batasUtara || '-'}, Timur: ${asset.batasTimur || '-'}, Selatan: ${asset.batasSelatan || '-'}, Barat: ${asset.batasBarat || '-'}`;
+
     const htmlContent = `
     <!DOCTYPE html>
     <html lang="id">
     <head>
       <meta charset="UTF-8">
-      <title>Laporan Hasil Penelitian BMN Idle - ${asset.namaBarang || asset.uraian_bmn || 'Aset'}</title>
+      <title>${docTitle} - ${asset.namaBarang || asset.uraian_bmn || 'Aset'}</title>
       <style>
         body {
           font-family: 'Times New Roman', Times, serif;
           font-size: 11pt;
-          line-height: 1.5;
-          margin: 2.5cm 2cm 2.5cm 2.5cm;
+          line-height: 1.45;
+          margin: 2.2cm 2cm 2.2cm 2cm;
           color: #000;
         }
         .header-kop {
@@ -258,17 +273,17 @@ const LaporanEngine = {
           text-transform: uppercase;
           border-bottom: 3px double #000;
           padding-bottom: 8px;
-          margin-bottom: 18px;
+          margin-bottom: 16px;
           font-size: 11pt;
           line-height: 1.3;
         }
         .header-title {
           text-align: center;
           font-weight: bold;
-          margin: 16px 0;
+          margin: 14px 0;
           text-transform: uppercase;
-          font-size: 12pt;
-          line-height: 1.4;
+          font-size: 11.5pt;
+          line-height: 1.35;
         }
         .section-title {
           font-weight: bold;
@@ -300,7 +315,7 @@ const LaporanEngine = {
         ol, ul {
           margin-top: 4px;
           margin-bottom: 6px;
-          padding-left: 24px;
+          padding-left: 22px;
         }
         li {
           margin-bottom: 3px;
@@ -315,6 +330,7 @@ const LaporanEngine = {
           text-align: center;
           font-size: 10.5pt;
         }
+        .page-break { page-break-before: always; }
         @media print {
           @page { size: A4; margin: 2cm; }
         }
@@ -329,65 +345,53 @@ const LaporanEngine = {
       </div>
 
       <div class="header-title">
-        LAPORAN HASIL PENELITIAN<br>
-        BARANG MILIK NEGARA TERINDIKASI IDLE<br>
+        ${docTitle}<br>
+        ${docSub}<br>
         PADA ${asset.satker || asset.namaSatker || 'SATUAN KERJA'}<br>
         NOMOR: LAP-01/KPKNL.1401/2026
       </div>
 
       <div class="section-title">I. PENDAHULUAN</div>
       <ol type="1">
-        <li><strong>Dasar Penelitian:</strong>
+        <li><strong>Dasar Pelaksanaan:</strong>
           <ol type="a">
             <li>Peraturan Pemerintah Nomor 27 Tahun 2014 jo PP Nomor 28 Tahun 2020 tentang Pengelolaan BMN/D;</li>
             <li>Peraturan Menteri Keuangan Nomor 120 Tahun 2024 tentang Tata Cara Pengelolaan BMN Yang Tidak Digunakan Untuk Penyelenggaraan Tusi K/L;</li>
-            <li>Surat Klarifikasi BMN Terindikasi Idle Nomor: ${asset.suratJawaban || 'S-50/KPKNL.1401/2026'};</li>
+            <li>Surat Permintaan / Jawaban Klarifikasi BMN Nomor: <strong>${asset.suratJawaban || 'S-50/KPKNL.1401/2026'}</strong>;</li>
             <li>Surat Tugas Kepala KPKNL Denpasar Nomor: <strong>${preset.noSuratTugas}</strong> tanggal <strong>${preset.tglSuratTugas}</strong>.</li>
           </ol>
         </li>
         <li><strong>Latar Belakang:</strong> Dalam rangka akuntabilitas tata kelola BMN (good governance), diperlukan optimalisasi penggunaan aset pada ${asset.kementerian || 'Kementerian/Lembaga'} berupa ${asset.namaBarang || asset.uraian_bmn || 'BMN'} yang berlokasi di ${asset.alamat || '-'}.</li>
-        <li><strong>Tujuan & Manfaat:</strong> Memperoleh kepastian administratif, fisik, spasial, dan rencana pemanfaatan/penggunaan terbaik atas BMN terindikasi idle.</li>
+        <li><strong>Tujuan & Manfaat:</strong> Memperoleh kepastian administratif, fisik, spasial, dan rencana tindak lanjut atas BMN terindikasi idle.</li>
       </ol>
 
-      <div class="section-title">II. OBJEK PENELITIAN</div>
-      <div class="sub-section-title">1. Identitas Satuan Kerja:</div>
+      <div class="section-title">II. OBJEK PENELITIAN / DATA BMN</div>
       <table>
-        <tr><td width="30%"><strong>Kode Satuan Kerja</strong></td><td>${asset.kodeSatker || '-'}</td></tr>
-        <tr><td><strong>Nama Satuan Kerja</strong></td><td>${asset.satker || asset.namaSatker || '-'}</td></tr>
+        <tr><td width="30%"><strong>Satuan Kerja (Satker)</strong></td><td>${asset.kodeSatker || '-'} - ${asset.satker || asset.namaSatker || '-'}</td></tr>
         <tr><td><strong>Kementerian / Lembaga</strong></td><td>${asset.kementerian || '-'}</td></tr>
-        <tr><td><strong>Wilayah Pelayanan</strong></td><td>KPKNL Denpasar (Provinsi Bali)</td></tr>
+        <tr><td><strong>Kode Barang / NUP</strong></td><td>${asset.kodeBarang || '-'} / NUP ${asset.nup || '-'}</td></tr>
+        <tr><td><strong>Nama Barang / Jenis</strong></td><td>${asset.namaBarang || asset.uraian_bmn || '-'} (${asset.jenisBarang || 'Tanah'})</td></tr>
+        <tr><td><strong>Luas Aset / Jml Bangunan</strong></td><td>${asset.luas || asset.luas_m2 || 0} m² / ${asset.jumlahBangunan || 0} unit bangunan</td></tr>
+        <tr><td><strong>Nilai Buku / Nilai Awal</strong></td><td>Rp ${(asset.nilaiBuku || asset.nilai_buku || 0).toLocaleString('id-ID')} / Rp ${(asset.nilaiPerolehan || asset.nilaiBuku || 0).toLocaleString('id-ID')}</td></tr>
+        <tr><td><strong>Legalitas & Sertipikat</strong></td><td>${asset.jenisDokumen || 'SHP'}: <strong>${asset.noDokumen || 'Dalam Proses Konfirmasi'}</strong> a.n. ${asset.atasNamaDokumen || 'Pemerintah RI'} (Tgl: ${asset.tglDokumen || '-'})</td></tr>
+        <tr><td><strong>Batas-Batas Bidang Tanah</strong></td><td>${batasText}</td></tr>
+        <tr><td><strong>Alamat & Koordinat GPS</strong></td><td>${asset.alamat || '-'} (${asset.lat || '-'}, ${asset.lng || '-'}) | <strong>Akses Jalan:</strong> ${asset.pinggirJalan === 'Ya' ? 'Pinggir Jalan Utama' : 'Masuk Gang/Di Dalam'}</td></tr>
       </table>
 
-      <div class="sub-section-title">2. Identitas Barang Milik Negara (BMN):</div>
+      <div class="section-title">III. ANALISIS DOKUMEN & FAKTA LAPANGAN</div>
       <table>
-        <tr><td width="30%"><strong>Kode Barang / NUP</strong></td><td>${asset.kodeBarang || '-'} / ${asset.nup || '-'}</td></tr>
-        <tr><td><strong>Nama Barang / Jenis</strong></td><td>${asset.namaBarang || asset.uraian_bmn || '-'} (${asset.jenisBarang || 'Tanah/Bangunan'})</td></tr>
-        <tr><td><strong>Luas Aset</strong></td><td>${asset.luas || asset.luas_m2 || 0} m²</td></tr>
-        <tr><td><strong>Nilai Buku</strong></td><td>Rp ${(asset.nilaiBuku || asset.nilai_buku || 0).toLocaleString('id-ID')}</td></tr>
-        <tr><td><strong>Alamat / Lokasi</strong></td><td>${asset.alamat || '-'}, Kec. ${asset.kecamatan || '-'}, ${asset.kabupaten || '-'}</td></tr>
-        <tr><td><strong>Koordinat GPS</strong></td><td>${asset.lat || '-'}, ${asset.lng || '-'}</td></tr>
+        <tr><th width="35%">Parameter PMK 120/2024</th><th>Hasil Analisis & Temuan Lapangan</th></tr>
+        <tr><td><strong>Peruntukan Riil Saat Ini</strong></td><td>${asset.peruntukanSaatIni || 'Tanah Kosong / Belum Dimanfaatkan Penuh'}</td></tr>
+        <tr><td><strong>Kondisi Fisik Bangunan/Tanah</strong></td><td>${asset.kondisi || asset.hasilJawaban || 'Aset dalam kondisi baik/terawat, tidak digunakan untuk tusi utama.'}</td></tr>
+        <tr><td><strong>Pengamanan Fisik Aset</strong></td><td>Pagar: ${asset.pengamananPagar ? 'Ada' : 'Tidak Ada'} | Plang BMN: ${asset.pengamananPlang ? 'Terpasang' : 'Belum Terpasang'} | Petugas Jaga: ${asset.pengamananPenjaga ? 'Ada' : 'Tidak Ada'}</td></tr>
+        <tr><td><strong>Status Sengketa / Klaim</strong></td><td>${asset.permasalahanSengketa || 'Bebas sengketa dan klaim pihak ketiga.'}</td></tr>
+        <tr><td><strong>Rencana Pengguna Barang (Satker)</strong></td><td>"${asset.rekomendasiUser || asset.hasilJawaban || 'Belum ada rencana penggunaan operasional dalam waktu dekat.'}"</td></tr>
+        <tr><td><strong>Zonasi RTRW & Potensi</strong></td><td>${asset.zoningName || 'Kawasan Strategis / Perdagangan & Jasa'} (Kategori 1)</td></tr>
       </table>
 
-      <div class="section-title">III. ANALISIS DATA DAN DOKUMEN</div>
-      <ol type="1" start="6">
-        <li><strong>Sumber Data:</strong> Rekonsiliasi SIMAN/SAKTI, Surat Jawaban Satker No: <strong>${asset.suratJawaban || '-'}</strong>, dan berkas kepemilikan.</li>
-        <li><strong>Status Kepemilikan & Penatausahaan:</strong> Tercatat aktif pada Master Aset KPKNL Denpasar.</li>
-        <li><strong>Analisa Rencana Pengguna Barang:</strong> "${asset.rekomendasiUser || asset.hasilJawaban || 'Belum ada rencana penggunaan operasional dalam waktu dekat.'}"</li>
-      </ol>
-
-      <div class="section-title">IV. ANALISIS FISIK, SPASIAL & LINGKUNGAN</div>
-      <table>
-        <tr><th>Parameter Fisik & Lingkungan</th><th>Kondisi / Analisis</th></tr>
-        <tr><td>Kondisi Fisik Lapangan</td><td>${asset.kondisi || asset.hasilJawaban || 'Aset dalam kondisi baik/terawat, tidak difungsikan penuh untuk tusi.'}</td></tr>
-        <tr><td>Analisis Zonasi RTRW / Pola Ruang</td><td>${asset.zoningName || 'Kawasan Strategis / Perdagangan & Jasa'} (Kategori 1)</td></tr>
-        <tr><td>Proksimitas & Aksesibilitas</td><td>Jarak ke KPKNL Denpasar: ${asset.distanceToKPKNL || '-'} km | Jarak ke Pusat Kota: ${asset.distanceToDenpasar || '-'} km</td></tr>
-        <tr><td>Indeks Aktivitas Ekonomi (VIIRS)</td><td>Skor ${asset.viirsIndex || 50}/100 (Aktivitas ekonomi malam hari)</td></tr>
-        <tr><td>Catatan Khusus Tim Lapangan</td><td>${asset.catatanTim || 'Akses jalan memadai, berpotensi tinggi untuk skema kerja sama pemanfaatan.'}</td></tr>
-      </table>
-
-      <div class="section-title">V. KESIMPULAN & TINDAK LANJUT</div>
-      <p><strong>Kesimpulan:</strong> BMN tersebut terindikasi tidak digunakan untuk penyelenggaraan tugas dan fungsi (Tusi) Kementerian/Lembaga secara optimal.</p>
-      <p><strong>Rekomendasi Tindak Lanjut:</strong> <strong>${asset.rekomendasi || asset.rekomendasiUser || 'Sewa Komersial / Kerja Sama Pemanfaatan (KSP)'}</strong>.</p>
+      <div class="section-title">IV. KESIMPULAN & REKOMENDASI TINDAK LANJUT</div>
+      <p><strong>Kesimpulan:</strong> Berdasarkan penelitian fisik dan administratif, BMN tersebut memenuhi kriteria untuk ditindaklanjuti pada tahapan <strong>${asset.tahapBerikut || 'PENELITIAN'}</strong>.</p>
+      <p><strong>Rekomendasi Resmi Pengelola Barang:</strong> <strong>${asset.rekomendasi || 'Sewa Komersial / Kerja Sama Pemanfaatan (KSP)'}</strong>.</p>
 
       <table class="signature-table">
         <tr>
@@ -399,11 +403,50 @@ const LaporanEngine = {
           </td>
           <td width="50%">
             Denpasar, 2 September 2026<br>
-            Anggota Tim Penelitian,<br><br><br><br>
+            Anggota Tim Pelaksana,<br><br><br><br>
             <u><strong>${preset.anggota1Nama || 'Gede Shendra'}</strong></u><br>
             NIP. ${preset.anggota1Nip || '-'}
           </td>
         </tr>
+      </table>
+
+      <!-- MATRIKS LAMPIRAN RESMI PMK 120 -->
+      <div class="page-break"></div>
+      <div class="header-kop" style="margin-top:20px;">
+        LAMPIRAN ${docTitle}<br>
+        FORMAT STANDAR MATRIKS BMN TERINDIKASI IDLE (${docCode})
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Kode Barang</th>
+            <th>Nama Barang</th>
+            <th>NUP</th>
+            <th>Lokasi</th>
+            <th>Peruntukan</th>
+            <th>Luas (m²)</th>
+            <th>Jml Gedung</th>
+            <th>Jenis & No Dokumen</th>
+            <th>Batas-Batas</th>
+            <th>Kondisi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td align="center">1</td>
+            <td>${asset.kodeBarang || '-'}</td>
+            <td>${asset.namaBarang || '-'}</td>
+            <td align="center">${asset.nup || '1'}</td>
+            <td>${asset.alamat || '-'}</td>
+            <td>${asset.peruntukanSaatIni || 'Tanah Kosong'}</td>
+            <td align="right">${(asset.luas || 0).toLocaleString('id-ID')}</td>
+            <td align="center">${asset.jumlahBangunan || 0}</td>
+            <td>${asset.jenisDokumen || 'SHP'}<br><small>${asset.noDokumen || 'Proses'}</small></td>
+            <td><small>${batasText}</small></td>
+            <td>${asset.kondisi || 'Baik'}</td>
+          </tr>
+        </tbody>
       </table>
 
       <script>
@@ -421,7 +464,7 @@ const LaporanEngine = {
   },
 
   /**
-   * Generates MS Word (.docx) file via docx.js library strictly formatted to PMK 120/2024
+   * Generates Microsoft Word (.docx) file matching PMK 120/2024
    */
   async generateDocx(asset, formValues) {
     if (typeof docx === 'undefined') {
@@ -429,6 +472,7 @@ const LaporanEngine = {
       return;
     }
 
+    const formatType = formValues.formatType || 'FORMAT_H';
     const preset = {
       ketuaNama: formValues.ketuaNama || 'I Putu Harjaya',
       ketuaNip: formValues.ketuaNip || '-',
@@ -438,8 +482,12 @@ const LaporanEngine = {
       noSuratTugas: formValues.noSuratTugas || 'ST-101/KPKNL.1401/2026',
       tglSuratTugas: formValues.tglSuratTugas || '15 Januari 2026'
     };
-
     this.saveTeamPresets(preset);
+
+    let docTitle = 'LAPORAN HASIL PENELITIAN BARANG MILIK NEGARA TERINDIKASI IDLE';
+    if (formatType === 'FORMAT_G') docTitle = 'LAPORAN HASIL PENELUSURAN BMN TERINDIKASI IDLE';
+    if (formatType === 'FORMAT_D') docTitle = 'LAPORAN HASIL PEMANTAUAN PENINJAUAN LAPANGAN BMN IDLE';
+    if (formatType === 'FORMAT_F') docTitle = 'BERITA ACARA PENINJAUAN LAPANGAN BMN TERINDIKASI IDLE';
 
     const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, AlignmentType, WidthType } = docx;
 
@@ -457,9 +505,9 @@ const LaporanEngine = {
           new Paragraph({
             alignment: AlignmentType.CENTER,
             children: [
-              new TextRun({ text: "LAPORAN HASIL PENELITIAN BARANG MILIK NEGARA TERINDIKASI IDLE", bold: true, size: 26, font: "Times New Roman" }),
-              new TextRun({ text: `\nPADA ${asset.satker || asset.namaSatker || 'SATKER'}`, bold: true, size: 24, font: "Times New Roman" }),
-              new TextRun({ text: "\nNOMOR: LAP-01/KPKNL.1401/2026", bold: true, size: 22, font: "Times New Roman" }),
+              new TextRun({ text: docTitle, bold: true, size: 24, font: "Times New Roman" }),
+              new TextRun({ text: `\nPADA ${asset.satker || asset.namaSatker || 'SATKER'}`, bold: true, size: 22, font: "Times New Roman" }),
+              new TextRun({ text: "\nNOMOR: LAP-01/KPKNL.1401/2026", bold: true, size: 20, font: "Times New Roman" }),
             ]
           }),
           new Paragraph({ text: "\n", font: "Times New Roman" }),
@@ -471,7 +519,7 @@ const LaporanEngine = {
           new Paragraph({
             children: [
               new TextRun({ 
-                text: `Berdasarkan PMK Nomor 120 Tahun 2024 tentang Pengelolaan BMN Yang Tidak Digunakan Untuk Tusi K/L dan Surat Tugas Nomor ${preset.noSuratTugas} tanggal ${preset.tglSuratTugas}, telah dilaksanakan penelitian fisik dan administratif terhadap aset BMN terindikasi idle.`,
+                text: `Berdasarkan PMK Nomor 120 Tahun 2024 dan Surat Tugas Kepala KPKNL Denpasar Nomor ${preset.noSuratTugas} tanggal ${preset.tglSuratTugas}, telah dilaksanakan pemeriksaan administratif dan fisik terhadap BMN terindikasi idle pada ${asset.satker || asset.namaSatker || 'Satker'}.`,
                 font: "Times New Roman",
                 size: 24
               })
@@ -480,7 +528,7 @@ const LaporanEngine = {
           new Paragraph({ text: "\n", font: "Times New Roman" }),
           new Paragraph({
             children: [
-              new TextRun({ text: "II. OBJEK PENELITIAN", bold: true, size: 24, font: "Times New Roman" }),
+              new TextRun({ text: "II. IDENTITAS & LEGALITAS OBJEK BMN", bold: true, size: 24, font: "Times New Roman" }),
             ]
           }),
           new Table({
@@ -488,8 +536,8 @@ const LaporanEngine = {
             rows: [
               new TableRow({
                 children: [
-                  new TableCell({ children: [new Paragraph({ text: "Kode Satker / Satuan Kerja", bold: true, font: "Times New Roman" })] }),
-                  new TableCell({ children: [new Paragraph({ text: `${asset.kodeSatker || '-'} / ${asset.satker || asset.namaSatker || '-'}`, font: "Times New Roman" })] }),
+                  new TableCell({ children: [new Paragraph({ text: "Satuan Kerja / Kementerian", bold: true, font: "Times New Roman" })] }),
+                  new TableCell({ children: [new Paragraph({ text: `${asset.satker || asset.namaSatker || '-'} (${asset.kementerian || '-'})`, font: "Times New Roman" })] }),
                 ]
               }),
               new TableRow({
@@ -500,26 +548,26 @@ const LaporanEngine = {
               }),
               new TableRow({
                 children: [
-                  new TableCell({ children: [new Paragraph({ text: "Nama Barang", bold: true, font: "Times New Roman" })] }),
-                  new TableCell({ children: [new Paragraph({ text: asset.namaBarang || asset.uraian_bmn || '-', font: "Times New Roman" })] }),
+                  new TableCell({ children: [new Paragraph({ text: "Nama Barang & Peruntukan", bold: true, font: "Times New Roman" })] }),
+                  new TableCell({ children: [new Paragraph({ text: `${asset.namaBarang || '-'} (${asset.peruntukanSaatIni || 'Tanah Kosong'})`, font: "Times New Roman" })] }),
                 ]
               }),
               new TableRow({
                 children: [
-                  new TableCell({ children: [new Paragraph({ text: "Alamat & Lokasi", bold: true, font: "Times New Roman" })] }),
-                  new TableCell({ children: [new Paragraph({ text: `${asset.alamat || '-'}, Kec. ${asset.kecamatan || '-'}, ${asset.kabupaten || '-'}`, font: "Times New Roman" })] }),
+                  new TableCell({ children: [new Paragraph({ text: "Dokumen Kepemilikan", bold: true, font: "Times New Roman" })] }),
+                  new TableCell({ children: [new Paragraph({ text: `${asset.jenisDokumen || 'SHP'}: ${asset.noDokumen || 'Dalam Konfirmasi'} a.n. ${asset.atasNamaDokumen || 'Pemerintah RI'}`, font: "Times New Roman" })] }),
                 ]
               }),
               new TableRow({
                 children: [
-                  new TableCell({ children: [new Paragraph({ text: "Luas Tanah / Bangunan", bold: true, font: "Times New Roman" })] }),
-                  new TableCell({ children: [new Paragraph({ text: `${asset.luas || asset.luas_m2 || 0} m²`, font: "Times New Roman" })] }),
+                  new TableCell({ children: [new Paragraph({ text: "Batas-Batas Tanah", bold: true, font: "Times New Roman" })] }),
+                  new TableCell({ children: [new Paragraph({ text: `U: ${asset.batasUtara || '-'}, T: ${asset.batasTimur || '-'}, S: ${asset.batasSelatan || '-'}, B: ${asset.batasBarat || '-'}`, font: "Times New Roman" })] }),
                 ]
               }),
               new TableRow({
                 children: [
-                  new TableCell({ children: [new Paragraph({ text: "Nilai Buku", bold: true, font: "Times New Roman" })] }),
-                  new TableCell({ children: [new Paragraph({ text: `Rp ${(asset.nilaiBuku || asset.nilai_buku || 0).toLocaleString('id-ID')}`, font: "Times New Roman" })] }),
+                  new TableCell({ children: [new Paragraph({ text: "Luas & Nilai Buku", bold: true, font: "Times New Roman" })] }),
+                  new TableCell({ children: [new Paragraph({ text: `${(asset.luas || 0)} m² | Rp ${(asset.nilaiBuku || 0).toLocaleString('id-ID')}`, font: "Times New Roman" })] }),
                 ]
               }),
             ]
@@ -527,13 +575,13 @@ const LaporanEngine = {
           new Paragraph({ text: "\n", font: "Times New Roman" }),
           new Paragraph({
             children: [
-              new TextRun({ text: "III. ANALISIS FISIK, SPASIAL & REKOMENDASI", bold: true, size: 24, font: "Times New Roman" }),
+              new TextRun({ text: "III. KESIMPULAN & REKOMENDASI", bold: true, size: 24, font: "Times New Roman" }),
             ]
           }),
           new Paragraph({
             children: [
               new TextRun({ 
-                text: `Kondisi Fisik: ${asset.kondisi || 'Baik / Terawat'}\nZonasi Pola Ruang: ${asset.zoningName || 'Kawasan Strategis'}\nJarak ke KPKNL: ${asset.distanceToKPKNL || '-'} km\n\nRekomendasi Tindak Lanjut: ${asset.rekomendasi || 'Sewa Komersial / Kerja Sama Pemanfaatan (KSP)'}.`,
+                text: `Kondisi Fisik: ${asset.kondisi || 'Baik/Terawat'}\nPosisi Akses: ${asset.pinggirJalan === 'Ya' ? 'Pinggir Jalan Utama' : 'Masuk Gang'}\nPengamanan: Pagar (${asset.pengamananPagar ? 'Ada' : 'Tidak'}), Plang (${asset.pengamananPlang ? 'Ada' : 'Tidak'})\n\nRekomendasi Resmi Pengelola: ${asset.rekomendasi || 'Sewa Komersial / Kerja Sama Pemanfaatan (KSP)'}.`,
                 font: "Times New Roman",
                 size: 24
               })
@@ -543,7 +591,7 @@ const LaporanEngine = {
           new Paragraph({
             alignment: AlignmentType.RIGHT,
             children: [
-              new TextRun({ text: `Denpasar, 2 September 2026\nTim Penelitian BMN Idle KPKNL Denpasar\n\n\n\n(${preset.ketuaNama})\nNIP. ${preset.ketuaNip}`, font: "Times New Roman", size: 24 })
+              new TextRun({ text: `Denpasar, 2 September 2026\nTim Pelaksana KPKNL Denpasar\n\n\n\n(${preset.ketuaNama})\nNIP. ${preset.ketuaNip}`, font: "Times New Roman", size: 24 })
             ]
           })
         ]
@@ -551,7 +599,7 @@ const LaporanEngine = {
     });
 
     const blob = await Packer.toBlob(doc);
-    const fileName = `Laporan_Penelitian_PMK120_${(asset.nup || 'Aset')}.docx`;
+    const fileName = `${docTitle.replace(/\s+/g, '_')}_NUP${asset.nup || '1'}.docx`;
     if (typeof saveAs !== 'undefined') {
       saveAs(blob, fileName);
     } else {

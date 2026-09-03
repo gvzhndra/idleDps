@@ -156,7 +156,7 @@ const DataEngine = {
         luasTanah: luas,
         luasBangunan: 0,
         kondisi: row['HASIL JAWABAN'] || row.kondisi || 'Telah dilakukan penelitian awal',
-        statusPenguasaan: 'Sertifikat Hak Pakai a.n. Pemerintah RI c.q. Pengelola',
+        statusPenguasaan: row.status_penguasaan || 'Sertifikat Hak Pakai a.n. Pemerintah RI c.q. Pengelola',
         zoningCode: 'Kategori 1',
         zoningName: 'Kawasan Perdagangan & Jasa',
         rekomendasiUser: row.rekomendasi_user || row.rekomendasi || row['HASIL JAWABAN'] || '',
@@ -167,7 +167,26 @@ const DataEngine = {
         tglSurat: this.formatSuratDate(row['TANGGAL SURAT JAWABAN PENGGUNA BARANG'] || row.tgl_surat || '-'),
         hasilJawaban: row['HASIL JAWABAN'] || row.hasil_jawaban || row.kondisi || '',
         tahapBerikut: normTahap,
-        penyampaianKlarifikasi: row['PENYAMPAIAN_KLARIFIKASI_REKAP'] || 'SUDAH'
+        penyampaianKlarifikasi: row['PENYAMPAIAN_KLARIFIKASI_REKAP'] || 'SUDAH',
+
+        // PMK 120 Dynamic Attributes
+        peruntukanSaatIni: row.peruntukan_saat_ini || row.PERUNTUKAN || (isTanah ? 'Tanah Kosong / Belum Dimanfaatkan Penuh' : 'Bangunan Tidak Digunakan Optimal'),
+        jenisDokumen: row.jenis_dokumen || (isTanah ? 'Sertipikat Hak Pakai (SHP)' : 'IMB / PBG / Berita Acara Perolehan'),
+        noDokumen: row.no_dokumen || row.no_sertipikat || '',
+        tglDokumen: row.tgl_dokumen || '',
+        atasNamaDokumen: row.atas_nama_dokumen || 'Pemerintah Republik Indonesia',
+        batasUtara: row.batas_utara || '',
+        batasTimur: row.batas_timur || '',
+        batasSelatan: row.batas_selatan || '',
+        batasBarat: row.batas_barat || '',
+        jumlahBangunan: parseInt(row.jumlah_bangunan) || 0,
+        tglPerolehan: row.tgl_perolehan || '',
+        nilaiPerolehan: parseFloat(row.nilai_perolehan) || (parseFloat(row.nilai_buku || row.nilaiBuku) || 0),
+        pengamananPagar: row.pengamanan_pagar === true || row.pengamanan_pagar === 'TRUE' || row.pengamanan_pagar === '1',
+        pengamananPlang: row.pengamanan_plang === true || row.pengamanan_plang === 'TRUE' || row.pengamanan_plang === '1',
+        pengamananPenjaga: row.pengamanan_penjaga === true || row.pengamanan_penjaga === 'TRUE' || row.pengamanan_penjaga === '1',
+        permasalahanSengketa: row.permasalahan_sengketa || 'Bebas Sengketa / Tidak ada klaim pihak ketiga',
+        pinggirJalan: row.pinggir_jalan || 'Ya'
       };
 
       // Load ALL assets into activeAssets for Left Panel & Global Search

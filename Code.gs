@@ -268,7 +268,20 @@ function handleUpdateAssetInSheet(contents) {
     return createJsonResponse({ status: 'error', message: 'Sheet kosong.' });
   }
 
+  var headers = data[0];
   var lowerHeaders = headers.map(function(h) { return String(h).trim().toLowerCase(); });
+
+  function getOrAddCol(headerName) {
+    var idx = lowerHeaders.indexOf(headerName.toLowerCase());
+    if (idx === -1) {
+      idx = headers.length;
+      headers.push(headerName);
+      sheet.getRange(1, idx + 1).setValue(headerName);
+      lowerHeaders.push(headerName.toLowerCase());
+    }
+    return idx;
+  }
+
   var idCol = lowerHeaders.indexOf('id');
   var satkerCol = lowerHeaders.indexOf('kode_satker');
   var barangCol = lowerHeaders.indexOf('kode_barang');
@@ -282,9 +295,30 @@ function handleUpdateAssetInSheet(contents) {
   var catatanCol = lowerHeaders.indexOf('catatan_rekonsiliasi') >= 0 ? lowerHeaders.indexOf('catatan_rekonsiliasi') : lowerHeaders.indexOf('catatan_tim');
   var luasCol = lowerHeaders.indexOf('luas');
   var pinCol = lowerHeaders.indexOf('is_pinned');
+
+  // PMK 120 Dynamic Attribute Columns
+  var peruntukanCol = getOrAddCol('peruntukan_saat_ini');
+  var statusPenguasaanCol = getOrAddCol('status_penguasaan');
+  var jenisDokumenCol = getOrAddCol('jenis_dokumen');
+  var noDokumenCol = getOrAddCol('no_dokumen');
+  var tglDokumenCol = getOrAddCol('tgl_dokumen');
+  var atasNamaCol = getOrAddCol('atas_nama_dokumen');
+  var batasUCol = getOrAddCol('batas_utara');
+  var batasTCol = getOrAddCol('batas_timur');
+  var batasSCol = getOrAddCol('batas_selatan');
+  var batasBCol = getOrAddCol('batas_barat');
+  var jmlBangunanCol = getOrAddCol('jumlah_bangunan');
+  var tglPerolehanCol = getOrAddCol('tgl_perolehan');
+  var nilaiPerolehanCol = getOrAddCol('nilai_perolehan');
+  var pengamananPagarCol = getOrAddCol('pengamanan_pagar');
+  var pengamananPlangCol = getOrAddCol('pengamanan_plang');
+  var pengamananPenjagaCol = getOrAddCol('pengamanan_penjaga');
+  var sengketaCol = getOrAddCol('permasalahan_sengketa');
+  var tahapCol = getOrAddCol('tahap_berikut');
+  var pinggirJalanCol = getOrAddCol('pinggir_jalan');
+
   if (pinCol === -1 && contents.isPinned !== undefined) {
-    pinCol = headers.length;
-    sheet.getRange(1, pinCol + 1).setValue('is_pinned');
+    pinCol = getOrAddCol('is_pinned');
   }
 
   for (var i = 1; i < data.length; i++) {
@@ -306,7 +340,28 @@ function handleUpdateAssetInSheet(contents) {
       if (luasCol >= 0 && contents.luas !== undefined) sheet.getRange(i + 1, luasCol + 1).setValue(contents.luas);
       if (pinCol >= 0 && contents.isPinned !== undefined) sheet.getRange(i + 1, pinCol + 1).setValue(contents.isPinned ? 'TRUE' : 'FALSE');
 
-      return createJsonResponse({ status: 'success', message: 'Data aset berhasil diperbarui di Google Sheets.' });
+      // Set PMK 120 fields
+      if (contents.peruntukanSaatIni !== undefined) sheet.getRange(i + 1, peruntukanCol + 1).setValue(contents.peruntukanSaatIni);
+      if (contents.statusPenguasaan !== undefined) sheet.getRange(i + 1, statusPenguasaanCol + 1).setValue(contents.statusPenguasaan);
+      if (contents.jenisDokumen !== undefined) sheet.getRange(i + 1, jenisDokumenCol + 1).setValue(contents.jenisDokumen);
+      if (contents.noDokumen !== undefined) sheet.getRange(i + 1, noDokumenCol + 1).setValue(contents.noDokumen);
+      if (contents.tglDokumen !== undefined) sheet.getRange(i + 1, tglDokumenCol + 1).setValue(contents.tglDokumen);
+      if (contents.atasNamaDokumen !== undefined) sheet.getRange(i + 1, atasNamaCol + 1).setValue(contents.atasNamaDokumen);
+      if (contents.batasUtara !== undefined) sheet.getRange(i + 1, batasUCol + 1).setValue(contents.batasUtara);
+      if (contents.batasTimur !== undefined) sheet.getRange(i + 1, batasTCol + 1).setValue(contents.batasTimur);
+      if (contents.batasSelatan !== undefined) sheet.getRange(i + 1, batasSCol + 1).setValue(contents.batasSelatan);
+      if (contents.batasBarat !== undefined) sheet.getRange(i + 1, batasBCol + 1).setValue(contents.batasBarat);
+      if (contents.jumlahBangunan !== undefined) sheet.getRange(i + 1, jmlBangunanCol + 1).setValue(contents.jumlahBangunan);
+      if (contents.tglPerolehan !== undefined) sheet.getRange(i + 1, tglPerolehanCol + 1).setValue(contents.tglPerolehan);
+      if (contents.nilaiPerolehan !== undefined) sheet.getRange(i + 1, nilaiPerolehanCol + 1).setValue(contents.nilaiPerolehan);
+      if (contents.pengamananPagar !== undefined) sheet.getRange(i + 1, pengamananPagarCol + 1).setValue(contents.pengamananPagar ? 'TRUE' : 'FALSE');
+      if (contents.pengamananPlang !== undefined) sheet.getRange(i + 1, pengamananPlangCol + 1).setValue(contents.pengamananPlang ? 'TRUE' : 'FALSE');
+      if (contents.pengamananPenjaga !== undefined) sheet.getRange(i + 1, pengamananPenjagaCol + 1).setValue(contents.pengamananPenjaga ? 'TRUE' : 'FALSE');
+      if (contents.permasalahanSengketa !== undefined) sheet.getRange(i + 1, sengketaCol + 1).setValue(contents.permasalahanSengketa);
+      if (contents.tahapBerikut !== undefined) sheet.getRange(i + 1, tahapCol + 1).setValue(contents.tahapBerikut);
+      if (contents.pinggirJalan !== undefined) sheet.getRange(i + 1, pinggirJalanCol + 1).setValue(contents.pinggirJalan);
+
+      return createJsonResponse({ status: 'success', message: 'Data aset & parameter PMK 120 berhasil diperbarui di Google Sheets.' });
     }
   }
 
