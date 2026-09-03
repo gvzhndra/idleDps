@@ -75,14 +75,16 @@ const App = {
     this.bindEvents();
     this.updateExportCountBadge();
 
-    // Load permanent photos, live dataset, and Pola Tata Ruang Bali in background
-    this.loadPhotosFromSheet();
-    this.loadLiveDatasetFromSheet();
-    if (typeof PolaRuangEngine !== 'undefined') {
-      PolaRuangEngine.loadDataset().then(() => {
-        this.enrichAssetLocationsWithPolaRuang();
-      });
-    }
+    // Non-blocking deferred background loading (Zero-delay instant dashboard startup)
+    setTimeout(() => {
+      this.loadLiveDatasetFromSheet();
+      this.loadPhotosFromSheet();
+      if (typeof PolaRuangEngine !== 'undefined') {
+        PolaRuangEngine.loadDataset().then(() => {
+          this.enrichAssetLocationsWithPolaRuang();
+        });
+      }
+    }, 400);
   },
 
   /**

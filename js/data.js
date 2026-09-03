@@ -71,47 +71,71 @@ const DataEngine = {
     return null;
   },
 
+  getRowVal(row, keys) {
+    if (!row) return '';
+    for (let k of keys) {
+      if (row[k] !== undefined && row[k] !== null && String(row[k]).trim() !== '') {
+        return String(row[k]).trim();
+      }
+    }
+    const rowKeys = Object.keys(row);
+    for (let k of keys) {
+      const kClean = k.toLowerCase().replace(/[\s_\-]/g, '');
+      for (let rk of rowKeys) {
+        if (rk.toLowerCase().replace(/[\s_\-]/g, '') === kClean) {
+          const val = row[rk];
+          if (val !== undefined && val !== null && String(val).trim() !== '') {
+            return String(val).trim();
+          }
+        }
+      }
+    }
+    return '';
+  },
+
   processRawDataset() {
     this.activeAssets = [];
     this.pendingAssets = [];
 
+    if (!Array.isArray(this.rawDataset) || this.rawDataset.length === 0) {
+      if (typeof RAW_BMN_DATASET !== 'undefined' && Array.isArray(RAW_BMN_DATASET)) {
+        this.rawDataset = RAW_BMN_DATASET;
+      }
+    }
+
     this.rawDataset.forEach((row, idx) => {
       if (!row) return;
 
-      const satkerNameRaw = String(row.nama_satker || row.NAMA_SATKER || row['NAMA SATKER'] || row['Pengguna Barang'] || '').trim();
-      const barangNameRaw = String(row.nama_barang || row.NAMA_BARANG || row['NAMA BARANG'] || '').trim();
-      const kodeSatkerRaw = String(row.kode_satker || row.KODE_SATKER || row['KODE SATKER'] || '').trim();
-      const kodeBarangRaw = String(row.kode_barang || row.KODE_BARANG || row['KODE BARANG'] || '').trim();
-      const kemValRaw = String(row.kementerian || row.KEMENTERIAN || '').trim();
+      const satkerNameRaw = this.getRowVal(row, ['nama_satker', 'NAMA_SATKER', 'NAMA SATKER', 'Nama Satker', 'satker', 'Pengguna Barang', 'PENGGUNA BARANG']);
+      const barangNameRaw = this.getRowVal(row, ['nama_barang', 'NAMA_BARANG', 'NAMA BARANG', 'Nama Barang', 'uraian_bmn', 'URAIAN BMN', 'Uraian BMN', 'namaAset']);
+      const kodeSatkerRaw = this.getRowVal(row, ['kode_satker', 'KODE_SATKER', 'KODE SATKER', 'Kode Satker']);
+      const kodeBarangRaw = this.getRowVal(row, ['kode_barang', 'KODE_BARANG', 'KODE BARANG', 'Kode Barang']);
+      const kemValRaw = this.getRowVal(row, ['kementerian', 'KEMENTERIAN', 'Kementerian / Lembaga', 'Pengguna Barang']);
 
-      // STRICT GUARD: Skip empty / placeholder dummy rows from Google Sheets
+      // Guard: Skip completely empty rows
       if (!satkerNameRaw && !barangNameRaw && !kodeSatkerRaw && !kodeBarangRaw) {
         return;
       }
-      if ((satkerNameRaw === 'Satker Tanpa Nama' || satkerNameRaw === '-' || satkerNameRaw === 'undefined') && !barangNameRaw && !kodeBarangRaw) {
-        return;
-      }
-      if (kemValRaw === 'LAIN-LAIN / INDEPENDEN' && (!satkerNameRaw || satkerNameRaw === 'Satker Tanpa Nama') && !kodeBarangRaw) {
-        return;
-      }
 
-      // Universal coordinate parsing across potential coordinate fields
-      const rawCoord = row.koordinat || row.KOORDINAT || row.Koordinat || row['KOORDINAT ASET'] || row.titik_koordinat || '';
+      // Universal coordinate parsing
+      const rawCoord = this.getRowVal(row, ['koordinat', 'KOORDINAT', 'Koordinat', 'KOORDINAT ASET', 'titik_koordinat', 'Titik Koordinat', 'latlng']);
       const parsed = this.parseCoordinatesFlexible(rawCoord);
-      const lat = parsed ? parsed.lat : null;
-      const lng = parsed ? parsed.lng : null;
+      const lat = parsed ? parsed.lat : (parseFloat(row.lat) || null);
+      const lng = parsed ? parsed.lng : (parseFloat(row.lng) || null);
       const hasCoords = lat !== null && lng !== null && !isNaN(lat) && !isNaN(lng);
 
-      const luas = parseFloat(row.luas || row.LUAS || row.Luas) || 0;
-      const jenis = String(row.jenis_barang || row.JENIS_BARANG || row['JENIS BARANG'] || 'BMN').trim();
-      const satkerName = satkerNameRaw || 'Satker Tanpa Nama';
+      const rawLuas = this.getRowVal(row, ['luas', 'LUAS', 'Luas', 'luas_m2', 'Luas Tanah']);
+      const luas = parseFloat(rawLuas) || 0;
+      const rawJenis = this.getRowVal(row, ['jenis_barang', 'JENIS_BARANG', 'JENIS BARANG', 'Jenis Barang', 'kategori']);
+      const jenis = rawJenis || (barangNameRaw.toLowerCase().includes('tanah') ? 'Tanah' : 'Bangunan');
+      const satkerName = satkerNameRaw || 'Satker Terdata';
       const barangName = barangNameRaw || jenis || 'Aset BMN Idle';
       const kodeSatker = kodeSatkerRaw;
       const kodeBarang = kodeBarangRaw;
-      const nupVal = String(row.nup || row.NUP || '1').trim();
-      const kemVal = kemValRaw || String(row['Pengguna Barang'] || 'KEMENTERIAN / LEMBAGA').trim();
-      const fotoUrlsVal = String(row.foto_urls || row.FOTO_URLS || row.fotoList || '').trim();
-      const isTanah = jenis.toLowerCase().includes('tanah');
+      const nupVal = this.getRowVal(row, ['nup', 'NUP', 'Nup']) || '1';
+      const kemVal = kemValRaw || 'KEMENTERIAN / LEMBAGA';
+      const fotoUrlsVal = this.getRowVal(row, ['foto_urls', 'FOTO_URLS', 'fotoList', 'foto_list', 'foto']);
+      const isTanah = jenis.toLowerCase().includes('tanah') || barangName.toLowerCase().includes('tanah');
 
       let fotoList = [];
       if (fotoUrlsVal) {
@@ -127,8 +151,10 @@ const DataEngine = {
       // Smart Multi-Keyword Classification Engine
       const normKlas = this.normalizeKlasifikasi(row);
 
-      const rawTahap = String(row['TAHAP_BERIKUT'] || row.tahap_berikut || '').toUpperCase().trim();
-      const normTahap = (rawTahap.includes('PANTAU') || rawTahap === 'PEMANTAUAN') ? 'PEMANTAUAN' : 'PENELITIAN';
+      const rawTahap = this.getRowVal(row, ['tahap_berikut', 'TAHAP_BERIKUT', 'Tahap Berikut', 'tahap']).toUpperCase();
+      let normTahap = 'PENELITIAN';
+      if (rawTahap.includes('PANTAU')) normTahap = 'PEMANTAUAN';
+      else if (rawTahap.includes('TELUSUR')) normTahap = 'PENELUSURAN';
 
       const item = {
         id: row.id || (kodeSatker && kodeBarang ? `${kodeSatker}-${kodeBarang}-${nupVal}` : `BMN-${idx + 1}`),
@@ -148,45 +174,46 @@ const DataEngine = {
         kabupaten: kabupaten,
         kecamatan: kecamatan,
         kelurahan: kelurahan,
-        alamat: row.alamat || `${kelurahan}, ${kecamatan}, ${kabupaten}`,
+        alamat: this.getRowVal(row, ['alamat', 'ALAMAT', 'Alamat', 'Lokasi']) || `${kelurahan}, ${kecamatan}, ${kabupaten}`,
         lat: lat,
         lng: lng,
         hasCoordinates: hasCoords,
         luas: luas,
         luasTanah: luas,
         luasBangunan: 0,
-        kondisi: row['HASIL JAWABAN'] || row.kondisi || 'Telah dilakukan penelitian awal',
-        statusPenguasaan: row.status_penguasaan || 'Sertifikat Hak Pakai a.n. Pemerintah RI c.q. Pengelola',
+        nilaiBuku: parseFloat(this.getRowVal(row, ['nilai_buku', 'NILAI_BUKU', 'Nilai Buku', 'nilaiBuku'])) || 0,
+        kondisi: this.getRowVal(row, ['hasil jawaban', 'HASIL JAWABAN', 'kondisi', 'KONDISI']) || 'Telah dilakukan penelitian awal',
+        statusPenguasaan: this.getRowVal(row, ['status_penguasaan', 'STATUS_PENGUASAAN', 'Status Penguasaan']) || 'Sertifikat Hak Pakai a.n. Pemerintah RI',
         zoningCode: 'Kategori 1',
         zoningName: 'Kawasan Perdagangan & Jasa',
-        rekomendasiUser: row.rekomendasi_user || row.rekomendasi || row['HASIL JAWABAN'] || '',
-        catatanTim: row['CATATAN_REKONSILIASI'] || row.catatan_tim || row['PEMETAAN AWAL BERBASIS KEYWORD'] || '',
+        rekomendasiUser: this.getRowVal(row, ['rekomendasi_user', 'REKOMENDASI_USER', 'rekomendasi', 'HASIL JAWABAN']) || '',
+        catatanTim: this.getRowVal(row, ['catatan_rekonsiliasi', 'CATATAN_REKONSILIASI', 'catatan_tim', 'PEMETAAN AWAL BERBASIS KEYWORD']) || '',
         fotoList: fotoList,
         isPinned: isPinnedFromRow,
-        suratJawaban: row['SURAT JAWABAN PENGGUNA BARANG'] || row.surat_jawaban || '-',
-        tglSurat: this.formatSuratDate(row['TANGGAL SURAT JAWABAN PENGGUNA BARANG'] || row.tgl_surat || '-'),
-        hasilJawaban: row['HASIL JAWABAN'] || row.hasil_jawaban || row.kondisi || '',
+        suratJawaban: this.getRowVal(row, ['surat_jawaban', 'SURAT JAWABAN PENGGUNA BARANG', 'Surat Jawaban']) || '-',
+        tglSurat: this.formatSuratDate(this.getRowVal(row, ['tgl_surat', 'TANGGAL SURAT JAWABAN PENGGUNA BARANG', 'Tanggal Surat']) || '-'),
+        hasilJawaban: this.getRowVal(row, ['hasil_jawaban', 'HASIL JAWABAN', 'kondisi']) || '',
         tahapBerikut: normTahap,
-        penyampaianKlarifikasi: row['PENYAMPAIAN_KLARIFIKASI_REKAP'] || 'SUDAH',
+        penyampaianKlarifikasi: this.getRowVal(row, ['penyampaian_klarifikasi_rekap', 'PENYAMPAIAN_KLARIFIKASI_REKAP']) || 'SUDAH',
 
         // PMK 120 Dynamic Attributes
-        peruntukanSaatIni: row.peruntukan_saat_ini || row.PERUNTUKAN || (isTanah ? 'Tanah Kosong / Belum Dimanfaatkan Penuh' : 'Bangunan Tidak Digunakan Optimal'),
-        jenisDokumen: row.jenis_dokumen || (isTanah ? 'Sertipikat Hak Pakai (SHP)' : 'IMB / PBG / Berita Acara Perolehan'),
-        noDokumen: row.no_dokumen || row.no_sertipikat || '',
-        tglDokumen: row.tgl_dokumen || '',
-        atasNamaDokumen: row.atas_nama_dokumen || 'Pemerintah Republik Indonesia',
-        batasUtara: row.batas_utara || '',
-        batasTimur: row.batas_timur || '',
-        batasSelatan: row.batas_selatan || '',
-        batasBarat: row.batas_barat || '',
-        jumlahBangunan: parseInt(row.jumlah_bangunan) || 0,
-        tglPerolehan: row.tgl_perolehan || '',
-        nilaiPerolehan: parseFloat(row.nilai_perolehan) || (parseFloat(row.nilai_buku || row.nilaiBuku) || 0),
+        peruntukanSaatIni: this.getRowVal(row, ['peruntukan_saat_ini', 'PERUNTUKAN_SAAT_INI', 'peruntukan', 'PERUNTUKAN']) || (isTanah ? 'Tanah Kosong / Belum Dimanfaatkan Penuh' : 'Bangunan Tidak Digunakan Optimal'),
+        jenisDokumen: this.getRowVal(row, ['jenis_dokumen', 'JENIS_DOKUMEN', 'Jenis Dokumen']) || (isTanah ? 'Sertipikat Hak Pakai (SHP)' : 'IMB / PBG / Berita Acara Perolehan'),
+        noDokumen: this.getRowVal(row, ['no_dokumen', 'NO_DOKUMEN', 'no_sertipikat', 'NO_SERTIPIKAT', 'No Sertipikat']),
+        tglDokumen: this.getRowVal(row, ['tgl_dokumen', 'TGL_DOKUMEN', 'Tanggal Dokumen']),
+        atasNamaDokumen: this.getRowVal(row, ['atas_nama_dokumen', 'ATAS_NAMA_DOKUMEN', 'Atas Nama']) || 'Pemerintah Republik Indonesia',
+        batasUtara: this.getRowVal(row, ['batas_utara', 'BATAS_UTARA', 'Batas Utara']),
+        batasTimur: this.getRowVal(row, ['batas_timur', 'BATAS_TIMUR', 'Batas Timur']),
+        batasSelatan: this.getRowVal(row, ['batas_selatan', 'BATAS_SELATAN', 'Batas Selatan']),
+        batasBarat: this.getRowVal(row, ['batas_barat', 'BATAS_BARAT', 'Batas Barat']),
+        jumlahBangunan: parseInt(this.getRowVal(row, ['jumlah_bangunan', 'JUMLAH_BANGUNAN'])) || 0,
+        tglPerolehan: this.getRowVal(row, ['tgl_perolehan', 'TGL_PEROLEHAN', 'Tahun Perolehan']),
+        nilaiPerolehan: parseFloat(this.getRowVal(row, ['nilai_perolehan', 'NILAI_PEROLEHAN'])) || parseFloat(this.getRowVal(row, ['nilai_buku', 'NILAI_BUKU'])) || 0,
         pengamananPagar: row.pengamanan_pagar === true || row.pengamanan_pagar === 'TRUE' || row.pengamanan_pagar === '1',
         pengamananPlang: row.pengamanan_plang === true || row.pengamanan_plang === 'TRUE' || row.pengamanan_plang === '1',
         pengamananPenjaga: row.pengamanan_penjaga === true || row.pengamanan_penjaga === 'TRUE' || row.pengamanan_penjaga === '1',
-        permasalahanSengketa: row.permasalahan_sengketa || 'Bebas Sengketa / Tidak ada klaim pihak ketiga',
-        pinggirJalan: row.pinggir_jalan || 'Ya'
+        permasalahanSengketa: this.getRowVal(row, ['permasalahan_sengketa', 'PERMASALAHAN_SENGKETA', 'sengketa']) || 'Bebas Sengketa / Tidak ada klaim pihak ketiga',
+        pinggirJalan: this.getRowVal(row, ['pinggir_jalan', 'PINGGIR_JALAN']) || 'Ya'
       };
 
       // Load ALL assets into activeAssets for Left Panel & Global Search
