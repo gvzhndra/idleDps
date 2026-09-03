@@ -116,63 +116,59 @@ body {
   display: none;
 }
 
-/* TOP-LEVEL 2-TAB EXECUTIVE NAVIGATION BAR */
+/* TOP-LEVEL 2-TAB EXECUTIVE NAVIGATION BAR (MODERN FOLDER TABS STYLE) */
 .top-nav-switcher-bar {
   background: #ffffff;
   border-bottom: 2px solid #e2e8f0;
-  padding: 6px 20px;
+  padding: 6px 24px 0 24px;
   display: flex;
-  align-items: center;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  align-items: flex-end;
   z-index: 950;
   flex-shrink: 0;
 }
 
 .top-nav-container {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: flex-end;
+  gap: 6px;
+  margin-bottom: -2px; /* Sits flush on top of the bottom line */
 }
 
 .top-nav-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 18px;
-  border-radius: 20px;
+  justify-content: center;
+  padding: 9px 24px;
+  border-top-left-radius: 9px;
+  border-top-right-radius: 9px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
   border: 1px solid transparent;
+  border-bottom: 3px solid transparent;
   background: transparent;
   color: #64748b;
   font-family: var(--font-family);
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 13.5px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  transition: all 0.15s ease-in-out;
 }
 
 .top-nav-btn:hover {
-  background: #f1f5f9;
   color: #1e293b;
+  background: #f8fafc;
 }
 
 .top-nav-btn.active {
-  background: #2563eb;
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
-}
-
-.top-nav-btn .badge-nav-count {
-  font-size: 11px;
-  padding: 2px 7px;
-  border-radius: 10px;
-  background: rgba(0, 0, 0, 0.08);
-  color: inherit;
+  background: #eff6ff !important;
+  color: #2563eb !important;
   font-weight: 800;
-}
-
-.top-nav-btn.active .badge-nav-count {
-  background: rgba(255, 255, 255, 0.25);
-  color: #ffffff;
+  border-top: 1px solid #dbeafe !important;
+  border-left: 1px solid #dbeafe !important;
+  border-right: 1px solid #dbeafe !important;
+  border-bottom: 3px solid #2563eb !important;
+  box-shadow: 0 -2px 6px rgba(37, 99, 235, 0.05);
 }
 
 /* TINDAK LANJUT SUB-TABS (PEMANTAUAN, PENELUSURAN, PENELITIAN) */
