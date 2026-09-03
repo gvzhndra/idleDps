@@ -12,10 +12,13 @@
 const LaporanEngine = {
   PRESET_KEY: 'bmn_idle_tim_penelitian_preset',
   MASTER_ST_KEY: 'bmn_idle_master_tim_st_list',
+  MASTER_SK_KEY: 'bmn_idle_master_sk_tim_list',
   masterTimSTList: [],
+  masterSKTimList: [],
 
   init() {
     this.loadMasterTimSTFromLocal();
+    this.loadMasterSKFromLocal();
     this.fetchMasterTimSTFromSheet();
   },
 
@@ -31,15 +34,16 @@ const LaporanEngine = {
           tgl_st: '15 Januari 2026',
           no_sk_tim: 'KEP-45/KPKNL.14/2026',
           wilayah_satker: 'Provinsi Bali',
+          personil: [
+            { peran: 'Ketua Tim', nama: 'I Putu Harjaya', nip: '19850101 201012 1 001', jabatan: 'Kepala Seksi PKN' },
+            { peran: 'Anggota Tim', nama: 'Gede Shendra', nip: '19900202 201402 1 002', jabatan: 'Penata Muda PKN' }
+          ],
           ketua_nama: 'I Putu Harjaya',
           ketua_nip: '19850101 201012 1 001',
-          ketua_jabatan: 'Kepala Seksi PKN KPKNL Denpasar',
+          ketua_jabatan: 'Kepala Seksi PKN',
           anggota1_nama: 'Gede Shendra',
           anggota1_nip: '19900202 201402 1 002',
           anggota1_jabatan: 'Penata Muda PKN',
-          anggota2_nama: '',
-          anggota2_nip: '',
-          anggota2_jabatan: '',
           pdf_st_url: '',
           status_aktif: 'AKTIF'
         }];
@@ -55,6 +59,40 @@ const LaporanEngine = {
       localStorage.setItem(this.MASTER_ST_KEY, JSON.stringify(this.masterTimSTList));
     } catch (e) {
       console.warn('Gagal menyimpan master Tim & ST ke local:', e);
+    }
+  },
+
+  loadMasterSKFromLocal() {
+    try {
+      const stored = localStorage.getItem(this.MASTER_SK_KEY);
+      if (stored) {
+        this.masterSKTimList = JSON.parse(stored);
+      } else {
+        this.masterSKTimList = [{
+          id_sk: 'SK-2026-001',
+          no_sk: 'KEP-45/KPKNL.14/2026',
+          tgl_sk: '10 Januari 2026',
+          perihal: 'Pembentukan Tim Penelitian BMN Terindikasi Idle TA 2026',
+          pejabat: 'Kepala KPKNL Denpasar',
+          personil: [
+            { peran: 'Ketua Tim', nama: 'I Putu Harjaya', nip: '19850101 201012 1 001', jabatan: 'Kepala Seksi PKN' },
+            { peran: 'Anggota Tim', nama: 'Gede Shendra', nip: '19900202 201402 1 002', jabatan: 'Penata Muda PKN' }
+          ],
+          pdf_sk_url: '',
+          status_aktif: 'AKTIF'
+        }];
+        this.saveMasterSKToLocal();
+      }
+    } catch (e) {
+      console.warn('Gagal memuat master SK Tim dari local:', e);
+    }
+  },
+
+  saveMasterSKToLocal() {
+    try {
+      localStorage.setItem(this.MASTER_SK_KEY, JSON.stringify(this.masterSKTimList));
+    } catch (e) {
+      console.warn('Gagal menyimpan master SK Tim ke local:', e);
     }
   },
 
@@ -134,6 +172,23 @@ const LaporanEngine = {
     if (currentVal) select.value = currentVal;
   },
 
+  populateSKDropdownInSTForm() {
+    const select = document.getElementById('st-input-sk-select');
+    if (!select) return;
+
+    const currentVal = select.value;
+    select.innerHTML = '<option value="">-- Tanpa / Pilih dari Master SK --</option>';
+
+    this.masterSKTimList.forEach(sk => {
+      const opt = document.createElement('option');
+      opt.value = sk.no_sk;
+      opt.textContent = `${sk.no_sk} (${sk.tgl_sk}) - ${sk.perihal || 'SK Tim'}`;
+      select.appendChild(opt);
+    });
+
+    if (currentVal) select.value = currentVal;
+  },
+
   renderTimSTTable() {
     const tbody = document.getElementById('tim-st-table-body');
     if (!tbody) return;
@@ -143,34 +198,84 @@ const LaporanEngine = {
       return;
     }
 
-    tbody.innerHTML = this.masterTimSTList.map((st) => `
-      <tr style="border-bottom:1px solid var(--border-subtle);">
-        <td style="padding:8px 10px; font-weight:700; color:var(--text-main);">
-          <div>${st.no_st || '-'}</div>
-          <small style="color:var(--text-muted); font-weight:normal;">Tgl: ${st.tgl_st || '-'}</small>
-        </td>
-        <td style="padding:8px 10px;">
-          <div><strong>Ketua:</strong> ${st.ketua_nama || '-'} (${st.ketua_nip || '-'})</div>
-          ${st.anggota1_nama ? `<div><strong>Anggota:</strong> ${st.anggota1_nama}</div>` : ''}
-        </td>
-        <td style="padding:8px 10px;">
-          <div><span class="badge" style="background:#e0f2fe; color:#0369a1; font-size:10px;">${st.wilayah_satker || 'Provinsi Bali'}</span></div>
-          <small style="color:var(--text-muted);">SK: ${st.no_sk_tim || '-'}</small>
-        </td>
-        <td style="padding:8px 10px;">
-          ${st.pdf_st_url ? `
-            <a href="${st.pdf_st_url}" target="_blank" class="btn btn-sm btn-secondary" style="font-size:10px; padding:3px 8px; color:var(--pastel-blue);" title="Buka Dokumen PDF">
-              <i class="fa-solid fa-file-pdf text-danger"></i> PDF ST
-            </a>
-          ` : '<span style="color:var(--text-muted); font-size:10.5px;">-</span>'}
-        </td>
-        <td style="padding:8px 10px; text-align:center;">
-          <button class="btn btn-sm btn-secondary" style="font-size:11px; padding:3px 8px;" onclick="App.editTimSTRow('${st.id_st || st.no_st}')" title="Edit Data ST">
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </td>
-      </tr>
-    `).join('');
+    tbody.innerHTML = this.masterTimSTList.map((st) => {
+      const personilList = Array.isArray(st.personil) && st.personil.length > 0
+        ? st.personil.map(p => `<div><strong>${p.peran || 'Anggota'}:</strong> ${p.nama || '-'} <small class="text-muted">(${p.nip || '-'})</small></div>`).join('')
+        : `<div><strong>Ketua:</strong> ${st.ketua_nama || '-'} <small class="text-muted">(${st.ketua_nip || '-'})</small></div>` +
+          (st.anggota1_nama ? `<div><strong>Anggota:</strong> ${st.anggota1_nama}</div>` : '');
+
+      return `
+        <tr style="border-bottom:1px solid var(--border-subtle);">
+          <td style="padding:8px 10px; font-weight:700; color:var(--text-main);">
+            <div>${st.no_st || '-'}</div>
+            <small style="color:var(--text-muted); font-weight:normal;">Tgl: ${st.tgl_st || '-'}</small>
+          </td>
+          <td style="padding:8px 10px;">
+            ${personilList}
+          </td>
+          <td style="padding:8px 10px;">
+            <div><span class="badge" style="background:#e0f2fe; color:#0369a1; font-size:10px;">${st.wilayah_satker || 'Provinsi Bali'}</span></div>
+            <small style="color:var(--text-muted);">SK: ${st.no_sk_tim || '-'}</small>
+          </td>
+          <td style="padding:8px 10px;">
+            ${st.pdf_st_url ? `
+              <a href="${st.pdf_st_url}" target="_blank" class="btn btn-sm btn-secondary" style="font-size:10px; padding:3px 8px; color:var(--pastel-blue);" title="Buka Dokumen PDF">
+                <i class="fa-solid fa-file-pdf text-danger"></i> PDF ST
+              </a>
+            ` : '<span style="color:var(--text-muted); font-size:10.5px;">-</span>'}
+          </td>
+          <td style="padding:8px 10px; text-align:center;">
+            <button class="btn btn-sm btn-secondary" style="font-size:11px; padding:3px 8px;" onclick="App.editTimSTRow('${st.id_st || st.no_st}')" title="Edit Data ST">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  },
+
+  renderSKTimTable() {
+    const tbody = document.getElementById('tim-sk-table-body');
+    if (!tbody) return;
+
+    if (!this.masterSKTimList || this.masterSKTimList.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:12px; color:var(--text-muted);">Belum ada data SK Tim yang tersimpan.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = this.masterSKTimList.map((sk) => {
+      const personilList = Array.isArray(sk.personil) && sk.personil.length > 0
+        ? sk.personil.map(p => `<div><strong>${p.peran || 'Anggota'}:</strong> ${p.nama || '-'} <small class="text-muted">(${p.nip || '-'})</small></div>`).join('')
+        : '<div><small class="text-muted">-</small></div>';
+
+      return `
+        <tr style="border-bottom:1px solid var(--border-subtle);">
+          <td style="padding:8px 10px; font-weight:700; color:var(--text-main);">
+            <div>${sk.no_sk || '-'}</div>
+            <small style="color:var(--text-muted); font-weight:normal;">Tgl: ${sk.tgl_sk || '-'}</small>
+          </td>
+          <td style="padding:8px 10px;">
+            ${personilList}
+          </td>
+          <td style="padding:8px 10px;">
+            <div style="font-weight:600; color:#1e293b;">${sk.perihal || 'SK Tim Penelitian BMN'}</div>
+            <small style="color:var(--text-muted);">${sk.pejabat || 'Kepala KPKNL'}</small>
+          </td>
+          <td style="padding:8px 10px;">
+            ${sk.pdf_sk_url ? `
+              <a href="${sk.pdf_sk_url}" target="_blank" class="btn btn-sm btn-secondary" style="font-size:10px; padding:3px 8px; color:var(--pastel-blue);" title="Buka Dokumen PDF">
+                <i class="fa-solid fa-file-pdf text-danger"></i> PDF SK
+              </a>
+            ` : '<span style="color:var(--text-muted); font-size:10.5px;">-</span>'}
+          </td>
+          <td style="padding:8px 10px; text-align:center;">
+            <button class="btn btn-sm btn-secondary" style="font-size:11px; padding:3px 8px;" onclick="App.editSKTimRow('${sk.id_sk || sk.no_sk}')" title="Edit Data SK">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
   },
 
   loadTeamPresets() {

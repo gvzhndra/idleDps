@@ -68,6 +68,7 @@ const App = {
     this.updateKPIStats();
     this.renderClusterAccordion();
     this.renderAllAssetsList();
+    this.updateTindakBadges();
 
     // Map Engine init on right stage
     MapEngine.init('map');
@@ -2045,6 +2046,8 @@ const App = {
   openManageTimSTModal() {
     if (typeof LaporanEngine !== 'undefined') {
       LaporanEngine.renderTimSTTable();
+      LaporanEngine.renderSKTimTable();
+      LaporanEngine.populateSKDropdownInSTForm();
     }
     const modal = document.getElementById('manage-tim-st-modal');
     if (modal) {
@@ -2061,6 +2064,77 @@ const App = {
     }
   },
 
+  switchModalPenugasanTab(tabName) {
+    const tabSt = document.getElementById('modal-penugasan-tab-st');
+    const tabSk = document.getElementById('modal-penugasan-tab-sk');
+    const btnSt = document.getElementById('modal-tab-btn-st');
+    const btnSk = document.getElementById('modal-tab-btn-sk');
+
+    if (tabName === 'st') {
+      if (tabSt) tabSt.style.display = 'block';
+      if (tabSk) tabSk.style.display = 'none';
+      if (btnSt) { btnSt.className = 'btn btn-sm btn-primary'; }
+      if (btnSk) { btnSk.className = 'btn btn-sm btn-secondary'; }
+      if (typeof LaporanEngine !== 'undefined') LaporanEngine.renderTimSTTable();
+    } else {
+      if (tabSt) tabSt.style.display = 'none';
+      if (tabSk) tabSk.style.display = 'block';
+      if (btnSt) { btnSt.className = 'btn btn-sm btn-secondary'; }
+      if (btnSk) { btnSk.className = 'btn btn-sm btn-primary'; }
+      if (typeof LaporanEngine !== 'undefined') LaporanEngine.renderSKTimTable();
+    }
+  },
+
+  addPersonilRow(context = 'st', defaultData = null) {
+    const containerId = context === 'st' ? 'st-personil-container' : 'sk-personil-container';
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const peran = defaultData?.peran || (container.children.length === 0 ? 'Ketua Tim' : 'Anggota Tim');
+    const nama = defaultData?.nama || '';
+    const nip = defaultData?.nip || '';
+    const jabatan = defaultData?.jabatan || '';
+
+    const row = document.createElement('div');
+    row.className = 'personil-row d-flex gap-2 align-items-center mb-1 p-1 border rounded';
+    row.style.background = '#f8fafc';
+    row.innerHTML = `
+      <select class="form-control personil-peran" style="width:130px; font-size:11px; padding:4px 6px;">
+        <option value="Ketua Tim" ${peran === 'Ketua Tim' ? 'selected' : ''}>Ketua Tim</option>
+        <option value="Wakil Ketua" ${peran === 'Wakil Ketua' ? 'selected' : ''}>Wakil Ketua</option>
+        <option value="Sekretaris" ${peran === 'Sekretaris' ? 'selected' : ''}>Sekretaris</option>
+        <option value="Anggota Tim" ${peran === 'Anggota Tim' ? 'selected' : ''}>Anggota Tim</option>
+        <option value="Pendamping" ${peran === 'Pendamping' ? 'selected' : ''}>Pendamping</option>
+      </select>
+      <input type="text" class="form-control personil-nama" placeholder="Nama Lengkap & Gelar" style="flex:1; font-size:11px; padding:4px 6px;" value="${nama}" required>
+      <input type="text" class="form-control personil-nip" placeholder="NIP (18 Digit)" style="width:150px; font-size:11px; padding:4px 6px;" value="${nip}">
+      <input type="text" class="form-control personil-jabatan" placeholder="Jabatan Kantor" style="width:140px; font-size:11px; padding:4px 6px;" value="${jabatan}">
+      <button type="button" class="btn btn-sm btn-outline-danger" onclick="this.closest('.personil-row').remove()" title="Hapus Personil" style="padding:4px 8px; font-size:11px;">
+        <i class="fa-solid fa-trash"></i>
+      </button>
+    `;
+    container.appendChild(row);
+  },
+
+  collectPersonilRows(context = 'st') {
+    const containerId = context === 'st' ? 'st-personil-container' : 'sk-personil-container';
+    const container = document.getElementById(containerId);
+    if (!container) return [];
+
+    const rows = container.querySelectorAll('.personil-row');
+    const personil = [];
+    rows.forEach(r => {
+      const pPeran = r.querySelector('.personil-peran')?.value || 'Anggota Tim';
+      const pNama = r.querySelector('.personil-nama')?.value.trim() || '';
+      const pNip = r.querySelector('.personil-nip')?.value.trim() || '';
+      const pJabatan = r.querySelector('.personil-jabatan')?.value.trim() || '';
+      if (pNama) {
+        personil.push({ peran: pPeran, nama: pNama, nip: pNip, jabatan: pJabatan });
+      }
+    });
+    return personil;
+  },
+
   toggleAddSTForm(show) {
     const container = document.getElementById('form-st-container');
     if (!container) return;
@@ -2068,8 +2142,51 @@ const App = {
     if (!show) {
       document.getElementById('form-manage-tim-st')?.reset();
       document.getElementById('st-form-id').value = '';
+      document.getElementById('st-personil-container').innerHTML = '';
       const linkDisp = document.getElementById('st-pdf-link-display');
       if (linkDisp) linkDisp.innerHTML = '';
+    } else {
+      if (typeof LaporanEngine !== 'undefined') LaporanEngine.populateSKDropdownInSTForm();
+      const pContainer = document.getElementById('st-personil-container');
+      if (pContainer && pContainer.children.length === 0) {
+        this.addPersonilRow('st', { peran: 'Ketua Tim', nama: 'I Putu Harjaya', nip: '19850101 201012 1 001', jabatan: 'Kepala Seksi PKN' });
+        this.addPersonilRow('st', { peran: 'Anggota Tim', nama: 'Gede Shendra', nip: '19900202 201402 1 002', jabatan: 'Penata Muda PKN' });
+      }
+    }
+  },
+
+  toggleAddSKForm(show) {
+    const container = document.getElementById('form-sk-container');
+    if (!container) return;
+    container.style.display = show ? 'block' : 'none';
+    if (!show) {
+      document.getElementById('form-manage-sk-tim')?.reset();
+      document.getElementById('sk-form-id').value = '';
+      document.getElementById('sk-personil-container').innerHTML = '';
+      const linkDisp = document.getElementById('sk-pdf-link-display');
+      if (linkDisp) linkDisp.innerHTML = '';
+    } else {
+      const pContainer = document.getElementById('sk-personil-container');
+      if (pContainer && pContainer.children.length === 0) {
+        this.addPersonilRow('sk', { peran: 'Ketua Tim', nama: 'I Putu Harjaya', nip: '19850101 201012 1 001', jabatan: 'Kepala Seksi PKN' });
+        this.addPersonilRow('sk', { peran: 'Anggota Tim', nama: 'Gede Shendra', nip: '19900202 201402 1 002', jabatan: 'Penata Muda PKN' });
+      }
+    }
+  },
+
+  handleSTSKSelectChange(skNo) {
+    const manualInput = document.getElementById('st-input-sk');
+    if (manualInput) manualInput.value = skNo || '';
+    if (skNo && typeof LaporanEngine !== 'undefined') {
+      const foundSK = LaporanEngine.masterSKTimList.find(s => s.no_sk === skNo);
+      if (foundSK && Array.isArray(foundSK.personil) && foundSK.personil.length > 0) {
+        const pContainer = document.getElementById('st-personil-container');
+        if (pContainer) {
+          pContainer.innerHTML = '';
+          foundSK.personil.forEach(p => this.addPersonilRow('st', p));
+          this.showToast(`✨ Personil Tim otomatis disinkronkan dari ${skNo}!`, 'info');
+        }
+      }
     }
   },
 
@@ -2084,18 +2201,48 @@ const App = {
     document.getElementById('st-input-tgl').value = found.tgl_st || '';
     document.getElementById('st-input-sk').value = found.no_sk_tim || '';
     document.getElementById('st-input-wilayah').value = found.wilayah_satker || '';
-    document.getElementById('st-input-ketua-nama').value = found.ketua_nama || '';
-    document.getElementById('st-input-ketua-nip').value = found.ketua_nip || '';
-    document.getElementById('st-input-ketua-jabatan').value = found.ketua_jabatan || '';
-    document.getElementById('st-input-anggota1-nama').value = found.anggota1_nama || '';
-    document.getElementById('st-input-anggota1-nip').value = found.anggota1_nip || '';
-    document.getElementById('st-input-anggota1-jabatan').value = found.anggota1_jabatan || '';
-    document.getElementById('st-input-anggota2-nama').value = found.anggota2_nama || '';
-    document.getElementById('st-input-anggota2-nip').value = found.anggota2_nip || '';
+
+    const pContainer = document.getElementById('st-personil-container');
+    if (pContainer) {
+      pContainer.innerHTML = '';
+      if (Array.isArray(found.personil) && found.personil.length > 0) {
+        found.personil.forEach(p => this.addPersonilRow('st', p));
+      } else {
+        if (found.ketua_nama) this.addPersonilRow('st', { peran: 'Ketua Tim', nama: found.ketua_nama, nip: found.ketua_nip, jabatan: found.ketua_jabatan });
+        if (found.anggota1_nama) this.addPersonilRow('st', { peran: 'Anggota Tim', nama: found.anggota1_nama, nip: found.anggota1_nip, jabatan: found.anggota1_jabatan });
+        if (found.anggota2_nama) this.addPersonilRow('st', { peran: 'Anggota Tim', nama: found.anggota2_nama, nip: found.anggota2_nip, jabatan: '' });
+      }
+    }
 
     const linkDisp = document.getElementById('st-pdf-link-display');
     if (linkDisp && found.pdf_st_url) {
       linkDisp.innerHTML = `Dokumen saat ini: <a href="${found.pdf_st_url}" target="_blank">Lihat PDF ST</a>`;
+    }
+  },
+
+  editSKTimRow(skId) {
+    if (typeof LaporanEngine === 'undefined') return;
+    const found = LaporanEngine.masterSKTimList.find(s => s.id_sk === skId || s.no_sk === skId);
+    if (!found) return;
+
+    this.toggleAddSKForm(true);
+    document.getElementById('sk-form-id').value = found.id_sk || '';
+    document.getElementById('sk-input-no').value = found.no_sk || '';
+    document.getElementById('sk-input-tgl').value = found.tgl_sk || '';
+    document.getElementById('sk-input-perihal').value = found.perihal || '';
+    document.getElementById('sk-input-pejabat').value = found.pejabat || '';
+
+    const pContainer = document.getElementById('sk-personil-container');
+    if (pContainer) {
+      pContainer.innerHTML = '';
+      if (Array.isArray(found.personil) && found.personil.length > 0) {
+        found.personil.forEach(p => this.addPersonilRow('sk', p));
+      }
+    }
+
+    const linkDisp = document.getElementById('sk-pdf-link-display');
+    if (linkDisp && found.pdf_sk_url) {
+      linkDisp.innerHTML = `Dokumen saat ini: <a href="${found.pdf_sk_url}" target="_blank">Lihat PDF SK</a>`;
     }
   },
 
@@ -2109,14 +2256,10 @@ const App = {
     const tgl_st = document.getElementById('st-input-tgl').value.trim();
     const no_sk_tim = document.getElementById('st-input-sk').value.trim();
     const wilayah_satker = document.getElementById('st-input-wilayah').value.trim();
-    const ketua_nama = document.getElementById('st-input-ketua-nama').value.trim();
-    const ketua_nip = document.getElementById('st-input-ketua-nip').value.trim();
-    const ketua_jabatan = document.getElementById('st-input-ketua-jabatan').value.trim();
-    const anggota1_nama = document.getElementById('st-input-anggota1-nama').value.trim();
-    const anggota1_nip = document.getElementById('st-input-anggota1-nip').value.trim();
-    const anggota1_jabatan = document.getElementById('st-input-anggota1-jabatan').value.trim();
-    const anggota2_nama = document.getElementById('st-input-anggota2-nama').value.trim();
-    const anggota2_nip = document.getElementById('st-input-anggota2-nip').value.trim();
+    const personil = this.collectPersonilRows('st');
+
+    const ketua = personil.find(p => p.peran === 'Ketua Tim') || personil[0] || {};
+    const anggota1 = personil.find(p => p !== ketua) || {};
 
     let pdf_st_url = '';
     const fileInput = document.getElementById('st-input-pdf-file');
@@ -2145,14 +2288,13 @@ const App = {
       tgl_st: tgl_st,
       no_sk_tim: no_sk_tim,
       wilayah_satker: wilayah_satker,
-      ketua_nama: ketua_nama,
-      ketua_nip: ketua_nip,
-      ketua_jabatan: ketua_jabatan,
-      anggota1_nama: anggota1_nama,
-      anggota1_nip: anggota1_nip,
-      anggota1_jabatan: anggota1_jabatan,
-      anggota2_nama: anggota2_nama,
-      anggota2_nip: anggota2_nip,
+      personil: personil,
+      ketua_nama: ketua.nama || '',
+      ketua_nip: ketua.nip || '',
+      ketua_jabatan: ketua.jabatan || '',
+      anggota1_nama: anggota1.nama || '',
+      anggota1_nip: anggota1.nip || '',
+      anggota1_jabatan: anggota1.jabatan || '',
       pdf_st_url: pdf_st_url,
       status_aktif: 'AKTIF'
     };
@@ -2178,6 +2320,70 @@ const App = {
     this.toggleAddSTForm(false);
     if (btn) btn.disabled = false;
     this.showToast(`✅ Data Surat Tugas ${no_st} berhasil disimpan!`, 'success');
+  },
+
+  async handleSaveSKTimForm(event) {
+    if (event) event.preventDefault();
+    const btn = document.getElementById('btn-save-sk');
+    if (btn) btn.disabled = true;
+
+    const id = document.getElementById('sk-form-id').value.trim() || `SK-${Date.now()}`;
+    const no_sk = document.getElementById('sk-input-no').value.trim();
+    const tgl_sk = document.getElementById('sk-input-tgl').value.trim();
+    const perihal = document.getElementById('sk-input-perihal').value.trim();
+    const pejabat = document.getElementById('sk-input-pejabat').value.trim();
+    const personil = this.collectPersonilRows('sk');
+
+    let pdf_sk_url = '';
+    const fileInput = document.getElementById('sk-input-pdf-file');
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+      this.showToast('📤 Mengunggah berkas PDF SK ke Google Drive...', 'info');
+      try {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        const base64Promise = new Promise((resolve) => {
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(file);
+        });
+        const base64Data = await base64Promise;
+        const uploadedUrl = await LaporanEngine.uploadDocumentPDFToDrive(`SK_${no_sk.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`, base64Data, 'SK_TIM');
+        if (uploadedUrl) {
+          pdf_sk_url = uploadedUrl;
+        }
+      } catch (e) {
+        console.warn('Upload PDF SK error:', e);
+      }
+    }
+
+    const payload = {
+      id_sk: id,
+      no_sk: no_sk,
+      tgl_sk: tgl_sk,
+      perihal: perihal,
+      pejabat: pejabat,
+      personil: personil,
+      pdf_sk_url: pdf_sk_url,
+      status_aktif: 'AKTIF'
+    };
+
+    // Update local state
+    const existingIdx = LaporanEngine.masterSKTimList.findIndex(s => s.id_sk === id || s.no_sk === no_sk);
+    if (existingIdx >= 0) {
+      if (!pdf_sk_url && LaporanEngine.masterSKTimList[existingIdx].pdf_sk_url) {
+        payload.pdf_sk_url = LaporanEngine.masterSKTimList[existingIdx].pdf_sk_url;
+      }
+      LaporanEngine.masterSKTimList[existingIdx] = payload;
+    } else {
+      LaporanEngine.masterSKTimList.push(payload);
+    }
+
+    LaporanEngine.saveMasterSKToLocal();
+    LaporanEngine.renderSKTimTable();
+    LaporanEngine.populateSKDropdownInSTForm();
+
+    this.toggleAddSKForm(false);
+    if (btn) btn.disabled = false;
+    this.showToast(`✅ Data SK Tim ${no_sk} berhasil disimpan!`, 'success');
   },
 
   closeLaporanModal() {
@@ -2712,6 +2918,264 @@ const App = {
         if (mobileIcon) mobileIcon.className = 'fa-solid fa-arrows-rotate text-primary';
       }
     }
+  },
+
+  // ==========================================================================
+  // TOP-LEVEL 2-VIEW SWITCHER (DASHBOARD vs TINDAK LANJUT)
+  // ==========================================================================
+  currentMainView: 'dashboard',
+  currentTindakStage: 'PEMANTAUAN',
+  tindakSearchQuery: '',
+  tindakFilterKabupaten: 'all',
+  tindakFilterKesimpulan: 'all',
+
+  switchMainView(viewName) {
+    this.currentMainView = viewName;
+    const dashContainer = document.getElementById('view-dashboard-container');
+    const tindakContainer = document.getElementById('view-tindak-lanjut-container');
+    const btnDash = document.getElementById('btn-view-dashboard');
+    const btnTindak = document.getElementById('btn-view-tindak-lanjut');
+
+    if (viewName === 'dashboard') {
+      if (dashContainer) dashContainer.style.display = 'block';
+      if (tindakContainer) tindakContainer.style.display = 'none';
+      if (btnDash) btnDash.classList.add('active');
+      if (btnTindak) btnTindak.classList.remove('active');
+      setTimeout(() => {
+        if (typeof MapEngine !== 'undefined' && MapEngine.map) {
+          MapEngine.map.invalidateSize();
+        }
+      }, 100);
+    } else {
+      if (dashContainer) dashContainer.style.display = 'none';
+      if (tindakContainer) tindakContainer.style.display = 'flex';
+      if (btnDash) btnDash.classList.remove('active');
+      if (btnTindak) btnTindak.classList.add('active');
+      this.populateTindakKabupatenOptions();
+      this.updateTindakBadges();
+      this.renderTindakLanjutTable();
+    }
+  },
+
+  switchTindakLanjutSubTab(stage) {
+    this.currentTindakStage = stage;
+    ['PEMANTAUAN', 'PENELUSURAN', 'PENELITIAN'].forEach(s => {
+      const btn = document.getElementById(`subtab-btn-${s}`);
+      if (btn) {
+        if (s === stage) btn.classList.add('active');
+        else btn.classList.remove('active');
+      }
+    });
+    this.renderTindakLanjutTable();
+  },
+
+  handleTindakSearch(query) {
+    this.tindakSearchQuery = (query || '').toLowerCase().trim();
+    this.renderTindakLanjutTable();
+  },
+
+  handleTindakFilterKabupaten(val) {
+    this.tindakFilterKabupaten = val;
+    this.renderTindakLanjutTable();
+  },
+
+  handleTindakFilterKesimpulan(val) {
+    this.tindakFilterKesimpulan = val;
+    this.renderTindakLanjutTable();
+  },
+
+  updateTindakBadges() {
+    const assets = this.activeAssets || [];
+    let countPemantauan = 0;
+    let countPenelusuran = 0;
+    let countPenelitian = 0;
+
+    assets.forEach(a => {
+      const st = String(a.tahapBerikut || '').toUpperCase();
+      if (st === 'PEMANTAUAN') countPemantauan++;
+      else if (st === 'PENELUSURAN') countPenelusuran++;
+      else countPenelitian++;
+    });
+
+    const badgePem = document.getElementById('badge-count-pemantauan');
+    const badgePenel = document.getElementById('badge-count-penelusuran');
+    const badgePen = document.getElementById('badge-count-penelitian');
+    const badgeTotal = document.getElementById('badge-total-tindak-lanjut');
+
+    if (badgePem) badgePem.textContent = `${countPemantauan} Unit`;
+    if (badgePenel) badgePenel.textContent = `${countPenelusuran} Unit`;
+    if (badgePen) badgePen.textContent = `${countPenelitian} Unit`;
+    if (badgeTotal) badgeTotal.textContent = `${assets.length} Unit`;
+  },
+
+  populateTindakKabupatenOptions() {
+    const select = document.getElementById('tindak-filter-kabupaten');
+    if (!select) return;
+    const currentVal = select.value;
+    const kabSet = new Set();
+    this.activeAssets.forEach(a => { if (a.kabupaten) kabSet.add(a.kabupaten); });
+    const sorted = Array.from(kabSet).sort();
+
+    select.innerHTML = '<option value="all">Semua Kabupaten/Kota</option>' +
+      sorted.map(k => `<option value="${k}">${k}</option>`).join('');
+    if (currentVal && (currentVal === 'all' || kabSet.has(currentVal))) {
+      select.value = currentVal;
+    }
+  },
+
+  renderTindakLanjutTable() {
+    const tbody = document.getElementById('tbody-tindak-lanjut');
+    if (!tbody) return;
+
+    this.updateTindakBadges();
+
+    const stage = this.currentTindakStage;
+    let list = this.activeAssets.filter(a => {
+      const st = String(a.tahapBerikut || 'PENELITIAN').toUpperCase();
+      return st === stage;
+    });
+
+    if (this.tindakFilterKabupaten !== 'all') {
+      list = list.filter(a => a.kabupaten === this.tindakFilterKabupaten);
+    }
+
+    if (this.tindakFilterKesimpulan !== 'all') {
+      list = list.filter(a => (a.statusKesimpulanIdle || 'TIDAK_IDLE') === this.tindakFilterKesimpulan);
+    }
+
+    if (this.tindakSearchQuery) {
+      const q = this.tindakSearchQuery;
+      list = list.filter(a => {
+        return (a.namaBarang && a.namaBarang.toLowerCase().includes(q)) ||
+               (a.uraian_bmn && a.uraian_bmn.toLowerCase().includes(q)) ||
+               (a.kementerian && a.kementerian.toLowerCase().includes(q)) ||
+               (a.satker && a.satker.toLowerCase().includes(q)) ||
+               (a.namaSatker && a.namaSatker.toLowerCase().includes(q)) ||
+               (a.kodeSatker && String(a.kodeSatker).toLowerCase().includes(q)) ||
+               (a.kodeBarang && String(a.kodeBarang).toLowerCase().includes(q)) ||
+               (a.nup && String(a.nup).toLowerCase().includes(q)) ||
+               (a.alamat && a.alamat.toLowerCase().includes(q)) ||
+               (a.kabupaten && a.kabupaten.toLowerCase().includes(q));
+      });
+    }
+
+    if (list.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="8" style="text-align:center; padding:36px 12px; color:var(--text-muted);">
+            <i class="fa-solid fa-folder-open" style="font-size:32px; color:#cbd5e1; margin-bottom:8px; display:block;"></i>
+            <strong>Tidak ada data aset pada tahapan ${stage}</strong>
+            <p style="font-size:11px; margin:4px 0 0;">Coba sesuaikan kata kunci pencarian atau ubah filter status.</p>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = list.map((a, idx) => {
+      const statusBadge = a.statusKesimpulanIdle === 'IDLE' 
+        ? `<span class="badge" style="background:#fee2e2; color:#991b1b; font-weight:700;">🔴 BMN IDLE</span>`
+        : a.statusKesimpulanIdle === 'PEMANTAUAN_LANJUTAN'
+        ? `<span class="badge" style="background:#fef3c7; color:#92400e; font-weight:700;">🔄 PEMANTAUAN LANJUTAN</span>`
+        : `<span class="badge" style="background:#d1fae5; color:#065f46; font-weight:700;">🟢 TIDAK IDLE</span>`;
+
+      const smartPemantauan = (a.alasanKesimpulanIdle && a.alasanKesimpulanIdle.includes('Rencana'))
+        ? `<div style="font-size:10.5px; color:#047857; margin-top:3px; background:#ecfdf5; padding:2px 6px; border-radius:4px; border:1px solid #a7f3d0;">
+             <i class="fa-solid fa-circle-check"></i> <strong>Pemantauan:</strong> ${a.fokusPemantauan || 'Realisasi DIPA'} (${a.targetPemantauan || 'TA 2026'})
+           </div>`
+        : '';
+
+      return `
+        <tr>
+          <td align="center" style="font-weight:700; color:#64748b;">${idx + 1}</td>
+          <td>
+            <div style="font-weight:700; color:#1e293b;">${a.kementerian || '-'}</div>
+            <small class="text-muted">${a.kabupaten || '-'}</small>
+          </td>
+          <td>
+            <div style="font-weight:600; color:#1e293b;">${a.namaSatker || a.satker || '-'}</div>
+            <small class="text-muted">Kode: ${a.kodeSatker || '-'}</small>
+          </td>
+          <td>
+            <div style="font-family:monospace; font-weight:600; color:#0284c7;">${a.kodeBarang || '-'}</div>
+            <span class="badge" style="background:#e0f2fe; color:#0369a1; font-weight:700; font-size:10px;">NUP ${a.nup || '1'}</span>
+          </td>
+          <td>
+            <div class="asset-name-title">${a.namaBarang || a.uraian_bmn || '-'}</div>
+            <small class="text-muted">${(a.luas || a.luas_m2 || 0).toLocaleString('id-ID')} m² | Rp ${(a.nilaiBuku || a.nilai_buku || 0).toLocaleString('id-ID')}</small>
+          </td>
+          <td>
+            <div style="font-size:11px;">
+              <span style="color:#2563eb; font-weight:600;"><i class="fa-solid fa-paper-plane"></i> KPKNL:</span> S-259/MK/KNL.1401/2025
+            </div>
+            <div style="font-size:11px; margin-top:2px;">
+              <span style="color:#059669; font-weight:600;"><i class="fa-solid fa-envelope-open-text"></i> Satker:</span> ${a.suratJawaban || '-'}
+            </div>
+            <small class="text-muted" style="font-size:10px;">Tgl: ${a.tglSurat || '-'}</small>
+          </td>
+          <td>
+            <div class="mb-1">${statusBadge}</div>
+            <div style="font-size:11px; color:#475569;">${a.alasanKesimpulanIdle || a.rekomendasiUser || 'Optimalisasi Penggunaan Tusi'}</div>
+            ${smartPemantauan}
+          </td>
+          <td align="center">
+            <div class="action-btns-group">
+              <button class="btn btn-sm btn-primary" onclick="App.openLaporanModal('${a.id}')" title="Buat Dokumen / Laporan PMK 120" style="padding:4px 8px; font-size:11px;">
+                <i class="fa-solid fa-file-lines"></i> Laporan
+              </button>
+              <button class="btn btn-sm btn-secondary" onclick="App.openEditAssetModal('${a.id}')" title="Kelola Parameter & Data Aset" style="padding:4px 8px; font-size:11px;">
+                <i class="fa-solid fa-pen-to-square"></i> Edit
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  },
+
+  exportTindakLanjutExcel() {
+    const stage = this.currentTindakStage;
+    const list = this.activeAssets.filter(a => {
+      const st = String(a.tahapBerikut || 'PENELITIAN').toUpperCase();
+      return st === stage;
+    });
+
+    if (list.length === 0) {
+      this.showToast('Tidak ada data pada tahapan ini untuk diekspor.', 'warning');
+      return;
+    }
+
+    let csv = 'No,Kementerian / Lembaga,Satuan Kerja,Kode Satker,Kode Barang,NUP,Nama Barang,Luas (m2),Nilai Buku (Rp),Surat KPKNL,Surat Satker,Tgl Surat Satker,Tahap PMK 120,Status Kesimpulan,Alasan / Pertimbangan,Fokus Pemantauan,Target Pemantauan\n';
+
+    list.forEach((a, idx) => {
+      const sanitize = (str) => `"${String(str || '').replace(/"/g, '""')}"`;
+      csv += [
+        idx + 1,
+        sanitize(a.kementerian),
+        sanitize(a.namaSatker || a.satker),
+        sanitize(a.kodeSatker),
+        sanitize(a.kodeBarang),
+        sanitize(a.nup),
+        sanitize(a.namaBarang || a.uraian_bmn),
+        a.luas || a.luas_m2 || 0,
+        a.nilaiBuku || a.nilai_buku || 0,
+        sanitize('S-259/MK/KNL.1401/2025 (15 Des 2025)'),
+        sanitize(a.suratJawaban),
+        sanitize(a.tglSurat),
+        sanitize(a.tahapBerikut || stage),
+        sanitize(a.statusKesimpulanIdle || 'TIDAK_IDLE'),
+        sanitize(a.alasanKesimpulanIdle || a.rekomendasiUser),
+        sanitize(a.fokusPemantauan || '-'),
+        sanitize(a.targetPemantauan || '-')
+      ].join(',') + '\n';
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `Matriks_Tindak_Lanjut_PMK120_${stage}_KPKNL_Denpasar.csv`;
+    link.click();
+    this.showToast(`✅ Matriks ${stage} (${list.length} unit) berhasil diekspor!`, 'success');
   },
 
   showToast(message, type = 'success') {
