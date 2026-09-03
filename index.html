@@ -220,23 +220,30 @@
         <span class="stat-icon mint"><i class="fa-solid fa-arrows-split-up-and-left"></i></span>
       </div>
       <div class="stat-tahap-wrapper">
-        <div class="stat-tahap-cards" id="stat-tahap-cards-container">
-          <div class="tahap-box blue" onclick="event.stopPropagation(); App.setTahapFilter('PENELITIAN')" title="Penelitian Status & Fisik BMN">
+        <div class="stat-tahap-cards" id="stat-tahap-cards-container" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px;">
+          <div class="tahap-box mint" onclick="event.stopPropagation(); App.setTahapFilter('PEMANTAUAN')" title="Pemantauan BMN">
             <div class="tahap-box-info">
-              <strong><i class="fa-solid fa-magnifying-glass"></i> Penelitian</strong>
+              <strong style="font-size:11px;"><i class="fa-solid fa-eye"></i> Pemantauan</strong>
             </div>
-            <div class="tahap-box-val" id="stat-tahap-penelitian">0</div>
+            <div class="tahap-box-val" id="stat-tahap-pemantauan" style="font-size:16px;">0</div>
           </div>
-          <div class="tahap-box mint" onclick="event.stopPropagation(); App.setTahapFilter('PEMANTAUAN')" title="Pemantauan Optimalisasi BMN">
+          <div class="tahap-box orange" onclick="event.stopPropagation(); App.setTahapFilter('PENELUSURAN')" title="Penelusuran BMN">
             <div class="tahap-box-info">
-              <strong><i class="fa-solid fa-eye"></i> Pemantauan</strong>
+              <strong style="font-size:11px;"><i class="fa-solid fa-compass"></i> Penelusuran</strong>
             </div>
-            <div class="tahap-box-val" id="stat-tahap-pemantauan">0</div>
+            <div class="tahap-box-val" id="stat-tahap-penelusuran" style="font-size:16px;">0</div>
+          </div>
+          <div class="tahap-box blue" onclick="event.stopPropagation(); App.setTahapFilter('PENELITIAN')" title="Penelitian BMN">
+            <div class="tahap-box-info">
+              <strong style="font-size:11px;"><i class="fa-solid fa-magnifying-glass"></i> Penelitian</strong>
+            </div>
+            <div class="tahap-box-val" id="stat-tahap-penelitian" style="font-size:16px;">0</div>
           </div>
         </div>
-        <div class="tahap-ratio-bar" title="Distribusi Rencana Tindak Lanjut">
-          <div class="tahap-ratio-blue" id="stat-tahap-ratio-blue" style="width: 80%;"></div>
-          <div class="tahap-ratio-mint" id="stat-tahap-ratio-mint" style="width: 20%;"></div>
+        <div class="tahap-ratio-bar" title="Distribusi Rencana Tindak Lanjut" style="display:flex; height:6px; border-radius:3px; overflow:hidden; margin-top:8px;">
+          <div class="tahap-ratio-mint" id="stat-tahap-ratio-mint" style="width: 60%; background:#10b981;"></div>
+          <div class="tahap-ratio-orange" id="stat-tahap-ratio-orange" style="width: 34%; background:#f59e0b;"></div>
+          <div class="tahap-ratio-blue" id="stat-tahap-ratio-blue" style="width: 6%; background:#2563eb;"></div>
         </div>
       </div>
     </div>

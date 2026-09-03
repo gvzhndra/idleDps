@@ -597,42 +597,31 @@ const App = {
       }).join('');
     }
 
-    // Card 4: Rencana Tindak Lanjut (Dynamic Stages from Sheet)
-    const tahapEntries = Object.entries(stats.tahapMap || {});
-    const cPenelitian = stats.tahapMap['PENELITIAN'] || 0;
+    // Card 4: Rencana Tindak Lanjut (3 PMK 120 Stages)
     const cPemantauan = stats.tahapMap['PEMANTAUAN'] || 0;
+    const cPenelusuran = stats.tahapMap['PENELUSURAN'] || 0;
+    const cPenelitian = stats.tahapMap['PENELITIAN'] || 0;
     const totalTahap = stats.totalAssets || 1;
 
-    const elPenelitian = document.getElementById('stat-tahap-penelitian');
     const elPemantauan = document.getElementById('stat-tahap-pemantauan');
-    if (elPenelitian) elPenelitian.textContent = cPenelitian;
+    const elPenelusuran = document.getElementById('stat-tahap-penelusuran');
+    const elPenelitian = document.getElementById('stat-tahap-penelitian');
+
     if (elPemantauan) elPemantauan.textContent = cPemantauan;
+    if (elPenelusuran) elPenelusuran.textContent = cPenelusuran;
+    if (elPenelitian) elPenelitian.textContent = cPenelitian;
 
-    // If there are more stages present in Google Sheet (e.g. PENELUSURAN, DATA TIDAK LENGKAP):
-    const cardsContainer = document.getElementById('stat-tahap-cards-container');
-    if (cardsContainer && tahapEntries.length > 2) {
-      cardsContainer.style.gridTemplateColumns = `repeat(${Math.min(tahapEntries.length, 4)}, 1fr)`;
-      cardsContainer.innerHTML = tahapEntries.map(([tCode, tCount], tIdx) => {
-        const colorClass = tIdx === 0 ? 'blue' : (tIdx === 1 ? 'mint' : (tIdx === 2 ? 'orange' : 'purple'));
-        const iconClass = tCode.includes('PANTAU') ? 'fa-eye' : (tCode.includes('TELUSUR') ? 'fa-compass' : (tCode.includes('LENGKAP') ? 'fa-triangle-exclamation' : 'fa-magnifying-glass'));
-        return `
-          <div class="tahap-box ${colorClass}" onclick="event.stopPropagation(); App.setTahapFilter('${tCode}')" title="Filter: ${tCode} (${tCount} Unit)">
-            <div class="tahap-box-info">
-              <strong style="font-size:11.5px; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"><i class="fa-solid ${iconClass}"></i> ${tCode}</strong>
-            </div>
-            <div class="tahap-box-val" style="font-size:16px;">${tCount}</div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    const ratioBlue = ((cPenelitian / totalTahap) * 100).toFixed(1);
     const ratioMint = ((cPemantauan / totalTahap) * 100).toFixed(1);
+    const ratioOrange = ((cPenelusuran / totalTahap) * 100).toFixed(1);
+    const ratioBlue = ((cPenelitian / totalTahap) * 100).toFixed(1);
 
-    const barBlue = document.getElementById('stat-tahap-ratio-blue');
     const barMint = document.getElementById('stat-tahap-ratio-mint');
-    if (barBlue) barBlue.style.width = `${ratioBlue}%`;
+    const barOrange = document.getElementById('stat-tahap-ratio-orange');
+    const barBlue = document.getElementById('stat-tahap-ratio-blue');
+
     if (barMint) barMint.style.width = `${ratioMint}%`;
+    if (barOrange) barOrange.style.width = `${ratioOrange}%`;
+    if (barBlue) barBlue.style.width = `${ratioBlue}%`;
 
     // Card 2 sub-description count
     const elUnmappedDesc = document.getElementById('stat-unmapped-satker-desc');

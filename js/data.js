@@ -151,10 +151,24 @@ const DataEngine = {
       // Smart Multi-Keyword Classification Engine
       const normKlas = this.normalizeKlasifikasi(row);
 
-      const rawTahap = this.getRowVal(row, ['tahap_berikut', 'TAHAP_BERIKUT', 'Tahap Berikut', 'tahap']).toUpperCase();
+      const rawTahap = this.getRowVal(row, ['tahap_berikut', 'TAHAP_BERIKUT', 'Tahap Berikut', 'tahap', 'rencana_tindak_lanjut']).toUpperCase();
       let normTahap = 'PENELITIAN';
-      if (rawTahap.includes('PANTAU')) normTahap = 'PEMANTAUAN';
-      else if (rawTahap.includes('TELUSUR')) normTahap = 'PENELUSURAN';
+      if (rawTahap.includes('MANTAU') || rawTahap.includes('PANTAU')) {
+        normTahap = 'PEMANTAUAN';
+      } else if (rawTahap.includes('LUSUR') || rawTahap.includes('TELUSUR')) {
+        normTahap = 'PENELUSURAN';
+      } else if (rawTahap.includes('LITI') || rawTahap.includes('TELITI')) {
+        normTahap = 'PENELITIAN';
+      } else {
+        // Smart PMK 120 fallback only if column is completely blank
+        if (normKlas.key === 'penggunaan' || normKlas.key === 'pemanfaatan') {
+          normTahap = 'PEMANTAUAN';
+        } else if (normKlas.key === 'penghapusan' || normKlas.key === 'pemindahtanganan' || normKlas.key === 'masalah_pencatatan') {
+          normTahap = 'PENELUSURAN';
+        } else {
+          normTahap = 'PENELITIAN';
+        }
+      }
 
       const item = {
         id: row.id || (kodeSatker && kodeBarang ? `${kodeSatker}-${kodeBarang}-${nupVal}` : `BMN-${idx + 1}`),
@@ -455,7 +469,7 @@ const DataEngine = {
         });
       }
 
-      // 2. Load persistent custom asset edits (catatan, rekomendasi, nama, kondisi, luas)
+      // 2. Load persistent custom asset edits (catatan, rekomendasi, nama, kondisi, luas, PMK 120 attributes)
       const storedEdits = localStorage.getItem('bmn_custom_edits');
       if (storedEdits) {
         const editMap = JSON.parse(storedEdits);
@@ -466,6 +480,11 @@ const DataEngine = {
             if (e.kondisi) asset.kondisi = e.kondisi;
             if (e.rekomendasiUser) asset.rekomendasiUser = e.rekomendasiUser;
             if (e.catatanTim) asset.catatanTim = e.catatanTim;
+            if (e.tahapBerikut) asset.tahapBerikut = e.tahapBerikut;
+            if (e.statusKesimpulanIdle) asset.statusKesimpulanIdle = e.statusKesimpulanIdle;
+            if (e.alasanKesimpulanIdle) asset.alasanKesimpulanIdle = e.alasanKesimpulanIdle;
+            if (e.fokusPemantauan) asset.fokusPemantauan = e.fokusPemantauan;
+            if (e.targetPemantauan) asset.targetPemantauan = e.targetPemantauan;
             if (e.luas !== undefined) {
               asset.luas = parseFloat(e.luas) || asset.luas;
               asset.luasTanah = asset.luas;
