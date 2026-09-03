@@ -1992,6 +1992,14 @@ const App = {
     const anEl = document.getElementById('lap-anggota-nama');
     const anipEl = document.getElementById('lap-anggota-nip');
 
+    if (idEl) idEl.value = assetId;
+    if (stEl) stEl.value = presets.noSuratTugas || 'ST-101/KPKNL.1401/2026';
+    if (tglStEl) tglStEl.value = presets.tglSuratTugas || '15 Januari 2026';
+    if (knEl) knEl.value = presets.ketuaNama || 'I Putu Harjaya';
+    if (knipEl) knipEl.value = presets.ketuaNip || '19850101 201012 1 001';
+    if (anEl) anEl.value = presets.anggota1Nama || 'Gede Shendra';
+    if (anipEl) anipEl.value = presets.anggota1Nip || '19900202 201402 1 002';
+
     const formatSelect = document.getElementById('lap-format-type');
     if (formatSelect) {
       if (asset.tahapBerikut === 'PEMANTAUAN') {
@@ -2179,10 +2187,6 @@ const App = {
   },
 
   getLaporanFormValues() {
-    return {
-      noSuratTugas: document.getElementById('lap-no-st')?.value || '',
-      tglSuratTugas: document.getElementById('lap-tgl-st')?.value || '',
-      ketuaNama: document.getElementById('lap-ketua-nama')?.value || '',
     const formatType = document.getElementById('lap-format-type')?.value || 'FORMAT_H';
 
     return {
