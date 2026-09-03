@@ -2268,6 +2268,53 @@ const App = {
     return percent;
   },
 
+  handleStatusIdleChange(statusVal) {
+    const alasanSelect = document.getElementById('edit-alasan-idle');
+    if (!alasanSelect) return;
+
+    let options = [];
+    if (statusVal === 'TIDAK_IDLE') {
+      options = [
+        { val: 'Rencana Penggunaan', label: 'Rencana Penggunaan (Renovasi / Pembangunan Kantor Baru)' },
+        { val: 'Rencana Pemanfaatan', label: 'Rencana Pemanfaatan (Rencana Sewa / KSP Pihak Ketiga)' },
+        { val: 'Aktif Digunakan Operasional', label: 'Aktif Digunakan Operasional Kantor / Tugas dan Fungsi' },
+        { val: 'Digunakan Rumah Dinas', label: 'Digunakan Rumah Dinas / Asrama Aktif' },
+        { val: 'Sedang Dimanfaatkan Resmi', label: 'Sedang Dimanfaatkan Resmi (Perjanjian Sewa / Pinjam Pakai)' },
+        { val: 'Fisik Tidak Ada / Sudah Dihapus', label: 'Fisik Aset Tidak Ada / Sudah Dihapus / Koreksi Catat SAKTI' },
+        { val: 'Selesai Dihibahkan', label: 'Selesai Dipindahtangankan / Dihibahkan ke Pemkab' },
+        { val: 'Dikecualikan Aturan', label: 'Dikecualikan Sesuai Ketentuan (Sengketa Pengadilan / Khusus)' }
+      ];
+    } else if (statusVal === 'IDLE') {
+      options = [
+        { val: 'Tanah/Bangunan Menganggur Total', label: 'Tanah / Bangunan Menganggur Total & Terbengkalai' },
+        { val: 'Tidak Digunakan Sesuai Tusi', label: 'Tidak Digunakan untuk Penyelenggaraan Tusi K/L' },
+        { val: 'Diokupasi Pihak Ketiga Tanpa Izin', label: 'Dikuasai / Diokupasi Warga / Pihak Ketiga Tanpa Izin' },
+        { val: 'Tidak Ada Rencana Konkret Satker', label: 'Tidak Ada Rencana Penggunaan / Pemanfaatan Jelas' }
+      ];
+    } else {
+      options = [
+        { val: 'Sedang Proses Usulan Hibah', label: 'Sedang Proses Usulan Hibah ke Pemkab / Pihak Lain' },
+        { val: 'Sedang Menunggu DIPA Renovasi', label: 'Sedang Mengusulkan DIPA Anggaran Renovasi Gedung' },
+        { val: 'Menunggu Izin Sewa Pusat', label: 'Sedang Menunggu Izin Sewa / Pemanfaatan Kantor Pusat' },
+        { val: 'Dalam Proses Sertipikasi / Pagar', label: 'Dalam Proses Pensertipikatan / Pemasangan Pagar' }
+      ];
+    }
+
+    alasanSelect.innerHTML = options.map(o => `<option value="${o.val}">${o.label}</option>`).join('');
+    this.handleAlasanIdleChange(alasanSelect.value);
+  },
+
+  handleAlasanIdleChange(alasanVal) {
+    const tier3Box = document.getElementById('tier3-pemantauan-box');
+    if (!tier3Box) return;
+
+    if (alasanVal === 'Rencana Penggunaan' || alasanVal === 'Rencana Pemanfaatan' || String(alasanVal).includes('Rencana')) {
+      tier3Box.style.display = 'block';
+    } else {
+      tier3Box.style.display = 'none';
+    }
+  },
+
   openEditAssetModal(assetId) {
     const asset = this.getAsset(assetId) || (this.selectedAsset && this.selectedAsset.id === assetId ? this.selectedAsset : null);
     if (!asset) {
@@ -2312,8 +2359,25 @@ const App = {
     document.getElementById('edit-pengamanan-penjaga').checked = !!asset.pengamananPenjaga;
     document.getElementById('edit-permasalahan-sengketa').value = asset.permasalahanSengketa || 'Bebas Sengketa / Tidak ada klaim pihak ketiga';
 
-    // Tab 4: Tahapan & Rekomendasi
+    // Tab 4: Tahapan, Hierarki 3-Tingkat & Rekomendasi
     document.getElementById('edit-tahap-berikut').value = asset.tahapBerikut || 'PENELITIAN';
+    const statusIdleEl = document.getElementById('edit-status-idle');
+    if (statusIdleEl) {
+      statusIdleEl.value = asset.statusKesimpulanIdle || 'TIDAK_IDLE';
+      this.handleStatusIdleChange(statusIdleEl.value);
+    }
+    const alasanIdleEl = document.getElementById('edit-alasan-idle');
+    if (alasanIdleEl && asset.alasanKesimpulanIdle) {
+      alasanIdleEl.value = asset.alasanKesimpulanIdle;
+      this.handleAlasanIdleChange(asset.alasanKesimpulanIdle);
+    }
+    if (document.getElementById('edit-fokus-pemantauan') && asset.fokusPemantauan) {
+      document.getElementById('edit-fokus-pemantauan').value = asset.fokusPemantauan;
+    }
+    if (document.getElementById('edit-target-pemantauan') && asset.targetPemantauan) {
+      document.getElementById('edit-target-pemantauan').value = asset.targetPemantauan;
+    }
+
     document.getElementById('edit-rekomendasi-user').value = asset.rekomendasiUser || asset.hasilJawaban || '';
     document.getElementById('edit-rekomendasi').value = asset.rekomendasi || 'Sewa Komersial / Kerja Sama Pemanfaatan (KSP)';
     document.getElementById('edit-catatan-tim').value = asset.catatanTim || '';
@@ -2390,6 +2454,10 @@ const App = {
 
     // Read Tab 4
     asset.tahapBerikut = document.getElementById('edit-tahap-berikut').value;
+    asset.statusKesimpulanIdle = document.getElementById('edit-status-idle')?.value || 'TIDAK_IDLE';
+    asset.alasanKesimpulanIdle = document.getElementById('edit-alasan-idle')?.value || '';
+    asset.fokusPemantauan = document.getElementById('edit-fokus-pemantauan')?.value || '';
+    asset.targetPemantauan = document.getElementById('edit-target-pemantauan')?.value || 'TA 2026';
     asset.rekomendasiUser = document.getElementById('edit-rekomendasi-user').value.trim();
     asset.rekomendasi = document.getElementById('edit-rekomendasi').value;
     asset.catatanTim = document.getElementById('edit-catatan-tim').value.trim();
@@ -2418,17 +2486,17 @@ const App = {
           action: 'updateAsset',
           assetId: asset.id,
           kodeSatker: asset.kodeSatker,
+          namaSatker: asset.namaSatker,
           kodeBarang: asset.kodeBarang,
           nup: asset.nup,
           namaBarang: asset.namaBarang,
           alamat: asset.alamat,
           luas: asset.luas,
           nilaiBuku: asset.nilaiBuku,
+          lat: asset.lat,
+          lng: asset.lng,
           koordinat: asset.koordinat,
-          kondisi: asset.kondisi,
-          rekomendasiUser: asset.rekomendasiUser,
-          catatanTim: asset.catatanTim,
-          peruntukanSaatIni: asset.peruntukanSaatIni,
+          pinggirJalan: asset.pinggirJalan,
           statusPenguasaan: asset.statusPenguasaan,
           jenisDokumen: asset.jenisDokumen,
           noDokumen: asset.noDokumen,
@@ -2438,27 +2506,115 @@ const App = {
           batasTimur: asset.batasTimur,
           batasSelatan: asset.batasSelatan,
           batasBarat: asset.batasBarat,
-          jumlahBangunan: asset.jumlahBangunan,
           tglPerolehan: asset.tglPerolehan,
           nilaiPerolehan: asset.nilaiPerolehan,
+          peruntukanSaatIni: asset.peruntukanSaatIni,
+          jumlahBangunan: asset.jumlahBangunan,
+          kondisi: asset.kondisi,
           pengamananPagar: asset.pengamananPagar,
           pengamananPlang: asset.pengamananPlang,
           pengamananPenjaga: asset.pengamananPenjaga,
           permasalahanSengketa: asset.permasalahanSengketa,
           tahapBerikut: asset.tahapBerikut,
-          pinggirJalan: asset.pinggirJalan
+          statusKesimpulanIdle: asset.statusKesimpulanIdle,
+          alasanKesimpulanIdle: asset.alasanKesimpulanIdle,
+          fokusPemantauan: asset.fokusPemantauan,
+          targetPemantauan: asset.targetPemantauan,
+          rekomendasiUser: asset.rekomendasiUser,
+          rekomendasi: asset.rekomendasi,
+          catatanTim: asset.catatanTim
         })
-      }).catch(err => console.log('Apps Script update error:', err));
+      }).catch(err => console.warn('Sync edit to Sheets error:', err));
     }
 
-    // 3. Refresh UI components
+    this.showToast(`✅ Data Aset & Kesimpulan PMK 120 berhasil disimpan!`, 'success');
+    this.closeEditAssetModal();
+
+    // Refresh UI
     this.renderClusterAccordion();
     this.renderAllAssetsList();
-    this.selectAsset(asset.id);
-    this.updateKPIStats();
+    if (this.selectedAsset && this.selectedAsset.id === asset.id) {
+      const catchment = SpatialEngine.getCatchmentAnalysis(asset.lat, asset.lng);
+      const rec = typeof RecommendationEngine !== 'undefined' ? RecommendationEngine.getRecommendation(asset) : {};
+      this.renderDetailPanel(asset, catchment, rec);
+    }
+  },
 
-    this.closeEditAssetModal();
-    this.showToast(`✅ Data & Parameter PMK 120 untuk ${asset.namaBarang} berhasil disimpan!`, 'success');
+  openLaporanModal(assetId) {
+    const asset = this.getAsset(assetId) || (this.selectedAsset && this.selectedAsset.id === assetId ? this.selectedAsset : null);
+    if (!asset) {
+      this.showToast('Pilih aset terlebih dahulu untuk membuat laporan.', 'warning');
+      return;
+    }
+    this.laporanAssetId = assetId;
+
+    if (typeof LaporanEngine !== 'undefined') {
+      LaporanEngine.populateSTDropdown();
+    }
+
+    const presets = typeof LaporanEngine !== 'undefined' ? LaporanEngine.loadTeamPresets() : {};
+
+    const idEl = document.getElementById('laporan-asset-id');
+    const noKlarifikasiEl = document.getElementById('lap-no-klarifikasi-kpknl');
+    const tglKlarifikasiEl = document.getElementById('lap-tgl-klarifikasi-kpknl');
+    const noSuratSatkerEl = document.getElementById('lap-no-surat-satker');
+    const tglSuratSatkerEl = document.getElementById('lap-tgl-surat-satker');
+    const stEl = document.getElementById('lap-no-st');
+    const tglStEl = document.getElementById('lap-tgl-st');
+    const skTimEl = document.getElementById('lap-no-sk-tim');
+    const knEl = document.getElementById('lap-ketua-nama');
+    const knipEl = document.getElementById('lap-ketua-nip');
+    const anEl = document.getElementById('lap-anggota-nama');
+    const anipEl = document.getElementById('lap-anggota-nip');
+
+    if (idEl) idEl.value = assetId;
+    if (noKlarifikasiEl) noKlarifikasiEl.value = 'S-259/MK/KNL.1401/2025';
+    if (tglKlarifikasiEl) tglKlarifikasiEl.value = '15 Desember 2025';
+    if (noSuratSatkerEl) noSuratSatkerEl.value = (asset.suratJawaban && asset.suratJawaban !== '-') ? asset.suratJawaban : '';
+    if (tglSuratSatkerEl) tglSuratSatkerEl.value = (asset.tglSurat && asset.tglSurat !== '-') ? asset.tglSurat : '';
+    if (stEl) stEl.value = presets.noSuratTugas || '';
+    if (tglStEl) tglStEl.value = presets.tglSuratTugas || '';
+    if (skTimEl) skTimEl.value = '';
+    if (knEl) knEl.value = presets.ketuaNama || '';
+    if (knipEl) knipEl.value = presets.ketuaNip || '';
+    if (anEl) anEl.value = presets.anggota1Nama || '';
+    if (anipEl) anipEl.value = presets.anggota1Nip || '';
+
+    const formatSelect = document.getElementById('lap-format-type');
+    if (formatSelect) {
+      if (asset.tahapBerikut === 'PEMANTAUAN') {
+        formatSelect.value = 'FORMAT_D';
+      } else if (asset.tahapBerikut === 'PENELUSURAN') {
+        formatSelect.value = 'FORMAT_G';
+      } else {
+        formatSelect.value = 'FORMAT_H';
+      }
+    }
+
+    const modal = document.getElementById('laporan-pmk-modal');
+    if (modal) {
+      modal.style.display = 'flex';
+      modal.classList.add('show');
+    }
+  },
+
+  getLaporanFormValues() {
+    const formatType = document.getElementById('lap-format-type')?.value || 'FORMAT_H';
+
+    return {
+      formatType: formatType,
+      noKlarifikasiKpknl: document.getElementById('lap-no-klarifikasi-kpknl')?.value || 'S-259/MK/KNL.1401/2025',
+      tglKlarifikasiKpknl: document.getElementById('lap-tgl-klarifikasi-kpknl')?.value || '15 Desember 2025',
+      noSuratSatker: document.getElementById('lap-no-surat-satker')?.value || '',
+      tglSuratSatker: document.getElementById('lap-tgl-surat-satker')?.value || '',
+      noSuratTugas: document.getElementById('lap-no-st')?.value || '',
+      tglSuratTugas: document.getElementById('lap-tgl-st')?.value || '',
+      noSkTim: document.getElementById('lap-no-sk-tim')?.value || '',
+      ketuaNama: document.getElementById('lap-ketua-nama')?.value || '',
+      ketuaNip: document.getElementById('lap-ketua-nip')?.value || '',
+      anggota1Nama: document.getElementById('lap-anggota-nama')?.value || '',
+      anggota1Nip: document.getElementById('lap-anggota-nip')?.value || ''
+    };
   },
 
   openGoogleSheetsModal() {

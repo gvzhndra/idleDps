@@ -316,6 +316,10 @@ function handleUpdateAssetInSheet(contents) {
   var sengketaCol = getOrAddCol('permasalahan_sengketa');
   var tahapCol = getOrAddCol('tahap_berikut');
   var pinggirJalanCol = getOrAddCol('pinggir_jalan');
+  var statusIdleCol = getOrAddCol('status_kesimpulan_idle');
+  var alasanIdleCol = getOrAddCol('alasan_kesimpulan_idle');
+  var fokusPemantauanCol = getOrAddCol('fokus_pemantauan');
+  var targetPemantauanCol = getOrAddCol('target_pemantauan');
 
   if (pinCol === -1 && contents.isPinned !== undefined) {
     pinCol = getOrAddCol('is_pinned');
@@ -360,6 +364,10 @@ function handleUpdateAssetInSheet(contents) {
       if (contents.permasalahanSengketa !== undefined) sheet.getRange(i + 1, sengketaCol + 1).setValue(contents.permasalahanSengketa);
       if (contents.tahapBerikut !== undefined) sheet.getRange(i + 1, tahapCol + 1).setValue(contents.tahapBerikut);
       if (contents.pinggirJalan !== undefined) sheet.getRange(i + 1, pinggirJalanCol + 1).setValue(contents.pinggirJalan);
+      if (contents.statusKesimpulanIdle !== undefined) sheet.getRange(i + 1, statusIdleCol + 1).setValue(contents.statusKesimpulanIdle);
+      if (contents.alasanKesimpulanIdle !== undefined) sheet.getRange(i + 1, alasanIdleCol + 1).setValue(contents.alasanKesimpulanIdle);
+      if (contents.fokusPemantauan !== undefined) sheet.getRange(i + 1, fokusPemantauanCol + 1).setValue(contents.fokusPemantauan);
+      if (contents.targetPemantauan !== undefined) sheet.getRange(i + 1, targetPemantauanCol + 1).setValue(contents.targetPemantauan);
 
       return createJsonResponse({ status: 'success', message: 'Data aset & parameter PMK 120 berhasil diperbarui di Google Sheets.' });
     }

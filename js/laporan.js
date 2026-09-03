@@ -357,12 +357,14 @@ const LaporanEngine = {
           <ol type="a">
             <li>Peraturan Pemerintah Nomor 27 Tahun 2014 jo PP Nomor 28 Tahun 2020 tentang Pengelolaan BMN/D;</li>
             <li>Peraturan Menteri Keuangan Nomor 120 Tahun 2024 tentang Tata Cara Pengelolaan BMN Yang Tidak Digunakan Untuk Penyelenggaraan Tusi K/L;</li>
-            <li>Surat Permintaan / Jawaban Klarifikasi BMN Nomor: <strong>${asset.suratJawaban || 'S-50/KPKNL.1401/2026'}</strong>;</li>
-            <li>Surat Tugas Kepala KPKNL Denpasar Nomor: <strong>${preset.noSuratTugas}</strong> tanggal <strong>${preset.tglSuratTugas}</strong>.</li>
+            <li>Surat Permintaan Klarifikasi Tertulis dari Kepala KPKNL Denpasar Nomor: <strong>${formValues.noKlarifikasiKpknl || 'S-259/MK/KNL.1401/2025'}</strong> tanggal <strong>${formValues.tglKlarifikasiKpknl || '15 Desember 2025'}</strong>;</li>
+            <li>Surat Jawaban Klarifikasi dari Satker / Pengguna Barang Nomor: <strong>${formValues.noSuratSatker || asset.suratJawaban || '-'}</strong> tanggal <strong>${formValues.tglSuratSatker || asset.tglSurat || '-'}</strong>;</li>
+            <li>Surat Tugas Kepala KPKNL Denpasar Nomor: <strong>${preset.noSuratTugas || 'ST-..../KPKNL.1401/2026'}</strong> tanggal <strong>${preset.tglSuratTugas || '.... 2026'}</strong>;</li>
+            ${formValues.noSkTim ? `<li>Keputusan Kepala KPKNL Denpasar Nomor: <strong>${formValues.noSkTim}</strong> tentang Pembentukan Tim Penelitian BMN Terindikasi Idle;</li>` : ''}
           </ol>
         </li>
         <li><strong>Latar Belakang:</strong> Dalam rangka akuntabilitas tata kelola BMN (good governance), diperlukan optimalisasi penggunaan aset pada ${asset.kementerian || 'Kementerian/Lembaga'} berupa ${asset.namaBarang || asset.uraian_bmn || 'BMN'} yang berlokasi di ${asset.alamat || '-'}.</li>
-        <li><strong>Tujuan & Manfaat:</strong> Memperoleh kepastian administratif, fisik, spasial, dan rencana tindak lanjut atas BMN terindikasi idle.</li>
+        <li><strong>Tujuan & Manfaat:</strong> Memperoleh kepastian administratif, fisik, spasial, dan rencana tindak lanjut atas BMN terindikasi idle sesuai ketentuan PMK 120/2024.</li>
       </ol>
 
       <div class="section-title">II. OBJEK PENELITIAN / DATA BMN</div>
@@ -381,6 +383,8 @@ const LaporanEngine = {
       <div class="section-title">III. ANALISIS DOKUMEN & FAKTA LAPANGAN</div>
       <table>
         <tr><th width="35%">Parameter PMK 120/2024</th><th>Hasil Analisis & Temuan Lapangan</th></tr>
+        <tr><td><strong>Surat Permintaan Klarifikasi KPKNL</strong></td><td>Nomor: ${formValues.noKlarifikasiKpknl || 'S-259/MK/KNL.1401/2025'} (Tanggal: ${formValues.tglKlarifikasiKpknl || '15 Desember 2025'})</td></tr>
+        <tr><td><strong>Surat Jawaban Tanggapan Satker</strong></td><td>Nomor: ${formValues.noSuratSatker || asset.suratJawaban || '-'} (Tanggal: ${formValues.tglSuratSatker || asset.tglSurat || '-'})</td></tr>
         <tr><td><strong>Peruntukan Riil Saat Ini</strong></td><td>${asset.peruntukanSaatIni || 'Tanah Kosong / Belum Dimanfaatkan Penuh'}</td></tr>
         <tr><td><strong>Kondisi Fisik Bangunan/Tanah</strong></td><td>${asset.kondisi || asset.hasilJawaban || 'Aset dalam kondisi baik/terawat, tidak digunakan untuk tusi utama.'}</td></tr>
         <tr><td><strong>Pengamanan Fisik Aset</strong></td><td>Pagar: ${asset.pengamananPagar ? 'Ada' : 'Tidak Ada'} | Plang BMN: ${asset.pengamananPlang ? 'Terpasang' : 'Belum Terpasang'} | Petugas Jaga: ${asset.pengamananPenjaga ? 'Ada' : 'Tidak Ada'}</td></tr>
@@ -390,22 +394,26 @@ const LaporanEngine = {
       </table>
 
       <div class="section-title">IV. KESIMPULAN & REKOMENDASI TINDAK LANJUT</div>
-      <p><strong>Kesimpulan:</strong> Berdasarkan penelitian fisik dan administratif, BMN tersebut memenuhi kriteria untuk ditindaklanjuti pada tahapan <strong>${asset.tahapBerikut || 'PENELITIAN'}</strong>.</p>
-      <p><strong>Rekomendasi Resmi Pengelola Barang:</strong> <strong>${asset.rekomendasi || 'Sewa Komersial / Kerja Sama Pemanfaatan (KSP)'}</strong>.</p>
+      <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:6px; padding:10px; margin-bottom:12px;">
+        <p style="margin:0 0 6px;"><strong>Status Kesimpulan Hilir:</strong> <strong>${(asset.statusKesimpulanIdle || 'TIDAK_IDLE').replace('_', ' ')}</strong></p>
+        <p style="margin:0 0 6px;"><strong>Dasar Pertimbangan:</strong> ${asset.alasanKesimpulanIdle || asset.rekomendasiUser || 'Berdasarkan klarifikasi dan verifikasi dokumen'}</p>
+        ${(asset.alasanKesimpulanIdle && asset.alasanKesimpulanIdle.includes('Rencana')) ? `<p style="margin:0 0 6px; color:#047857;"><strong>Tindak Lanjut PMK 120:</strong> 🟢 <strong>DILAKUKAN PEMANTAUAN</strong> terhadap ${asset.fokusPemantauan || 'Realisasi Alokasi DIPA / Pemanfaatan'} (${asset.targetPemantauan || 'Target TA 2027'}).</p>` : ''}
+        <p style="margin:0;"><strong>Rekomendasi Resmi Pengelola:</strong> <strong>${asset.rekomendasi || 'Optimalisasi Penggunaan Mandiri Satker'}</strong></p>
+      </div>
 
       <table class="signature-table">
         <tr>
           <td width="50%">
             Mengetahui,<br>
-            <strong>${preset.ketuaJabatan}</strong><br><br><br><br>
-            <u><strong>${preset.ketuaNama}</strong></u><br>
-            NIP. ${preset.ketuaNip}
+            <strong>${preset.ketuaJabatan || 'Kepala Seksi PKN'}</strong><br><br><br><br>
+            <u><strong>${preset.ketuaNama || 'I Putu Harjaya'}</strong></u><br>
+            NIP. ${preset.ketuaNip || '19850101 201012 1 001'}
           </td>
           <td width="50%">
-            Denpasar, 2 September 2026<br>
+            Denpasar, ${preset.tglSuratTugas || '15 Januari 2026'}<br>
             Anggota Tim Pelaksana,<br><br><br><br>
             <u><strong>${preset.anggota1Nama || 'Gede Shendra'}</strong></u><br>
-            NIP. ${preset.anggota1Nip || '-'}
+            NIP. ${preset.anggota1Nip || '19900202 201402 1 002'}
           </td>
         </tr>
       </table>
@@ -423,10 +431,10 @@ const LaporanEngine = {
             <th>Kode Barang</th>
             <th>Nama Barang</th>
             <th>NUP</th>
-            <th>Lokasi</th>
+            <th>Lokasi / Alamat</th>
             <th>Peruntukan</th>
             <th>Luas (m²)</th>
-            <th>Jml Gedung</th>
+            <th>Jml Bgn</th>
             <th>Jenis & No Dokumen</th>
             <th>Batas-Batas</th>
             <th>Kondisi</th>
@@ -476,10 +484,10 @@ const LaporanEngine = {
     const formatType = formValues.formatType || 'FORMAT_H';
     const preset = {
       ketuaNama: formValues.ketuaNama || 'I Putu Harjaya',
-      ketuaNip: formValues.ketuaNip || '-',
+      ketuaNip: formValues.ketuaNip || '19850101 201012 1 001',
       ketuaJabatan: formValues.ketuaJabatan || 'Kepala Seksi PKN',
       anggota1Nama: formValues.anggota1Nama || 'Gede Shendra',
-      anggota1Nip: formValues.anggota1Nip || '-',
+      anggota1Nip: formValues.anggota1Nip || '19900202 201402 1 002',
       noSuratTugas: formValues.noSuratTugas || 'ST-101/KPKNL.1401/2026',
       tglSuratTugas: formValues.tglSuratTugas || '15 Januari 2026'
     };

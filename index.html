@@ -712,9 +712,7 @@
               <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Permasalahan / Indikasi Sengketa Aset</label>
               <textarea class="form-control" id="edit-permasalahan-sengketa" rows="2" placeholder="Bebas sengketa atau sebutkan klaim pihak ketiga jika ada..."></textarea>
             </div>
-          </div>
-
-          <!-- TAB 4: ALUR TAHAP PMK & REKOMENDASI -->
+           <!-- TAB 4: ALUR TAHAP PMK, KESIMPULAN BERLAPIS & REKOMENDASI -->
           <div class="edit-tab-content" id="edit-tab-content-4" style="display:none;">
             <div class="form-group mb-2">
               <label style="font-size:11px; font-weight:700; color:var(--pastel-blue);" class="mb-1">
@@ -725,6 +723,60 @@
                 <option value="PENELUSURAN">🟡 Tahap PENELUSURAN (Verifikasi Fisik Awal / Data Minim - Format G)</option>
                 <option value="PEMANTAUAN">🟢 Tahap PEMANTAUAN (Monitoring Rencana Satker - Format C/D)</option>
               </select>
+            </div>
+
+            <!-- TIER 1: STATUS UTAMA HILIR -->
+            <div class="form-group mb-2 p-2 border rounded" style="background:#f8fafc;">
+              <label style="font-size:11.5px; font-weight:700; color:var(--text-main); display:block;" class="mb-1">
+                <i class="fa-solid fa-gavel text-primary"></i> 1. Status Kesimpulan Akhir (Hilir):
+              </label>
+              <select class="form-control" id="edit-status-idle" style="font-weight:700;" onchange="App.handleStatusIdleChange(this.value)">
+                <option value="TIDAK_IDLE">🟢 TIDAK IDLE</option>
+                <option value="IDLE">🔴 BMN IDLE (Terindikasi / Ditetapkan)</option>
+                <option value="PEMANTAUAN_LANJUTAN">🔄 PERLU PEMANTAUAN LANJUTAN (CARRY OVER TA DEPAN)</option>
+              </select>
+            </div>
+
+            <!-- TIER 2: ALASAN / DASAR PERTIMBANGAN DINAMIS -->
+            <div class="form-group mb-2">
+              <label style="font-size:11px; font-weight:700; color:var(--text-main);" class="mb-1" id="label-alasan-idle">
+                <i class="fa-solid fa-list-ul text-warning"></i> 2. Alasan & Dasar Pertimbangan:
+              </label>
+              <select class="form-control" id="edit-alasan-idle" onchange="App.handleAlasanIdleChange(this.value)">
+                <option value="Rencana Penggunaan">Rencana Penggunaan (Renovasi / Pembangunan Kantor Baru)</option>
+                <option value="Rencana Pemanfaatan">Rencana Pemanfaatan (Rencana Sewa / KSP dengan Pihak Ketiga)</option>
+                <option value="Aktif Digunakan Operasional">Aktif Digunakan Operasional Kantor / Tugas dan Fungsi</option>
+                <option value="Digunakan Rumah Dinas">Digunakan Rumah Dinas / Asrama Aktif</option>
+                <option value="Sedang Dimanfaatkan Resmi">Sedang Dimanfaatkan Resmi (Perjanjian Sewa / Pinjam Pakai)</option>
+                <option value="Fisik Tidak Ada / Sudah Dihapus">Fisik Aset Tidak Ada / Sudah Dihapus / Koreksi Catat SAKTI</option>
+                <option value="Selesai Dihibahkan">Selesai Dipindahtangankan / Dihibahkan ke Pemkab</option>
+                <option value="Dikecualikan Aturan">Dikecualikan Sesuai Ketentuan (Sengketa Pengadilan / Khusus)</option>
+              </select>
+            </div>
+
+            <!-- TIER 3: SMART BOX DILAKUKAN PEMANTAUAN (KATA KUNCI: RENCANA PENGGUNAAN / PEMANFAATAN) -->
+            <div id="tier3-pemantauan-box" style="display:none; background:#ecfdf5; border:1px solid #6ee7b7; border-radius:8px; padding:10px; margin-bottom:10px;">
+              <div style="font-size:11.5px; font-weight:700; color:#065f46; margin-bottom:6px;">
+                <i class="fa-solid fa-eye text-success"></i> 3. Tindak Lanjut PMK 120: DILAKUKAN PEMANTAUAN
+              </div>
+              <div class="row d-flex gap-2">
+                <div class="form-group flex-1">
+                  <label style="font-size:10.5px; color:#047857;" class="mb-1">Fokus Pemantauan Realisasi</label>
+                  <select class="form-control" id="edit-fokus-pemantauan" style="font-size:11.5px;">
+                    <option value="Realisasi Alokasi DIPA / Anggaran Renovasi">Realisasi Alokasi DIPA / Anggaran Renovasi</option>
+                    <option value="Realisasi Izin & Perjanjian Sewa / KSP">Realisasi Izin & Perjanjian Sewa / KSP</option>
+                    <option value="Realisasi Pengalihan Status ke Satker Lain">Realisasi Pengalihan Status ke Satker Lain</option>
+                    <option value="Realisasi Sertipikasi & Pengamanan Fisik">Realisasi Sertipikasi & Pengamanan Fisik</option>
+                  </select>
+                </div>
+                <div class="form-group" style="width:140px;">
+                  <label style="font-size:10.5px; color:#047857;" class="mb-1">Target Monitoring</label>
+                  <select class="form-control" id="edit-target-pemantauan" style="font-size:11.5px;">
+                    <option value="TA 2026">TA 2026</option>
+                    <option value="TA 2027">TA 2027 (Carry Over)</option>
+                  </select>
+                </div>
+              </div>
             </div>
 
             <div class="form-group mb-2">
@@ -739,6 +791,7 @@
                 <option value="Pinjam Pakai / Alih Status Penggunaan">Pinjam Pakai / Alih Status Penggunaan</option>
                 <option value="Penjualan / Pemindahtanganan Aset">Penjualan / Pemindahtanganan Aset</option>
                 <option value="Optimalisasi Penggunaan Mandiri Satker">Optimalisasi Penggunaan Mandiri Satker</option>
+                <option value="Penghapusan / Koreksi Pencatatan SAKTI">Penghapusan / Koreksi Pencatatan SAKTI</option>
               </select>
             </div>
 
@@ -771,12 +824,12 @@
     </div>
   </div>
 
-  <!-- MODAL GENERATOR LAPORAN HASIL PENELITIAN BMN IDLE (PMK 120/2024 MULTI-FORMAT HUB) -->
+  <!-- Modal Generator Laporan Legal PMK 120/2024 -->
   <div class="modal-overlay" id="laporan-pmk-modal" style="display:none;">
     <div class="modal-card" style="max-width:640px;">
-      <div class="modal-header d-flex justify-content-between align-items-center mb-3">
+      <div class="modal-header d-flex justify-content-between align-items-center mb-2">
         <div>
-          <h3 style="font-size:16px; font-weight:700; margin:0;"><i class="fa-solid fa-file-contract text-primary"></i> Generator Dokumen Legal PMK 120/2024</h3>
+          <h3 style="font-size:15.5px; font-weight:700; margin:0;"><i class="fa-solid fa-file-signature text-primary"></i> Generator Dokumen Legal PMK 120/2024</h3>
           <span style="font-size:11px; color:var(--text-muted);">Ekspor Word (.docx) dan Cetak PDF untuk seluruh tahapan regulasi</span>
         </div>
         <button class="btn btn-icon btn-secondary" onclick="App.closeLaporanModal()">
@@ -784,9 +837,7 @@
         </button>
       </div>
 
-      <form id="laporan-pmk-form" onsubmit="App.handleGenerateLaporan(event)">
-        <input type="hidden" id="laporan-asset-id">
-
+      <form id="form-generate-laporan" onsubmit="App.handleGenerateLaporan(event)">
         <div class="modal-body" style="max-height:70vh; overflow-y:auto; padding-right:6px;">
           
           <!-- REPORT FORMAT TYPE SELECTOR -->
@@ -812,37 +863,66 @@
             </select>
           </div>
 
-          <h4 style="font-size:13px; font-weight:700; color:var(--text-main);" class="mb-2"><i class="fa-solid fa-scroll text-warning"></i> Data Surat Tugas & Penugasan</h4>
+          <!-- DASAR PERSURATAN KLARIFIKASI & PENUGASAN -->
+          <h4 style="font-size:13px; font-weight:700; color:var(--text-main);" class="mb-2"><i class="fa-solid fa-envelope-open-text text-primary"></i> 1. Dasar Surat Permintaan & Jawaban Klarifikasi</h4>
           <div class="row d-flex gap-2 mb-2">
             <div class="form-group flex-1">
-              <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Nomor Surat Tugas</label>
-              <input type="text" class="form-control" id="lap-no-st" placeholder="ST-101/KPKNL.1401/2026" required>
+              <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Surat Klarifikasi KPKNL Denpasar</label>
+              <input type="text" class="form-control" id="lap-no-klarifikasi-kpknl" placeholder="S-259/MK/KNL.1401/2025" value="S-259/MK/KNL.1401/2025">
             </div>
             <div class="form-group flex-1">
-              <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Tanggal Surat Tugas</label>
-              <input type="text" class="form-control" id="lap-tgl-st" placeholder="15 Januari 2026" required>
+              <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Tanggal Surat Klarifikasi KPKNL</label>
+              <input type="text" class="form-control" id="lap-tgl-klarifikasi-kpknl" placeholder="15 Desember 2025" value="15 Desember 2025">
             </div>
           </div>
 
-          <h4 style="font-size:13px; font-weight:700; color:var(--text-main);" class="mt-3 mb-2"><i class="fa-solid fa-users text-primary"></i> Tim Pelaksana (KPKNL Denpasar)</h4>
+          <div class="row d-flex gap-2 mb-3">
+            <div class="form-group flex-1">
+              <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Surat Jawaban Balasan Satker</label>
+              <input type="text" class="form-control" id="lap-no-surat-satker" placeholder="Nomor surat jawaban satker...">
+            </div>
+            <div class="form-group flex-1">
+              <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Tanggal Surat Jawaban Satker</label>
+              <input type="text" class="form-control" id="lap-tgl-surat-satker" placeholder="Tanggal surat jawaban...">
+            </div>
+          </div>
+
+          <h4 style="font-size:13px; font-weight:700; color:var(--text-main);" class="mb-2"><i class="fa-solid fa-scroll text-warning"></i> 2. Penugasan & Tim (Surat Tugas / SK Tim)</h4>
+          <div class="row d-flex gap-2 mb-2">
+            <div class="form-group flex-1">
+              <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Nomor Surat Tugas (ST - Opsional)</label>
+              <input type="text" class="form-control" id="lap-no-st" placeholder="Contoh: ST-101/KPKNL.1401/2026">
+            </div>
+            <div class="form-group flex-1">
+              <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Tanggal Surat Tugas (Opsional)</label>
+              <input type="text" class="form-control" id="lap-tgl-st" placeholder="Contoh: 15 Januari 2026">
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Nomor SK Tim Pembentukan (Opsional / Jika Ada)</label>
+            <input type="text" class="form-control" id="lap-no-sk-tim" placeholder="Contoh: KEP-45/KPKNL.14/2026 (Kosongkan jika tidak ada)">
+          </div>
+
+          <h4 style="font-size:13px; font-weight:700; color:var(--text-main);" class="mt-3 mb-2"><i class="fa-solid fa-users text-primary"></i> 3. Tim Pelaksana (KPKNL Denpasar)</h4>
           <div class="row d-flex gap-2 mb-2">
             <div class="form-group flex-1">
               <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Ketua Tim (Nama)</label>
-              <input type="text" class="form-control" id="lap-ketua-nama" placeholder="Nama Ketua Tim" required>
+              <input type="text" class="form-control" id="lap-ketua-nama" placeholder="Contoh: I Putu Harjaya">
             </div>
             <div class="form-group flex-1">
               <label style="font-size:11px; color:var(--text-muted);" class="mb-1">NIP Ketua Tim</label>
-              <input type="text" class="form-control" id="lap-ketua-nip" placeholder="NIP Ketua Tim" required>
+              <input type="text" class="form-control" id="lap-ketua-nip" placeholder="Contoh: 19850101 201012 1 001">
             </div>
           </div>
           <div class="row d-flex gap-2 mb-3">
             <div class="form-group flex-1">
               <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Anggota Tim (Nama)</label>
-              <input type="text" class="form-control" id="lap-anggota-nama" placeholder="Nama Anggota Tim">
+              <input type="text" class="form-control" id="lap-anggota-nama" placeholder="Contoh: Gede Shendra">
             </div>
             <div class="form-group flex-1">
               <label style="font-size:11px; color:var(--text-muted);" class="mb-1">NIP Anggota Tim</label>
-              <input type="text" class="form-control" id="lap-anggota-nip" placeholder="NIP Anggota Tim">
+              <input type="text" class="form-control" id="lap-anggota-nip" placeholder="Contoh: 19900202 201402 1 002">
             </div>
           </div>
         </div>

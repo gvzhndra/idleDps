@@ -213,7 +213,11 @@ const DataEngine = {
         pengamananPlang: row.pengamanan_plang === true || row.pengamanan_plang === 'TRUE' || row.pengamanan_plang === '1',
         pengamananPenjaga: row.pengamanan_penjaga === true || row.pengamanan_penjaga === 'TRUE' || row.pengamanan_penjaga === '1',
         permasalahanSengketa: this.getRowVal(row, ['permasalahan_sengketa', 'PERMASALAHAN_SENGKETA', 'sengketa']) || 'Bebas Sengketa / Tidak ada klaim pihak ketiga',
-        pinggirJalan: this.getRowVal(row, ['pinggir_jalan', 'PINGGIR_JALAN']) || 'Ya'
+        pinggirJalan: this.getRowVal(row, ['pinggir_jalan', 'PINGGIR_JALAN']) || 'Ya',
+        statusKesimpulanIdle: this.getRowVal(row, ['status_kesimpulan_idle', 'STATUS_KESIMPULAN_IDLE']) || 'TIDAK_IDLE',
+        alasanKesimpulanIdle: this.getRowVal(row, ['alasan_kesimpulan_idle', 'ALASAN_KESIMPULAN_IDLE']) || '',
+        fokusPemantauan: this.getRowVal(row, ['fokus_pemantauan', 'FOKUS_PEMANTAUAN']) || '',
+        targetPemantauan: this.getRowVal(row, ['target_pemantauan', 'TARGET_PEMANTAUAN']) || 'TA 2026'
       };
 
       // Load ALL assets into activeAssets for Left Panel & Global Search
