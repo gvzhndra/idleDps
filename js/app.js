@@ -61,6 +61,7 @@ const App = {
     // Default select all active assets for PPT export
     this.activeAssets.forEach(a => this.selectedExportAssetIds.add(a.id));
 
+    this.loadUploadedDocs();
     this.checkUserSession();
     this.populateKabupatenOptions();
 
@@ -3104,9 +3105,23 @@ const App = {
           </td>
           <td align="center">
             <div class="action-btns-group">
-              <button class="btn btn-sm btn-primary" onclick="App.openLaporanModal('${a.id}')" title="Buat Dokumen / Laporan PMK 120" style="padding:4px 8px; font-size:11px;">
-                <i class="fa-solid fa-file-lines"></i> Laporan
-              </button>
+              ${(() => {
+                const doc = this.getUploadedDoc(a.id);
+                const hasDoc = doc && (doc.nomor || doc.fileData || doc.fileUrl);
+                if (hasDoc) {
+                  return `
+                    <button class="btn btn-sm btn-primary" onclick="App.openUploadDokumenModal('${a.id}')" title="Dokumen TTD Tersedia: ${doc.nomor || ''}" style="padding:4px 8px; font-size:11px; background:#2563eb; color:#ffffff; font-weight:700; border:none; border-radius:6px; box-shadow:0 1px 3px rgba(37,99,235,0.3);">
+                      <i class="fa-solid fa-file-circle-check"></i> Dokumen (TTD)
+                    </button>
+                  `;
+                } else {
+                  return `
+                    <button class="btn btn-sm" onclick="App.openUploadDokumenModal('${a.id}')" title="Klik untuk upload dokumen yang sudah ditandatangani" style="padding:4px 8px; font-size:11px; background:#eff6ff; color:#3b82f6; border:1px solid #bfdbfe; border-radius:6px; font-weight:600;">
+                      <i class="fa-solid fa-cloud-arrow-up"></i> Upload Dok
+                    </button>
+                  `;
+                }
+              })()}
               <button class="btn btn-sm btn-secondary" onclick="App.openEditAssetModal('${a.id}')" title="Kelola Parameter & Data Aset" style="padding:4px 8px; font-size:11px;">
                 <i class="fa-solid fa-pen-to-square"></i> Edit
               </button>
@@ -3160,6 +3175,140 @@ const App = {
     link.download = `Matriks_Tindak_Lanjut_PMK120_${stage}_KPKNL_Denpasar.csv`;
     link.click();
     this.showToast(`✅ Matriks ${stage} (${list.length} unit) berhasil diekspor!`, 'success');
+  },
+
+  // DOKUMEN TINDAK LANJUT (TTD) ENGINE
+  uploadedDocsMap: {},
+
+  loadUploadedDocs() {
+    try {
+      const stored = localStorage.getItem('bmn_uploaded_docs');
+      if (stored) {
+        this.uploadedDocsMap = JSON.parse(stored);
+      }
+    } catch (e) {
+      console.warn('Failed to load uploaded docs:', e);
+    }
+  },
+
+  saveUploadedDocs() {
+    try {
+      localStorage.setItem('bmn_uploaded_docs', JSON.stringify(this.uploadedDocsMap));
+    } catch (e) {
+      console.warn('Failed to save uploaded docs:', e);
+    }
+  },
+
+  getUploadedDoc(assetId) {
+    return this.uploadedDocsMap[assetId] || null;
+  },
+
+  openUploadDokumenModal(assetId) {
+    const asset = this.activeAssets.find(a => a.id === assetId);
+    if (!asset) return;
+
+    const modal = document.getElementById('modal-upload-dokumen-tindak');
+    if (!modal) return;
+
+    document.getElementById('doc-modal-asset-id').value = asset.id;
+    const subTitle = document.getElementById('doc-modal-asset-subtitle');
+    if (subTitle) {
+      subTitle.textContent = `${asset.namaBarang} (NUP ${asset.nup}) - ${asset.namaSatker || asset.satker}`;
+    }
+
+    const doc = this.getUploadedDoc(asset.id);
+    const statusCard = document.getElementById('doc-modal-current-status');
+    const viewBtn = document.getElementById('doc-modal-btn-view-file');
+    const descEl = document.getElementById('doc-modal-status-desc');
+
+    if (doc && (doc.nomor || doc.fileData || doc.fileUrl)) {
+      if (statusCard) statusCard.style.display = 'block';
+      if (descEl) descEl.textContent = `No: ${doc.nomor || '-'} | Tgl: ${doc.tanggal || '-'} (${doc.jenis || 'Dokumen TTD'})`;
+      if (viewBtn) {
+        viewBtn.href = doc.fileData || doc.fileUrl || '#';
+        viewBtn.style.display = (doc.fileData || doc.fileUrl) ? 'inline-flex' : 'none';
+      }
+
+      // Pre-fill form
+      document.getElementById('doc-modal-jenis').value = doc.jenis || 'Surat Jawaban / Klarifikasi Satker (TTD)';
+      document.getElementById('doc-modal-nomor').value = doc.nomor || '';
+      document.getElementById('doc-modal-tanggal').value = doc.tanggal || '';
+      document.getElementById('doc-modal-perihal').value = doc.perihal || '';
+      document.getElementById('doc-modal-url-input').value = doc.fileUrl || '';
+    } else {
+      if (statusCard) statusCard.style.display = 'none';
+      document.getElementById('form-upload-dokumen-tindak').reset();
+      // Smart default values from asset
+      document.getElementById('doc-modal-nomor').value = asset.suratJawaban && asset.suratJawaban !== '-' ? asset.suratJawaban : '';
+      document.getElementById('doc-modal-tanggal').value = asset.tglSurat && asset.tglSurat !== '-' ? asset.tglSurat : '';
+      document.getElementById('doc-modal-perihal').value = `Tindak Lanjut ${asset.namaBarang}`;
+    }
+
+    modal.style.display = 'flex';
+  },
+
+  closeUploadDokumenModal() {
+    const modal = document.getElementById('modal-upload-dokumen-tindak');
+    if (modal) modal.style.display = 'none';
+  },
+
+  async handleSaveUploadedDocument(e) {
+    e.preventDefault();
+    const assetId = document.getElementById('doc-modal-asset-id').value;
+    if (!assetId) return;
+
+    const jenis = document.getElementById('doc-modal-jenis').value;
+    const nomor = document.getElementById('doc-modal-nomor').value.trim();
+    const tanggal = document.getElementById('doc-modal-tanggal').value;
+    const perihal = document.getElementById('doc-modal-perihal').value.trim();
+    const fileUrl = document.getElementById('doc-modal-url-input').value.trim();
+    const fileInput = document.getElementById('doc-modal-file-input');
+
+    const existingDoc = this.getUploadedDoc(assetId) || {};
+    let fileData = existingDoc.fileData || '';
+    let fileName = existingDoc.fileName || '';
+
+    if (fileInput && fileInput.files && fileInput.files.length > 0) {
+      const file = fileInput.files[0];
+      fileName = file.name;
+      // Convert to base64 DataURL for local preview
+      fileData = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => resolve('');
+        reader.readAsDataURL(file);
+      });
+    }
+
+    this.uploadedDocsMap[assetId] = {
+      assetId,
+      jenis,
+      nomor,
+      tanggal,
+      perihal,
+      fileUrl,
+      fileData,
+      fileName,
+      uploadedAt: new Date().toISOString()
+    };
+
+    this.saveUploadedDocs();
+    this.showToast(`✅ Dokumen TTD untuk aset berhasil disimpan!`, 'success');
+    this.closeUploadDokumenModal();
+    this.renderTindakLanjutTable();
+  },
+
+  deleteUploadedDocument() {
+    const assetId = document.getElementById('doc-modal-asset-id').value;
+    if (!assetId) return;
+
+    if (!confirm('Hapus dokumen tindak lanjut yang telah diunggah untuk aset ini?')) return;
+
+    delete this.uploadedDocsMap[assetId];
+    this.saveUploadedDocs();
+    this.showToast('🗑️ Dokumen tindak lanjut berhasil dihapus.', 'info');
+    this.closeUploadDokumenModal();
+    this.renderTindakLanjutTable();
   },
 
   showToast(message, type = 'success') {

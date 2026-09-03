@@ -8,8 +8,8 @@
   <meta name="description" content="Dashboard Spatial Analytics BMN Idle KPKNL Denpasar">
   
   <!-- Config & Auth Guard -->
-  <script src="js/config.js?v=3.7.0"></script>
-  <script src="js/auth.js?v=3.7.0"></script>
+  <script src="js/config.js?v=3.8.0"></script>
+  <script src="js/auth.js?v=3.8.0"></script>
   <script>guardDashboardPage();</script>
 
   <!-- FontAwesome Icons -->
@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   
   <!-- Soft Pastel Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=3.7.0">
+  <link rel="stylesheet" href="css/styles.css?v=3.8.0">
 </head>
 <body>
 
@@ -1243,6 +1243,98 @@
     </div>
   </div>
 
+  <!-- MODAL UPLOAD DOKUMEN TINDAK LANJUT (TTD) -->
+  <div class="custom-modal-overlay" id="modal-upload-dokumen-tindak" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); z-index:9999; backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:16px;">
+    <div class="custom-modal-dialog" style="background:#ffffff; width:100%; max-width:560px; border-radius:12px; box-shadow:0 20px 25px -5px rgba(0,0,0,0.2); overflow:hidden; display:flex; flex-direction:column; max-height:90vh;">
+      <div class="d-flex justify-content-between align-items-center p-3 border-bottom" style="background:#f8fafc;">
+        <div class="d-flex align-items-center gap-2">
+          <span style="display:flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:8px; background:#eff6ff; color:#2563eb; font-size:16px;">
+            <i class="fa-solid fa-file-signature"></i>
+          </span>
+          <div>
+            <h4 style="margin:0; font-size:15px; font-weight:800; color:#1e293b;">Dokumen Tindak Lanjut (TTD)</h4>
+            <span style="font-size:11px; color:#64748b;" id="doc-modal-asset-subtitle">Aset BMN</span>
+          </div>
+        </div>
+        <button type="button" class="btn-close" onclick="App.closeUploadDokumenModal()" style="border:none; background:transparent; font-size:18px; color:#94a3b8; cursor:pointer;">&times;</button>
+      </div>
+
+      <div class="p-3" style="overflow-y:auto; flex:1;">
+        <input type="hidden" id="doc-modal-asset-id" value="">
+
+        <!-- Current Document Status Card -->
+        <div id="doc-modal-current-status" style="margin-bottom:16px; padding:12px; border-radius:8px; background:#f0fdf4; border:1px solid #bbf7d0; display:none;">
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+              <i class="fa-solid fa-circle-check text-success" style="font-size:18px;"></i>
+              <div>
+                <strong style="font-size:12px; color:#166534;" id="doc-modal-status-title">Dokumen TTD Tersedia</strong>
+                <div style="font-size:11px; color:#15803d;" id="doc-modal-status-desc">No: - | Tgl: -</div>
+              </div>
+            </div>
+            <div class="d-flex gap-1">
+              <a href="#" target="_blank" rel="noopener noreferrer" id="doc-modal-btn-view-file" class="btn btn-sm btn-primary" style="padding:4px 8px; font-size:11px;">
+                <i class="fa-solid fa-eye"></i> Buka File
+              </a>
+              <button type="button" class="btn btn-sm btn-danger" onclick="App.deleteUploadedDocument()" style="padding:4px 8px; font-size:11px;" title="Hapus Dokumen">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Upload -->
+        <form id="form-upload-dokumen-tindak" onsubmit="App.handleSaveUploadedDocument(event)">
+          <div class="form-group mb-2">
+            <label style="font-size:11.5px; font-weight:700; color:#334155; margin-bottom:4px; display:block;">Jenis Dokumen Tindak Lanjut</label>
+            <select class="form-control" id="doc-modal-jenis" style="width:100%; font-size:12px; border:1px solid #cbd5e1; border-radius:6px; padding:6px 10px;">
+              <option value="Surat Jawaban / Klarifikasi Satker (TTD)">Surat Jawaban / Klarifikasi Satker (TTD)</option>
+              <option value="Laporan Hasil Pemantauan BMN (TTD)">Laporan Hasil Pemantauan BMN (TTD)</option>
+              <option value="Laporan Hasil Penelitian Fisik / Lapangan (TTD)">Laporan Hasil Penelitian Fisik / Lapangan (TTD)</option>
+              <option value="Berita Acara Rekonsiliasi / Penetapan Status">Berita Acara Rekonsiliasi / Penetapan Status</option>
+              <option value="Surat Tugas Penelitian Lapangan (ST)">Surat Tugas Penelitian Lapangan (ST)</option>
+              <option value="Dokumen Tindak Lanjut Lainnya">Dokumen Tindak Lanjut Lainnya</option>
+            </select>
+          </div>
+
+          <div class="row" style="display:flex; gap:8px; margin-bottom:8px;">
+            <div style="flex:1;">
+              <label style="font-size:11.5px; font-weight:700; color:#334155; margin-bottom:4px; display:block;">Nomor Surat / Dokumen</label>
+              <input type="text" class="form-control" id="doc-modal-nomor" placeholder="Contoh: S-123/WKN.14/KNL.01/2026" required style="width:100%; font-size:12px; border:1px solid #cbd5e1; border-radius:6px; padding:6px 10px;">
+            </div>
+            <div style="flex:1;">
+              <label style="font-size:11.5px; font-weight:700; color:#334155; margin-bottom:4px; display:block;">Tanggal Dokumen</label>
+              <input type="date" class="form-control" id="doc-modal-tanggal" style="width:100%; font-size:12px; border:1px solid #cbd5e1; border-radius:6px; padding:6px 10px;">
+            </div>
+          </div>
+
+          <div class="form-group mb-2">
+            <label style="font-size:11.5px; font-weight:700; color:#334155; margin-bottom:4px; display:block;">Perihal / Keterangan Singkat</label>
+            <input type="text" class="form-control" id="doc-modal-perihal" placeholder="Misal: Surat Tanggapan Penggunaan BMN Satker" style="width:100%; font-size:12px; border:1px solid #cbd5e1; border-radius:6px; padding:6px 10px;">
+          </div>
+
+          <div class="form-group mb-2">
+            <label style="font-size:11.5px; font-weight:700; color:#334155; margin-bottom:4px; display:block;">File Dokumen (PDF / Scan / Foto TTD)</label>
+            <input type="file" class="form-control" id="doc-modal-file-input" accept=".pdf,.png,.jpg,.jpeg,.doc,.docx" style="width:100%; font-size:12px; border:1px solid #cbd5e1; border-radius:6px; padding:6px 10px;">
+            <small class="text-muted" style="font-size:10.5px;">Mendukung berkas PDF, JPG, PNG, atau DOCX.</small>
+          </div>
+
+          <div class="form-group mb-2">
+            <label style="font-size:11.5px; font-weight:700; color:#334155; margin-bottom:4px; display:block;">Atau Tautan / Link Google Drive (Opsional)</label>
+            <input type="url" class="form-control" id="doc-modal-url-input" placeholder="https://drive.google.com/file/d/..." style="width:100%; font-size:12px; border:1px solid #cbd5e1; border-radius:6px; padding:6px 10px;">
+          </div>
+
+          <div class="d-flex justify-content-end gap-2 mt-3 pt-2 border-top">
+            <button type="button" class="btn btn-secondary" onclick="App.closeUploadDokumenModal()" style="font-size:12px;">Batal</button>
+            <button type="submit" class="btn btn-primary" id="btn-save-doc-upload" style="font-size:12px;">
+              <i class="fa-solid fa-cloud-arrow-up"></i> Simpan Dokumen
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- MOBILE BOTTOM NAVIGATION BAR -->
   <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
     <button class="mobile-nav-btn" id="mnav-stats" onclick="App.switchMobileTab('stats')">
@@ -1279,13 +1371,13 @@
   <!-- Turf.js Library for Geometric Polygon Catchment Clipping (Deferred) -->
   <script src="js/turf.min.js?v=1.0.0-stable1" defer></script>
 
-  <script src="js/pola_ruang.js?v=3.7.0"></script>
-  <script src="js/spatial.js?v=3.7.0"></script>
-  <script src="js/bmn_dataset.js?v=3.7.0"></script>
-  <script src="js/data.js?v=3.7.0"></script>
-  <script src="js/recommendation.js?v=3.7.0"></script>
-  <script src="js/map.js?v=3.7.0"></script>
-  <script src="js/laporan.js?v=3.7.0"></script>
-  <script src="js/app.js?v=3.7.0"></script>
+  <script src="js/pola_ruang.js?v=3.8.0"></script>
+  <script src="js/spatial.js?v=3.8.0"></script>
+  <script src="js/bmn_dataset.js?v=3.8.0"></script>
+  <script src="js/data.js?v=3.8.0"></script>
+  <script src="js/recommendation.js?v=3.8.0"></script>
+  <script src="js/map.js?v=3.8.0"></script>
+  <script src="js/laporan.js?v=3.8.0"></script>
+  <script src="js/app.js?v=3.8.0"></script>
 </body>
 </html>
