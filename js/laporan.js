@@ -467,7 +467,8 @@ const LaporanEngine = {
    * Generates Microsoft Word (.docx) file matching PMK 120/2024
    */
   async generateDocx(asset, formValues) {
-    if (typeof docx === 'undefined') {
+    const docxLib = (typeof docx !== 'undefined' ? docx : (typeof window !== 'undefined' ? window.docx : null));
+    if (!docxLib) {
       alert('Library docx.js belum selesai dimuat. Silakan coba lagi.');
       return;
     }
@@ -489,7 +490,7 @@ const LaporanEngine = {
     if (formatType === 'FORMAT_D') docTitle = 'LAPORAN HASIL PEMANTAUAN PENINJAUAN LAPANGAN BMN IDLE';
     if (formatType === 'FORMAT_F') docTitle = 'BERITA ACARA PENINJAUAN LAPANGAN BMN TERINDIKASI IDLE';
 
-    const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, AlignmentType, WidthType } = docx;
+    const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, AlignmentType, WidthType } = docxLib;
 
     const doc = new Document({
       sections: [{
