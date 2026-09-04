@@ -77,6 +77,13 @@ const App = {
     this.bindEvents();
     this.updateExportCountBadge();
 
+    // Ensure map container viewport size is computed accurately
+    setTimeout(() => {
+      if (typeof MapEngine !== 'undefined' && MapEngine.map) {
+        MapEngine.map.invalidateSize();
+      }
+    }, 250);
+
     // Background photo sync in background without blocking UI
     setTimeout(() => {
       this.loadPhotosFromSheet();

@@ -27,10 +27,26 @@ const MapEngine = {
     });
 
     // Create tile layers
-    this.tileLayers.pastel = L.tileLayer(CONFIG.MAP.TILE_LAYERS.PASTEL_LIGHT.url, { attribution: CONFIG.MAP.TILE_LAYERS.PASTEL_LIGHT.attribution });
-    this.tileLayers.dark = L.tileLayer(CONFIG.MAP.TILE_LAYERS.DARK_EXECUTIVE.url, { attribution: CONFIG.MAP.TILE_LAYERS.DARK_EXECUTIVE.attribution });
-    this.tileLayers.satellite = L.tileLayer(CONFIG.MAP.TILE_LAYERS.SATELLITE.url, { attribution: CONFIG.MAP.TILE_LAYERS.SATELLITE.attribution });
-    this.tileLayers.streets = L.tileLayer(CONFIG.MAP.TILE_LAYERS.STREETS.url, { attribution: CONFIG.MAP.TILE_LAYERS.STREETS.attribution });
+    const cLayers = CONFIG.MAP.TILE_LAYERS;
+    this.tileLayers.pastel = L.tileLayer(cLayers.PASTEL_LIGHT.url, {
+      attribution: cLayers.PASTEL_LIGHT.attribution,
+      subdomains: cLayers.PASTEL_LIGHT.subdomains || 'abcd',
+      maxZoom: cLayers.PASTEL_LIGHT.maxZoom || 20
+    });
+    this.tileLayers.dark = L.tileLayer(cLayers.DARK_EXECUTIVE.url, {
+      attribution: cLayers.DARK_EXECUTIVE.attribution,
+      subdomains: cLayers.DARK_EXECUTIVE.subdomains || 'abcd',
+      maxZoom: cLayers.DARK_EXECUTIVE.maxZoom || 20
+    });
+    this.tileLayers.satellite = L.tileLayer(cLayers.SATELLITE.url, {
+      attribution: cLayers.SATELLITE.attribution,
+      maxZoom: cLayers.SATELLITE.maxZoom || 19
+    });
+    this.tileLayers.streets = L.tileLayer(cLayers.STREETS.url, {
+      attribution: cLayers.STREETS.attribution,
+      subdomains: cLayers.STREETS.subdomains || 'abc',
+      maxZoom: cLayers.STREETS.maxZoom || 19
+    });
 
     // Set default layer to Soft Pastel Voyager
     this.tileLayers.pastel.addTo(this.map);
@@ -47,8 +63,10 @@ const MapEngine = {
   },
 
   switchTileLayer(layerKey) {
-    if (!this.tileLayers[layerKey]) return;
-    this.map.removeLayer(this.tileLayers[this.currentTileLayer]);
+    if (!this.tileLayers[layerKey] || this.currentTileLayer === layerKey) return;
+    if (this.currentTileLayer && this.tileLayers[this.currentTileLayer] && this.map.hasLayer(this.tileLayers[this.currentTileLayer])) {
+      this.map.removeLayer(this.tileLayers[this.currentTileLayer]);
+    }
     this.tileLayers[layerKey].addTo(this.map);
     this.currentTileLayer = layerKey;
   },
