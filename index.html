@@ -8,8 +8,8 @@
   <meta name="description" content="Dashboard Spatial Analytics BMN Idle KPKNL Denpasar">
   
   <!-- Config & Auth Guard -->
-  <script src="js/config.js?v=3.9.0"></script>
-  <script src="js/auth.js?v=3.9.0"></script>
+  <script src="js/config.js?v=3.9.2"></script>
+  <script src="js/auth.js?v=3.9.2"></script>
   <script>guardDashboardPage();</script>
 
   <!-- FontAwesome Icons -->
@@ -597,6 +597,11 @@
         <div class="form-group mb-3">
           <label style="font-size:12px; color:var(--text-muted); display:block;" class="mb-1">Web App Deployment URL</label>
           <input type="url" class="form-control" id="apps-script-url-input" placeholder="https://script.google.com/macros/s/.../exec">
+        </div>
+        <div class="form-group mb-3">
+          <label style="font-size:12px; color:var(--text-muted); display:block;" class="mb-1">CARTO Basemaps API Key (Opsional)</label>
+          <input type="text" class="form-control" id="carto-api-key-input" placeholder="Dapatkan gratis di carto.com/basemaps/apikey">
+          <small style="font-size:10.5px; color:#64748b;">Kosongkan jika ingin menggunakan peta OpenStreetMap standar tanpa watermark.</small>
         </div>
       </div>
 
@@ -1381,13 +1386,13 @@
   <!-- Turf.js Library for Geometric Polygon Catchment Clipping (Deferred) -->
   <script src="js/turf.min.js?v=1.0.0-stable1" defer></script>
 
-  <script src="js/pola_ruang.js?v=3.9.0"></script>
-  <script src="js/spatial.js?v=3.9.0"></script>
-  <script src="js/bmn_dataset.js?v=3.9.0"></script>
-  <script src="js/data.js?v=3.9.0"></script>
-  <script src="js/recommendation.js?v=3.9.0"></script>
-  <script src="js/map.js?v=3.9.0"></script>
-  <script src="js/laporan.js?v=3.9.0"></script>
-  <script src="js/app.js?v=3.9.0"></script>
+  <script src="js/pola_ruang.js?v=3.9.2"></script>
+  <script src="js/spatial.js?v=3.9.2"></script>
+  <script src="js/bmn_dataset.js?v=3.9.2"></script>
+  <script src="js/data.js?v=3.9.2"></script>
+  <script src="js/recommendation.js?v=3.9.2"></script>
+  <script src="js/map.js?v=3.9.2"></script>
+  <script src="js/laporan.js?v=3.9.2"></script>
+  <script src="js/app.js?v=3.9.2"></script>
 </body>
 </html>

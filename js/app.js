@@ -2818,6 +2818,8 @@ const App = {
   openGoogleSheetsModal() {
     const input = document.getElementById('apps-script-url-input');
     if (input) input.value = CONFIG.APPS_SCRIPT.WEB_APP_URL || '';
+    const cartoInput = document.getElementById('carto-api-key-input');
+    if (cartoInput) cartoInput.value = localStorage.getItem('bmn_carto_api_key') || '';
     const modal = document.getElementById('sheets-sync-modal');
     if (modal) modal.classList.add('show');
   },
@@ -2832,9 +2834,19 @@ const App = {
     if (url) {
       CONFIG.APPS_SCRIPT.WEB_APP_URL = url;
       localStorage.setItem('bmn_idle_apps_script_url', url);
-      this.showToast('URL Google Apps Script berhasil disimpan!');
-      this.closeGoogleSheetsModal();
     }
+    const cartoKeyInput = document.getElementById('carto-api-key-input');
+    if (cartoKeyInput) {
+      const cartoKey = cartoKeyInput.value.trim();
+      if (cartoKey) {
+        localStorage.setItem('bmn_carto_api_key', cartoKey);
+      } else {
+        localStorage.removeItem('bmn_carto_api_key');
+      }
+    }
+    this.showToast('Pengaturan berhasil disimpan! Memperbarui peta...');
+    this.closeGoogleSheetsModal();
+    setTimeout(() => window.location.reload(), 600);
   },
 
   enrichAssetLocationsWithPolaRuang() {
