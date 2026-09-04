@@ -26,27 +26,26 @@ const MapEngine = {
       zoomControl: false
     });
 
-    // Create tile layers
+    // Create tile layers — subdomains and maxZoom taken strictly from config, no unsafe fallbacks
     const cLayers = CONFIG.MAP.TILE_LAYERS;
-    this.tileLayers.pastel = L.tileLayer(cLayers.PASTEL_LIGHT.url, {
-      attribution: cLayers.PASTEL_LIGHT.attribution,
-      subdomains: cLayers.PASTEL_LIGHT.subdomains || 'abcd',
-      maxZoom: cLayers.PASTEL_LIGHT.maxZoom || 20
-    });
-    this.tileLayers.dark = L.tileLayer(cLayers.DARK_EXECUTIVE.url, {
-      attribution: cLayers.DARK_EXECUTIVE.attribution,
-      subdomains: cLayers.DARK_EXECUTIVE.subdomains || 'abcd',
-      maxZoom: cLayers.DARK_EXECUTIVE.maxZoom || 20
-    });
+    const mapMaxZoom = CONFIG.MAP.MAX_ZOOM;
+
+    const pastelOpts = { attribution: cLayers.PASTEL_LIGHT.attribution, maxZoom: Math.min(cLayers.PASTEL_LIGHT.maxZoom || 19, mapMaxZoom) };
+    if (cLayers.PASTEL_LIGHT.subdomains) pastelOpts.subdomains = cLayers.PASTEL_LIGHT.subdomains;
+    this.tileLayers.pastel = L.tileLayer(cLayers.PASTEL_LIGHT.url, pastelOpts);
+
+    const darkOpts = { attribution: cLayers.DARK_EXECUTIVE.attribution, maxZoom: Math.min(cLayers.DARK_EXECUTIVE.maxZoom || 19, mapMaxZoom) };
+    if (cLayers.DARK_EXECUTIVE.subdomains) darkOpts.subdomains = cLayers.DARK_EXECUTIVE.subdomains;
+    this.tileLayers.dark = L.tileLayer(cLayers.DARK_EXECUTIVE.url, darkOpts);
+
     this.tileLayers.satellite = L.tileLayer(cLayers.SATELLITE.url, {
       attribution: cLayers.SATELLITE.attribution,
-      maxZoom: cLayers.SATELLITE.maxZoom || 19
+      maxZoom: Math.min(cLayers.SATELLITE.maxZoom || 19, mapMaxZoom)
     });
-    this.tileLayers.streets = L.tileLayer(cLayers.STREETS.url, {
-      attribution: cLayers.STREETS.attribution,
-      subdomains: cLayers.STREETS.subdomains || 'abc',
-      maxZoom: cLayers.STREETS.maxZoom || 19
-    });
+
+    const streetsOpts = { attribution: cLayers.STREETS.attribution, maxZoom: Math.min(cLayers.STREETS.maxZoom || 19, mapMaxZoom) };
+    if (cLayers.STREETS.subdomains) streetsOpts.subdomains = cLayers.STREETS.subdomains;
+    this.tileLayers.streets = L.tileLayer(cLayers.STREETS.url, streetsOpts);
 
     // Set default layer to Soft Pastel Voyager
     this.tileLayers.pastel.addTo(this.map);
