@@ -241,6 +241,51 @@ body {
   color: #1e40af;
 }
 
+@media (max-width: 768px) {
+  .tindak-subtabs-nav {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+    width: 100%;
+    padding-bottom: 12px;
+  }
+
+  .tindak-subtab-btn {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 16px;
+    font-size: 13.5px;
+    border-radius: 10px;
+    box-sizing: border-box;
+  }
+
+  .tindak-subtab-btn.active#subtab-btn-PEMANTAUAN {
+    border-left: 4px solid #10b981;
+  }
+
+  .tindak-subtab-btn.active#subtab-btn-PENELUSURAN {
+    border-left: 4px solid #f59e0b;
+  }
+
+  .tindak-subtab-btn.active#subtab-btn-PENELITIAN {
+    border-left: 4px solid #3b82f6;
+  }
+
+  .tindak-toolbar-card .d-flex {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 10px;
+  }
+
+  .tindak-toolbar-card .search-box,
+  .tindak-toolbar-card select {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}
+
 /* TINDAK LANJUT TABLE */
 .tindak-table-wrapper {
   background: #ffffff;
