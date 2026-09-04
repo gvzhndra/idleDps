@@ -77,12 +77,28 @@ const App = {
     this.bindEvents();
     this.updateExportCountBadge();
 
-    // Ensure map container viewport size is computed accurately
-    setTimeout(() => {
-      if (typeof MapEngine !== 'undefined' && MapEngine.map) {
-        MapEngine.map.invalidateSize();
-      }
-    }, 250);
+    // Ensure map container viewport size is computed accurately after flex layout settles.
+    // Multiple staggered calls are necessary: on fullscreen load the layout may not be
+    // fully computed by 100ms, so we fire at 100ms, 500ms, and 1200ms as a final safety net.
+    [100, 500, 1200].forEach(delay => {
+      setTimeout(() => {
+        if (typeof MapEngine !== 'undefined' && MapEngine.map) {
+          MapEngine.map.invalidateSize({ animate: false });
+        }
+      }, delay);
+    });
+
+    // Also invalidate on every window resize (debounced 150ms) so the map never
+    // goes blank when the user resizes their browser window or opens DevTools.
+    let _mapResizeTimer = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(_mapResizeTimer);
+      _mapResizeTimer = setTimeout(() => {
+        if (typeof MapEngine !== 'undefined' && MapEngine.map) {
+          MapEngine.map.invalidateSize({ animate: false });
+        }
+      }, 150);
+    });
 
     // Background photo sync in background without blocking UI
     setTimeout(() => {
