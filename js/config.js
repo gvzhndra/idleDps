@@ -27,18 +27,16 @@ const CONFIG = {
     CARTO_API_KEY: localStorage.getItem('bmn_carto_api_key') || '',
     TILE_LAYERS: {
       PASTEL_LIGHT: {
-        url: (localStorage.getItem('bmn_carto_api_key'))
-          ? `https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${localStorage.getItem('bmn_carto_api_key')}`
-          : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        subdomains: (localStorage.getItem('bmn_carto_api_key')) ? 'abcd' : 'abc',
+        // CARTO Voyager — lightweight, clean, fast. No API key needed for moderate traffic.
+        url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
         maxZoom: 19
       },
       DARK_EXECUTIVE: {
-        url: (localStorage.getItem('bmn_carto_api_key'))
-          ? `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=${localStorage.getItem('bmn_carto_api_key')}`
-          : 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
-        attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+        // CARTO Dark Matter — sleek dark basemap, no API key needed
+        url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
         maxZoom: 19
       },
