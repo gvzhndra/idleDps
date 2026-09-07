@@ -455,6 +455,10 @@ const App = {
         if (e.key === 'ArrowLeft') this.navigateLightbox(-1);
         if (e.key === 'ArrowRight') this.navigateLightbox(1);
       }
+      const docModal = document.getElementById('modal-upload-dokumen-tindak');
+      if (docModal && docModal.style.display === 'flex') {
+        if (e.key === 'Escape') this.closeUploadDokumenModal();
+      }
     });
 
     document.querySelectorAll('.btn-tile-switch:not(#btn-toggle-pola-ruang)').forEach(btn => {
@@ -3007,28 +3011,82 @@ const App = {
     this.renderTindakLanjutTable();
   },
 
+  quickFilterTindakKesimpulan(status) {
+    const select = document.getElementById('tindak-filter-kesimpulan');
+    if (select) {
+      select.value = status;
+      this.handleTindakFilterKesimpulan(status);
+    }
+  },
+
   updateTindakBadges() {
+    this.updateTindakSummaryCards();
+  },
+
+  updateTindakSummaryCards() {
     const assets = this.activeAssets || [];
+    const total = assets.length;
     let countPemantauan = 0;
     let countPenelusuran = 0;
     let countPenelitian = 0;
+    let countUploaded = 0;
+    let countTidakIdle = 0;
+    let countIdle = 0;
+    let countPemantauanLanjutan = 0;
 
     assets.forEach(a => {
-      const st = String(a.tahapBerikut || '').toUpperCase();
+      const st = String(a.tahapBerikut || 'PENELITIAN').toUpperCase();
       if (st === 'PEMANTAUAN') countPemantauan++;
       else if (st === 'PENELUSURAN') countPenelusuran++;
       else countPenelitian++;
+
+      const doc = this.getUploadedDoc(a.id);
+      const hasDoc = doc && (doc.nomor || doc.fileData || doc.fileUrl);
+      if (hasDoc) {
+        countUploaded++;
+        const kes = (doc && doc.statusKesimpulan) || a.statusKesimpulanIdle || 'TIDAK_IDLE';
+        if (kes === 'IDLE') countIdle++;
+        else if (kes === 'PEMANTAUAN_LANJUTAN') countPemantauanLanjutan++;
+        else countTidakIdle++;
+      }
     });
 
+    const countBelum = Math.max(0, total - countUploaded);
+    const pct = total > 0 ? Math.round((countUploaded / total) * 100) : 0;
+
+    // Update KPI Card 1 (Progres)
+    const elUploaded = document.getElementById('tindak-kpi-uploaded');
+    const elPercent = document.getElementById('tindak-kpi-percent');
+    const elProgressBar = document.getElementById('tindak-kpi-progress-bar');
+    const elSudah = document.getElementById('tindak-kpi-sudah');
+    const elBelum = document.getElementById('tindak-kpi-belum');
+
+    if (elUploaded) elUploaded.innerHTML = `${countUploaded} <small style="font-size:13px; color:#64748b; font-weight:600;">/ ${total} Unit</small>`;
+    if (elPercent) elPercent.textContent = `${pct}%`;
+    if (elProgressBar) elProgressBar.style.width = `${pct}%`;
+    if (elSudah) elSudah.textContent = `${countUploaded}`;
+    if (elBelum) elBelum.textContent = `${countBelum}`;
+
+    // Update KPI Card 2 (Tidak Idle)
+    const elTidakIdle = document.getElementById('tindak-kpi-tidak-idle');
+    if (elTidakIdle) elTidakIdle.textContent = `${countTidakIdle} Unit`;
+
+    // Update KPI Card 3 (Ditetapkan Idle)
+    const elIdle = document.getElementById('tindak-kpi-idle');
+    if (elIdle) elIdle.textContent = `${countIdle} Unit`;
+
+    // Update KPI Card 4 (Pemantauan Lanjutan)
+    const elLanjutan = document.getElementById('tindak-kpi-lanjutan');
+    if (elLanjutan) elLanjutan.textContent = `${countPemantauanLanjutan} Unit`;
+
+    // Update Subtabs Badges
     const badgePem = document.getElementById('badge-count-pemantauan');
     const badgePenel = document.getElementById('badge-count-penelusuran');
     const badgePen = document.getElementById('badge-count-penelitian');
-    const badgeTotal = document.getElementById('badge-total-tindak-lanjut');
 
     if (badgePem) badgePem.textContent = `${countPemantauan} Unit`;
     if (badgePenel) badgePenel.textContent = `${countPenelusuran} Unit`;
     if (badgePen) badgePen.textContent = `${countPenelitian} Unit`;
-    if (badgeTotal) badgeTotal.textContent = `${assets.length} Unit`;
   },
 
   populateTindakKabupatenOptions() {
@@ -3050,7 +3108,7 @@ const App = {
     const tbody = document.getElementById('tbody-tindak-lanjut');
     if (!tbody) return;
 
-    this.updateTindakBadges();
+    this.updateTindakSummaryCards();
 
     const stage = this.currentTindakStage;
     let list = this.activeAssets.filter(a => {
@@ -3063,7 +3121,23 @@ const App = {
     }
 
     if (this.tindakFilterKesimpulan !== 'all') {
-      list = list.filter(a => (a.statusKesimpulanIdle || 'TIDAK_IDLE') === this.tindakFilterKesimpulan);
+      if (this.tindakFilterKesimpulan === 'SUDAH_UPLOAD') {
+        list = list.filter(a => {
+          const doc = this.getUploadedDoc(a.id);
+          return doc && (doc.nomor || doc.fileData || doc.fileUrl);
+        });
+      } else if (this.tindakFilterKesimpulan === 'BELUM_UPLOAD') {
+        list = list.filter(a => {
+          const doc = this.getUploadedDoc(a.id);
+          return !doc || (!doc.nomor && !doc.fileData && !doc.fileUrl);
+        });
+      } else {
+        list = list.filter(a => {
+          const doc = this.getUploadedDoc(a.id);
+          const kes = (doc && doc.statusKesimpulan) || a.statusKesimpulanIdle || 'TIDAK_IDLE';
+          return kes === this.tindakFilterKesimpulan;
+        });
+      }
     }
 
     if (this.tindakSearchQuery) {
@@ -3088,7 +3162,7 @@ const App = {
           <td colspan="8" style="text-align:center; padding:36px 12px; color:var(--text-muted);">
             <i class="fa-solid fa-folder-open" style="font-size:32px; color:#cbd5e1; margin-bottom:8px; display:block;"></i>
             <strong>Tidak ada data aset pada tahapan ${stage}</strong>
-            <p style="font-size:11px; margin:4px 0 0;">Coba sesuaikan kata kunci pencarian atau ubah filter status.</p>
+            <p style="font-size:11px; margin:4px 0 0;">Coba sesuaikan kata kunci pencarian atau ubah filter status tindak lanjut.</p>
           </td>
         </tr>
       `;
@@ -3096,9 +3170,13 @@ const App = {
     }
 
     tbody.innerHTML = list.map((a, idx) => {
-      const statusBadge = a.statusKesimpulanIdle === 'IDLE' 
+      const doc = this.getUploadedDoc(a.id);
+      const hasDoc = doc && (doc.nomor || doc.fileData || doc.fileUrl);
+      const effectiveStatus = (doc && doc.statusKesimpulan) || a.statusKesimpulanIdle || 'TIDAK_IDLE';
+
+      const statusBadge = effectiveStatus === 'IDLE' 
         ? `<span class="badge" style="background:#fee2e2; color:#991b1b; font-weight:700;">🔴 BMN IDLE</span>`
-        : a.statusKesimpulanIdle === 'PEMANTAUAN_LANJUTAN'
+        : effectiveStatus === 'PEMANTAUAN_LANJUTAN'
         ? `<span class="badge" style="background:#fef3c7; color:#92400e; font-weight:700;">🔄 PEMANTAUAN LANJUTAN</span>`
         : `<span class="badge" style="background:#d1fae5; color:#065f46; font-weight:700;">🟢 TIDAK IDLE</span>`;
 
@@ -3113,10 +3191,10 @@ const App = {
           <td align="center" style="font-weight:700; color:#64748b;">${idx + 1}</td>
           <td>
             <div style="font-weight:700; color:#1e293b;">${a.kementerian || '-'}</div>
-            <small class="text-muted">${a.kabupaten || '-'}</small>
+            <small class="text-muted"><i class="fa-solid fa-location-dot text-danger"></i> ${a.kabupaten || '-'}</small>
           </td>
           <td>
-            <div style="font-weight:600; color:#1e293b;">${a.namaSatker || a.satker || '-'}</div>
+            <div style="font-weight:600; color:#334155;">${a.namaSatker || a.satker || '-'}</div>
             <small class="text-muted">Kode: ${a.kodeSatker || '-'}</small>
           </td>
           <td>
@@ -3138,29 +3216,21 @@ const App = {
           </td>
           <td>
             <div class="mb-1">${statusBadge}</div>
-            <div style="font-size:11px; color:#475569;">${a.alasanKesimpulanIdle || a.rekomendasiUser || 'Optimalisasi Penggunaan Tusi'}</div>
+            <div style="font-size:11px; color:#475569;">${(doc && doc.perihal) || a.alasanKesimpulanIdle || a.rekomendasiUser || 'Optimalisasi Penggunaan Tusi'}</div>
             ${smartPemantauan}
           </td>
           <td align="center">
             <div class="action-btns-group">
-              ${(() => {
-                const doc = this.getUploadedDoc(a.id);
-                const hasDoc = doc && (doc.nomor || doc.fileData || doc.fileUrl);
-                if (hasDoc) {
-                  return `
-                    <button class="btn btn-sm btn-primary" onclick="App.openUploadDokumenModal('${a.id}')" title="Dokumen Output PMK 120 (TTD) Tersedia: ${doc.nomor || ''}" style="padding:4px 8px; font-size:11px; background:#2563eb; color:#ffffff; font-weight:700; border:none; border-radius:6px; box-shadow:0 1px 3px rgba(37,99,235,0.3);">
-                      <i class="fa-solid fa-file-circle-check"></i> Output PMK 120 (TTD)
-                    </button>
-                  `;
-                } else {
-                  return `
-                    <button class="btn btn-sm" onclick="App.openUploadDokumenModal('${a.id}')" title="Klik untuk upload Dokumen Output PMK 120 yang menyatakan BMN Idle / Tidak Idle (TTD)" style="padding:4px 8px; font-size:11px; background:#eff6ff; color:#3b82f6; border:1px solid #bfdbfe; border-radius:6px; font-weight:600;">
-                      <i class="fa-solid fa-cloud-arrow-up"></i> Upload PMK 120
-                    </button>
-                  `;
-                }
-              })()}
-              <button class="btn btn-sm btn-secondary" onclick="App.openEditAssetModal('${a.id}')" title="Kelola Parameter & Data Aset" style="padding:4px 8px; font-size:11px;">
+              ${hasDoc ? `
+                <button class="btn btn-sm btn-primary" onclick="App.openUploadDokumenModal('${a.id}')" title="Dokumen Tindak Lanjut Tersedia: ${doc.nomor || ''}" style="padding:5px 9px; font-size:11px; background:#059669; color:#ffffff; font-weight:700; border:none; border-radius:6px; box-shadow:0 1px 3px rgba(5,150,105,0.3); white-space:nowrap;">
+                  <i class="fa-solid fa-file-circle-check"></i> Dokumen Tindak Lanjut (TTD)
+                </button>
+              ` : `
+                <button class="btn btn-sm" onclick="App.openUploadDokumenModal('${a.id}')" title="Klik untuk upload Dokumen Tindak Lanjut PMK 120 (TTD)" style="padding:5px 9px; font-size:11px; background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe; border-radius:6px; font-weight:600; white-space:nowrap;">
+                  <i class="fa-solid fa-cloud-arrow-up"></i> Upload Tindak Lanjut
+                </button>
+              `}
+              <button class="btn btn-sm btn-secondary" onclick="App.openEditAssetModal('${a.id}')" title="Kelola Parameter & Data Aset" style="padding:5px 8px; font-size:11px; white-space:nowrap;">
                 <i class="fa-solid fa-pen-to-square"></i> Edit
               </button>
             </div>
@@ -3251,23 +3321,47 @@ const App = {
     document.getElementById('doc-modal-asset-id').value = asset.id;
     const subTitle = document.getElementById('doc-modal-asset-subtitle');
     if (subTitle) {
-      subTitle.textContent = `${asset.namaBarang} (NUP ${asset.nup}) - ${asset.namaSatker || asset.satker}`;
+      subTitle.textContent = `${asset.namaBarang || asset.uraian_bmn} (NUP ${asset.nup}) - ${asset.namaSatker || asset.satker}`;
     }
 
     const doc = this.getUploadedDoc(asset.id);
     const statusCard = document.getElementById('doc-modal-current-status');
     const viewBtn = document.getElementById('doc-modal-btn-view-file');
     const descEl = document.getElementById('doc-modal-status-desc');
+    const previewInfo = document.getElementById('doc-modal-file-preview-info');
+
+    if (previewInfo) {
+      previewInfo.style.display = 'none';
+      previewInfo.innerHTML = '';
+    }
+
+    // Attach file input change listener for instantaneous file size & name feedback
+    const fileInput = document.getElementById('doc-modal-file-input');
+    if (fileInput && !fileInput._hasBoundChange) {
+      fileInput._hasBoundChange = true;
+      fileInput.addEventListener('change', (e) => {
+        const p = document.getElementById('doc-modal-file-preview-info');
+        if (!p) return;
+        if (e.target.files && e.target.files.length > 0) {
+          const f = e.target.files[0];
+          const sizeMb = (f.size / (1024 * 1024)).toFixed(2);
+          p.style.display = 'block';
+          p.innerHTML = `<i class="fa-solid fa-file"></i> <strong>${f.name}</strong> (${sizeMb} MB)${f.size > 3*1024*1024 ? ' &bull; <span style="color:#d97706;">Ukuran besar (>3MB), disarankan gunakan Google Drive</span>' : ''}`;
+        } else {
+          p.style.display = 'none';
+          p.innerHTML = '';
+        }
+      });
+    }
 
     if (doc && (doc.nomor || doc.fileData || doc.fileUrl)) {
       if (statusCard) statusCard.style.display = 'block';
-      if (descEl) descEl.textContent = `No: ${doc.nomor || '-'} | Tgl: ${doc.tanggal || '-'} (${doc.jenis || 'Dokumen Output PMK 120'})`;
+      if (descEl) descEl.textContent = `No: ${doc.nomor || '-'} | Tgl: ${doc.tanggal || '-'} (${doc.jenis || 'Dokumen Tindak Lanjut'})`;
       if (viewBtn) {
-        viewBtn.href = doc.fileData || doc.fileUrl || '#';
         viewBtn.style.display = (doc.fileData || doc.fileUrl) ? 'inline-flex' : 'none';
       }
 
-      // Pre-fill form
+      // Pre-fill form safely
       document.getElementById('doc-modal-kesimpulan-status').value = doc.statusKesimpulan || asset.statusKesimpulanIdle || 'TIDAK_IDLE';
       document.getElementById('doc-modal-jenis').value = doc.jenis || 'Surat Kesimpulan BMN Tidak Idle (KPKNL)';
       document.getElementById('doc-modal-nomor').value = doc.nomor || '';
@@ -3284,7 +3378,7 @@ const App = {
         : 'Surat Kesimpulan BMN Tidak Idle (KPKNL)';
       document.getElementById('doc-modal-nomor').value = '';
       document.getElementById('doc-modal-tanggal').value = new Date().toISOString().split('T')[0];
-      document.getElementById('doc-modal-perihal').value = asset.alasanKesimpulanIdle || `Hasil penertiban dan pemantauan tindak lanjut PMK 120 untuk ${asset.namaBarang}`;
+      document.getElementById('doc-modal-perihal').value = asset.alasanKesimpulanIdle || `Hasil penertiban dan pemantauan tindak lanjut PMK 120 untuk ${asset.namaBarang || asset.uraian_bmn}`;
     }
 
     modal.style.display = 'flex';
@@ -3295,62 +3389,114 @@ const App = {
     if (modal) modal.style.display = 'none';
   },
 
+  viewCurrentModalDocFile() {
+    const assetId = document.getElementById('doc-modal-asset-id').value;
+    if (!assetId) return;
+    const doc = this.getUploadedDoc(assetId);
+    if (!doc) return;
+
+    if (doc.fileUrl) {
+      window.open(doc.fileUrl, '_blank');
+      return;
+    }
+
+    if (doc.fileData) {
+      try {
+        const arr = doc.fileData.split(',');
+        const mimeMatch = arr[0].match(/:(.*?);/);
+        const mime = mimeMatch ? mimeMatch[1] : 'application/pdf';
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) {
+          u8arr[n] = bstr.charCodeAt(n);
+        }
+        const blob = new Blob([u8arr], { type: mime });
+        const blobUrl = URL.createObjectURL(blob);
+        window.open(blobUrl, '_blank');
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+      } catch (err) {
+        console.error('Error opening file blob:', err);
+        this.showToast('Gagal membuka berkas dokumen lokal.', 'warning');
+      }
+    }
+  },
+
   async handleSaveUploadedDocument(e) {
     e.preventDefault();
     const assetId = document.getElementById('doc-modal-asset-id').value;
     if (!assetId) return;
 
-    const statusKesimpulan = document.getElementById('doc-modal-kesimpulan-status').value;
-    const jenis = document.getElementById('doc-modal-jenis').value;
-    const nomor = document.getElementById('doc-modal-nomor').value.trim();
-    const tanggal = document.getElementById('doc-modal-tanggal').value;
-    const perihal = document.getElementById('doc-modal-perihal').value.trim();
-    const fileUrl = document.getElementById('doc-modal-url-input').value.trim();
-    const fileInput = document.getElementById('doc-modal-file-input');
+    const btnSubmit = document.getElementById('btn-save-doc-upload');
+    const origBtnHtml = btnSubmit ? btnSubmit.innerHTML : '';
+    if (btnSubmit) {
+      btnSubmit.disabled = true;
+      btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+    }
 
-    const asset = this.activeAssets.find(a => a.id === assetId);
-    if (asset) {
-      asset.statusKesimpulanIdle = statusKesimpulan;
-      if (perihal) asset.alasanKesimpulanIdle = perihal;
-      // Persist to custom edits
-      if (typeof DataEngine !== 'undefined' && typeof DataEngine.saveCustomEditsToLocal === 'function') {
-        DataEngine.saveCustomEditsToLocal(asset);
+    try {
+      const statusKesimpulan = document.getElementById('doc-modal-kesimpulan-status').value;
+      const jenis = document.getElementById('doc-modal-jenis').value;
+      const nomor = document.getElementById('doc-modal-nomor').value.trim();
+      const tanggal = document.getElementById('doc-modal-tanggal').value;
+      const perihal = document.getElementById('doc-modal-perihal').value.trim();
+      const fileUrl = document.getElementById('doc-modal-url-input').value.trim();
+      const fileInput = document.getElementById('doc-modal-file-input');
+
+      const asset = this.activeAssets.find(a => a.id === assetId);
+      if (asset) {
+        asset.statusKesimpulanIdle = statusKesimpulan;
+        if (perihal) asset.alasanKesimpulanIdle = perihal;
+        if (typeof DataEngine !== 'undefined' && typeof DataEngine.saveCustomEditsToLocal === 'function') {
+          DataEngine.saveCustomEditsToLocal(asset);
+        }
+      }
+
+      const existingDoc = this.getUploadedDoc(assetId) || {};
+      let fileData = existingDoc.fileData || '';
+      let fileName = existingDoc.fileName || '';
+
+      if (fileInput && fileInput.files && fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        fileName = file.name;
+        if (file.size > 3 * 1024 * 1024) {
+          this.showToast('ℹ️ Berkas >3MB. Disarankan Google Drive agar penyimpanan tetap ringan.', 'info');
+        }
+        fileData = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => resolve('');
+          reader.readAsDataURL(file);
+        });
+      }
+
+      this.uploadedDocsMap[assetId] = {
+        assetId,
+        statusKesimpulan,
+        jenis,
+        nomor,
+        tanggal,
+        perihal,
+        fileUrl,
+        fileData,
+        fileName,
+        uploadedAt: new Date().toISOString()
+      };
+
+      this.saveUploadedDocs();
+      this.showToast(`✅ Dokumen Tindak Lanjut (${statusKesimpulan}) berhasil disimpan!`, 'success');
+      this.closeUploadDokumenModal();
+      this.renderTindakLanjutTable();
+      this.updateTindakSummaryCards();
+    } catch (err) {
+      console.error('Error saving uploaded doc:', err);
+      this.showToast('Gagal menyimpan dokumen. Silakan coba lagi.', 'danger');
+    } finally {
+      if (btnSubmit) {
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = origBtnHtml || '<i class="fa-solid fa-cloud-arrow-up"></i> Simpan Dokumen Tindak Lanjut';
       }
     }
-
-    const existingDoc = this.getUploadedDoc(assetId) || {};
-    let fileData = existingDoc.fileData || '';
-    let fileName = existingDoc.fileName || '';
-
-    if (fileInput && fileInput.files && fileInput.files.length > 0) {
-      const file = fileInput.files[0];
-      fileName = file.name;
-      // Convert to base64 DataURL for local preview
-      fileData = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = () => resolve('');
-        reader.readAsDataURL(file);
-      });
-    }
-
-    this.uploadedDocsMap[assetId] = {
-      assetId,
-      statusKesimpulan,
-      jenis,
-      nomor,
-      tanggal,
-      perihal,
-      fileUrl,
-      fileData,
-      fileName,
-      uploadedAt: new Date().toISOString()
-    };
-
-    this.saveUploadedDocs();
-    this.showToast(`✅ Dokumen Output PMK 120 (${statusKesimpulan}) berhasil disimpan!`, 'success');
-    this.closeUploadDokumenModal();
-    this.renderTindakLanjutTable();
   },
 
   deleteUploadedDocument() {
@@ -3364,6 +3510,7 @@ const App = {
     this.showToast('🗑️ Dokumen tindak lanjut berhasil dihapus.', 'info');
     this.closeUploadDokumenModal();
     this.renderTindakLanjutTable();
+    this.updateTindakSummaryCards();
   },
 
   showToast(message, type = 'success') {

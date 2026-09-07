@@ -286,6 +286,148 @@ body {
   }
 }
 
+/* TINDAK LANJUT SUMMARY CARDS (EXECUTIVE DASHBOARD IN VIEW 2) */
+.tindak-summary-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.tindak-kpi-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tindak-kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.tindak-kpi-card.card-blue { border-left: 4px solid #3b82f6; }
+.tindak-kpi-card.card-mint { border-left: 4px solid #10b981; }
+.tindak-kpi-card.card-rose { border-left: 4px solid #ef4444; }
+.tindak-kpi-card.card-orange { border-left: 4px solid #f59e0b; }
+
+.tindak-kpi-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.tindak-kpi-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tindak-kpi-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+}
+
+.tindak-kpi-icon.mint { background: #d1fae5; color: #059669; }
+.tindak-kpi-icon.rose { background: #fee2e2; color: #dc2626; }
+.tindak-kpi-icon.orange { background: #fef3c7; color: #d97706; }
+.tindak-kpi-icon.blue { background: #dbeafe; color: #2563eb; }
+
+.tindak-kpi-val {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.tindak-kpi-progress {
+  width: 100%;
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 6px 0;
+}
+
+.tindak-kpi-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #10b981);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.tindak-kpi-sub {
+  font-size: 11px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+@media (max-width: 992px) {
+  .tindak-summary-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  #view-tindak-lanjut-container {
+    padding: 10px 8px 70px 8px !important;
+  }
+
+  .tindak-summary-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .tindak-lanjut-header-card {
+    padding: 10px 12px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .tindak-lanjut-header-card h2 {
+    font-size: 15px !important;
+  }
+
+  .tindak-toolbar-card {
+    padding: 10px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .tindak-table th, .tindak-table td {
+    padding: 8px 6px !important;
+    font-size: 11px !important;
+  }
+
+  .tindak-table .action-btns-group {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .modal-form-two-col {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+}
+
 /* TINDAK LANJUT TABLE */
 .tindak-table-wrapper {
   background: #ffffff;

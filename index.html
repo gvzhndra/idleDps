@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
   
   <!-- Soft Pastel Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=3.9.6">
+  <link rel="stylesheet" href="css/styles.css?v=3.9.7">
 </head>
 <body>
 
@@ -460,6 +460,72 @@
       </div>
     </div>
 
+    <!-- 4 EXECUTIVE KPI SUMMARY CARDS: PROGRES & KESIMPULAN TINDAK LANJUT -->
+    <div class="tindak-summary-cards-grid">
+      <!-- Card 1: Total Progres Dokumen Tindak Lanjut -->
+      <div class="tindak-kpi-card card-blue" onclick="App.quickFilterTindakKesimpulan('all')" style="cursor:pointer;" title="Klik untuk menampilkan semua data">
+        <div class="tindak-kpi-header">
+          <span class="tindak-kpi-title"><i class="fa-solid fa-file-circle-check text-primary"></i> Progres Tindak Lanjut</span>
+          <span class="badge badge-pastel-blue" id="tindak-kpi-percent">0%</span>
+        </div>
+        <div class="tindak-kpi-body">
+          <div class="tindak-kpi-val" id="tindak-kpi-uploaded">0 <small style="font-size:13px; color:#64748b; font-weight:600;">/ 248 Unit</small></div>
+          <div class="tindak-kpi-progress">
+            <div class="tindak-kpi-progress-bar" id="tindak-kpi-progress-bar" style="width: 0%;"></div>
+          </div>
+          <div class="tindak-kpi-sub">
+            <span><strong id="tindak-kpi-sudah" class="text-success">0</strong> Sudah Upload</span>
+            <span><strong id="tindak-kpi-belum" class="text-danger">248</strong> Belum</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Kesimpulan Tidak Idle -->
+      <div class="tindak-kpi-card card-mint" onclick="App.quickFilterTindakKesimpulan('TIDAK_IDLE')" style="cursor:pointer;" title="Klik untuk memfilter aset Tidak Idle (Optimal)">
+        <div class="tindak-kpi-header">
+          <span class="tindak-kpi-title"><i class="fa-solid fa-circle-check text-success"></i> Tidak Idle (Optimal)</span>
+          <span class="tindak-kpi-icon mint"><i class="fa-solid fa-building-circle-check"></i></span>
+        </div>
+        <div class="tindak-kpi-body">
+          <div class="tindak-kpi-val text-success" id="tindak-kpi-tidak-idle">0 Unit</div>
+          <div class="tindak-kpi-sub">
+            <span>Optimal digunakan satker</span>
+            <small style="color:#059669; font-weight:700;"><i class="fa-solid fa-filter"></i> Filter</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Kesimpulan Ditetapkan Idle -->
+      <div class="tindak-kpi-card card-rose" onclick="App.quickFilterTindakKesimpulan('IDLE')" style="cursor:pointer;" title="Klik untuk memfilter aset Ditetapkan BMN Idle">
+        <div class="tindak-kpi-header">
+          <span class="tindak-kpi-title"><i class="fa-solid fa-triangle-exclamation text-danger"></i> Ditetapkan BMN Idle</span>
+          <span class="tindak-kpi-icon rose"><i class="fa-solid fa-ban"></i></span>
+        </div>
+        <div class="tindak-kpi-body">
+          <div class="tindak-kpi-val text-danger" id="tindak-kpi-idle">0 Unit</div>
+          <div class="tindak-kpi-sub">
+            <span>SK Penetapan BMN Idle KPKNL</span>
+            <small style="color:#dc2626; font-weight:700;"><i class="fa-solid fa-filter"></i> Filter</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4: Pemantauan Lanjutan -->
+      <div class="tindak-kpi-card card-orange" onclick="App.quickFilterTindakKesimpulan('PEMANTAUAN_LANJUTAN')" style="cursor:pointer;" title="Klik untuk memfilter aset Pemantauan Lanjutan">
+        <div class="tindak-kpi-header">
+          <span class="tindak-kpi-title"><i class="fa-solid fa-arrows-rotate text-warning"></i> Pemantauan Lanjutan</span>
+          <span class="tindak-kpi-icon orange"><i class="fa-solid fa-clock-rotate-left"></i></span>
+        </div>
+        <div class="tindak-kpi-body">
+          <div class="tindak-kpi-val text-warning" id="tindak-kpi-lanjutan">0 Unit</div>
+          <div class="tindak-kpi-sub">
+            <span>Rencana sewa / tusi / alih status</span>
+            <small style="color:#d97706; font-weight:700;"><i class="fa-solid fa-filter"></i> Filter</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- FILTER & SEARCH TOOLBAR -->
     <div class="tindak-toolbar-card mb-3 p-3 bg-white border rounded shadow-sm">
       <div class="d-flex gap-2 align-items-center flex-wrap">
@@ -470,10 +536,12 @@
         <select class="form-control" id="tindak-filter-kabupaten" style="width:200px; height:38px;" onchange="App.handleTindakFilterKabupaten(this.value)">
           <option value="all">Semua Kabupaten/Kota</option>
         </select>
-        <select class="form-control" id="tindak-filter-kesimpulan" style="width:220px; height:38px;" onchange="App.handleTindakFilterKesimpulan(this.value)">
-          <option value="all">Semua Status Kesimpulan</option>
-          <option value="TIDAK_IDLE">🟢 Tidak Idle</option>
-          <option value="IDLE">🔴 BMN Idle</option>
+        <select class="form-control" id="tindak-filter-kesimpulan" style="width:240px; height:38px;" onchange="App.handleTindakFilterKesimpulan(this.value)">
+          <option value="all">Semua Status Dokumen & Kesimpulan</option>
+          <option value="SUDAH_UPLOAD">📄 Sudah Upload Tindak Lanjut</option>
+          <option value="BELUM_UPLOAD">⏳ Belum Upload Dokumen</option>
+          <option value="TIDAK_IDLE">🟢 Tidak Idle (Optimal)</option>
+          <option value="IDLE">🔴 BMN Idle (Ditetapkan)</option>
           <option value="PEMANTAUAN_LANJUTAN">🔄 Pemantauan Lanjutan</option>
         </select>
       </div>
@@ -1248,16 +1316,16 @@
     </div>
   </div>
 
-  <!-- MODAL UPLOAD DOKUMEN OUTPUT PMK 120 (TTD) -->
-  <div class="custom-modal-overlay" id="modal-upload-dokumen-tindak" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); z-index:9999; backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:16px;">
+  <!-- MODAL UPLOAD DOKUMEN TINDAK LANJUT PMK 120 (TTD) -->
+  <div class="custom-modal-overlay" id="modal-upload-dokumen-tindak" onclick="if(event.target === this) App.closeUploadDokumenModal()" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); z-index:9999; backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:16px;">
     <div class="custom-modal-dialog" style="background:#ffffff; width:100%; max-width:580px; border-radius:12px; box-shadow:0 20px 25px -5px rgba(0,0,0,0.2); overflow:hidden; display:flex; flex-direction:column; max-height:90vh;">
       <div class="d-flex justify-content-between align-items-center p-3 border-bottom" style="background:#f8fafc;">
         <div class="d-flex align-items-center gap-2">
           <span style="display:flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:8px; background:#eff6ff; color:#2563eb; font-size:16px;">
-            <i class="fa-solid fa-scale-balanced"></i>
+            <i class="fa-solid fa-cloud-arrow-up"></i>
           </span>
           <div>
-            <h4 style="margin:0; font-size:15px; font-weight:800; color:#1e293b;">Dokumen Output PMK 120 (TTD)</h4>
+            <h4 style="margin:0; font-size:15px; font-weight:800; color:#1e293b;">Upload Dokumen Tindak Lanjut PMK 120</h4>
             <span style="font-size:11px; color:#64748b;" id="doc-modal-asset-subtitle">Dokumen Kesimpulan KPKNL (Idle / Tidak Idle)</span>
           </div>
         </div>
@@ -1273,14 +1341,14 @@
             <div class="d-flex align-items-center gap-2">
               <i class="fa-solid fa-circle-check text-success" style="font-size:18px;"></i>
               <div>
-                <strong style="font-size:12px; color:#166534;" id="doc-modal-status-title">Dokumen Output PMK 120 Tersedia</strong>
+                <strong style="font-size:12px; color:#166534;" id="doc-modal-status-title">Dokumen Tindak Lanjut Tersedia</strong>
                 <div style="font-size:11px; color:#15803d;" id="doc-modal-status-desc">No: - | Tgl: -</div>
               </div>
             </div>
             <div class="d-flex gap-1">
-              <a href="#" target="_blank" rel="noopener noreferrer" id="doc-modal-btn-view-file" class="btn btn-sm btn-primary" style="padding:4px 8px; font-size:11px;">
+              <button type="button" id="doc-modal-btn-view-file" onclick="App.viewCurrentModalDocFile()" class="btn btn-sm btn-primary" style="padding:4px 8px; font-size:11px;">
                 <i class="fa-solid fa-eye"></i> Buka File
-              </a>
+              </button>
               <button type="button" class="btn btn-sm btn-danger" onclick="App.deleteUploadedDocument()" style="padding:4px 8px; font-size:11px;" title="Hapus Dokumen">
                 <i class="fa-solid fa-trash"></i>
               </button>
@@ -1288,11 +1356,11 @@
           </div>
         </div>
 
-        <!-- Form Upload PMK 120 Output -->
+        <!-- Form Upload Tindak Lanjut Output -->
         <form id="form-upload-dokumen-tindak" onsubmit="App.handleSaveUploadedDocument(event)">
-          <div class="row" style="display:flex; gap:8px; margin-bottom:8px;">
+          <div class="row modal-form-two-col" style="display:flex; gap:8px; margin-bottom:8px;">
             <div style="flex:1;">
-              <label style="font-size:11.5px; font-weight:700; color:#334155; margin-bottom:4px; display:block;">Status Kesimpulan PMK 120</label>
+              <label style="font-size:11.5px; font-weight:700; color:#334155; margin-bottom:4px; display:block;">Status Kesimpulan Tindak Lanjut</label>
               <select class="form-control" id="doc-modal-kesimpulan-status" style="width:100%; font-size:12px; border:1px solid #cbd5e1; border-radius:6px; padding:6px 10px; font-weight:700;">
                 <option value="TIDAK_IDLE" style="color:#059669;">🟢 TIDAK IDLE (Optimal Digunakan)</option>
                 <option value="IDLE" style="color:#dc2626;">🔴 BMN IDLE (Ditetapkan Idle)</option>
@@ -1312,7 +1380,7 @@
             </div>
           </div>
 
-          <div class="row" style="display:flex; gap:8px; margin-bottom:8px;">
+          <div class="row modal-form-two-col" style="display:flex; gap:8px; margin-bottom:8px;">
             <div style="flex:1;">
               <label style="font-size:11.5px; font-weight:700; color:#334155; margin-bottom:4px; display:block;">Nomor Surat / Dokumen Output KPKNL</label>
               <input type="text" class="form-control" id="doc-modal-nomor" placeholder="Contoh: S-259/MK/KNL.1401/2026" required style="width:100%; font-size:12px; border:1px solid #cbd5e1; border-radius:6px; padding:6px 10px;">
@@ -1329,8 +1397,9 @@
           </div>
 
           <div class="form-group mb-2">
-            <label style="font-size:11.5px; font-weight:700; color:#334155; margin-bottom:4px; display:block;">Unggah File Dokumen Output (PDF / Scan TTD Kepala KPKNL)</label>
+            <label style="font-size:11.5px; font-weight:700; color:#334155; margin-bottom:4px; display:block;">Unggah File Dokumen Tindak Lanjut (PDF / Scan TTD Kepala KPKNL)</label>
             <input type="file" class="form-control" id="doc-modal-file-input" accept=".pdf,.png,.jpg,.jpeg,.doc,.docx" style="width:100%; font-size:12px; border:1px solid #cbd5e1; border-radius:6px; padding:6px 10px;">
+            <div id="doc-modal-file-preview-info" style="display:none; font-size:11px; color:#2563eb; margin-top:4px; font-weight:600;"></div>
             <small class="text-muted" style="font-size:10.5px;">Mendukung berkas PDF resmi, JPG, PNG, atau DOCX.</small>
           </div>
 
@@ -1342,7 +1411,7 @@
           <div class="d-flex justify-content-end gap-2 mt-3 pt-2 border-top">
             <button type="button" class="btn btn-secondary" onclick="App.closeUploadDokumenModal()" style="font-size:12px;">Batal</button>
             <button type="submit" class="btn btn-primary" id="btn-save-doc-upload" style="font-size:12px; background:#2563eb; border-color:#2563eb;">
-              <i class="fa-solid fa-cloud-arrow-up"></i> Simpan Dokumen Output
+              <i class="fa-solid fa-cloud-arrow-up"></i> Simpan Dokumen Tindak Lanjut
             </button>
           </div>
         </form>
@@ -1391,8 +1460,8 @@
   <script src="js/bmn_dataset.js?v=3.9.2"></script>
   <script src="js/data.js?v=3.9.2"></script>
   <script src="js/recommendation.js?v=3.9.2"></script>
-  <script src="js/map.js?v=3.9.6"></script>
+  <script src="js/map.js?v=3.9.7"></script>
   <script src="js/laporan.js?v=3.9.2"></script>
-  <script src="js/app.js?v=3.9.6"></script>
+  <script src="js/app.js?v=3.9.7"></script>
 </body>
 </html>
