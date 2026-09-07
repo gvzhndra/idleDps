@@ -928,12 +928,20 @@ body {
   align-items: flex-start;
 }
 
-/* MAIN WORKSPACE */
+/* VIEW DASHBOARD CONTAINER & MAIN WORKSPACE */
+#view-dashboard-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
 .main-workspace {
   display: flex;
   flex: 1;
   min-height: 0;
-  height: 100%;
   position: relative;
   overflow: hidden;
 }
@@ -1874,6 +1882,7 @@ body {
   padding: 10px 12px 6px 12px;
   background: #ffffff;
   border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
 }
 
 .search-box {

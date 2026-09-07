@@ -2960,7 +2960,7 @@ const App = {
     const btnTindak = document.getElementById('btn-view-tindak-lanjut');
 
     if (viewName === 'dashboard') {
-      if (dashContainer) dashContainer.style.display = 'block';
+      if (dashContainer) dashContainer.style.display = 'flex';
       if (tindakContainer) tindakContainer.style.display = 'none';
       if (btnDash) btnDash.classList.add('active');
       if (btnTindak) btnTindak.classList.remove('active');

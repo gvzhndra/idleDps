@@ -76,11 +76,10 @@ const MapEngine = {
           const { width, height } = entry.contentRect;
           if (width > 50 && height > 50 && this.map) {
             this.map.invalidateSize({ pan: false, animate: false });
-            if (isFirstValidSize) {
+            const center = this.map.getCenter();
+            if (!this.activeAssetId && (isFirstValidSize || (center && center.lat > -2))) {
               isFirstValidSize = false;
-              if (!this.activeAssetId) {
-                this.map.setView(CONFIG.MAP.DEFAULT_CENTER, CONFIG.MAP.DEFAULT_ZOOM, { animate: false });
-              }
+              this.map.setView(CONFIG.MAP.DEFAULT_CENTER, CONFIG.MAP.DEFAULT_ZOOM, { animate: false });
             }
           }
         }
