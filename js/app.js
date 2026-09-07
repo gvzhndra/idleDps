@@ -78,12 +78,15 @@ const App = {
     this.updateExportCountBadge();
 
     // Ensure map container viewport size is computed accurately after flex layout settles.
-    // Multiple staggered calls are necessary: on fullscreen load the layout may not be
-    // fully computed by 100ms, so we fire at 100ms, 500ms, and 1200ms as a final safety net.
-    [100, 500, 1200].forEach(delay => {
+    // Multiple staggered calls are made with pan: false to prevent Leaflet from panning North into South China Sea.
+    // Explicitly re-anchor to Bali if no asset is currently selected.
+    [100, 400, 1000].forEach(delay => {
       setTimeout(() => {
         if (typeof MapEngine !== 'undefined' && MapEngine.map) {
-          MapEngine.map.invalidateSize({ animate: false });
+          MapEngine.map.invalidateSize({ pan: false, animate: false });
+          if (!MapEngine.activeAssetId) {
+            MapEngine.map.setView(CONFIG.MAP.DEFAULT_CENTER, CONFIG.MAP.DEFAULT_ZOOM, { animate: false });
+          }
         }
       }, delay);
     });
@@ -95,7 +98,7 @@ const App = {
       clearTimeout(_mapResizeTimer);
       _mapResizeTimer = setTimeout(() => {
         if (typeof MapEngine !== 'undefined' && MapEngine.map) {
-          MapEngine.map.invalidateSize({ animate: false });
+          MapEngine.map.invalidateSize({ pan: false, animate: false });
         }
       }, 150);
     });
@@ -488,7 +491,7 @@ const App = {
     }
 
     setTimeout(() => {
-      if (MapEngine.map) MapEngine.map.invalidateSize();
+      if (MapEngine.map) MapEngine.map.invalidateSize({ pan: false });
     }, 320);
   },
 
@@ -519,7 +522,7 @@ const App = {
     }
 
     setTimeout(() => {
-      if (MapEngine.map) MapEngine.map.invalidateSize();
+      if (MapEngine.map) MapEngine.map.invalidateSize({ pan: false });
     }, 320);
   },
 
@@ -1938,7 +1941,7 @@ const App = {
     }
 
     if (targetTab === 'map' && typeof MapEngine !== 'undefined' && MapEngine.map) {
-      setTimeout(() => { MapEngine.map.invalidateSize(); }, 300);
+      setTimeout(() => { MapEngine.map.invalidateSize({ pan: false }); }, 300);
     }
   },
 
@@ -2963,7 +2966,7 @@ const App = {
       if (btnTindak) btnTindak.classList.remove('active');
       setTimeout(() => {
         if (typeof MapEngine !== 'undefined' && MapEngine.map) {
-          MapEngine.map.invalidateSize();
+          MapEngine.map.invalidateSize({ pan: false });
         }
       }, 100);
     } else {

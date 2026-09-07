@@ -59,6 +59,39 @@ const MapEngine = {
 
     // Render KPKNL Denpasar Office Marker
     this.renderKPKNLMarker();
+
+    // Modern ResizeObserver to handle container size settling accurately.
+    // CRITICAL: Leaflet's default invalidateSize uses pan: true, which calculates
+    // offset = oldCenter - newCenter. When container height is initially 0 or partial,
+    // this pans the map ~400-800px Northwards directly into the South China Sea!
+    // Using pan: false and re-anchoring to Bali on the first valid render fixes this completely.
+    const mapEl = document.getElementById(containerId);
+    if (mapEl && typeof ResizeObserver !== 'undefined') {
+      let isFirstValidSize = true;
+      if (this._resizeObserver) {
+        this._resizeObserver.disconnect();
+      }
+      this._resizeObserver = new ResizeObserver((entries) => {
+        for (let entry of entries) {
+          const { width, height } = entry.contentRect;
+          if (width > 50 && height > 50 && this.map) {
+            this.map.invalidateSize({ pan: false, animate: false });
+            if (isFirstValidSize) {
+              isFirstValidSize = false;
+              if (!this.activeAssetId) {
+                this.map.setView(CONFIG.MAP.DEFAULT_CENTER, CONFIG.MAP.DEFAULT_ZOOM, { animate: false });
+              }
+            }
+          }
+        }
+      });
+      this._resizeObserver.observe(mapEl);
+    }
+  },
+
+  invalidateSize(options = {}) {
+    if (!this.map) return;
+    this.map.invalidateSize(Object.assign({ pan: false, animate: false }, options));
   },
 
   switchTileLayer(layerKey) {
