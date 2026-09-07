@@ -2838,7 +2838,7 @@ const App = {
     const input = document.getElementById('apps-script-url-input');
     if (input) input.value = CONFIG.APPS_SCRIPT.WEB_APP_URL || '';
     const cartoInput = document.getElementById('carto-api-key-input');
-    if (cartoInput) cartoInput.value = localStorage.getItem('bmn_carto_api_key') || '';
+    if (cartoInput) cartoInput.value = localStorage.getItem('bmn_carto_api_key') || CONFIG.MAP.CARTO_API_KEY || '';
     const modal = document.getElementById('sheets-sync-modal');
     if (modal) modal.classList.add('show');
   },

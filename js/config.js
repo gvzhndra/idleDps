@@ -24,18 +24,18 @@ const CONFIG = {
     DEFAULT_ZOOM: 10,
     MIN_ZOOM: 8,
     MAX_ZOOM: 18,
-    CARTO_API_KEY: localStorage.getItem('bmn_carto_api_key') || '',
+    CARTO_API_KEY: localStorage.getItem('bmn_carto_api_key') || 'cb1_2zjh_1_4bafe7709c5c2cc7ddf12e81',
     TILE_LAYERS: {
       PASTEL_LIGHT: {
-        // CARTO Voyager — lightweight, clean, fast. No API key needed for moderate traffic.
-        url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+        // CARTO Voyager — authenticated raster basemap with high-performance quota
+        url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=' + (localStorage.getItem('bmn_carto_api_key') || 'cb1_2zjh_1_4bafe7709c5c2cc7ddf12e81'),
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
         maxZoom: 19
       },
       DARK_EXECUTIVE: {
-        // CARTO Dark Matter — sleek dark basemap, no API key needed
-        url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+        // CARTO Dark Matter — authenticated sleek dark basemap with high-performance quota
+        url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=' + (localStorage.getItem('bmn_carto_api_key') || 'cb1_2zjh_1_4bafe7709c5c2cc7ddf12e81'),
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
         maxZoom: 19
