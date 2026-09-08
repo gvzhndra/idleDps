@@ -467,6 +467,14 @@ const App = {
       if (lapModal && (lapModal.style.display === 'flex' || lapModal.classList.contains('show'))) {
         if (e.key === 'Escape') this.closeLaporanPMKModal();
       }
+      const sertModal = document.getElementById('modal-rekam-sertipikat');
+      if (sertModal && (sertModal.style.display === 'flex' || sertModal.classList.contains('show'))) {
+        if (e.key === 'Escape') this.closeRekamSertipikatModal();
+      }
+      const geoModal = document.getElementById('modal-rekam-geojson');
+      if (geoModal && (geoModal.style.display === 'flex' || geoModal.classList.contains('show'))) {
+        if (e.key === 'Escape') this.closeRekamGeoJSONModal();
+      }
     });
 
     document.querySelectorAll('.btn-tile-switch:not(#btn-toggle-pola-ruang)').forEach(btn => {
@@ -1016,11 +1024,17 @@ const App = {
       catchmentData = await SpatialEngine.fetchDynamicPOIsInCatchment(asset.lat, asset.lng, 500);
       MapEngine.renderNearbyPOIs(catchmentData.pois);
       recommendation = RecommendationEngine.generateRecommendation(asset, catchmentData.pois);
+
+      // Render GeoJSON polygon boundary if available
+      if (typeof MapEngine.renderAssetPolygon === 'function') {
+        MapEngine.renderAssetPolygon(asset);
+      }
     } else {
       this.showToast(`📍 Aset belum ada titik GPS. Menampilkan data surat & atribut satker ${asset.namaSatker}.`, 'warning');
       if (MapEngine.connectorLinesGroup) MapEngine.connectorLinesGroup.clearLayers();
       if (typeof MapEngine.clearCatchmentCircle === 'function') MapEngine.clearCatchmentCircle();
       if (typeof MapEngine.clearPolaRuang === 'function') MapEngine.clearPolaRuang();
+      if (typeof MapEngine.clearAssetPolygon === 'function') MapEngine.clearAssetPolygon();
     }
 
     this.renderDetailPanel(asset, catchmentData, recommendation);
@@ -2616,6 +2630,9 @@ const App = {
     document.getElementById('edit-rekomendasi').value = asset.rekomendasi || 'Sewa Komersial / Kerja Sama Pemanfaatan (KSP)';
     document.getElementById('edit-catatan-tim').value = asset.catatanTim || '';
 
+    // Update GeoJSON & Sertipikat badges
+    this.updateGeoJSONBadges(asset);
+
     const modal = document.getElementById('edit-asset-modal');
     if (modal) {
       modal.style.display = 'flex';
@@ -2624,6 +2641,8 @@ const App = {
   },
 
   closeEditAssetModal() {
+    this.closeRekamSertipikatModal();
+    this.closeRekamGeoJSONModal();
     const modal = document.getElementById('edit-asset-modal');
     if (modal) {
       modal.style.display = 'none';
@@ -2707,8 +2726,25 @@ const App = {
       const storedEdits = JSON.parse(localStorage.getItem('bmn_custom_edits') || '{}');
       storedEdits[asset.id] = { ...asset };
       localStorage.setItem('bmn_custom_edits', JSON.stringify(storedEdits));
+
+      if (asset.geojson) {
+        const storedGeo = JSON.parse(localStorage.getItem('bmn_custom_geojson') || '{}');
+        storedGeo[asset.id] = asset.geojson;
+        localStorage.setItem('bmn_custom_geojson', JSON.stringify(storedGeo));
+      }
+
+      if (Array.isArray(asset.sertipikatList)) {
+        const storedSert = JSON.parse(localStorage.getItem('bmn_custom_sertipikat') || '{}');
+        storedSert[asset.id] = asset.sertipikatList;
+        localStorage.setItem('bmn_custom_sertipikat', JSON.stringify(storedSert));
+      }
     } catch(e) {
       console.warn('LocalStorage save edit error:', e);
+    }
+
+    // If currently active on map, update polygon render
+    if (typeof MapEngine !== 'undefined' && MapEngine.activeAssetId === asset.id) {
+      MapEngine.renderAssetPolygon(asset);
     }
 
     // 2. Post edit to Google Apps Script Web App
@@ -2756,7 +2792,8 @@ const App = {
           targetPemantauan: asset.targetPemantauan,
           rekomendasiUser: asset.rekomendasiUser,
           rekomendasi: asset.rekomendasi,
-          catatanTim: asset.catatanTim
+          catatanTim: asset.catatanTim,
+          geojson: asset.geojson ? (typeof asset.geojson === 'string' ? asset.geojson : JSON.stringify(asset.geojson)) : ''
         })
       }).catch(err => console.warn('Sync edit to Sheets error:', err));
     }
@@ -2771,6 +2808,504 @@ const App = {
       const catchment = SpatialEngine.getCatchmentAnalysis(asset.lat, asset.lng);
       const rec = typeof RecommendationEngine !== 'undefined' ? RecommendationEngine.getRecommendation(asset) : {};
       this.renderDetailPanel(asset, catchment, rec);
+    }
+  },
+
+  /* ==========================================================================
+     REKAM DOKUMEN SERTIPIKAT TANAH
+     ========================================================================== */
+  openRekamSertipikatModal() {
+    const assetId = document.getElementById('edit-asset-id')?.value || this.selectedAsset?.id;
+    const asset = this.getAsset(assetId);
+    if (!asset) {
+      this.showToast('Pilih aset terlebih dahulu untuk merekam data sertipikat.', 'warning');
+      return;
+    }
+
+    const modal = document.getElementById('modal-rekam-sertipikat');
+    if (!modal) return;
+
+    // Prefill with asset data
+    const jenisEl = document.getElementById('sertipikat-input-jenis');
+    if (jenisEl) jenisEl.value = asset.jenisDokumen || 'Sertipikat Hak Pakai (SHP)';
+
+    const noEl = document.getElementById('sertipikat-input-nomor');
+    if (noEl) noEl.value = asset.noDokumen || '';
+
+    const tglEl = document.getElementById('sertipikat-input-tgl');
+    if (tglEl) tglEl.value = asset.tglDokumen || '';
+
+    const luasEl = document.getElementById('sertipikat-input-luas');
+    if (luasEl) luasEl.value = asset.luasSertipikat || asset.luas || asset.luas_m2 || '';
+
+    const anEl = document.getElementById('sertipikat-input-atasnama');
+    if (anEl) anEl.value = asset.atasNamaDokumen || 'Pemerintah Republik Indonesia';
+
+    const nibEl = document.getElementById('sertipikat-input-nib');
+    if (nibEl) nibEl.value = asset.nib || '';
+
+    const statusFisikEl = document.getElementById('sertipikat-input-status-fisik');
+    if (statusFisikEl) statusFisikEl.value = asset.statusFisikSertipikat || 'Asli disimpan di KPKNL Denpasar';
+
+    const linkEl = document.getElementById('sertipikat-input-link');
+    if (linkEl) linkEl.value = asset.pdfSertipikatUrl || '';
+
+    // Render multi-sertipikat rows
+    const container = document.getElementById('multi-sertipikat-container');
+    if (container) {
+      container.innerHTML = '';
+      if (Array.isArray(asset.sertipikatList) && asset.sertipikatList.length > 0) {
+        asset.sertipikatList.forEach(s => this.addMultiSertipikatRow(s));
+      }
+    }
+
+    modal.style.display = 'flex';
+    modal.classList.add('show');
+  },
+
+  closeRekamSertipikatModal() {
+    const modal = document.getElementById('modal-rekam-sertipikat');
+    if (modal) {
+      modal.style.display = 'none';
+      modal.classList.remove('show');
+    }
+  },
+
+  addMultiSertipikatRow(defaultData = null) {
+    const container = document.getElementById('multi-sertipikat-container');
+    if (!container) return;
+
+    const jenis = defaultData?.jenis || 'SHP';
+    const nomor = defaultData?.nomor || '';
+    const luas = defaultData?.luas || '';
+    const tgl = defaultData?.tgl || '';
+
+    const row = document.createElement('div');
+    row.className = 'd-flex gap-2 align-items-center mb-2 p-2 border rounded bg-white multi-sertipikat-row';
+    row.innerHTML = `
+      <select class="form-control multi-sert-jenis" style="width:110px; font-size:11px; padding:4px 6px;">
+        <option value="SHP" ${jenis === 'SHP' ? 'selected' : ''}>SHP</option>
+        <option value="SHM" ${jenis === 'SHM' ? 'selected' : ''}>SHM</option>
+        <option value="HPL" ${jenis === 'HPL' ? 'selected' : ''}>HPL</option>
+        <option value="HGB" ${jenis === 'HGB' ? 'selected' : ''}>HGB</option>
+        <option value="Girik" ${jenis === 'Girik' ? 'selected' : ''}>Girik</option>
+        <option value="Lainnya" ${jenis === 'Lainnya' ? 'selected' : ''}>Lainnya</option>
+      </select>
+      <input type="text" class="form-control multi-sert-nomor" placeholder="Nomor Sertipikat" value="${nomor}" style="flex:1; font-size:11px; padding:4px 6px;" required>
+      <input type="number" class="form-control multi-sert-luas" placeholder="Luas m²" value="${luas}" style="width:90px; font-size:11px; padding:4px 6px;">
+      <input type="text" class="form-control multi-sert-tgl" placeholder="Tgl Terbit" value="${tgl}" style="width:110px; font-size:11px; padding:4px 6px;">
+      <button type="button" class="btn btn-sm btn-outline-danger" onclick="this.closest('.multi-sertipikat-row').remove()" title="Hapus Bidang" style="padding:4px 7px; font-size:11px;">
+        <i class="fa-solid fa-trash"></i>
+      </button>
+    `;
+    container.appendChild(row);
+  },
+
+  handleSaveRekamSertipikat(event) {
+    if (event) event.preventDefault();
+    const assetId = document.getElementById('edit-asset-id')?.value || this.selectedAsset?.id;
+    const asset = this.getAsset(assetId);
+    if (!asset) return;
+
+    const jenis = document.getElementById('sertipikat-input-jenis')?.value || 'Sertipikat Hak Pakai (SHP)';
+    const nomor = document.getElementById('sertipikat-input-nomor')?.value.trim() || '';
+    const tgl = document.getElementById('sertipikat-input-tgl')?.value.trim() || '';
+    const luas = parseFloat(document.getElementById('sertipikat-input-luas')?.value) || 0;
+    const atasNama = document.getElementById('sertipikat-input-atasnama')?.value.trim() || 'Pemerintah Republik Indonesia';
+    const nib = document.getElementById('sertipikat-input-nib')?.value.trim() || '';
+    const statusFisik = document.getElementById('sertipikat-input-status-fisik')?.value || '';
+    const linkScan = document.getElementById('sertipikat-input-link')?.value.trim() || '';
+
+    // Collect multi-sertipikat rows
+    const rows = document.querySelectorAll('.multi-sertipikat-row');
+    const multiList = [];
+    rows.forEach(r => {
+      const rJenis = r.querySelector('.multi-sert-jenis')?.value || 'SHP';
+      const rNomor = r.querySelector('.multi-sert-nomor')?.value.trim() || '';
+      const rLuas = parseFloat(r.querySelector('.multi-sert-luas')?.value) || 0;
+      const rTgl = r.querySelector('.multi-sert-tgl')?.value.trim() || '';
+      if (rNomor) {
+        multiList.push({ jenis: rJenis, nomor: rNomor, luas: rLuas, tgl: rTgl });
+      }
+    });
+
+    // Update asset properties
+    asset.jenisDokumen = jenis;
+    asset.noDokumen = nomor;
+    asset.tglDokumen = tgl;
+    asset.luasSertipikat = luas;
+    asset.atasNamaDokumen = atasNama;
+    asset.nib = nib;
+    asset.statusFisikSertipikat = statusFisik;
+    asset.pdfSertipikatUrl = linkScan;
+    asset.sertipikatList = multiList;
+
+    // Synchronize into edit modal inputs
+    const editNoEl = document.getElementById('edit-no-dokumen');
+    if (editNoEl) editNoEl.value = nomor;
+    const editJenisEl = document.getElementById('edit-jenis-dokumen');
+    if (editJenisEl) editJenisEl.value = jenis;
+    const editTglEl = document.getElementById('edit-tgl-dokumen');
+    if (editTglEl) editTglEl.value = tgl;
+    const editAnEl = document.getElementById('edit-atas-nama-dokumen');
+    if (editAnEl) editAnEl.value = atasNama;
+
+    // Recalculate completion score
+    this.calculateCompletionScore(asset);
+
+    // Save persistent
+    try {
+      const storedSert = JSON.parse(localStorage.getItem('bmn_custom_sertipikat') || '{}');
+      storedSert[asset.id] = multiList;
+      localStorage.setItem('bmn_custom_sertipikat', JSON.stringify(storedSert));
+    } catch(e) {}
+
+    this.closeRekamSertipikatModal();
+    this.showToast(`✅ Berhasil merekam data sertipikat: ${nomor}`, 'success');
+  },
+
+  /* ==========================================================================
+     REKAM GEOJSON (BATAS POLIGON BIDANG ASET)
+     ========================================================================== */
+  openRekamGeoJSONModal() {
+    const assetId = document.getElementById('edit-asset-id')?.value || this.selectedAsset?.id;
+    const asset = this.getAsset(assetId);
+    if (!asset) {
+      this.showToast('Pilih aset terlebih dahulu untuk merekam GeoJSON.', 'warning');
+      return;
+    }
+
+    const modal = document.getElementById('modal-rekam-geojson');
+    if (!modal) return;
+
+    this.switchGeoJSONTab('upload');
+
+    // Update status bar
+    const titleEl = document.getElementById('geojson-status-title');
+    const descEl = document.getElementById('geojson-status-desc');
+    const btnDel = document.getElementById('btn-delete-geojson');
+    const rawText = document.getElementById('geojson-raw-textarea');
+    const luasDisplay = document.getElementById('auto-poly-luas-display');
+
+    if (luasDisplay) {
+      luasDisplay.textContent = Number(asset.luas || asset.luas_m2 || 0).toLocaleString('id-ID');
+    }
+
+    if (asset.geojson) {
+      const geoStr = typeof asset.geojson === 'object' ? JSON.stringify(asset.geojson, null, 2) : String(asset.geojson);
+      if (titleEl) titleEl.innerHTML = '<span class="text-success"><i class="fa-solid fa-circle-check"></i> Poligon GeoJSON Tersedia</span>';
+      if (descEl) descEl.textContent = 'Bidang tanah sudah memiliki data koordinat batas poligon spasial.';
+      if (btnDel) btnDel.style.display = 'inline-block';
+      if (rawText) rawText.value = geoStr;
+      this.formatAndValidateGeoJSONTextarea(false);
+    } else {
+      if (titleEl) titleEl.innerHTML = '<span class="text-muted"><i class="fa-solid fa-circle-dot"></i> Belum Ada Poligon</span>';
+      if (descEl) descEl.textContent = 'Aset saat ini hanya memiliki titik koordinat (point) tanpa batas poligon.';
+      if (btnDel) btnDel.style.display = 'none';
+      if (rawText) rawText.value = '';
+      const prevBox = document.getElementById('geojson-preview-box');
+      if (prevBox) prevBox.style.display = 'none';
+    }
+
+    modal.style.display = 'flex';
+    modal.classList.add('show');
+  },
+
+  closeRekamGeoJSONModal() {
+    const modal = document.getElementById('modal-rekam-geojson');
+    if (modal) {
+      modal.style.display = 'none';
+      modal.classList.remove('show');
+    }
+  },
+
+  switchGeoJSONTab(tabName) {
+    const tabUpload = document.getElementById('tab-geojson-upload');
+    const tabPaste = document.getElementById('tab-geojson-paste');
+    const tabAuto = document.getElementById('tab-geojson-auto');
+
+    const btnUpload = document.getElementById('btn-tab-geojson-upload');
+    const btnPaste = document.getElementById('btn-tab-geojson-paste');
+    const btnAuto = document.getElementById('btn-tab-geojson-auto');
+
+    if (tabUpload) tabUpload.style.display = tabName === 'upload' ? 'block' : 'none';
+    if (tabPaste) tabPaste.style.display = tabName === 'paste' ? 'block' : 'none';
+    if (tabAuto) tabAuto.style.display = tabName === 'auto' ? 'block' : 'none';
+
+    if (btnUpload) btnUpload.className = tabName === 'upload' ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-secondary';
+    if (btnPaste) btnPaste.className = tabName === 'paste' ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-secondary';
+    if (btnAuto) btnAuto.className = tabName === 'auto' ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-secondary';
+  },
+
+  handleGeoJSONFileInput(file) {
+    if (!file) return;
+
+    const fileInfo = document.getElementById('geojson-upload-file-info');
+    if (fileInfo) {
+      fileInfo.style.display = 'block';
+      fileInfo.textContent = `Memproses: ${file.name} (${(file.size / 1024).toFixed(1)} KB)...`;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const text = e.target.result;
+        const parsed = JSON.parse(text);
+        const rawText = document.getElementById('geojson-raw-textarea');
+        if (rawText) {
+          rawText.value = JSON.stringify(parsed, null, 2);
+        }
+        if (fileInfo) {
+          fileInfo.innerHTML = `✅ <strong>${file.name}</strong> berhasil dimuat!`;
+        }
+        this.formatAndValidateGeoJSONTextarea(true);
+      } catch (err) {
+        if (fileInfo) {
+          fileInfo.innerHTML = `❌ Berkas bukan format JSON/GeoJSON yang valid: ${err.message}`;
+          fileInfo.style.color = '#dc2626';
+        }
+      }
+    };
+    reader.readAsText(file);
+  },
+
+  formatAndValidateGeoJSONTextarea(showAlert = true) {
+    const rawText = document.getElementById('geojson-raw-textarea');
+    const prevBox = document.getElementById('geojson-preview-box');
+    const prevDet = document.getElementById('geojson-preview-details');
+    if (!rawText || !rawText.value.trim()) {
+      if (prevBox) prevBox.style.display = 'none';
+      if (showAlert) this.showToast('Textarea GeoJSON masih kosong.', 'warning');
+      return null;
+    }
+
+    try {
+      let data = JSON.parse(rawText.value.trim());
+
+      // Wrap raw coordinates or Geometry into standard GeoJSON Feature if needed
+      if (data.type === 'Polygon' || data.type === 'MultiPolygon') {
+        data = { type: 'Feature', geometry: data, properties: {} };
+      } else if (Array.isArray(data) && Array.isArray(data[0])) {
+        data = {
+          type: 'Feature',
+          geometry: { type: 'Polygon', coordinates: [data] },
+          properties: {}
+        };
+      }
+
+      rawText.value = JSON.stringify(data, null, 2);
+
+      // Validate coordinates count
+      let coordCount = 0;
+      let geomType = 'Unknown';
+      if (data.type === 'FeatureCollection' && Array.isArray(data.features) && data.features.length > 0) {
+        geomType = `FeatureCollection (${data.features.length} fitur)`;
+        coordCount = data.features.reduce((acc, f) => acc + (f.geometry?.coordinates?.flat(Infinity)?.length || 0), 0) / 2;
+      } else if (data.type === 'Feature' && data.geometry) {
+        geomType = data.geometry.type || 'Feature';
+        coordCount = (data.geometry.coordinates?.flat(Infinity)?.length || 0) / 2;
+      }
+
+      if (prevBox && prevDet) {
+        prevBox.style.display = 'block';
+        prevBox.style.background = '#eff6ff';
+        prevBox.style.borderColor = '#bfdbfe';
+        prevDet.innerHTML = `
+          <div><strong>Tipe Geometri:</strong> ${geomType}</div>
+          <div><strong>Jumlah Titik Koordinat (Vertex):</strong> ${Math.round(coordCount)} titik</div>
+          <div style="color:#059669; font-weight:600; margin-top:2px;">
+            <i class="fa-solid fa-check-double"></i> Siap disimpan dan digambar pada peta interaktif.
+          </div>
+        `;
+      }
+
+      if (showAlert) {
+        this.showToast('✅ Struktur GeoJSON valid & rapi!', 'success');
+      }
+
+      return data;
+    } catch (err) {
+      if (prevBox && prevDet) {
+        prevBox.style.display = 'block';
+        prevBox.style.background = '#fef2f2';
+        prevBox.style.borderColor = '#fecaca';
+        prevDet.innerHTML = `<span class="text-danger"><i class="fa-solid fa-triangle-exclamation"></i> Format GeoJSON tidak valid: ${err.message}</span>`;
+      }
+      if (showAlert) {
+        this.showToast(`Format GeoJSON tidak valid: ${err.message}`, 'error');
+      }
+      return null;
+    }
+  },
+
+  generateEstimatedPolygon() {
+    const assetId = document.getElementById('edit-asset-id')?.value || this.selectedAsset?.id;
+    const asset = this.getAsset(assetId);
+    if (!asset) return;
+
+    const lat = typeof asset.lat === 'number' ? asset.lat : parseFloat(asset.lat);
+    const lng = typeof asset.lng === 'number' ? asset.lng : parseFloat(asset.lng);
+
+    if (isNaN(lat) || isNaN(lng) || (lat === 0 && lng === 0)) {
+      this.showToast('Aset belum memiliki titik koordinat lat/lng untuk membuat poligon estimasi.', 'warning');
+      return;
+    }
+
+    const luas = parseFloat(asset.luas || asset.luas_m2) || 500;
+    const ratioType = document.getElementById('auto-poly-ratio')?.value || 'square';
+
+    let ratioW = 1;
+    let ratioH = 1;
+    if (ratioType === 'rect-ew') {
+      ratioW = 1.5;
+      ratioH = 1 / 1.5;
+    } else if (ratioType === 'rect-ns') {
+      ratioW = 1 / 1.5;
+      ratioH = 1.5;
+    }
+
+    // Side lengths in meters
+    const sideBase = Math.sqrt(luas);
+    const widthM = sideBase * ratioW;
+    const heightM = sideBase * ratioH;
+
+    const halfWM = widthM / 2;
+    const halfHM = heightM / 2;
+
+    // Convert meters to delta degrees
+    const deltaLat = halfHM / 111320;
+    const deltaLng = halfWM / (111320 * Math.cos(lat * Math.PI / 180));
+
+    // 4 Corner coordinates (Polygon closed ring: [lng, lat])
+    const nw = [Number((lng - deltaLng).toFixed(7)), Number((lat + deltaLat).toFixed(7))];
+    const ne = [Number((lng + deltaLng).toFixed(7)), Number((lat + deltaLat).toFixed(7))];
+    const se = [Number((lng + deltaLng).toFixed(7)), Number((lat - deltaLat).toFixed(7))];
+    const sw = [Number((lng - deltaLng).toFixed(7)), Number((lat - deltaLat).toFixed(7))];
+
+    const polyGeoJSON = {
+      type: 'Feature',
+      properties: {
+        namaBarang: asset.namaBarang || asset.uraian_bmn || '',
+        nup: asset.nup || '1',
+        noSertipikat: asset.noDokumen || 'Estimasi Lapangan',
+        luas_m2: luas,
+        sumber: 'Estimasi Otomatis Berdasarkan Luas & Titik Tengah'
+      },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [[nw, ne, se, sw, nw]]
+      }
+    };
+
+    const rawText = document.getElementById('geojson-raw-textarea');
+    if (rawText) {
+      rawText.value = JSON.stringify(polyGeoJSON, null, 2);
+    }
+
+    this.switchGeoJSONTab('paste');
+    this.formatAndValidateGeoJSONTextarea(false);
+
+    this.showToast(`✨ Berhasil membuat poligon estimasi seluas ${Number(luas).toLocaleString('id-ID')} m²!`, 'info');
+  },
+
+  handleSaveRekamGeoJSON() {
+    const assetId = document.getElementById('edit-asset-id')?.value || this.selectedAsset?.id;
+    const asset = this.getAsset(assetId);
+    if (!asset) return;
+
+    const validGeo = this.formatAndValidateGeoJSONTextarea(false);
+    if (!validGeo) {
+      this.showToast('Harap masukkan atau buat data GeoJSON yang valid terlebih dahulu.', 'warning');
+      return;
+    }
+
+    asset.geojson = validGeo;
+
+    // Save to localStorage
+    try {
+      const storedGeo = JSON.parse(localStorage.getItem('bmn_custom_geojson') || '{}');
+      storedGeo[asset.id] = validGeo;
+      localStorage.setItem('bmn_custom_geojson', JSON.stringify(storedGeo));
+
+      const storedEdits = JSON.parse(localStorage.getItem('bmn_custom_edits') || '{}');
+      if (storedEdits[asset.id]) {
+        storedEdits[asset.id].geojson = validGeo;
+        localStorage.setItem('bmn_custom_edits', JSON.stringify(storedEdits));
+      }
+    } catch (e) {
+      console.warn('Gagal menyimpan geojson ke local:', e);
+    }
+
+    // Update badges
+    this.updateGeoJSONBadges(asset);
+
+    // If on map, immediately render the polygon
+    if (typeof MapEngine !== 'undefined' && MapEngine.activeAssetId === asset.id) {
+      MapEngine.renderAssetPolygon(asset);
+    }
+
+    this.closeRekamGeoJSONModal();
+    this.showToast(`🗺️ Batas poligon GeoJSON berhasil disimpan & ditampilkan di peta!`, 'success');
+  },
+
+  handleDeleteGeoJSON() {
+    const assetId = document.getElementById('edit-asset-id')?.value || this.selectedAsset?.id;
+    const asset = this.getAsset(assetId);
+    if (!asset) return;
+
+    if (!confirm('Apakah Anda yakin ingin menghapus data batas poligon GeoJSON untuk aset ini?')) {
+      return;
+    }
+
+    asset.geojson = null;
+
+    // Remove from localStorage
+    try {
+      const storedGeo = JSON.parse(localStorage.getItem('bmn_custom_geojson') || '{}');
+      delete storedGeo[asset.id];
+      localStorage.setItem('bmn_custom_geojson', JSON.stringify(storedGeo));
+
+      const storedEdits = JSON.parse(localStorage.getItem('bmn_custom_edits') || '{}');
+      if (storedEdits[asset.id]) {
+        delete storedEdits[asset.id].geojson;
+        localStorage.setItem('bmn_custom_edits', JSON.stringify(storedEdits));
+      }
+    } catch (e) {}
+
+    // Clear from map
+    if (typeof MapEngine !== 'undefined' && MapEngine.activeAssetId === asset.id) {
+      MapEngine.clearAssetPolygon();
+    }
+
+    this.updateGeoJSONBadges(asset);
+    this.closeRekamGeoJSONModal();
+    this.showToast('Batas poligon GeoJSON berhasil dihapus.', 'info');
+  },
+
+  updateGeoJSONBadges(asset) {
+    const tab1Badge = document.getElementById('tab1-geojson-badge');
+    const tab2Summary = document.getElementById('tab2-geojson-summary');
+
+    if (asset && asset.geojson) {
+      if (tab1Badge) {
+        tab1Badge.innerHTML = '<i class="fa-solid fa-draw-polygon text-success"></i> 🟢 Poligon Tersedia';
+        tab1Badge.style.background = '#dcfce7';
+        tab1Badge.style.color = '#15803d';
+        tab1Badge.style.borderColor = '#86efac';
+      }
+      if (tab2Summary) {
+        tab2Summary.innerHTML = '<span class="text-success font-weight-bold"><i class="fa-solid fa-circle-check"></i> 🟢 Poligon GeoJSON tersimpan & aktif di peta.</span>';
+      }
+    } else {
+      if (tab1Badge) {
+        tab1Badge.innerHTML = '⚪ Belum Ada Poligon';
+        tab1Badge.style.background = '#f1f5f9';
+        tab1Badge.style.color = '#64748b';
+        tab1Badge.style.borderColor = 'var(--border-subtle)';
+      }
+      if (tab2Summary) {
+        tab2Summary.innerHTML = 'Belum ada data batas poligon bidang tanah.';
+      }
     }
   },
 
