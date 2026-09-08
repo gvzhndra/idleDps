@@ -231,7 +231,9 @@ const DataEngine = {
         statusKesimpulanIdle: this.getRowVal(row, ['status_kesimpulan_idle', 'STATUS_KESIMPULAN_IDLE']) || 'TIDAK_IDLE',
         alasanKesimpulanIdle: this.getRowVal(row, ['alasan_kesimpulan_idle', 'ALASAN_KESIMPULAN_IDLE']) || '',
         fokusPemantauan: this.getRowVal(row, ['fokus_pemantauan', 'FOKUS_PEMANTAUAN']) || '',
-        targetPemantauan: this.getRowVal(row, ['target_pemantauan', 'TARGET_PEMANTAUAN']) || 'TA 2026'
+        targetPemantauan: this.getRowVal(row, ['target_pemantauan', 'TARGET_PEMANTAUAN']) || 'TA 2026',
+        geojson: this.getRowVal(row, ['geojson', 'GEOJSON', 'polygon_geojson']) || null,
+        sertipikatList: []
       };
 
       // Load ALL assets into activeAssets for Left Panel & Global Search
@@ -489,6 +491,28 @@ const DataEngine = {
               asset.luas = parseFloat(e.luas) || asset.luas;
               asset.luasTanah = asset.luas;
             }
+            if (e.geojson !== undefined) asset.geojson = e.geojson;
+            if (Array.isArray(e.sertipikatList)) asset.sertipikatList = e.sertipikatList;
+          }
+        });
+      }
+
+      // 2.b Load standalone persistent custom geojson & sertipikat
+      const storedGeo = localStorage.getItem('bmn_custom_geojson');
+      if (storedGeo) {
+        const geoMap = JSON.parse(storedGeo);
+        [...this.activeAssets, ...this.pendingAssets].forEach(asset => {
+          if (geoMap[asset.id] !== undefined) {
+            asset.geojson = geoMap[asset.id];
+          }
+        });
+      }
+      const storedSert = localStorage.getItem('bmn_custom_sertipikat');
+      if (storedSert) {
+        const sertMap = JSON.parse(storedSert);
+        [...this.activeAssets, ...this.pendingAssets].forEach(asset => {
+          if (Array.isArray(sertMap[asset.id])) {
+            asset.sertipikatList = sertMap[asset.id];
           }
         });
       }

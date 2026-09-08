@@ -775,6 +775,20 @@
                 <input type="text" class="form-control" id="edit-koordinat" placeholder="-8.67, 115.21">
               </div>
             </div>
+
+            <!-- QUICK ACTIONS STRIP: REKAM SERTIPIKAT & REKAM GEOJSON -->
+            <div class="quick-action-strip">
+              <span style="font-size:11px; font-weight:700; color:var(--text-main);"><i class="fa-solid fa-bolt text-warning"></i> Rekam Cepat:</span>
+              <button type="button" class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1" onclick="App.openRekamSertipikatModal()" style="font-size:11px; padding:4px 9px;">
+                <i class="fa-solid fa-file-contract text-primary"></i> Rekam Nomor Sertipikat
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-success d-flex align-items-center gap-1" onclick="App.openRekamGeoJSONModal()" style="font-size:11px; padding:4px 9px;">
+                <i class="fa-solid fa-draw-polygon text-success"></i> Rekam GeoJSON
+              </button>
+              <span id="tab1-geojson-badge" class="badge" style="font-size:10px; margin-left:auto; background:#f1f5f9; color:#64748b; border:1px solid var(--border-subtle);">
+                ⚪ Belum Ada Poligon
+              </span>
+            </div>
           </div>
 
           <!-- TAB 2: DOKUMEN LEGALITAS & BATAS TANAH -->
@@ -798,7 +812,12 @@
             <div class="row d-flex gap-2 mb-2">
               <div class="form-group flex-1">
                 <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Nomor Dokumen / Sertipikat</label>
-                <input type="text" class="form-control" id="edit-no-dokumen" placeholder="SHP No. 12/Desa Pupuan">
+                <div class="d-flex gap-1">
+                  <input type="text" class="form-control" id="edit-no-dokumen" placeholder="SHP No. 12/Desa Pupuan">
+                  <button type="button" class="btn btn-sm btn-outline-primary" onclick="App.openRekamSertipikatModal()" title="Kelola Rincian Sertipikat & Multi-Sertipikat" style="padding:4px 8px; font-size:11px; white-space:nowrap;">
+                    <i class="fa-solid fa-file-signature"></i> Rekam
+                  </button>
+                </div>
               </div>
               <div class="form-group flex-1">
                 <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Tanggal Terbit Dokumen</label>
@@ -831,6 +850,19 @@
               <div class="form-group flex-1">
                 <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Batas Barat (B)</label>
                 <input type="text" class="form-control" id="edit-batas-barat" placeholder="Kantor Koramil / Instansi">
+              </div>
+            </div>
+
+            <!-- SECTION GEOJSON POLIGON SPASIAL DI TAB 2 -->
+            <div class="mt-3 p-2 border rounded" style="background:#f8fafc;">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <strong style="font-size:11.5px; color:var(--text-main);"><i class="fa-solid fa-draw-polygon text-success"></i> Batas Geometri Poligon (GeoJSON):</strong>
+                  <div style="font-size:11px; color:var(--text-muted);" id="tab2-geojson-summary">Belum ada data batas poligon bidang tanah.</div>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-success d-flex align-items-center gap-1" onclick="App.openRekamGeoJSONModal()" style="font-size:11px; padding:4px 9px;">
+                  <i class="fa-solid fa-draw-polygon"></i> Rekam GeoJSON
+                </button>
               </div>
             </div>
 
@@ -987,6 +1019,211 @@
           <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Simpan ke Database Google Sheets</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- MODAL REKAM DOKUMEN SERTIPIKAT TANAH -->
+  <div class="modal-overlay" id="modal-rekam-sertipikat" style="display:none;" onclick="if(event.target === this) App.closeRekamSertipikatModal()">
+    <div class="modal-card" style="max-width:580px; width:95vw;">
+      <div class="modal-header d-flex justify-content-between align-items-center mb-2">
+        <div>
+          <h3 style="font-size:15px; font-weight:700; margin:0;"><i class="fa-solid fa-file-contract text-primary"></i> Rekam Dokumen Sertipikat Tanah</h3>
+          <span style="font-size:11px; color:var(--text-muted);">Kelola data sertipikat BPN, luas ukur, nomor hak pakai, dan scan dokumen</span>
+        </div>
+        <button type="button" class="btn btn-icon btn-secondary" onclick="App.closeRekamSertipikatModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="modal-body" style="max-height:75vh; overflow-y:auto; padding-right:4px;">
+        <form id="form-rekam-sertipikat" onsubmit="App.handleSaveRekamSertipikat(event)">
+          <div class="row d-flex gap-2 mb-2">
+            <div class="form-group flex-1">
+              <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Jenis Dokumen Kepemilikan</label>
+              <select class="form-control" id="sertipikat-input-jenis" style="font-size:12px;">
+                <option value="Sertipikat Hak Pakai (SHP)">Sertipikat Hak Pakai (SHP)</option>
+                <option value="Sertipikat Hak Milik (SHM)">Sertipikat Hak Milik (SHM)</option>
+                <option value="Hak Pengelolaan (HPL)">Hak Pengelolaan (HPL)</option>
+                <option value="Hak Guna Bangunan (HGB)">Hak Guna Bangunan (HGB)</option>
+                <option value="Letter C / Girik / Pipil">Letter C / Girik / Pipil</option>
+                <option value="Berita Acara Serah Terima (BAST)">Berita Acara Serah Terima (BAST)</option>
+                <option value="Dalam Proses Sertifikasi">Dalam Proses Sertifikasi BPN</option>
+                <option value="Lain-lain">Lain-lain</option>
+              </select>
+            </div>
+            <div class="form-group flex-1">
+              <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Nomor Dokumen / Sertipikat</label>
+              <input type="text" class="form-control" id="sertipikat-input-nomor" placeholder="Contoh: SHP No. 12/Candikuning" required style="font-size:12px;">
+            </div>
+          </div>
+
+          <div class="row d-flex gap-2 mb-2">
+            <div class="form-group flex-1">
+              <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Tanggal Terbit BPN</label>
+              <input type="text" class="form-control" id="sertipikat-input-tgl" placeholder="Contoh: 15 Agustus 2005" style="font-size:12px;">
+            </div>
+            <div class="form-group flex-1">
+              <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Luas Menurut Sertipikat (m²)</label>
+              <input type="number" class="form-control" id="sertipikat-input-luas" step="any" placeholder="Contoh: 600" style="font-size:12px;">
+            </div>
+          </div>
+
+          <div class="row d-flex gap-2 mb-2">
+            <div class="form-group flex-1">
+              <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Atas Nama Sertipikat</label>
+              <input type="text" class="form-control" id="sertipikat-input-atasnama" placeholder="Pemerintah Republik Indonesia" style="font-size:12px;">
+            </div>
+            <div class="form-group flex-1">
+              <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Nomor Identifikasi Bidang (NIB BPN)</label>
+              <input type="text" class="form-control" id="sertipikat-input-nib" placeholder="Contoh: 22.01.05.01.00123" style="font-size:12px;">
+            </div>
+          </div>
+
+          <div class="form-group mb-2">
+            <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Status Keberadaan Fisik Berkas</label>
+            <select class="form-control" id="sertipikat-input-status-fisik" style="font-size:12px;">
+              <option value="Asli disimpan di KPKNL Denpasar">🏛️ Asli disimpan di KPKNL Denpasar</option>
+              <option value="Asli disimpan di Satker Pengguna">🏢 Asli disimpan di Satker Pengguna Barang</option>
+              <option value="Fotokopi / Legalisir (Asli Belum Ditemukan)">📑 Fotokopi / Salinan Legalisir</option>
+              <option value="Dalam Proses BPN / Belum Terbit">⏳ Dalam Proses BPN / Belum Terbit</option>
+              <option value="Hilang (Dalam Pengurusan Penggantian)">⚠️ Hilang (Dalam Pengurusan Penggantian)</option>
+            </select>
+          </div>
+
+          <div class="form-group mb-3">
+            <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Tautan / Link Berkas Scan Sertipikat (Google Drive / Cloud)</label>
+            <input type="url" class="form-control" id="sertipikat-input-link" placeholder="https://drive.google.com/..." style="font-size:12px;">
+            <small class="text-muted" style="font-size:10.5px;">Bisa berupa link Google Drive folder dokumen atau link file PDF.</small>
+          </div>
+
+          <!-- MULTI-SERTIPIKAT SECTION -->
+          <div class="p-2 border rounded mb-3" style="background:#f8fafc;">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <strong style="font-size:11.5px; color:var(--text-main);"><i class="fa-solid fa-layer-group text-primary"></i> Bidang Sertipikat Tambahan (Pecahan / Multi-Bidang)</strong>
+              <button type="button" class="btn btn-sm btn-outline-primary" onclick="App.addMultiSertipikatRow()" style="font-size:10.5px; padding:2px 7px;">
+                <i class="fa-solid fa-plus"></i> Tambah Bidang
+              </button>
+            </div>
+            <div id="multi-sertipikat-container"></div>
+            <small class="text-muted" style="font-size:10.5px; display:block; margin-top:4px;">Gunakan jika satu aset BMN terdiri dari beberapa sertipikat tanah terpisah.</small>
+          </div>
+
+          <div class="d-flex justify-content-end gap-2 pt-2 border-top">
+            <button type="button" class="btn btn-secondary" onclick="App.closeRekamSertipikatModal()" style="font-size:12px;">Batal</button>
+            <button type="submit" class="btn btn-primary" style="font-size:12px;">
+              <i class="fa-solid fa-check"></i> Terapkan Data Sertipikat
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL REKAM GEOJSON (BATAS POLIGON BIDANG ASET) -->
+  <div class="modal-overlay" id="modal-rekam-geojson" style="display:none;" onclick="if(event.target === this) App.closeRekamGeoJSONModal()">
+    <div class="modal-card" style="max-width:620px; width:95vw;">
+      <div class="modal-header d-flex justify-content-between align-items-center mb-2">
+        <div>
+          <h3 style="font-size:15px; font-weight:700; margin:0;"><i class="fa-solid fa-draw-polygon text-success"></i> Rekam GeoJSON (Batas Poligon Bidang Aset)</h3>
+          <span style="font-size:11px; color:var(--text-muted);">Unggah file spasial, tempel kode koordinat poligon, atau buat estimasi poligon bidang tanah</span>
+        </div>
+        <button type="button" class="btn btn-icon btn-secondary" onclick="App.closeRekamGeoJSONModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="modal-body" style="max-height:75vh; overflow-y:auto; padding-right:4px;">
+        <!-- STATUS POLIGON ASET SAAT INI -->
+        <div class="p-2 border rounded mb-3 d-flex justify-content-between align-items-center" style="background:#f8fafc;">
+          <div>
+            <div style="font-size:11.5px; font-weight:700; color:var(--text-main);" id="geojson-status-title">Status Poligon Saat Ini:</div>
+            <div style="font-size:11px; color:var(--text-muted);" id="geojson-status-desc">Memeriksa data poligon aset...</div>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-danger" id="btn-delete-geojson" onclick="App.handleDeleteGeoJSON()" style="display:none; font-size:11px; padding:3px 8px;">
+            <i class="fa-solid fa-trash"></i> Hapus Poligon
+          </button>
+        </div>
+
+        <!-- OPSI METODE REKAM GEOJSON -->
+        <div class="d-flex gap-2 border-bottom pb-2 mb-3">
+          <button type="button" class="btn btn-sm btn-primary" id="btn-tab-geojson-upload" onclick="App.switchGeoJSONTab('upload')">
+            <i class="fa-solid fa-cloud-arrow-up"></i> 1. Upload Berkas (.geojson)
+          </button>
+          <button type="button" class="btn btn-sm btn-secondary" id="btn-tab-geojson-paste" onclick="App.switchGeoJSONTab('paste')">
+            <i class="fa-solid fa-code"></i> 2. Tempel Kode GeoJSON
+          </button>
+          <button type="button" class="btn btn-sm btn-secondary" id="btn-tab-geojson-auto" onclick="App.switchGeoJSONTab('auto')">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> 3. Auto-Estimasi
+          </button>
+        </div>
+
+        <!-- TAB 1: UPLOAD FILE -->
+        <div id="tab-geojson-upload">
+          <div class="geojson-dropzone mb-2" onclick="document.getElementById('geojson-file-input').click()">
+            <input type="file" id="geojson-file-input" accept=".geojson,.json,.kml" style="display:none;" onchange="App.handleGeoJSONFileInput(this.files[0])">
+            <i class="fa-solid fa-file-circle-check text-primary" style="font-size:28px; margin-bottom:8px; display:block;"></i>
+            <strong style="font-size:12.5px; color:#1e293b; display:block;">Klik atau Tarik File .geojson / .json ke Sini</strong>
+            <span style="font-size:11px; color:#64748b;">Mendukung format GeoJSON Polygon, MultiPolygon, atau FeatureCollection hasil BPN / QGIS / Google Earth</span>
+          </div>
+          <div id="geojson-upload-file-info" style="display:none; font-size:11.5px; color:#2563eb; margin-bottom:10px; font-weight:600;"></div>
+        </div>
+
+        <!-- TAB 2: PASTE RAW GEOJSON -->
+        <div id="tab-geojson-paste" style="display:none;">
+          <div class="form-group mb-2">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <label style="font-size:11px; color:var(--text-muted); margin:0;">Kode GeoJSON (Polygon / Feature / Coordinates):</label>
+              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="App.formatAndValidateGeoJSONTextarea()" style="font-size:10px; padding:2px 6px;">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Format & Cek Validitas
+              </button>
+            </div>
+            <textarea id="geojson-raw-textarea" class="geojson-code-editor" placeholder='Contoh:&#10;{&#10;  "type": "Polygon",&#10;  "coordinates": [[[115.188, -8.409], [115.189, -8.409], [115.189, -8.410], [115.188, -8.410], [115.188, -8.409]]]&#10;}'></textarea>
+          </div>
+        </div>
+
+        <!-- TAB 3: AUTO ESTIMASI POLIGON -->
+        <div id="tab-geojson-auto" style="display:none;">
+          <div class="p-3 border rounded mb-2" style="background:#f0fdf4; border-color:#bbf7d0;">
+            <h4 style="font-size:12.5px; font-weight:700; color:#166534; margin:0 0 6px 0;">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Generator Poligon Estimasi Otomatis
+            </h4>
+            <p style="font-size:11px; color:#15803d; margin:0 0 10px 0;">
+              Jika belum memiliki berkas ukur resmi BPN, sistem dapat menghitung dan membuat batas poligon perkiraan di sekitar titik koordinat aset sesuai luas tercatat (<strong id="auto-poly-luas-display">0</strong> m²).
+            </p>
+            <div class="row d-flex gap-2 mb-2">
+              <div class="form-group flex-1">
+                <label style="font-size:11px; color:#166534;" class="mb-1">Bentuk Bidang</label>
+                <select class="form-control" id="auto-poly-ratio" style="font-size:11.5px;">
+                  <option value="square">Persegi Simetris (1:1)</option>
+                  <option value="rect-ew">Memanjang Barat - Timur (1:1.5)</option>
+                  <option value="rect-ns">Memanjang Utara - Selatan (1.5:1)</option>
+                </select>
+              </div>
+              <div class="form-group flex-1 d-flex align-items-end">
+                <button type="button" class="btn btn-sm btn-success w-100" onclick="App.generateEstimatedPolygon()" style="font-size:11.5px; padding:7px 10px;">
+                  <i class="fa-solid fa-calculator"></i> Hitung Poligon
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VALIDATION & PREVIEW RESULT BOX -->
+        <div id="geojson-preview-box" class="p-2 border rounded mb-3" style="display:none; background:#eff6ff; border-color:#bfdbfe;">
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <i class="fa-solid fa-circle-check text-success" style="font-size:16px;"></i>
+            <strong style="font-size:12px; color:#1e40af;">Struktur GeoJSON Valid</strong>
+          </div>
+          <div id="geojson-preview-details" style="font-size:11px; color:#1e3a8a;"></div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 pt-2 border-top">
+          <button type="button" class="btn btn-secondary" onclick="App.closeRekamGeoJSONModal()" style="font-size:12px;">Batal</button>
+          <button type="button" class="btn btn-primary" onclick="App.handleSaveRekamGeoJSON()" style="font-size:12px; background:#10b981; border-color:#10b981;">
+            <i class="fa-solid fa-floppy-disk"></i> Simpan & Tampilkan di Peta
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 

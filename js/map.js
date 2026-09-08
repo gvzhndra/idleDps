@@ -53,6 +53,7 @@ const MapEngine = {
 
     // Layer Groups
     this.polaRuangLayerGroup = L.layerGroup().addTo(this.map);
+    this.assetPolygonLayerGroup = L.layerGroup().addTo(this.map);
     this.markersLayer = L.layerGroup().addTo(this.map);
     this.connectorLinesGroup = L.layerGroup().addTo(this.map);
     this.poiLayerGroup = L.layerGroup().addTo(this.map);
@@ -290,6 +291,7 @@ const MapEngine = {
     this.poiLayerGroup.clearLayers();
     this.clearCatchmentCircle();
     this.clearPolaRuang();
+    this.clearAssetPolygon();
     this.map.flyTo(CONFIG.MAP.DEFAULT_CENTER, CONFIG.MAP.DEFAULT_ZOOM, { animate: true, duration: 1.2 });
   },
 
@@ -320,6 +322,68 @@ const MapEngine = {
     if (this.catchmentCircleLayer && this.map) {
       this.map.removeLayer(this.catchmentCircleLayer);
       this.catchmentCircleLayer = null;
+    }
+  },
+
+  /**
+   * Render real GeoJSON polygon boundary of the asset on the map
+   */
+  renderAssetPolygon(asset) {
+    if (!this.assetPolygonLayerGroup) return;
+    this.assetPolygonLayerGroup.clearLayers();
+
+    if (!asset || !asset.geojson) return;
+
+    try {
+      let geoData = asset.geojson;
+      if (typeof geoData === 'string') {
+        geoData = JSON.parse(geoData);
+      }
+
+      const layer = L.geoJSON(geoData, {
+        style: {
+          color: '#2563eb', // Vivid royal blue
+          weight: 3.5,
+          dashArray: '5, 5',
+          fillColor: '#3b82f6',
+          fillOpacity: 0.3
+        },
+        onEachFeature: (feature, l) => {
+          const noSert = asset.noDokumen || 'Belum Ada Sertipikat';
+          const luas = asset.luas || asset.luas_m2 || 0;
+          l.bindPopup(`
+            <div style="font-family:inherit; min-width:210px; padding:4px;">
+              <strong style="font-size:13px; color:#1e293b; display:block; margin-bottom:4px;">
+                <i class="fa-solid fa-draw-polygon text-primary"></i> Batas Poligon Bidang Tanah
+              </strong>
+              <div style="font-size:11.5px; color:#475569; margin-bottom:2px;">
+                <strong>Aset:</strong> ${asset.namaBarang || asset.uraian_bmn || '-'} (NUP ${asset.nup || '1'})
+              </div>
+              <div style="font-size:11px; color:#0369a1; background:#e0f2fe; padding:2px 6px; border-radius:4px; margin-bottom:4px; display:inline-block;">
+                <i class="fa-solid fa-file-contract"></i> ${noSert}
+              </div>
+              <div style="font-size:11.5px; color:#64748b;">
+                <strong>Luas Dokumen:</strong> ${Number(luas).toLocaleString('id-ID')} m²
+              </div>
+            </div>
+          `);
+        }
+      });
+
+      layer.addTo(this.assetPolygonLayerGroup);
+
+      // Smoothly zoom or fit to polygon bounds
+      if (layer.getBounds && layer.getBounds().isValid()) {
+        this.map.fitBounds(layer.getBounds(), { padding: [50, 50], maxZoom: 18, animate: true });
+      }
+    } catch (err) {
+      console.warn('Gagal merender GeoJSON poligon bidang aset:', err);
+    }
+  },
+
+  clearAssetPolygon() {
+    if (this.assetPolygonLayerGroup) {
+      this.assetPolygonLayerGroup.clearLayers();
     }
   },
 

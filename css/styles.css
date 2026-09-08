@@ -3077,3 +3077,66 @@ body {
     page-break-before: always;
   }
 }
+
+/* REKAM SERTIPIKAT & REKAM GEOJSON SUB-MODALS */
+#modal-rekam-sertipikat,
+#modal-rekam-geojson {
+  z-index: 4200 !important;
+}
+
+.geojson-dropzone {
+  border: 2px dashed #93c5fd;
+  background: #f0fdf4;
+  border-radius: 10px;
+  padding: 18px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.geojson-dropzone:hover,
+.geojson-dropzone.dragover {
+  border-color: #2563eb;
+  background: #eff6ff;
+  transform: translateY(-1px);
+}
+
+.geojson-code-editor {
+  width: 100%;
+  height: 160px;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  font-size: 11.5px;
+  background: #0f172a;
+  color: #38bdf8;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 10px;
+  line-height: 1.45;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.sertipikat-card-item {
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 8px;
+  transition: border-color 0.2s;
+}
+
+.sertipikat-card-item:hover {
+  border-color: #3b82f6;
+}
+
+.quick-action-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #f1f5f9;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
