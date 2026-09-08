@@ -26,37 +26,40 @@ const LaporanEngine = {
     try {
       const stored = localStorage.getItem(this.MASTER_ST_KEY);
       if (stored) {
-        this.masterTimSTList = JSON.parse(stored);
-      } else {
-        this.masterTimSTList = [{
-          id_st: 'ST-2026-001',
-          no_st: 'ST-101/KPKNL.1401/2026',
-          tgl_st: '15 Januari 2026',
-          no_sk_tim: 'KEP-45/KPKNL.14/2026',
-          wilayah_satker: 'Provinsi Bali',
-          personil: [
-            { peran: 'Ketua Tim', nama: 'I Putu Harjaya', nip: '19850101 201012 1 001', jabatan: 'Kepala Seksi PKN' },
-            { peran: 'Anggota Tim', nama: 'Gede Shendra', nip: '19900202 201402 1 002', jabatan: 'Penata Muda PKN' }
-          ],
-          ketua_nama: 'I Putu Harjaya',
-          ketua_nip: '19850101 201012 1 001',
-          ketua_jabatan: 'Kepala Seksi PKN',
-          anggota1_nama: 'Gede Shendra',
-          anggota1_nip: '19900202 201402 1 002',
-          anggota1_jabatan: 'Penata Muda PKN',
-          pdf_st_url: '',
-          status_aktif: 'AKTIF'
-        }];
-        this.saveMasterTimSTToLocal();
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          this.masterTimSTList = parsed;
+          return;
+        }
       }
     } catch (e) {
       console.warn('Gagal memuat master Tim & ST dari local:', e);
     }
+    this.masterTimSTList = [{
+      id_st: 'ST-2026-001',
+      no_st: 'ST-101/KPKNL.1401/2026',
+      tgl_st: '15 Januari 2026',
+      no_sk_tim: 'KEP-45/KPKNL.14/2026',
+      wilayah_satker: 'Provinsi Bali',
+      personil: [
+        { peran: 'Ketua Tim', nama: 'I Putu Harjaya', nip: '19850101 201012 1 001', jabatan: 'Kepala Seksi PKN' },
+        { peran: 'Anggota Tim', nama: 'Gede Shendra', nip: '19900202 201402 1 002', jabatan: 'Penata Muda PKN' }
+      ],
+      ketua_nama: 'I Putu Harjaya',
+      ketua_nip: '19850101 201012 1 001',
+      ketua_jabatan: 'Kepala Seksi PKN',
+      anggota1_nama: 'Gede Shendra',
+      anggota1_nip: '19900202 201402 1 002',
+      anggota1_jabatan: 'Penata Muda PKN',
+      pdf_st_url: '',
+      status_aktif: 'AKTIF'
+    }];
+    this.saveMasterTimSTToLocal();
   },
 
   saveMasterTimSTToLocal() {
     try {
-      localStorage.setItem(this.MASTER_ST_KEY, JSON.stringify(this.masterTimSTList));
+      localStorage.setItem(this.MASTER_ST_KEY, JSON.stringify(this.masterTimSTList || []));
     } catch (e) {
       console.warn('Gagal menyimpan master Tim & ST ke local:', e);
     }
@@ -66,31 +69,34 @@ const LaporanEngine = {
     try {
       const stored = localStorage.getItem(this.MASTER_SK_KEY);
       if (stored) {
-        this.masterSKTimList = JSON.parse(stored);
-      } else {
-        this.masterSKTimList = [{
-          id_sk: 'SK-2026-001',
-          no_sk: 'KEP-45/KPKNL.14/2026',
-          tgl_sk: '10 Januari 2026',
-          perihal: 'Pembentukan Tim Penelitian BMN Terindikasi Idle TA 2026',
-          pejabat: 'Kepala KPKNL Denpasar',
-          personil: [
-            { peran: 'Ketua Tim', nama: 'I Putu Harjaya', nip: '19850101 201012 1 001', jabatan: 'Kepala Seksi PKN' },
-            { peran: 'Anggota Tim', nama: 'Gede Shendra', nip: '19900202 201402 1 002', jabatan: 'Penata Muda PKN' }
-          ],
-          pdf_sk_url: '',
-          status_aktif: 'AKTIF'
-        }];
-        this.saveMasterSKToLocal();
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          this.masterSKTimList = parsed;
+          return;
+        }
       }
     } catch (e) {
       console.warn('Gagal memuat master SK Tim dari local:', e);
     }
+    this.masterSKTimList = [{
+      id_sk: 'SK-2026-001',
+      no_sk: 'KEP-45/KPKNL.14/2026',
+      tgl_sk: '10 Januari 2026',
+      perihal: 'Pembentukan Tim Penelitian BMN Terindikasi Idle TA 2026',
+      pejabat: 'Kepala KPKNL Denpasar',
+      personil: [
+        { peran: 'Ketua Tim', nama: 'I Putu Harjaya', nip: '19850101 201012 1 001', jabatan: 'Kepala Seksi PKN' },
+        { peran: 'Anggota Tim', nama: 'Gede Shendra', nip: '19900202 201402 1 002', jabatan: 'Penata Muda PKN' }
+      ],
+      pdf_sk_url: '',
+      status_aktif: 'AKTIF'
+    }];
+    this.saveMasterSKToLocal();
   },
 
   saveMasterSKToLocal() {
     try {
-      localStorage.setItem(this.MASTER_SK_KEY, JSON.stringify(this.masterSKTimList));
+      localStorage.setItem(this.MASTER_SK_KEY, JSON.stringify(this.masterSKTimList || []));
     } catch (e) {
       console.warn('Gagal menyimpan master SK Tim ke local:', e);
     }
@@ -162,12 +168,14 @@ const LaporanEngine = {
     const currentVal = select.value;
     select.innerHTML = '<option value="">-- Pilih dari Master Surat Tugas --</option>';
 
-    this.masterTimSTList.forEach(st => {
-      const opt = document.createElement('option');
-      opt.value = st.id_st || st.no_st;
-      opt.textContent = `${st.no_st} (${st.tgl_st}) - ${st.ketua_nama || 'Ketua'}`;
-      select.appendChild(opt);
-    });
+    if (Array.isArray(this.masterTimSTList)) {
+      this.masterTimSTList.filter(Boolean).forEach(st => {
+        const opt = document.createElement('option');
+        opt.value = st.id_st || st.no_st || '';
+        opt.textContent = `${st.no_st || '-'} (${st.tgl_st || '-'}) - ${st.ketua_nama || 'Ketua'}`;
+        select.appendChild(opt);
+      });
+    }
 
     if (currentVal) select.value = currentVal;
   },
@@ -179,12 +187,14 @@ const LaporanEngine = {
     const currentVal = select.value;
     select.innerHTML = '<option value="">-- Tanpa / Pilih dari Master SK --</option>';
 
-    this.masterSKTimList.forEach(sk => {
-      const opt = document.createElement('option');
-      opt.value = sk.no_sk;
-      opt.textContent = `${sk.no_sk} (${sk.tgl_sk}) - ${sk.perihal || 'SK Tim'}`;
-      select.appendChild(opt);
-    });
+    if (Array.isArray(this.masterSKTimList)) {
+      this.masterSKTimList.filter(Boolean).forEach(sk => {
+        const opt = document.createElement('option');
+        opt.value = sk.no_sk || '';
+        opt.textContent = `${sk.no_sk || '-'} (${sk.tgl_sk || '-'}) - ${sk.perihal || 'SK Tim'}`;
+        select.appendChild(opt);
+      });
+    }
 
     if (currentVal) select.value = currentVal;
   },
@@ -193,16 +203,31 @@ const LaporanEngine = {
     const tbody = document.getElementById('tim-st-table-body');
     if (!tbody) return;
 
-    if (!this.masterTimSTList || this.masterTimSTList.length === 0) {
+    if (!Array.isArray(this.masterTimSTList) || this.masterTimSTList.length === 0) {
       tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:12px; color:var(--text-muted);">Belum ada data Surat Tugas yang tersimpan.</td></tr>';
       return;
     }
 
-    tbody.innerHTML = this.masterTimSTList.map((st) => {
-      const personilList = Array.isArray(st.personil) && st.personil.length > 0
-        ? st.personil.map(p => `<div><strong>${p.peran || 'Anggota'}:</strong> ${p.nama || '-'} <small class="text-muted">(${p.nip || '-'})</small></div>`).join('')
-        : `<div><strong>Ketua:</strong> ${st.ketua_nama || '-'} <small class="text-muted">(${st.ketua_nip || '-'})</small></div>` +
-          (st.anggota1_nama ? `<div><strong>Anggota:</strong> ${st.anggota1_nama}</div>` : '');
+    const validList = this.masterTimSTList.filter(Boolean);
+    if (validList.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:12px; color:var(--text-muted);">Belum ada data Surat Tugas yang tersimpan.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = validList.map((st) => {
+      let personilList = '';
+      if (Array.isArray(st.personil) && st.personil.length > 0) {
+        personilList = st.personil
+          .filter(Boolean)
+          .map(p => `<div><strong>${p.peran || 'Anggota'}:</strong> ${p.nama || '-'} <small class="text-muted">(${p.nip || '-'})</small></div>`)
+          .join('');
+      } else {
+        personilList = `<div><strong>Ketua:</strong> ${st.ketua_nama || '-'} <small class="text-muted">(${st.ketua_nip || '-'})</small></div>` +
+          (st.anggota1_nama ? `<div><strong>Anggota:</strong> ${st.anggota1_nama} <small class="text-muted">(${st.anggota1_nip || '-'})</small></div>` : '') +
+          (st.anggota2_nama ? `<div><strong>Anggota:</strong> ${st.anggota2_nama} <small class="text-muted">(${st.anggota2_nip || '-'})</small></div>` : '');
+      }
+
+      const stIdSafe = String(st.id_st || st.no_st || '').replace(/'/g, "\\'");
 
       return `
         <tr style="border-bottom:1px solid var(--border-subtle);">
@@ -211,7 +236,7 @@ const LaporanEngine = {
             <small style="color:var(--text-muted); font-weight:normal;">Tgl: ${st.tgl_st || '-'}</small>
           </td>
           <td style="padding:8px 10px;">
-            ${personilList}
+            ${personilList || '<span class="text-muted">-</span>'}
           </td>
           <td style="padding:8px 10px;">
             <div><span class="badge" style="background:#e0f2fe; color:#0369a1; font-size:10px;">${st.wilayah_satker || 'Provinsi Bali'}</span></div>
@@ -225,7 +250,7 @@ const LaporanEngine = {
             ` : '<span style="color:var(--text-muted); font-size:10.5px;">-</span>'}
           </td>
           <td style="padding:8px 10px; text-align:center;">
-            <button class="btn btn-sm btn-secondary" style="font-size:11px; padding:3px 8px;" onclick="App.editTimSTRow('${st.id_st || st.no_st}')" title="Edit Data ST">
+            <button class="btn btn-sm btn-secondary" style="font-size:11px; padding:3px 8px;" onclick="App.editTimSTRow('${stIdSafe}')" title="Edit Data ST">
               <i class="fa-solid fa-pen-to-square"></i>
             </button>
           </td>
@@ -238,15 +263,29 @@ const LaporanEngine = {
     const tbody = document.getElementById('tim-sk-table-body');
     if (!tbody) return;
 
-    if (!this.masterSKTimList || this.masterSKTimList.length === 0) {
+    if (!Array.isArray(this.masterSKTimList) || this.masterSKTimList.length === 0) {
       tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:12px; color:var(--text-muted);">Belum ada data SK Tim yang tersimpan.</td></tr>';
       return;
     }
 
-    tbody.innerHTML = this.masterSKTimList.map((sk) => {
-      const personilList = Array.isArray(sk.personil) && sk.personil.length > 0
-        ? sk.personil.map(p => `<div><strong>${p.peran || 'Anggota'}:</strong> ${p.nama || '-'} <small class="text-muted">(${p.nip || '-'})</small></div>`).join('')
-        : '<div><small class="text-muted">-</small></div>';
+    const validList = this.masterSKTimList.filter(Boolean);
+    if (validList.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:12px; color:var(--text-muted);">Belum ada data SK Tim yang tersimpan.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = validList.map((sk) => {
+      let personilList = '';
+      if (Array.isArray(sk.personil) && sk.personil.length > 0) {
+        personilList = sk.personil
+          .filter(Boolean)
+          .map(p => `<div><strong>${p.peran || 'Anggota'}:</strong> ${p.nama || '-'} <small class="text-muted">(${p.nip || '-'})</small></div>`)
+          .join('');
+      } else {
+        personilList = '<div><small class="text-muted">-</small></div>';
+      }
+
+      const skIdSafe = String(sk.id_sk || sk.no_sk || '').replace(/'/g, "\\'");
 
       return `
         <tr style="border-bottom:1px solid var(--border-subtle);">
@@ -269,7 +308,7 @@ const LaporanEngine = {
             ` : '<span style="color:var(--text-muted); font-size:10.5px;">-</span>'}
           </td>
           <td style="padding:8px 10px; text-align:center;">
-            <button class="btn btn-sm btn-secondary" style="font-size:11px; padding:3px 8px;" onclick="App.editSKTimRow('${sk.id_sk || sk.no_sk}')" title="Edit Data SK">
+            <button class="btn btn-sm btn-secondary" style="font-size:11px; padding:3px 8px;" onclick="App.editSKTimRow('${skIdSafe}')" title="Edit Data SK">
               <i class="fa-solid fa-pen-to-square"></i>
             </button>
           </td>

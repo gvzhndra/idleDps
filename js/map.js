@@ -418,3 +418,5 @@ const MapEngine = {
     return this.isPolaRuangEnabled;
   }
 };
+
+window.MapEngine = MapEngine;

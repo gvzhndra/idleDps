@@ -706,4 +706,5 @@ const DataEngine = {
   }
 };
 
+window.DataEngine = DataEngine;
 DataEngine.init();

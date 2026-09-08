@@ -459,6 +459,14 @@ const App = {
       if (docModal && docModal.style.display === 'flex') {
         if (e.key === 'Escape') this.closeUploadDokumenModal();
       }
+      const timModal = document.getElementById('manage-tim-st-modal');
+      if (timModal && (timModal.style.display === 'flex' || timModal.classList.contains('show'))) {
+        if (e.key === 'Escape') this.closeManageTimSTModal();
+      }
+      const lapModal = document.getElementById('laporan-pmk-modal');
+      if (lapModal && (lapModal.style.display === 'flex' || lapModal.classList.contains('show'))) {
+        if (e.key === 'Escape') this.closeLaporanPMKModal();
+      }
     });
 
     document.querySelectorAll('.btn-tile-switch:not(#btn-toggle-pola-ruang)').forEach(btn => {
@@ -2059,15 +2067,20 @@ const App = {
   },
 
   openManageTimSTModal() {
-    if (typeof LaporanEngine !== 'undefined') {
-      LaporanEngine.renderTimSTTable();
-      LaporanEngine.renderSKTimTable();
-      LaporanEngine.populateSKDropdownInSTForm();
-    }
     const modal = document.getElementById('manage-tim-st-modal');
     if (modal) {
       modal.style.display = 'flex';
       modal.classList.add('show');
+    }
+    try {
+      this.switchModalPenugasanTab('st');
+      if (typeof LaporanEngine !== 'undefined') {
+        LaporanEngine.renderTimSTTable();
+        LaporanEngine.renderSKTimTable();
+        LaporanEngine.populateSKDropdownInSTForm();
+      }
+    } catch (err) {
+      console.warn('Gagal memuat tabel data Tim & ST:', err);
     }
   },
 
@@ -3524,6 +3537,8 @@ const App = {
     setTimeout(() => toast.remove(), 4000);
   }
 };
+
+window.App = App;
 
 document.addEventListener('DOMContentLoaded', () => {
   App.init();
