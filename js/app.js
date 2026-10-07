@@ -107,6 +107,15 @@ const App = {
     setTimeout(() => {
       this.loadPhotosFromSheet();
     }, 1500);
+
+    // Asynchronously preload official Pola Ruang GIS polygons & enrich regency boundaries
+    if (typeof PolaRuangEngine !== 'undefined') {
+      PolaRuangEngine.loadDataset().then(() => {
+        this.enrichAssetLocationsWithPolaRuang();
+      }).catch(err => {
+        console.warn('[PolaRuangEngine] Preload error:', err);
+      });
+    }
   },
 
   /**
@@ -241,6 +250,9 @@ const App = {
         if (bounds.isValid()) {
           MapEngine.map.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
         }
+      }
+      if (typeof GeoBoundaryEngine !== 'undefined') {
+        GeoBoundaryEngine.highlightKabupaten(MapEngine.map, this.filters.kabupaten);
       }
     }
 
@@ -1083,7 +1095,17 @@ const App = {
 
     // Perfect synchronization: ensure asset kabupaten matches the official GIS polygon
     if (zoningInfo && zoningInfo.kabupaten && zoningInfo.kabupaten !== 'Provinsi Bali') {
+      const prevKab = asset.kabupaten;
       asset.kabupaten = zoningInfo.kabupaten;
+      if (prevKab !== asset.kabupaten) {
+        const cardElem = document.querySelector(`.asset-card[data-asset-id="${asset.id}"]`);
+        if (cardElem) {
+          const locSpan = cardElem.querySelector('.asset-card-meta span:last-child');
+          if (locSpan) {
+            locSpan.innerHTML = `<i class="fa-solid fa-location-dot text-danger"></i> ${asset.kabupaten}`;
+          }
+        }
+      }
     }
 
     const rawPhotoUrl = (asset.fotoList && asset.fotoList.length > 0) ? asset.fotoList[this.currentPhotoIndex || 0] : '';

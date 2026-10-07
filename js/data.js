@@ -567,7 +567,15 @@ const DataEngine = {
       }
     }
 
-    // 2. High-Precision GIS Boundary Check from Pola Ruang (ATR/BPN)
+    // 2. High-Precision Official Administrative Boundary Check (BPS / BIG GeoJSON)
+    if (lat !== null && lng !== null && typeof GeoBoundaryEngine !== 'undefined') {
+      const geoKab = GeoBoundaryEngine.detectKabupaten(lat, lng);
+      if (geoKab) {
+        return geoKab;
+      }
+    }
+
+    // 3. Spatial Zoning Polygons from Pola Ruang (ATR/BPN)
     if (lat !== null && lng !== null && typeof PolaRuangEngine !== 'undefined' && PolaRuangEngine.isLoaded) {
       const zoning = PolaRuangEngine.getZoningForPoint(lat, lng);
       if (zoning && zoning.kabupaten && zoning.kabupaten !== 'Provinsi Bali') {
@@ -612,29 +620,83 @@ const DataEngine = {
       return 'Kota Denpasar';
     }
 
-    // 4. GPS Distance Fallback
+    // 4. GPS Distance Fallback using Regional & District Centroid Anchors
     if (lat !== null && lng !== null && typeof SpatialEngine !== 'undefined') {
-      const regencyCapitals = {
-        'Kota Denpasar': { lat: -8.6705, lng: 115.2260 },
-        'Kabupaten Badung': { lat: -8.5833, lng: 115.1819 },
-        'Kabupaten Gianyar': { lat: -8.5398, lng: 115.3275 },
-        'Kabupaten Tabanan': { lat: -8.5412, lng: 115.1256 },
-        'Kabupaten Buleleng': { lat: -8.1120, lng: 115.0882 },
-        'Kabupaten Karangasem': { lat: -8.4475, lng: 115.6148 },
-        'Kabupaten Klungkung': { lat: -8.5356, lng: 115.4039 },
-        'Kabupaten Bangli': { lat: -8.4559, lng: 115.3547 },
-        'Kabupaten Jembrana': { lat: -8.3585, lng: 114.6295 }
-      };
+      const regencyAnchors = [
+        // Kota Denpasar
+        { kab: 'Kota Denpasar', lat: -8.6705, lng: 115.2260 },
+        { kab: 'Kota Denpasar', lat: -8.6360, lng: 115.2160 },
+        { kab: 'Kota Denpasar', lat: -8.7050, lng: 115.2280 },
+
+        // Kabupaten Badung
+        { kab: 'Kabupaten Badung', lat: -8.5833, lng: 115.1819 }, // Mengwi / Mangupura
+        { kab: 'Kabupaten Badung', lat: -8.6500, lng: 115.1500 }, // Kuta Utara / Canggu
+        { kab: 'Kabupaten Badung', lat: -8.7200, lng: 115.1700 }, // Kuta
+        { kab: 'Kabupaten Badung', lat: -8.7900, lng: 115.2000 }, // Kuta Selatan / Nusa Dua
+        { kab: 'Kabupaten Badung', lat: -8.5200, lng: 115.2100 }, // Abiansemal
+        { kab: 'Kabupaten Badung', lat: -8.3800, lng: 115.2200 }, // Petang
+
+        // Kabupaten Gianyar
+        { kab: 'Kabupaten Gianyar', lat: -8.5398, lng: 115.3275 }, // Kota Gianyar
+        { kab: 'Kabupaten Gianyar', lat: -8.5069, lng: 115.2625 }, // Ubud
+        { kab: 'Kabupaten Gianyar', lat: -8.5800, lng: 115.2800 }, // Sukawati
+        { kab: 'Kabupaten Gianyar', lat: -8.5600, lng: 115.3000 }, // Blahbatuh
+        { kab: 'Kabupaten Gianyar', lat: -8.4400, lng: 115.3000 }, // Tampaksiring
+        { kab: 'Kabupaten Gianyar', lat: -8.3600, lng: 115.2500 }, // Payangan
+
+        // Kabupaten Tabanan
+        { kab: 'Kabupaten Tabanan', lat: -8.5412, lng: 115.1256 }, // Tabanan
+        { kab: 'Kabupaten Tabanan', lat: -8.5600, lng: 115.1400 }, // Kediri
+        { kab: 'Kabupaten Tabanan', lat: -8.3180, lng: 115.1750 }, // Baturiti
+        { kab: 'Kabupaten Tabanan', lat: -8.3400, lng: 115.0600 }, // Pupuan
+        { kab: 'Kabupaten Tabanan', lat: -8.5200, lng: 115.0600 }, // Selemadeg
+        { kab: 'Kabupaten Tabanan', lat: -8.4900, lng: 115.1700 }, // Marga
+        { kab: 'Kabupaten Tabanan', lat: -8.4500, lng: 115.1300 }, // Penebel
+
+        // Kabupaten Buleleng
+        { kab: 'Kabupaten Buleleng', lat: -8.1120, lng: 115.0882 }, // Singaraja
+        { kab: 'Kabupaten Buleleng', lat: -8.1500, lng: 115.1000 }, // Sukasada
+        { kab: 'Kabupaten Buleleng', lat: -8.1900, lng: 114.9300 }, // Seririt
+        { kab: 'Kabupaten Buleleng', lat: -8.1900, lng: 114.6800 }, // Gerokgak
+        { kab: 'Kabupaten Buleleng', lat: -8.1000, lng: 115.1800 }, // Kubutambahan
+        { kab: 'Kabupaten Buleleng', lat: -8.1400, lng: 115.3400 }, // Tejakula
+
+        // Kabupaten Karangasem
+        { kab: 'Kabupaten Karangasem', lat: -8.4475, lng: 115.6148 }, // Amlapura / Karangasem
+        { kab: 'Kabupaten Karangasem', lat: -8.4900, lng: 115.5200 }, // Manggis / Padangbai / Candidasa
+        { kab: 'Kabupaten Karangasem', lat: -8.3800, lng: 115.6200 }, // Abang / Amed
+        { kab: 'Kabupaten Karangasem', lat: -8.4300, lng: 115.5500 }, // Bebandem
+        { kab: 'Kabupaten Karangasem', lat: -8.4400, lng: 115.4800 }, // Selat
+        { kab: 'Kabupaten Karangasem', lat: -8.4800, lng: 115.4500 }, // Sidemen
+        { kab: 'Kabupaten Karangasem', lat: -8.3700, lng: 115.4300 }, // Rendang / Besakih
+        { kab: 'Kabupaten Karangasem', lat: -8.2600, lng: 115.5600 }, // Kubu / Tulamben
+
+        // Kabupaten Klungkung
+        { kab: 'Kabupaten Klungkung', lat: -8.5356, lng: 115.4039 }, // Semarapura
+        { kab: 'Kabupaten Klungkung', lat: -8.5300, lng: 115.3700 }, // Banjarangkan
+        { kab: 'Kabupaten Klungkung', lat: -8.5400, lng: 115.4400 }, // Dawan / Kusamba
+        { kab: 'Kabupaten Klungkung', lat: -8.7200, lng: 115.5500 }, // Nusa Penida / Lembongan
+
+        // Kabupaten Bangli
+        { kab: 'Kabupaten Bangli', lat: -8.4559, lng: 115.3547 }, // Bangli
+        { kab: 'Kabupaten Bangli', lat: -8.2400, lng: 115.3500 }, // Kintamani
+        { kab: 'Kabupaten Bangli', lat: -8.4900, lng: 115.3400 }, // Susut
+
+        // Kabupaten Jembrana
+        { kab: 'Kabupaten Jembrana', lat: -8.3585, lng: 114.6295 }, // Negara
+        { kab: 'Kabupaten Jembrana', lat: -8.3800, lng: 114.7500 }, // Mendoyo
+        { kab: 'Kabupaten Jembrana', lat: -8.1600, lng: 114.4400 }, // Gilimanuk / Melaya
+        { kab: 'Kabupaten Jembrana', lat: -8.4100, lng: 114.8200 }  // Pekutatan
+      ];
 
       let minDistance = 9999;
       let closestKabupaten = 'Kota Denpasar';
 
-      Object.keys(regencyCapitals).forEach(kab => {
-        const cap = regencyCapitals[kab];
-        const dist = SpatialEngine.calculateDistance(lat, lng, cap.lat, cap.lng);
+      regencyAnchors.forEach(anchor => {
+        const dist = SpatialEngine.calculateDistance(lat, lng, anchor.lat, anchor.lng);
         if (dist < minDistance) {
           minDistance = dist;
-          closestKabupaten = kab;
+          closestKabupaten = anchor.kab;
         }
       });
 

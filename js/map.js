@@ -61,6 +61,11 @@ const MapEngine = {
     // Render KPKNL Denpasar Office Marker
     this.renderKPKNLMarker();
 
+    // Render official administrative boundaries for Bali (BPS/BIG GeoJSON)
+    if (typeof GeoBoundaryEngine !== 'undefined') {
+      GeoBoundaryEngine.renderBoundaryLayer(this.map);
+    }
+
     // Modern ResizeObserver to handle container size settling accurately.
     // CRITICAL: Leaflet's default invalidateSize uses pan: true, which calculates
     // offset = oldCenter - newCenter. When container height is initially 0 or partial,
