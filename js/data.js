@@ -4,7 +4,7 @@
  */
 
 const DataEngine = {
-  rawDataset: typeof RAW_BMN_DATASET !== 'undefined' ? RAW_BMN_DATASET : [],
+  rawDataset: (typeof RAW_BMN_DATASET !== 'undefined' ? RAW_BMN_DATASET : (typeof BMN_RAW_DATASET !== 'undefined' ? BMN_RAW_DATASET : [])),
   activeAssets: [],
   pendingAssets: [],
 
@@ -100,6 +100,8 @@ const DataEngine = {
     if (!Array.isArray(this.rawDataset) || this.rawDataset.length === 0) {
       if (typeof RAW_BMN_DATASET !== 'undefined' && Array.isArray(RAW_BMN_DATASET)) {
         this.rawDataset = RAW_BMN_DATASET;
+      } else if (typeof BMN_RAW_DATASET !== 'undefined' && Array.isArray(BMN_RAW_DATASET)) {
+        this.rawDataset = BMN_RAW_DATASET;
       }
     }
 

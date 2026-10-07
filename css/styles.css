@@ -480,6 +480,11 @@ body {
   flex-shrink: 0;
 }
 
+.stats-bar.collapsed {
+  display: none !important;
+}
+
+
 @media (max-width: 1200px) {
   .stats-bar {
     grid-template-columns: 1fr 1fr;
@@ -2021,17 +2026,79 @@ body {
 }
 
 .global-search-wrapper {
-  padding: 10px 12px 6px 12px;
+  padding: 8px 16px;
   background: #ffffff;
   border-bottom: 1px solid var(--border-subtle);
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .search-box {
   position: relative;
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
+}
+
+/* TOGGLE KPI STATS CARDS BUTTON */
+.btn-toggle-stats-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: 9px;
+  border: 1.5px solid #cbd5e1;
+  background: #f8fafc;
+  color: var(--text-main);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.btn-toggle-stats-bar:hover {
+  background: #ffffff;
+  border-color: var(--pastel-blue);
+  color: var(--pastel-blue);
+  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.16);
+  transform: translateY(-1px);
+}
+
+.btn-toggle-stats-bar:active {
+  transform: translateY(0);
+}
+
+.btn-toggle-stats-bar.collapsed {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  color: #1d4ed8;
+}
+
+.btn-toggle-stats-bar i#stats-bar-toggle-icon {
+  color: var(--pastel-blue);
+  font-size: 13px;
+  transition: color 0.2s ease;
+}
+
+.btn-toggle-stats-bar.collapsed i#stats-bar-toggle-icon {
+  color: #2563eb;
+}
+
+.btn-toggle-stats-bar .toggle-chevron {
+  font-size: 11px;
+  color: var(--text-muted);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.btn-toggle-stats-bar.collapsed .toggle-chevron {
+  color: #2563eb;
 }
 
 .search-box i,
@@ -2638,6 +2705,11 @@ body {
     border-bottom: 1px solid var(--border-subtle);
     z-index: 1000;
     position: relative;
+    display: block;
+  }
+
+  .btn-toggle-stats-bar {
+    display: none !important;
   }
 
   /* Hide KPI Stats Bar from top on mobile to keep top clean */

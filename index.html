@@ -106,14 +106,20 @@
   <div id="view-dashboard-container" style="display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; position: relative;">
     <!-- GLOBAL PROMINENT SEARCH BAR (DIRECTLY BELOW HEADER) -->
     <div class="global-search-wrapper">
-    <div class="search-box">
-      <i class="fa-solid fa-magnifying-glass search-icon"></i>
-      <input type="text" id="global-search-input" placeholder="🔍 Cari Nama Barang, NUP, Satker, Alamat, Wilayah..." oninput="App.handleGlobalSearch(this.value)">
-      <button class="btn-clear-search" id="btn-clear-search" onclick="App.clearSearch()" style="display:none;" title="Bersihkan Pencarian">
-        <i class="fa-solid fa-xmark"></i>
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="global-search-input" placeholder="🔍 Cari Nama Barang, NUP, Satker, Alamat, Wilayah..." oninput="App.handleGlobalSearch(this.value)">
+        <button class="btn-clear-search" id="btn-clear-search" onclick="App.clearSearch()" style="display:none;" title="Bersihkan Pencarian">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <!-- TOGGLE STATS KPI CARDS BUTTON -->
+      <button class="btn-toggle-stats-bar" id="btn-toggle-stats-bar" onclick="App.toggleStatsBar()" title="Sembunyikan Ringkasan Statistik & KPI" aria-expanded="true">
+        <i class="fa-solid fa-chart-pie" id="stats-bar-toggle-icon"></i>
+        <span id="stats-bar-toggle-text">Sembunyikan KPI</span>
+        <i class="fa-solid fa-chevron-up toggle-chevron" id="stats-bar-toggle-chevron"></i>
       </button>
     </div>
-  </div>
 
   <!-- ==========================================================================
        2. KPI SUMMARY METRICS BAR (2-ROW EXECUTIVE DASHBOARD)

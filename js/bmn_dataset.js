@@ -1,4 +1,4 @@
-const BMN_RAW_DATASET = [
+const RAW_BMN_DATASET = [
   {
     "kode_satker": "088012200667882000KD",
     "kementerian": "BADAN KEPEGAWAIAN NEGARA",
@@ -6200,3 +6200,7 @@ const BMN_RAW_DATASET = [
     "kabupaten": "Kabupaten Gianyar"
   }
 ];
+
+// Alias for backwards & forwards compatibility
+const BMN_RAW_DATASET = RAW_BMN_DATASET;
+

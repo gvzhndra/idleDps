@@ -26,6 +26,7 @@ const App = {
   compressedPhotoBlobs: [],
   isLeftPanelCollapsed: false,
   isRightDrawerOpen: false,
+  isStatsBarCollapsed: false,
 
   USER_ACCOUNTS: {
     'admin_kpknl': {
@@ -67,6 +68,15 @@ const App = {
 
     // Render initial views
     this.updateKPIStats();
+    // Restore collapsed state for Stats Bar from localStorage
+    try {
+      const savedStatsState = localStorage.getItem('idleDps_stats_collapsed');
+      if (savedStatsState === 'true') {
+        this.isStatsBarCollapsed = true;
+      }
+    } catch (e) {}
+    this.applyStatsBarState();
+
     this.renderClusterAccordion();
     this.renderAllAssetsList();
     this.updateTindakBadges();
@@ -508,6 +518,45 @@ const App = {
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  },
+
+  toggleStatsBar() {
+    this.isStatsBarCollapsed = !this.isStatsBarCollapsed;
+    this.applyStatsBarState();
+    try {
+      localStorage.setItem('idleDps_stats_collapsed', this.isStatsBarCollapsed ? 'true' : 'false');
+    } catch (e) {}
+  },
+
+  applyStatsBarState() {
+    const statsBar = document.getElementById('executive-stats-bar');
+    const toggleBtn = document.getElementById('btn-toggle-stats-bar');
+    const toggleText = document.getElementById('stats-bar-toggle-text');
+    const toggleChevron = document.getElementById('stats-bar-toggle-chevron');
+
+    if (statsBar) {
+      statsBar.classList.toggle('collapsed', this.isStatsBarCollapsed);
+    }
+
+    if (toggleBtn) {
+      toggleBtn.classList.toggle('collapsed', this.isStatsBarCollapsed);
+      toggleBtn.setAttribute('title', this.isStatsBarCollapsed ? 'Tampilkan Ringkasan Statistik & KPI' : 'Sembunyikan Ringkasan Statistik & KPI');
+      toggleBtn.setAttribute('aria-expanded', !this.isStatsBarCollapsed);
+    }
+
+    if (toggleChevron) {
+      toggleChevron.className = this.isStatsBarCollapsed ? 'fa-solid fa-chevron-down toggle-chevron' : 'fa-solid fa-chevron-up toggle-chevron';
+    }
+
+    if (toggleText) {
+      toggleText.textContent = this.isStatsBarCollapsed ? 'Tampilkan KPI' : 'Sembunyikan KPI';
+    }
+
+    setTimeout(() => {
+      if (typeof MapEngine !== 'undefined' && MapEngine.map) {
+        MapEngine.map.invalidateSize({ pan: false });
+      }
+    }, 280);
   },
 
   toggleLeftPanel() {
