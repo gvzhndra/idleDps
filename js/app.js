@@ -1395,21 +1395,35 @@ const App = {
       </div>
 
       ${!hasCoords ? `
-      <!-- UNMAPPED ASSET GPS CAPTURE PROMINENT CARD -->
+      <!-- UNMAPPED ASSET GPS & GEOJSON CAPTURE PROMINENT CARD -->
       <div class="p-3 mb-4 rounded" style="background:#fffbeb; border:1.5px solid #fde68a; box-shadow:0 2px 10px rgba(245, 158, 11, 0.1);">
-        <div class="d-flex align-items-center gap-2 mb-2" style="font-size:12px; font-weight:700; color:#b45309;">
+        <div class="d-flex align-items-center gap-2 mb-1" style="font-size:12px; font-weight:700; color:#b45309;">
           <i class="fa-solid fa-triangle-exclamation" style="font-size:15px; color:#d97706;"></i>
-          <span>BMN Belum Memiliki Koordinat GPS</span>
+          <span>BMN Belum Memiliki Koordinat / Poligon</span>
         </div>
         <p style="font-size:11px; color:#92400e; margin:0 0 10px 0; line-height:1.45;">
-          Aset ini belum memiliki titik GPS. Jika Anda sedang berada di lokasi, kunci koordinat sekarang langsung dari HP.
+          Aset ini belum dipetakan. Pilih cara penentuan lokasi sesuai perangkat Anda:
         </p>
-        <button type="button" class="btn-capture-gps" onclick="App.captureCurrentLocation('${asset.id}')">
-          <i class="fa-solid fa-location-crosshairs"></i> Ambil Titik GPS Saya Saat Ini
-        </button>
+        <div class="d-flex flex-column gap-2">
+          <!-- Opsi 1 (Desktop): Ketik Manual -->
+          <button type="button" class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center gap-2 w-100" style="font-size:11.5px; font-weight:700; padding:8px 12px; border-radius:8px; background:#eff6ff;" onclick="App.openEditAssetModal('${asset.id}', 'koordinat')">
+            <i class="fa-solid fa-pen-to-square"></i> 1. Ketik Koordinat Manual (Lat, Lng)
+          </button>
+          <!-- Opsi 2 (Desktop): Upload atau Masukkan GeoJSON untuk dapat Poligon -->
+          <button type="button" class="btn btn-sm btn-outline-success d-flex align-items-center justify-content-center gap-2 w-100" style="font-size:11.5px; font-weight:700; padding:8px 12px; border-radius:8px; background:#f0fdf4;" onclick="App.openRekamGeoJSONModal('${asset.id}')">
+            <i class="fa-solid fa-draw-polygon"></i> 2. Masukkan GeoJSON (Poligon Bidang)
+          </button>
+          <!-- Opsi 3 (Mobile HP): GPS Otomatis di Lapangan -->
+          <button type="button" class="btn-capture-gps" style="padding:9px 12px; font-size:12px;" onclick="App.captureCurrentLocation('${asset.id}')">
+            <i class="fa-solid fa-location-crosshairs"></i> 3. Kunci Titik GPS Saat Ini (via HP)
+          </button>
+        </div>
       </div>
       ` : `
-      <div class="mb-3">
+      <div class="mb-3 d-flex flex-column gap-1">
+        <button type="button" class="btn btn-sm btn-outline-success d-flex align-items-center justify-content-center gap-1 w-100" style="font-size:11px; padding:6px 10px; border-radius:8px;" onclick="App.openRekamGeoJSONModal('${asset.id}')">
+          <i class="fa-solid fa-draw-polygon text-success"></i> ${asset.geojson ? 'Perbarui Batas Poligon GeoJSON' : '+ Masukkan Poligon GeoJSON (Bidang Tanah)'}
+        </button>
         <button type="button" class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center gap-1 w-100" style="font-size:11px; padding:6px 10px; border-radius:8px; border-color:#cbd5e1; color:#475569;" onclick="App.captureCurrentLocation('${asset.id}')">
           <i class="fa-solid fa-location-crosshairs text-success"></i> Kalibrasi Ulang Posisi dengan GPS HP
         </button>
@@ -2816,13 +2830,14 @@ const App = {
     }
   },
 
-  openEditAssetModal(assetId) {
+  openEditAssetModal(assetId, focusField) {
     const asset = this.getAsset(assetId) || (this.selectedAsset && this.selectedAsset.id === assetId ? this.selectedAsset : null);
     if (!asset) {
       this.showToast('Gagal memuat data aset untuk diedit.', 'warning');
       return;
     }
 
+    this.selectedAsset = asset;
     this.switchEditAssetTab(1);
     this.calculateCompletionScore(asset);
 
@@ -2890,6 +2905,17 @@ const App = {
     if (modal) {
       modal.style.display = 'flex';
       modal.classList.add('show');
+    }
+
+    if (focusField === 'koordinat') {
+      setTimeout(() => {
+        const coordInput = document.getElementById('edit-koordinat');
+        if (coordInput) {
+          coordInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          coordInput.focus();
+          coordInput.select();
+        }
+      }, 150);
     }
   },
 
@@ -3220,13 +3246,17 @@ const App = {
   /* ==========================================================================
      REKAM GEOJSON (BATAS POLIGON BIDANG ASET)
      ========================================================================== */
-  openRekamGeoJSONModal() {
-    const assetId = document.getElementById('edit-asset-id')?.value || this.selectedAsset?.id;
+  openRekamGeoJSONModal(targetAssetId) {
+    const assetId = targetAssetId || document.getElementById('edit-asset-id')?.value || this.selectedAsset?.id;
     const asset = this.getAsset(assetId);
     if (!asset) {
       this.showToast('Pilih aset terlebih dahulu untuk merekam GeoJSON.', 'warning');
       return;
     }
+
+    this.selectedAsset = asset;
+    const editIdInput = document.getElementById('edit-asset-id');
+    if (editIdInput) editIdInput.value = asset.id;
 
     const modal = document.getElementById('modal-rekam-geojson');
     if (!modal) return;
@@ -3474,6 +3504,38 @@ const App = {
 
     asset.geojson = validGeo;
 
+    // Hitung titik centroid jika aset belum memiliki koordinat GPS
+    let coordsAutoCalculated = false;
+    try {
+      if (typeof L !== 'undefined') {
+        const dummyLayer = L.geoJSON(validGeo);
+        const bounds = dummyLayer.getBounds();
+        if (bounds && bounds.isValid()) {
+          const center = bounds.getCenter();
+          if (!asset.hasCoordinates || !asset.lat || !asset.lng || (asset.lat === 0 && asset.lng === 0)) {
+            asset.lat = Number(center.lat.toFixed(6));
+            asset.lng = Number(center.lng.toFixed(6));
+            asset.koordinat = `${asset.lat}, ${asset.lng}`;
+            asset.hasCoordinates = true;
+            coordsAutoCalculated = true;
+
+            // Auto-detect kabupaten jika ada PolaRuangEngine
+            if (typeof PolaRuangEngine !== 'undefined') {
+              const zInfo = PolaRuangEngine.getZoningForPoint(asset.lat, asset.lng);
+              if (zInfo && zInfo.kabupaten && zInfo.kabupaten !== 'Provinsi Bali') {
+                asset.kabupaten = zInfo.kabupaten;
+              }
+            }
+
+            const coordInput = document.getElementById('edit-koordinat');
+            if (coordInput) coordInput.value = `${asset.lat}, ${asset.lng}`;
+          }
+        }
+      }
+    } catch (geoErr) {
+      console.warn('Gagal menghitung centroid GeoJSON:', geoErr);
+    }
+
     // Save to localStorage
     try {
       const storedGeo = JSON.parse(localStorage.getItem('bmn_custom_geojson') || '{}');
@@ -3481,24 +3543,45 @@ const App = {
       localStorage.setItem('bmn_custom_geojson', JSON.stringify(storedGeo));
 
       const storedEdits = JSON.parse(localStorage.getItem('bmn_custom_edits') || '{}');
-      if (storedEdits[asset.id]) {
-        storedEdits[asset.id].geojson = validGeo;
-        localStorage.setItem('bmn_custom_edits', JSON.stringify(storedEdits));
+      if (!storedEdits[asset.id]) storedEdits[asset.id] = {};
+      storedEdits[asset.id].geojson = validGeo;
+      if (coordsAutoCalculated) {
+        storedEdits[asset.id].lat = asset.lat;
+        storedEdits[asset.id].lng = asset.lng;
+        storedEdits[asset.id].koordinat = asset.koordinat;
+        storedEdits[asset.id].kabupaten = asset.kabupaten;
       }
+      localStorage.setItem('bmn_custom_edits', JSON.stringify(storedEdits));
     } catch (e) {
       console.warn('Gagal menyimpan geojson ke local:', e);
+    }
+
+    // Sync to Google Sheets if coordinates calculated
+    if (coordsAutoCalculated) {
+      this.syncEditToGoogleSheets(asset);
+      if (typeof MapEngine !== 'undefined') {
+        MapEngine.renderMarkers(this.assets);
+      }
     }
 
     // Update badges
     this.updateGeoJSONBadges(asset);
 
-    // If on map, immediately render the polygon
-    if (typeof MapEngine !== 'undefined' && MapEngine.activeAssetId === asset.id) {
+    // If on map, immediately render the polygon and flyTo
+    if (typeof MapEngine !== 'undefined') {
       MapEngine.renderAssetPolygon(asset);
+      if (asset.lat && asset.lng) {
+        MapEngine.flyTo(asset.lat, asset.lng, 17);
+      }
     }
 
+    // Re-render detail drawer
+    const catchment = (typeof SpatialEngine !== 'undefined' && asset.hasCoordinates) ? SpatialEngine.analyzeCatchment(asset.lat, asset.lng) : null;
+    const rec = (typeof RecommendationEngine !== 'undefined') ? RecommendationEngine.generateRecommendation(asset, catchment) : null;
+    this.renderDetailPanel(asset, catchment, rec);
+
     this.closeRekamGeoJSONModal();
-    this.showToast(`🗺️ Batas poligon GeoJSON berhasil disimpan & ditampilkan di peta!`, 'success');
+    this.showToast(coordsAutoCalculated ? '🗺️ Poligon GeoJSON disimpan & titik GPS otomatis dihitung dari titik tengah bidang tanah!' : '🗺️ Batas poligon GeoJSON berhasil disimpan & ditampilkan di peta!', 'success');
   },
 
   handleDeleteGeoJSON() {

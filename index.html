@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
   
   <!-- Soft Pastel Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=4.0.1">
+  <link rel="stylesheet" href="css/styles.css?v=4.0.2">
 </head>
 <body>
 
@@ -780,9 +780,14 @@
                 <input type="number" class="form-control" id="edit-nilai-buku" step="any">
               </div>
               <div class="form-group flex-1">
-                <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Koordinat (Lat, Lng)</label>
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <label style="font-size:11px; color:var(--text-muted); margin:0;">Koordinat (Lat, Lng)</label>
+                  <button type="button" class="btn btn-sm btn-outline-success" onclick="App.openRekamGeoJSONModal()" style="font-size:10px; padding:2px 7px; border-radius:5px; font-weight:600;" title="Unggah file .geojson atau tempel kode poligon bidang tanah">
+                    <i class="fa-solid fa-draw-polygon"></i> GeoJSON (Poligon)
+                  </button>
+                </div>
                 <div class="d-flex gap-1">
-                  <input type="text" class="form-control" id="edit-koordinat" placeholder="-8.67, 115.21">
+                  <input type="text" class="form-control" id="edit-koordinat" placeholder="Ketik: -8.67, 115.21 atau gunakan GeoJSON">
                   <button type="button" class="btn btn-sm btn-success" onclick="App.captureLocationForEditModal()" title="Kunci posisi otomatis dari GPS HP" style="font-size:11px; white-space:nowrap; padding:4px 8px; background:#059669; border-color:#059669;">
                     <i class="fa-solid fa-location-crosshairs"></i> GPS HP
                   </button>
@@ -1717,6 +1722,6 @@
   <script src="js/recommendation.js?v=3.9.9"></script>
   <script src="js/map.js?v=3.9.11"></script>
   <script src="js/laporan.js?v=3.9.9"></script>
-  <script src="js/app.js?v=4.0.1"></script>
+  <script src="js/app.js?v=4.0.2"></script>
 </body>
 </html>
