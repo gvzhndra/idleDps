@@ -2223,6 +2223,15 @@ const App = {
     if (dropdown) {
       const isVisible = dropdown.style.display === 'flex';
       dropdown.style.display = isVisible ? 'none' : 'flex';
+      if (!isVisible) {
+        const closeHandler = (e) => {
+          if (!e.target.closest('#mobile-burger-dropdown') && !e.target.closest('#mobile-burger-btn')) {
+            dropdown.style.display = 'none';
+            document.removeEventListener('click', closeHandler);
+          }
+        };
+        setTimeout(() => document.addEventListener('click', closeHandler), 50);
+      }
     }
   },
 
