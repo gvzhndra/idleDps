@@ -496,6 +496,8 @@ const App = {
         const accuracy = Math.round(pos.coords.accuracy || 0);
         const input = document.getElementById('edit-koordinat');
         if (input) input.value = `${lat}, ${lng}`;
+        const mobileText = document.getElementById('edit-koordinat-text');
+        if (mobileText) mobileText.textContent = `${lat}, ${lng}`;
         this.showToast(`✅ Koordinat terisi: ${lat}, ${lng} (Akurasi: ±${accuracy}m)!`, 'success');
       },
       (err) => {
@@ -1401,32 +1403,46 @@ const App = {
           <i class="fa-solid fa-triangle-exclamation" style="font-size:15px; color:#d97706;"></i>
           <span>BMN Belum Memiliki Koordinat / Poligon</span>
         </div>
-        <p style="font-size:11px; color:#92400e; margin:0 0 10px 0; line-height:1.45;">
-          Aset ini belum dipetakan. Pilih cara penentuan lokasi sesuai perangkat Anda:
-        </p>
-        <div class="d-flex flex-column gap-2">
-          <!-- Opsi 1 (Desktop): Ketik Manual -->
-          <button type="button" class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center gap-2 w-100" style="font-size:11.5px; font-weight:700; padding:8px 12px; border-radius:8px; background:#eff6ff;" onclick="App.openEditAssetModal('${asset.id}', 'koordinat')">
-            <i class="fa-solid fa-pen-to-square"></i> 1. Ketik Koordinat Manual (Lat, Lng)
-          </button>
-          <!-- Opsi 2 (Desktop): Upload atau Masukkan GeoJSON untuk dapat Poligon -->
-          <button type="button" class="btn btn-sm btn-outline-success d-flex align-items-center justify-content-center gap-2 w-100" style="font-size:11.5px; font-weight:700; padding:8px 12px; border-radius:8px; background:#f0fdf4;" onclick="App.openRekamGeoJSONModal('${asset.id}')">
-            <i class="fa-solid fa-draw-polygon"></i> 2. Masukkan GeoJSON (Poligon Bidang)
-          </button>
-          <!-- Opsi 3 (Mobile HP): GPS Otomatis di Lapangan -->
-          <button type="button" class="btn-capture-gps" style="padding:9px 12px; font-size:12px;" onclick="App.captureCurrentLocation('${asset.id}')">
-            <i class="fa-solid fa-location-crosshairs"></i> 3. Kunci Titik GPS Saat Ini (via HP)
+        
+        <!-- KHUSUS DESKTOP: 1. Masukkan GeoJSON, 2. Ketik Manual -->
+        <div class="desktop-only">
+          <p style="font-size:11px; color:#92400e; margin:0 0 10px 0; line-height:1.45;">
+            Aset ini belum dipetakan. Silakan unggah berkas batas poligon GeoJSON atau masukkan titik koordinat:
+          </p>
+          <div class="d-flex flex-column gap-2">
+            <button type="button" class="btn btn-sm btn-outline-success d-flex align-items-center justify-content-center gap-2 w-100" style="font-size:11.5px; font-weight:700; padding:8px 12px; border-radius:8px; background:#f0fdf4;" onclick="App.openRekamGeoJSONModal('${asset.id}')">
+              <i class="fa-solid fa-draw-polygon"></i> 1. Masukkan / Unggah GeoJSON (Dapat Poligon)
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center gap-2 w-100" style="font-size:11.5px; font-weight:700; padding:8px 12px; border-radius:8px; background:#eff6ff;" onclick="App.openEditAssetModal('${asset.id}', 'koordinat')">
+              <i class="fa-solid fa-pen-to-square"></i> 2. Ketik Titik Koordinat (Lat, Lng)
+            </button>
+          </div>
+        </div>
+
+        <!-- KHUSUS MOBILE: Ambil Titik GPS dari HP -->
+        <div class="mobile-only">
+          <p style="font-size:11px; color:#92400e; margin:0 0 10px 0; line-height:1.45;">
+            Aset ini belum memiliki titik GPS. Tekan tombol di bawah untuk mengunci koordinat langsung dari sensor HP Anda di lokasi:
+          </p>
+          <button type="button" class="btn-capture-gps" onclick="App.captureCurrentLocation('${asset.id}')">
+            <i class="fa-solid fa-location-crosshairs"></i> Ambil Titik GPS Saya Saat Ini
           </button>
         </div>
       </div>
       ` : `
       <div class="mb-3 d-flex flex-column gap-1">
-        <button type="button" class="btn btn-sm btn-outline-success d-flex align-items-center justify-content-center gap-1 w-100" style="font-size:11px; padding:6px 10px; border-radius:8px;" onclick="App.openRekamGeoJSONModal('${asset.id}')">
-          <i class="fa-solid fa-draw-polygon text-success"></i> ${asset.geojson ? 'Perbarui Batas Poligon GeoJSON' : '+ Masukkan Poligon GeoJSON (Bidang Tanah)'}
-        </button>
-        <button type="button" class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center gap-1 w-100" style="font-size:11px; padding:6px 10px; border-radius:8px; border-color:#cbd5e1; color:#475569;" onclick="App.captureCurrentLocation('${asset.id}')">
-          <i class="fa-solid fa-location-crosshairs text-success"></i> Kalibrasi Ulang Posisi dengan GPS HP
-        </button>
+        <!-- Desktop: Kelola Batas Poligon GeoJSON -->
+        <div class="desktop-only">
+          <button type="button" class="btn btn-sm btn-outline-success d-flex align-items-center justify-content-center gap-1 w-100" style="font-size:11px; padding:6px 10px; border-radius:8px;" onclick="App.openRekamGeoJSONModal('${asset.id}')">
+            <i class="fa-solid fa-draw-polygon text-success"></i> ${asset.geojson ? 'Perbarui Batas Poligon GeoJSON' : '+ Masukkan Poligon GeoJSON (Bidang Tanah)'}
+          </button>
+        </div>
+        <!-- Mobile: Kalibrasi ulang via GPS HP -->
+        <div class="mobile-only">
+          <button type="button" class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center gap-1 w-100" style="font-size:11px; padding:6px 10px; border-radius:8px; border-color:#cbd5e1; color:#475569;" onclick="App.captureCurrentLocation('${asset.id}')">
+            <i class="fa-solid fa-location-crosshairs text-success"></i> Kalibrasi Ulang Posisi dengan GPS HP
+          </button>
+        </div>
       </div>
       `}
 
@@ -2850,8 +2866,12 @@ const App = {
     document.getElementById('edit-pinggir-jalan').value = asset.pinggirJalan || 'Ya';
     document.getElementById('edit-alamat').value = asset.alamat || '';
     document.getElementById('edit-luas').value = asset.luas || asset.luas_m2 || 0;
-    document.getElementById('edit-nilai-buku').value = asset.nilaiBuku || asset.nilai_buku || 0;
-    document.getElementById('edit-koordinat').value = (asset.lat && asset.lng) ? `${asset.lat}, ${asset.lng}` : (asset.koordinat || '');
+    const currentCoordStr = (asset.lat && asset.lng) ? `${asset.lat}, ${asset.lng}` : (asset.koordinat || '');
+    document.getElementById('edit-koordinat').value = currentCoordStr;
+    const mobileCoordText = document.getElementById('edit-koordinat-text');
+    if (mobileCoordText) {
+      mobileCoordText.textContent = currentCoordStr || 'Belum diisi';
+    }
 
     // Tab 2: Legalitas & Batas
     document.getElementById('edit-status-penguasaan').value = asset.statusPenguasaan || 'Sertifikat Hak Pakai a.n. Pemerintah RI';

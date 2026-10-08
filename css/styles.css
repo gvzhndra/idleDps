@@ -2685,6 +2685,27 @@ body {
 /* ==========================================================================
    MOBILE BOTTOM NAVIGATION BAR & RESPONSIVE LAYOUT (< 768px)
    ========================================================================== */
+/* Responsive Desktop vs Mobile Display Utilities */
+.mobile-only {
+  display: none !important;
+}
+.mobile-only-flex {
+  display: none !important;
+}
+.mobile-only-inline {
+  display: none !important;
+}
+
+.desktop-only {
+  display: block;
+}
+.desktop-only-flex {
+  display: flex;
+}
+.desktop-only-inline {
+  display: inline-flex;
+}
+
 .mobile-bottom-nav {
   display: none;
 }
@@ -2694,6 +2715,23 @@ body {
 }
 
 @media (max-width: 768px) {
+  /* Responsive Display Utilities for Mobile */
+  .desktop-only,
+  .desktop-only-flex,
+  .desktop-only-inline {
+    display: none !important;
+  }
+
+  .mobile-only {
+    display: block !important;
+  }
+  .mobile-only-flex {
+    display: flex !important;
+  }
+  .mobile-only-inline {
+    display: inline-flex !important;
+  }
+
   body {
     height: 100vh;
     height: 100dvh;
