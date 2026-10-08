@@ -274,6 +274,33 @@ const App = {
         indicator.textContent = `${filtered.length} Terfilter`;
       }
     }
+
+    // Update floating search & unmapped summary banner on map
+    const searchPill = document.getElementById('search-floating-summary-bar');
+    if (searchPill) {
+      const isSearchOrFilterActive = Boolean(this.filters.search) || this.filters.kabupaten !== 'all' || this.filters.onlyUnmapped;
+      if (isSearchOrFilterActive && filtered.length > 0) {
+        const total = filtered.length;
+        const mapped = mappedAssets.length;
+        const unmapped = total - mapped;
+
+        searchPill.style.display = 'flex';
+        searchPill.innerHTML = `
+          <div class="search-summary-text">
+            <span><i class="fa-solid fa-magnifying-glass text-primary"></i> <strong>${total}</strong> Aset Cocok</span>
+            <span style="color:#cbd5e1;">&bull;</span>
+            <span class="search-summary-badge-mapped"><i class="fa-solid fa-map-pin"></i> ${mapped} di Peta</span>
+          </div>
+          ${unmapped > 0 ? `
+            <button type="button" class="btn-summary-unmapped" onclick="App.openUnmappedFilterFromSearch()" title="Klik untuk membuka daftar aset yang belum ada GPS">
+              <i class="fa-solid fa-triangle-exclamation"></i> <strong>${unmapped} Butuh GPS</strong> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i>
+            </button>
+          ` : ''}
+        `;
+      } else {
+        searchPill.style.display = 'none';
+      }
+    }
   },
 
   resetAllFilters() {
@@ -283,6 +310,10 @@ const App = {
     this.filters.tahap = 'all';
     this.filters.kabupaten = 'all';
     this.filters.search = '';
+
+    const searchPill = document.getElementById('search-floating-summary-bar');
+    if (searchPill) searchPill.style.display = 'none';
+
 
     const sInput = document.getElementById('all-search-input');
     if (sInput) sInput.value = '';
@@ -343,6 +374,135 @@ const App = {
       this.showToast('Menampilkan seluruh aset', 'info');
     }
     this.applyFilters();
+  },
+
+  openUnmappedFilterFromSearch() {
+    this.filters.onlyUnmapped = true;
+    this.updateQuickFilterUI('unmapped');
+    this.updateActiveStatCard('card-filter-unmapped');
+
+    if (window.innerWidth <= 768) {
+      this.switchMobileTab('list');
+      this.switchTab('tab-all-assets');
+    } else {
+      if (this.isLeftPanelCollapsed) this.toggleLeftPanel();
+      this.switchTab('tab-all-assets');
+    }
+    this.applyFilters();
+    this.showToast('⚠️ Menampilkan daftar aset yang belum memiliki titik koordinat GPS', 'warning');
+  },
+
+  captureCurrentLocation(assetId) {
+    if (!navigator.geolocation) {
+      this.showToast('Browser atau HP Anda tidak mendukung fitur Geolocation GPS.', 'error');
+      return;
+    }
+
+    const targetId = assetId || this.selectedAsset?.id;
+    const asset = this.getAsset(targetId);
+    if (!asset) {
+      this.showToast('Pilih aset terlebih dahulu sebelum mengambil koordinat.', 'warning');
+      return;
+    }
+
+    this.showToast('📡 Menghubungi sensor GPS HP... Mohon izinkan akses lokasi.', 'info');
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = Number(pos.coords.latitude.toFixed(7));
+        const lng = Number(pos.coords.longitude.toFixed(7));
+        const accuracy = Math.round(pos.coords.accuracy || 0);
+
+        // Update local asset model
+        asset.lat = lat;
+        asset.lng = lng;
+        asset.koordinat = `${lat}, ${lng}`;
+        asset.hasCoordinates = true;
+
+        // Auto-detect Kabupaten
+        if (typeof GeoBoundaryEngine !== 'undefined') {
+          const detectedKab = GeoBoundaryEngine.detectKabupaten(lat, lng);
+          if (detectedKab) asset.kabupaten = detectedKab;
+        }
+
+        // Save locally in browser
+        try {
+          const storedEdits = JSON.parse(localStorage.getItem('bmn_custom_edits') || '{}');
+          storedEdits[asset.id] = { ...asset };
+          localStorage.setItem('bmn_custom_edits', JSON.stringify(storedEdits));
+        } catch (e) {}
+
+        // Send to Google Sheets if configured
+        if (CONFIG.APPS_SCRIPT && CONFIG.APPS_SCRIPT.WEB_APP_URL) {
+          fetch(CONFIG.APPS_SCRIPT.WEB_APP_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({
+              action: 'updateAsset',
+              assetId: asset.id,
+              kodeSatker: asset.kodeSatker,
+              kodeBarang: asset.kodeBarang,
+              nup: asset.nup,
+              koordinat: `${lat}, ${lng}`,
+              kabupaten: asset.kabupaten
+            })
+          }).catch(err => console.warn('Sync GPS to sheet error:', err));
+        }
+
+        // Re-render UI & Map
+        this.updateKPIStats();
+        this.renderClusterAccordion();
+        this.renderAllAssetsList();
+
+        if (typeof MapEngine !== 'undefined' && MapEngine.map) {
+          MapEngine.renderBMNMarkers(this.activeAssets, (a) => this.selectAsset(a.id, false));
+          MapEngine.map.setView([lat, lng], 18, { animate: true });
+        }
+
+        // Refresh detail panel
+        this.selectAsset(asset.id, false);
+
+        if (window.innerWidth <= 768) {
+          this.switchMobileTab('detail');
+        }
+
+        this.showToast(`✅ Koordinat berhasil dikunci: ${lat}, ${lng} (Akurasi: ±${accuracy}m)!`, 'success');
+      },
+      (err) => {
+        let msg = 'Gagal mengambil lokasi GPS.';
+        if (err.code === 1) msg = 'Izin lokasi ditolak. Mohon aktifkan izin GPS di browser HP Anda.';
+        else if (err.code === 2) msg = 'Sinyal GPS tidak ditemukan. Pastikan GPS HP aktif.';
+        else if (err.code === 3) msg = 'Pencarian GPS timeout. Coba lagi di tempat terbuka.';
+        this.showToast(msg, 'error');
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0
+      }
+    );
+  },
+
+  captureLocationForEditModal() {
+    if (!navigator.geolocation) {
+      this.showToast('Browser atau HP Anda tidak mendukung fitur Geolocation GPS.', 'error');
+      return;
+    }
+    this.showToast('📡 Menghubungi sensor GPS HP...', 'info');
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = Number(pos.coords.latitude.toFixed(7));
+        const lng = Number(pos.coords.longitude.toFixed(7));
+        const accuracy = Math.round(pos.coords.accuracy || 0);
+        const input = document.getElementById('edit-koordinat');
+        if (input) input.value = `${lat}, ${lng}`;
+        this.showToast(`✅ Koordinat terisi: ${lat}, ${lng} (Akurasi: ±${accuracy}m)!`, 'success');
+      },
+      (err) => {
+        this.showToast('Gagal mengambil lokasi GPS. Pastikan izin lokasi aktif.', 'error');
+      },
+      { enableHighAccuracy: true, timeout: 15000 }
+    );
   },
 
   toggleFilterPinned() {
@@ -1233,6 +1393,28 @@ const App = {
         <p style="font-size:11.5px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-building-user text-primary" style="margin-right:6px;"></i> ${asset.namaSatker}</p>
         <p style="font-size:11.5px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-id-card text-secondary" style="margin-right:6px;"></i> Kode Satker: <strong style="color:var(--text-main);">${asset.kodeSatker || '-'}</strong> &bull; <i class="fa-solid fa-location-dot text-danger" style="margin-left:4px; margin-right:4px;"></i> <strong>${asset.kabupaten}</strong></p>
       </div>
+
+      ${!hasCoords ? `
+      <!-- UNMAPPED ASSET GPS CAPTURE PROMINENT CARD -->
+      <div class="p-3 mb-4 rounded" style="background:#fffbeb; border:1.5px solid #fde68a; box-shadow:0 2px 10px rgba(245, 158, 11, 0.1);">
+        <div class="d-flex align-items-center gap-2 mb-2" style="font-size:12px; font-weight:700; color:#b45309;">
+          <i class="fa-solid fa-triangle-exclamation" style="font-size:15px; color:#d97706;"></i>
+          <span>BMN Belum Memiliki Koordinat GPS</span>
+        </div>
+        <p style="font-size:11px; color:#92400e; margin:0 0 10px 0; line-height:1.45;">
+          Aset ini belum memiliki titik GPS. Jika Anda sedang berada di lokasi, kunci koordinat sekarang langsung dari HP.
+        </p>
+        <button type="button" class="btn-capture-gps" onclick="App.captureCurrentLocation('${asset.id}')">
+          <i class="fa-solid fa-location-crosshairs"></i> Ambil Titik GPS Saya Saat Ini
+        </button>
+      </div>
+      ` : `
+      <div class="mb-3">
+        <button type="button" class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center gap-1 w-100" style="font-size:11px; padding:6px 10px; border-radius:8px; border-color:#cbd5e1; color:#475569;" onclick="App.captureCurrentLocation('${asset.id}')">
+          <i class="fa-solid fa-location-crosshairs text-success"></i> Kalibrasi Ulang Posisi dengan GPS HP
+        </button>
+      </div>
+      `}
 
       <!-- SURAT JAWABAN & TANGGAL SURAT CARD -->
       <div class="detail-section-card mb-4">
