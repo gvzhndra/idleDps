@@ -346,7 +346,7 @@ const DataEngine = {
 
     // 5. Masalah Pencatatan
     if (rawK.includes('catat') || rawK.includes('pencatatan') || rawK.includes('masalah') || rawK.includes('anomali')) {
-      let d = 'Reklasifikasi / Koreksi Catat';
+      let d = 'Reklasifikasi';
       if (rawD.includes('master') || rawD.includes('tidak ditemukan')) {
         d = 'Tidak Ditemukan di Master Aset';
       } else if (rawD.includes('dobel')) {
@@ -356,7 +356,7 @@ const DataEngine = {
       }
       return {
         key: 'masalah_pencatatan',
-        label: 'Masalah Pencatatan',
+        label: 'Masalah Catat',
         detil: d
       };
     }
@@ -364,7 +364,7 @@ const DataEngine = {
     // 6. Penggunaan (default, covers 'penggunaan', 'pernggunaan', 'pengunaan')
     let detilGuna = 'Digunakan Satker';
     if (rawD.includes('alih status') || rawD.includes('transfer')) {
-      detilGuna = 'Alih Status ke Satker Lain';
+      detilGuna = 'Alih Status';
     } else if (rawD.includes('rencana') || rawD.includes('usul')) {
       detilGuna = 'Rencana Penggunaan Satker';
     }
@@ -395,7 +395,7 @@ const DataEngine = {
       'Penghapusan': { count: 0, key: 'penghapusan', details: {} },
       'Renovasi': { count: 0, key: 'renovasi', details: {} },
       'Pemanfaatan': { count: 0, key: 'pemanfaatan', details: {} },
-      'Masalah Pencatatan': { count: 0, key: 'masalah_pencatatan', details: {} },
+      'Masalah Catat': { count: 0, key: 'masalah_pencatatan', details: {} },
       'Pemindahtanganan': { count: 0, key: 'pemindahtanganan', details: {} }
     };
     const tahapMap = {};

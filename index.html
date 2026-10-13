@@ -978,27 +978,47 @@
               </select>
             </div>
 
-            <!-- TIER 2: ALASAN / DASAR PERTIMBANGAN DINAMIS -->
-            <div class="form-group mb-2">
-              <label style="font-size:11px; font-weight:700; color:var(--text-main);" class="mb-1" id="label-alasan-idle">
-                <i class="fa-solid fa-list-ul text-warning"></i> 2. Alasan & Dasar Pertimbangan:
-              </label>
-              <select class="form-control" id="edit-alasan-idle" onchange="App.handleAlasanIdleChange(this.value)">
-                <option value="Rencana Penggunaan">Rencana Penggunaan (Renovasi / Pembangunan Kantor Baru)</option>
-                <option value="Rencana Pemanfaatan">Rencana Pemanfaatan (Rencana Sewa / KSP dengan Pihak Ketiga)</option>
-                <option value="Aktif Digunakan Operasional">Aktif Digunakan Operasional Kantor / Tugas dan Fungsi</option>
-                <option value="Digunakan Rumah Dinas">Digunakan Rumah Dinas / Asrama Aktif</option>
-                <option value="Sedang Dimanfaatkan Resmi">Sedang Dimanfaatkan Resmi (Perjanjian Sewa / Pinjam Pakai)</option>
-                <option value="Fisik Tidak Ada / Sudah Dihapus">Fisik Aset Tidak Ada / Sudah Dihapus / Koreksi Catat SAKTI</option>
-                <option value="Selesai Dihibahkan">Selesai Dipindahtangankan / Dihibahkan ke Pemkab</option>
-                <option value="Dikecualikan Aturan">Dikecualikan Sesuai Ketentuan (Sengketa Pengadilan / Khusus)</option>
-              </select>
+            <!-- TIER 2: KLASIFIKASI BMN IDLE (100% MATCH KARTU KPI) -->
+            <div class="p-2 mb-2 border rounded" style="background:#f0f9ff; border-color:#bae6fd !important;">
+              <div class="d-flex align-items-center justify-content-between mb-1">
+                <label style="font-size:11.5px; font-weight:700; color:#0369a1; margin-bottom:0;">
+                  <i class="fa-solid fa-tags text-primary"></i> 2. Klasifikasi BMN Idle (Sesuai Kartu KPI):
+                </label>
+                <span class="badge badge-pastel-blue" style="font-size:9px; font-weight:700;">100% Match KPI & Panel Kiri</span>
+              </div>
+              <div class="row d-flex gap-2">
+                <div class="form-group flex-1">
+                  <label style="font-size:10.5px; font-weight:600; color:#475569;" class="mb-1">Kategori Utama KPI:</label>
+                  <select class="form-control" id="edit-klasifikasi" style="font-weight:700;" onchange="App.handleKlasifikasiChange(this.value)">
+                    <option value="penggunaan">🏢 Penggunaan</option>
+                    <option value="renovasi">🔨 Renovasi</option>
+                    <option value="penghapusan">🗑️ Penghapusan</option>
+                    <option value="masalah_pencatatan">⚠️ Masalah Catat</option>
+                    <option value="pemanfaatan">🤝 Pemanfaatan</option>
+                    <option value="pemindahtanganan">🎁 Pemindahtanganan</option>
+                  </select>
+                </div>
+                <div class="form-group flex-1">
+                  <label style="font-size:10.5px; font-weight:600; color:#475569;" class="mb-1">Detil Sub-Kategori KPI:</label>
+                  <select class="form-control" id="edit-detil-klasifikasi" style="font-weight:700;" onchange="App.handleDetilKlasifikasiChange(this.value)">
+                    <!-- Diisi dinamis oleh App.handleKlasifikasiChange -->
+                  </select>
+                </div>
+              </div>
             </div>
 
-            <!-- TIER 3: SMART BOX DILAKUKAN PEMANTAUAN (KATA KUNCI: RENCANA PENGGUNAAN / PEMANFAATAN) -->
+            <!-- TIER 3: ALASAN & DASAR PERTIMBANGAN DINAMIS -->
+            <div class="form-group mb-2">
+              <label style="font-size:11px; font-weight:700; color:var(--text-main);" class="mb-1" id="label-alasan-idle">
+                <i class="fa-solid fa-list-ul text-warning"></i> 3. Dasar Pertimbangan / Keterangan Kesimpulan:
+              </label>
+              <input type="text" class="form-control" id="edit-alasan-idle" placeholder="Keterangan dasar pertimbangan penetapan..." style="font-size:12px;">
+            </div>
+
+            <!-- TIER 4: SMART BOX DILAKUKAN PEMANTAUAN (KATA KUNCI: RENCANA PENGGUNAAN / PEMANFAATAN) -->
             <div id="tier3-pemantauan-box" style="display:none; background:#ecfdf5; border:1px solid #6ee7b7; border-radius:8px; padding:10px; margin-bottom:10px;">
               <div style="font-size:11.5px; font-weight:700; color:#065f46; margin-bottom:6px;">
-                <i class="fa-solid fa-eye text-success"></i> 3. Tindak Lanjut PMK 120: DILAKUKAN PEMANTAUAN
+                <i class="fa-solid fa-eye text-success"></i> 4. Tindak Lanjut PMK 120: DILAKUKAN PEMANTAUAN
               </div>
               <div class="row d-flex gap-2">
                 <div class="form-group flex-1">
@@ -1008,6 +1028,8 @@
                     <option value="Realisasi Izin & Perjanjian Sewa / KSP">Realisasi Izin & Perjanjian Sewa / KSP</option>
                     <option value="Realisasi Pengalihan Status ke Satker Lain">Realisasi Pengalihan Status ke Satker Lain</option>
                     <option value="Realisasi Sertipikasi & Pengamanan Fisik">Realisasi Sertipikasi & Pengamanan Fisik</option>
+                    <option value="Realisasi SK & Risalah Lelang Penghapusan">Realisasi SK & Risalah Lelang Penghapusan</option>
+                    <option value="Realisasi Naskah Hibah / BAST Pemda">Realisasi Naskah Hibah / BAST Pemda</option>
                   </select>
                 </div>
                 <div class="form-group" style="width:140px;">
@@ -1017,31 +1039,6 @@
                     <option value="TA 2027">TA 2027 (Carry Over)</option>
                   </select>
                 </div>
-              </div>
-            </div>
-
-            <!-- KLASIFIKASI & DETIL KLASIFIKASI BMN (SINKRON PANEL KIRI) -->
-            <div class="row d-flex gap-2 mb-2 p-2 border rounded" style="background:#f1f5f9;">
-              <div class="form-group flex-1">
-                <label style="font-size:11px; font-weight:700; color:var(--text-main);" class="mb-1">
-                  <i class="fa-solid fa-tag text-primary"></i> Klasifikasi BMN (Pill Panel Kiri):
-                </label>
-                <select class="form-control" id="edit-klasifikasi" style="font-weight:600;" onchange="App.handleKlasifikasiChange(this.value)">
-                  <option value="penggunaan">Penggunaan</option>
-                  <option value="penghapusan">Penghapusan</option>
-                  <option value="pemanfaatan">Pemanfaatan</option>
-                  <option value="pemindahtanganan">Pemindahtanganan</option>
-                  <option value="renovasi">Renovasi</option>
-                  <option value="masalah_pencatatan">Masalah Pencatatan</option>
-                </select>
-              </div>
-              <div class="form-group flex-1">
-                <label style="font-size:11px; font-weight:700; color:var(--text-main);" class="mb-1">
-                  <i class="fa-solid fa-tags text-primary"></i> Detil Klasifikasi:
-                </label>
-                <select class="form-control" id="edit-detil-klasifikasi" style="font-weight:600;">
-                  <option value="Digunakan Satker">Digunakan Satker</option>
-                </select>
               </div>
             </div>
 

@@ -857,7 +857,7 @@ const App = {
         { key: 'penggunaan', label: 'Penggunaan', colorClass: 'blue', icon: 'fa-building-user', data: stats.hierarchy['Penggunaan'] },
         { key: 'renovasi', label: 'Renovasi', colorClass: 'orange', icon: 'fa-hammer', data: stats.hierarchy['Renovasi'] },
         { key: 'penghapusan', label: 'Penghapusan', colorClass: 'red', icon: 'fa-trash-can', data: stats.hierarchy['Penghapusan'] },
-        { key: 'masalah_pencatatan', label: 'Masalah Catat', colorClass: 'purple', icon: 'fa-triangle-exclamation', data: stats.hierarchy['Masalah Pencatatan'] },
+        { key: 'masalah_pencatatan', label: 'Masalah Catat', colorClass: 'purple', icon: 'fa-triangle-exclamation', data: stats.hierarchy['Masalah Catat'] || stats.hierarchy['Masalah Pencatatan'] },
         { key: 'pemanfaatan', label: 'Pemanfaatan', colorClass: 'green', icon: 'fa-handshake', data: stats.hierarchy['Pemanfaatan'] },
         { key: 'pemindahtanganan', label: 'Pemindahtanganan', colorClass: 'cyan', icon: 'fa-gift', data: stats.hierarchy['Pemindahtanganan'] }
       ];
@@ -2878,43 +2878,91 @@ const App = {
     this.handleAlasanIdleChange(alasanSelect.value);
   },
 
-  handleAlasanIdleChange(alasanVal) {
-    const tier3Box = document.getElementById('tier3-pemantauan-box');
-    if (tier3Box) {
-      if (alasanVal === 'Rencana Penggunaan' || alasanVal === 'Rencana Pemanfaatan' || String(alasanVal).includes('Rencana')) {
-        tier3Box.style.display = 'block';
-      } else {
-        tier3Box.style.display = 'none';
-      }
+  handleKlasifikasiChange(klasKey, selectedDetil) {
+    const detilSelect = document.getElementById('edit-detil-klasifikasi');
+    if (!detilSelect) return;
+
+    // 100% MATCH DENGAN KARTU KPI KLASIFIKASI BMN IDLE
+    const taxonomy = {
+      penggunaan: [
+        'Digunakan Satker',
+        'Alih Status',
+        'Rencana Penggunaan Satker'
+      ],
+      renovasi: [
+        'Rencana Renovasi',
+        'Rusak Berat Perlu Renovasi'
+      ],
+      penghapusan: [
+        'Sudah Dihapus',
+        'Rencana Penghapusan'
+      ],
+      masalah_pencatatan: [
+        'Tidak Ditemukan di Master Aset',
+        'Reklasifikasi',
+        'Kode Satker Berbeda',
+        'Dobel Catat'
+      ],
+      pemanfaatan: [
+        'Pemanfaatan Berjalan',
+        'Rencana Pemanfaatan'
+      ],
+      pemindahtanganan: [
+        'Rencana Hibah Pemkab',
+        'Selesai Hibah'
+      ]
+    };
+
+    const details = taxonomy[klasKey] || ['Digunakan Satker'];
+    detilSelect.innerHTML = details.map(d => `<option value="${d}">${d}</option>`).join('');
+
+    let matchedDetil = selectedDetil;
+    if (matchedDetil) {
+      if (matchedDetil.includes('Alih Status')) matchedDetil = 'Alih Status';
+      else if (matchedDetil.includes('Reklas')) matchedDetil = 'Reklasifikasi';
+      else if (matchedDetil.includes('Sudah Dihapus') || matchedDetil.includes('penghapusan')) matchedDetil = 'Sudah Dihapus';
     }
 
-    // Auto-sync Klasifikasi & Detil Klasifikasi sesuai Alasan Kesimpulan PMK 120
-    const klasSelect = document.getElementById('edit-klasifikasi');
-    if (klasSelect) {
-      if (alasanVal === 'Fisik Tidak Ada / Sudah Dihapus') {
-        klasSelect.value = 'penghapusan';
-        this.handleKlasifikasiChange('penghapusan', 'Sudah Dihapus');
-      } else if (alasanVal === 'Selesai Dihibahkan') {
-        klasSelect.value = 'pemindahtanganan';
-        this.handleKlasifikasiChange('pemindahtanganan', 'Selesai Hibah');
-      } else if (alasanVal === 'Rencana Penggunaan') {
-        klasSelect.value = 'penggunaan';
-        this.handleKlasifikasiChange('penggunaan', 'Rencana Penggunaan Satker');
-      } else if (alasanVal === 'Rencana Pemanfaatan') {
-        klasSelect.value = 'pemanfaatan';
-        this.handleKlasifikasiChange('pemanfaatan', 'Rencana Pemanfaatan');
-      } else if (alasanVal === 'Aktif Digunakan Operasional' || alasanVal === 'Digunakan Rumah Dinas') {
-        klasSelect.value = 'penggunaan';
-        this.handleKlasifikasiChange('penggunaan', 'Digunakan Satker');
-      } else if (alasanVal === 'Sedang Dimanfaatkan Resmi') {
-        klasSelect.value = 'pemanfaatan';
-        this.handleKlasifikasiChange('pemanfaatan', 'Pemanfaatan Berjalan');
-      } else if (alasanVal === 'Sedang Proses Usulan Hibah') {
-        klasSelect.value = 'pemindahtanganan';
-        this.handleKlasifikasiChange('pemindahtanganan', 'Rencana Hibah Pemkab');
-      } else if (alasanVal === 'Sedang Menunggu DIPA Renovasi') {
-        klasSelect.value = 'renovasi';
-        this.handleKlasifikasiChange('renovasi', 'Rencana Renovasi');
+    if (matchedDetil && details.includes(matchedDetil)) {
+      detilSelect.value = matchedDetil;
+    } else {
+      detilSelect.value = details[0];
+    }
+
+    this.handleDetilKlasifikasiChange(detilSelect.value);
+  },
+
+  handleDetilKlasifikasiChange(detilVal) {
+    const tier3Box = document.getElementById('tier3-pemantauan-box');
+    const isRencana = String(detilVal || '').includes('Rencana') || String(detilVal || '').includes('Rusak Berat');
+    if (tier3Box) {
+      tier3Box.style.display = isRencana ? 'block' : 'none';
+    }
+
+    const defaultReasons = {
+      'Digunakan Satker': 'Aktif digunakan untuk operasional tugas dan fungsi satker',
+      'Alih Status': 'Dalam proses alih status penggunaan ke satker lain',
+      'Rencana Penggunaan Satker': 'Rencana pembangunan / penggunaan mandiri oleh satker',
+      'Rencana Renovasi': 'Rencana renovasi / perbaikan fisik bangunan gedung',
+      'Rusak Berat Perlu Renovasi': 'Bangunan rusak berat dan membutuhkan anggaran renovasi',
+      'Sudah Dihapus': 'Fisik nihil / telah terbit SK Penghapusan BMN',
+      'Rencana Penghapusan': 'Dalam proses pengusulan penghapusan BMN',
+      'Pemanfaatan Berjalan': 'Sedang dimanfaatkan pihak ketiga melalui perjanjian sewa/pinjam pakai',
+      'Rencana Pemanfaatan': 'Rencana sewa komersial atau Kerja Sama Pemanfaatan (KSP)',
+      'Rencana Hibah Pemkab': 'Rencana hibah barang milik negara ke Pemerintah Daerah',
+      'Selesai Hibah': 'Telah selesai dihibahkan kepada Pemkab (BAST)',
+      'Tidak Ditemukan di Master Aset': 'Aset tidak ditemukan pada master data SAKTI',
+      'Reklasifikasi': 'Dalam proses reklasifikasi / koreksi pencatatan akuntansi',
+      'Kode Satker Berbeda': 'Tercatat pada kode satker berbeda dalam penatausahaan BMN',
+      'Dobel Catat': 'Terindikasi pencatatan ganda (dobel catat) pada SIMAN/SAKTI'
+    };
+
+    const alasanEl = document.getElementById('edit-alasan-idle');
+    if (alasanEl) {
+      const currentVal = (alasanEl.value || '').trim();
+      // Update jika masih kosong atau nilainya adalah salah satu teks default sistem
+      if (!currentVal || Object.values(defaultReasons).includes(currentVal) || currentVal === 'Rencana Penggunaan' || currentVal === 'Fisik Tidak Ada / Sudah Dihapus') {
+        alasanEl.value = defaultReasons[detilVal] || detilVal;
       }
     }
   },
@@ -2937,29 +2985,21 @@ const App = {
         const isSelesai = lower.includes('selesai') || lower.includes('telah');
         this.handleKlasifikasiChange('pemindahtanganan', isSelesai ? 'Selesai Hibah' : 'Rencana Hibah Pemkab');
       }
-    }
-  },
-
-  handleKlasifikasiChange(klasKey, selectedDetil) {
-    const detilSelect = document.getElementById('edit-detil-klasifikasi');
-    if (!detilSelect) return;
-
-    const taxonomy = {
-      penghapusan: ['Sudah Dihapus', 'Rencana Penghapusan'],
-      penggunaan: ['Digunakan Satker', 'Alih Status ke Satker Lain', 'Rencana Penggunaan Satker'],
-      pemanfaatan: ['Pemanfaatan Berjalan', 'Rencana Pemanfaatan'],
-      pemindahtanganan: ['Selesai Hibah', 'Rencana Hibah Pemkab'],
-      renovasi: ['Rusak Berat Perlu Renovasi', 'Rencana Renovasi'],
-      masalah_pencatatan: ['Reklasifikasi / Koreksi Catat', 'Tidak Ditemukan di Master Aset', 'Dobel Catat', 'Kode Satker Berbeda']
-    };
-
-    const details = taxonomy[klasKey] || ['Umum'];
-    detilSelect.innerHTML = details.map(d => `<option value="${d}">${d}</option>`).join('');
-
-    if (selectedDetil && details.includes(selectedDetil)) {
-      detilSelect.value = selectedDetil;
-    } else {
-      detilSelect.value = details[0];
+    } else if (lower.includes('renovasi')) {
+      if (klasSelect.value !== 'renovasi') {
+        klasSelect.value = 'renovasi';
+        this.handleKlasifikasiChange('renovasi', 'Rencana Renovasi');
+      }
+    } else if (lower.includes('sewa') || lower.includes('pemanfaatan')) {
+      if (klasSelect.value !== 'pemanfaatan') {
+        klasSelect.value = 'pemanfaatan';
+        this.handleKlasifikasiChange('pemanfaatan', 'Pemanfaatan Berjalan');
+      }
+    } else if (lower.includes('alih status')) {
+      if (klasSelect.value !== 'penggunaan') {
+        klasSelect.value = 'penggunaan';
+        this.handleKlasifikasiChange('penggunaan', 'Alih Status');
+      }
     }
   },
 
@@ -3017,25 +3057,27 @@ const App = {
     const statusIdleEl = document.getElementById('edit-status-idle');
     if (statusIdleEl) {
       statusIdleEl.value = asset.statusKesimpulanIdle || 'TIDAK_IDLE';
-      this.handleStatusIdleChange(statusIdleEl.value);
     }
+
+    // Set Klasifikasi & Detil Klasifikasi (100% Match KPI)
+    const klasEl = document.getElementById('edit-klasifikasi');
+    if (klasEl) {
+      klasEl.value = asset.klasifikasiKey || 'penggunaan';
+      this.handleKlasifikasiChange(klasEl.value, asset.detilKlasifikasi);
+    }
+
     const alasanIdleEl = document.getElementById('edit-alasan-idle');
-    if (alasanIdleEl && asset.alasanKesimpulanIdle) {
-      alasanIdleEl.value = asset.alasanKesimpulanIdle;
-      this.handleAlasanIdleChange(asset.alasanKesimpulanIdle);
+    if (alasanIdleEl) {
+      alasanIdleEl.value = asset.alasanKesimpulanIdle || '';
+      if (!alasanIdleEl.value) {
+        this.handleDetilKlasifikasiChange(asset.detilKlasifikasi || 'Digunakan Satker');
+      }
     }
     if (document.getElementById('edit-fokus-pemantauan') && asset.fokusPemantauan) {
       document.getElementById('edit-fokus-pemantauan').value = asset.fokusPemantauan;
     }
     if (document.getElementById('edit-target-pemantauan') && asset.targetPemantauan) {
       document.getElementById('edit-target-pemantauan').value = asset.targetPemantauan;
-    }
-
-    // Set Klasifikasi & Detil Klasifikasi
-    const klasEl = document.getElementById('edit-klasifikasi');
-    if (klasEl) {
-      klasEl.value = asset.klasifikasiKey || 'penggunaan';
-      this.handleKlasifikasiChange(klasEl.value, asset.detilKlasifikasi);
     }
 
     document.getElementById('edit-rekomendasi-user').value = asset.rekomendasiUser || asset.hasilJawaban || '';
@@ -3135,14 +3177,14 @@ const App = {
     // Read Tab 4
     asset.tahapBerikut = document.getElementById('edit-tahap-berikut').value;
     asset.statusKesimpulanIdle = document.getElementById('edit-status-idle')?.value || 'TIDAK_IDLE';
-    asset.alasanKesimpulanIdle = document.getElementById('edit-alasan-idle')?.value || '';
+    asset.alasanKesimpulanIdle = document.getElementById('edit-alasan-idle')?.value.trim() || '';
     asset.fokusPemantauan = document.getElementById('edit-fokus-pemantauan')?.value || '';
     asset.targetPemantauan = document.getElementById('edit-target-pemantauan')?.value || 'TA 2026';
     asset.rekomendasiUser = document.getElementById('edit-rekomendasi-user').value.trim();
     asset.rekomendasi = document.getElementById('edit-rekomendasi').value;
     asset.catatanTim = document.getElementById('edit-catatan-tim').value.trim();
 
-    // Read Klasifikasi & Detil Klasifikasi (Sinkron Langsung ke Panel Kiri)
+    // Read Klasifikasi & Detil Klasifikasi (100% Match Kartu KPI)
     const klasKey = document.getElementById('edit-klasifikasi')?.value || asset.klasifikasiKey || 'penggunaan';
     const detilVal = document.getElementById('edit-detil-klasifikasi')?.value || asset.detilKlasifikasi || 'Digunakan Satker';
     const klasLabels = {
@@ -3151,7 +3193,7 @@ const App = {
       pemanfaatan: 'Pemanfaatan',
       pemindahtanganan: 'Pemindahtanganan',
       renovasi: 'Renovasi',
-      masalah_pencatatan: 'Masalah Pencatatan'
+      masalah_pencatatan: 'Masalah Catat'
     };
     asset.klasifikasiKey = klasKey;
     asset.klasifikasi = klasLabels[klasKey] || 'Penggunaan';
