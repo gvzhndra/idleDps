@@ -3376,3 +3376,48 @@ body {
 [data-action="buat-laporan-penelitian"] {
   display: none !important;
 }
+
+/* Card Styling untuk Aset Status Penghapusan (Abu-abu / Archived Look) */
+.asset-card.asset-card-penghapusan {
+  background: #f1f5f9 !important;
+  border: 1.5px solid #cbd5e1 !important;
+  opacity: 0.75;
+  filter: grayscale(50%);
+  transition: all 0.2s ease;
+}
+
+.asset-card.asset-card-penghapusan:hover {
+  opacity: 0.92;
+  filter: grayscale(20%);
+  background: #e2e8f0 !important;
+  border-color: #94a3b8 !important;
+}
+
+.asset-card.asset-card-penghapusan.active {
+  border-color: #64748b !important;
+  box-shadow: 0 0 0 2px rgba(100, 116, 139, 0.3) !important;
+  opacity: 1;
+  filter: grayscale(10%);
+}
+
+.asset-card.asset-card-penghapusan .asset-card-title {
+  color: #64748b !important;
+}
+
+.asset-card.asset-card-penghapusan .asset-card-meta,
+.asset-card.asset-card-penghapusan .asset-card-meta span,
+.asset-card.asset-card-penghapusan .asset-card-area {
+  color: #94a3b8 !important;
+}
+
+.asset-card.asset-card-penghapusan .asset-card-thumb {
+  filter: grayscale(70%);
+  opacity: 0.8;
+}
+
+.asset-card.asset-card-penghapusan .badge-pastel-purple {
+  background: #e2e8f0 !important;
+  color: #64748b !important;
+  border: 1px solid #cbd5e1 !important;
+}
+

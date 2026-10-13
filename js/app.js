@@ -113,10 +113,11 @@ const App = {
       }, 150);
     });
 
-    // Background photo sync in background without blocking UI
+    // Background live dataset & photo sync from Google Sheets (auto-pulls new coordinates & edits)
     setTimeout(() => {
+      this.loadLiveDatasetFromSheet();
       this.loadPhotosFromSheet();
-    }, 1500);
+    }, 500);
 
     // Asynchronously preload official Pola Ruang GIS polygons & enrich regency boundaries
     if (typeof PolaRuangEngine !== 'undefined') {
@@ -150,6 +151,15 @@ const App = {
       if (typeof MapEngine !== 'undefined' && MapEngine.map) {
         const mapped = this.activeAssets.filter(a => a.hasCoordinates);
         MapEngine.renderBMNMarkers(mapped, (asset) => this.selectAsset(asset.id, false));
+      }
+
+      if (this.selectedAsset) {
+        const refreshed = this.getAsset(this.selectedAsset.id);
+        if (refreshed) {
+          const catchment = (refreshed.lat && refreshed.lng && typeof SpatialEngine !== 'undefined') ? SpatialEngine.getCatchmentAnalysis(refreshed.lat, refreshed.lng) : null;
+          const rec = typeof RecommendationEngine !== 'undefined' ? RecommendationEngine.getRecommendation(refreshed) : {};
+          this.renderDetailPanel(refreshed, catchment, rec);
+        }
       }
     }
   },
@@ -419,6 +429,18 @@ const App = {
         asset.koordinat = `${lat}, ${lng}`;
         asset.hasCoordinates = true;
 
+        // Sync to DataEngine
+        if (typeof DataEngine !== 'undefined') {
+          const deAsset = (DataEngine.activeAssets || []).find(a => a.id === asset.id) || (DataEngine.pendingAssets || []).find(a => a.id === asset.id);
+          if (deAsset) {
+            deAsset.lat = lat;
+            deAsset.lng = lng;
+            deAsset.koordinat = `${lat}, ${lng}`;
+            deAsset.hasCoordinates = true;
+          }
+          DataEngine.pendingAssets = (DataEngine.pendingAssets || []).filter(p => p.id !== asset.id);
+        }
+
         // Auto-detect Kabupaten
         if (typeof GeoBoundaryEngine !== 'undefined') {
           const detectedKab = GeoBoundaryEngine.detectKabupaten(lat, lng);
@@ -455,7 +477,8 @@ const App = {
         this.renderAllAssetsList();
 
         if (typeof MapEngine !== 'undefined' && MapEngine.map) {
-          MapEngine.renderBMNMarkers(this.activeAssets, (a) => this.selectAsset(a.id, false));
+          const mapped = this.activeAssets.filter(a => a.hasCoordinates);
+          MapEngine.renderBMNMarkers(mapped, (a) => this.selectAsset(a.id, false));
           MapEngine.map.setView([lat, lng], 18, { animate: true });
         }
 
@@ -1020,8 +1043,14 @@ const App = {
           const thumbStyle = firstPhoto ? `background-image: url('${this.formatPhotoUrl(firstPhoto)}');` : `background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); display:flex; align-items:center; justify-content:center;`;
           const thumbInner = firstPhoto ? '' : `<i class="fa-solid fa-camera-retro" style="color:#94a3b8; font-size:16px;"></i>`;
 
+          const isPenghapusan = asset.klasifikasiKey === 'penghapusan' || 
+                                String(asset.klasifikasi || '').toLowerCase().includes('penghapusan') || 
+                                String(asset.detilKlasifikasi || '').toLowerCase().includes('dihapus');
+          const unmappedClass = (!asset.hasCoordinates && !isPenghapusan) ? 'unmapped-card' : '';
+          const penghapusanClass = isPenghapusan ? 'asset-card-penghapusan' : '';
+
           return `
-            <div class="asset-card ${isSelected} ${!asset.hasCoordinates ? 'unmapped-card' : ''}" data-asset-id="${asset.id}" style="position: relative;">
+            <div class="asset-card ${isSelected} ${unmappedClass} ${penghapusanClass}" data-asset-id="${asset.id}" style="position: relative;">
               <input type="checkbox" class="custom-checkbox asset-export-cb" data-asset-id="${asset.id}" ${isChecked} onchange="App.toggleSelectAssetForExport('${asset.id}', this.checked)">
               <div class="asset-card-thumb" style="${thumbStyle}" onclick="App.selectAsset('${asset.id}')">
                 ${thumbInner}
@@ -1034,7 +1063,7 @@ const App = {
                   <span class="badge badge-klasifikasi ${this.getKlasifikasiBadgeClass(asset.klasifikasiKey)}" title="${asset.detilKlasifikasi}">
                     <i class="fa-solid ${this.getKlasifikasiIcon(asset.klasifikasiKey)}"></i> ${asset.klasifikasi}: ${asset.detilKlasifikasi}
                   </span>
-                  ${!asset.hasCoordinates ? `<span class="badge-unmapped" title="Belum ada titik koordinat GPS. Perlu disurati."><i class="fa-solid fa-triangle-exclamation"></i> Butuh GPS</span>` : ''}
+                  ${!asset.hasCoordinates && !isPenghapusan ? `<span class="badge-unmapped" title="Belum ada titik koordinat GPS. Perlu disurati."><i class="fa-solid fa-triangle-exclamation"></i> Butuh GPS</span>` : ''}
                 </div>
                 <div class="asset-card-meta">
                   <span><i class="fa-solid fa-barcode"></i> NUP ${asset.nup} &bull; ${asset.kodeBarang}</span>
@@ -1158,8 +1187,14 @@ const App = {
       const thumbStyle = firstPhoto ? `background-image: url('${this.formatPhotoUrl(firstPhoto)}');` : `background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); display:flex; align-items:center; justify-content:center;`;
       const thumbInner = firstPhoto ? '' : `<i class="fa-solid fa-camera-retro" style="color:#94a3b8; font-size:16px;"></i>`;
 
+      const isPenghapusan = asset.klasifikasiKey === 'penghapusan' || 
+                            String(asset.klasifikasi || '').toLowerCase().includes('penghapusan') || 
+                            String(asset.detilKlasifikasi || '').toLowerCase().includes('dihapus');
+      const unmappedClass = (!asset.hasCoordinates && !isPenghapusan) ? 'unmapped-card' : '';
+      const penghapusanClass = isPenghapusan ? 'asset-card-penghapusan' : '';
+
       return `
-        <div class="asset-card ${isSelected} mb-2 ${!asset.hasCoordinates ? 'unmapped-card' : ''}" data-asset-id="${asset.id}" style="position: relative;">
+        <div class="asset-card ${isSelected} mb-2 ${unmappedClass} ${penghapusanClass}" data-asset-id="${asset.id}" style="position: relative;">
           <input type="checkbox" class="custom-checkbox asset-export-cb" data-asset-id="${asset.id}" ${isChecked} onchange="App.toggleSelectAssetForExport('${asset.id}', this.checked)">
           <div class="asset-card-thumb" style="${thumbStyle}" onclick="App.selectAsset('${asset.id}')">
             ${thumbInner}
@@ -1172,7 +1207,7 @@ const App = {
               <span class="badge badge-klasifikasi ${this.getKlasifikasiBadgeClass(asset.klasifikasiKey)}" title="${asset.detilKlasifikasi}">
                 <i class="fa-solid ${this.getKlasifikasiIcon(asset.klasifikasiKey)}"></i> ${asset.klasifikasi}: ${asset.detilKlasifikasi}
               </span>
-              ${!asset.hasCoordinates ? `<span class="badge-unmapped" title="Belum ada titik koordinat GPS. Perlu disurati."><i class="fa-solid fa-triangle-exclamation"></i> Butuh GPS</span>` : ''}
+              ${!asset.hasCoordinates && !isPenghapusan ? `<span class="badge-unmapped" title="Belum ada titik koordinat GPS. Perlu disurati."><i class="fa-solid fa-triangle-exclamation"></i> Butuh GPS</span>` : ''}
             </div>
             <div class="asset-card-meta">
               <span><i class="fa-solid fa-building-user text-primary"></i> ${asset.namaSatker}</span>
@@ -1294,6 +1329,10 @@ const App = {
       savedUser.role === 'admin'
     );
 
+    const isPenghapusan = asset.klasifikasiKey === 'penghapusan' || 
+                          String(asset.klasifikasi || '').toLowerCase().includes('penghapusan') || 
+                          String(asset.detilKlasifikasi || '').toLowerCase().includes('dihapus');
+
     const hasCoords = asset.hasCoordinates && typeof asset.lat === 'number' && typeof asset.lng === 'number';
     const distData = hasCoords ? SpatialEngine.getDistanceToKPKNL(asset.lat, asset.lng) : { distanceKm: '-' };
     const multiDist = hasCoords ? SpatialEngine.getMultiLevelDistances(asset.lat, asset.lng, asset.kabupaten, asset.kecamatan, asset.kelurahan) : null;
@@ -1365,7 +1404,7 @@ const App = {
       `}
 
       <!-- UNMAPPED WARNING CALLOUT BOX (IF NO GPS) -->
-      ${!hasCoords ? `
+      ${!hasCoords && !isPenghapusan ? `
         <div class="unmapped-alert-box">
           <i class="fa-solid fa-triangle-exclamation" style="font-size:20px; color:#d35400; flex-shrink:0; margin-top:2px;"></i>
           <div>
@@ -1396,7 +1435,7 @@ const App = {
         <p style="font-size:11.5px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-id-card text-secondary" style="margin-right:6px;"></i> Kode Satker: <strong style="color:var(--text-main);">${asset.kodeSatker || '-'}</strong> &bull; <i class="fa-solid fa-location-dot text-danger" style="margin-left:4px; margin-right:4px;"></i> <strong>${asset.kabupaten}</strong></p>
       </div>
 
-      ${!hasCoords ? `
+      ${!hasCoords && !isPenghapusan ? `
       <!-- UNMAPPED ASSET GPS & GEOJSON CAPTURE PROMINENT CARD -->
       <div class="p-3 mb-4 rounded" style="background:#fffbeb; border:1.5px solid #fde68a; box-shadow:0 2px 10px rgba(245, 158, 11, 0.1);">
         <div class="d-flex align-items-center gap-2 mb-1" style="font-size:12px; font-weight:700; color:#b45309;">
@@ -1429,6 +1468,14 @@ const App = {
           </button>
         </div>
       </div>
+      ` : (!hasCoords && isPenghapusan ? `
+      <!-- ASET TELAH DIHAPUSKAN: PEMBERITAHUAN ABU-ABU TANPA PERINGATAN GPS -->
+      <div class="p-3 mb-4 rounded" style="background:#f8fafc; border:1px solid #cbd5e1;">
+        <div class="d-flex align-items-center gap-2" style="font-size:11.5px; color:#64748b; font-weight:600;">
+          <i class="fa-solid fa-circle-check text-muted" style="font-size:14px;"></i>
+          <span>Status BMN Telah Dihapuskan (Fisik/catatan nihil &mdash; tidak memerlukan survei titik GPS).</span>
+        </div>
+      </div>
       ` : `
       <div class="mb-3 d-flex flex-column gap-1">
         <!-- Desktop: Kelola Batas Poligon GeoJSON -->
@@ -1444,7 +1491,7 @@ const App = {
           </button>
         </div>
       </div>
-      `}
+      `)}
 
       <!-- SURAT JAWABAN & TANGGAL SURAT CARD -->
       <div class="detail-section-card mb-4">
@@ -3049,13 +3096,17 @@ const App = {
     asset.nilai_buku = asset.nilaiBuku;
 
     const coordStr = document.getElementById('edit-koordinat').value.trim();
-    if (coordStr && coordStr.includes(',')) {
-      const parts = coordStr.split(',').map(s => parseFloat(s.trim()));
-      if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
-        asset.lat = parts[0];
-        asset.lng = parts[1];
-        asset.koordinat = `${parts[0]}, ${parts[1]}`;
+    if (coordStr) {
+      const parsed = typeof DataEngine !== 'undefined' ? DataEngine.parseCoordinatesFlexible(coordStr) : null;
+      if (parsed) {
+        asset.lat = parsed.lat;
+        asset.lng = parsed.lng;
+        asset.koordinat = `${parsed.lat}, ${parsed.lng}`;
         asset.hasCoordinates = true;
+        if (typeof GeoBoundaryEngine !== 'undefined') {
+          const detectedKab = GeoBoundaryEngine.detectKabupaten(parsed.lat, parsed.lng);
+          if (detectedKab) asset.kabupaten = detectedKab;
+        }
       }
     }
 
@@ -3107,9 +3158,12 @@ const App = {
     asset.detilKlasifikasi = detilVal;
 
     // Save to DataEngine instance
-    const deAsset = DataEngine.activeAssets.find(a => a.id === asset.id) || DataEngine.pendingAssets.find(a => a.id === asset.id);
+    const deAsset = (DataEngine.activeAssets || []).find(a => a.id === asset.id) || (DataEngine.pendingAssets || []).find(a => a.id === asset.id);
     if (deAsset) {
       Object.assign(deAsset, asset);
+    }
+    if (asset.hasCoordinates && typeof DataEngine !== 'undefined') {
+      DataEngine.pendingAssets = (DataEngine.pendingAssets || []).filter(p => p.id !== asset.id);
     }
 
     // 1. Save edit to localStorage
@@ -3196,11 +3250,21 @@ const App = {
     this.closeEditAssetModal();
 
     // Refresh UI secara instan & reaktif
+    this.updateKPIStats();
     this.renderStatsSummary();
     this.renderClusterAccordion();
     this.renderAllAssetsList();
+
+    if (typeof MapEngine !== 'undefined' && MapEngine.map) {
+      const mapped = this.activeAssets.filter(a => a.hasCoordinates);
+      MapEngine.renderBMNMarkers(mapped, (a) => this.selectAsset(a.id, false));
+      if (asset.hasCoordinates && (!MapEngine.activeAssetId || MapEngine.activeAssetId === asset.id)) {
+        MapEngine.map.setView([asset.lat, asset.lng], 17, { animate: true });
+      }
+    }
+
     if (this.selectedAsset && this.selectedAsset.id === asset.id) {
-      const catchment = SpatialEngine.getCatchmentAnalysis(asset.lat, asset.lng);
+      const catchment = (asset.lat && asset.lng && typeof SpatialEngine !== 'undefined') ? SpatialEngine.getCatchmentAnalysis(asset.lat, asset.lng) : null;
       const rec = typeof RecommendationEngine !== 'undefined' ? RecommendationEngine.getRecommendation(asset) : {};
       this.renderDetailPanel(asset, catchment, rec);
     }

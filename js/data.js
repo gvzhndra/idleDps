@@ -489,6 +489,21 @@ const DataEngine = {
             if (e.klasifikasiKey) asset.klasifikasiKey = e.klasifikasiKey;
             if (e.klasifikasi) asset.klasifikasi = e.klasifikasi;
             if (e.detilKlasifikasi) asset.detilKlasifikasi = e.detilKlasifikasi;
+
+            // Auto-heal: Jika alasan kesimpulan atau keterangan aset menyatakan sudah dihapus,
+            // tetapi localStorage lama masih menyimpan 'penggunaan' (dari bug sebelum update),
+            // otomatis koreksi ke penghapusan: Sudah Dihapus
+            const isDihapusKet = (asset.hasilJawaban && asset.hasilJawaban.toLowerCase().includes('dihapus')) ||
+                                 (asset.rekomendasiUser && asset.rekomendasiUser.toLowerCase().includes('dihapus')) ||
+                                 (e.rekomendasiUser && e.rekomendasiUser.toLowerCase().includes('dihapus'));
+            if (asset.alasanKesimpulanIdle === 'Fisik Tidak Ada / Sudah Dihapus' || isDihapusKet) {
+              if (asset.klasifikasiKey === 'penggunaan') {
+                asset.klasifikasiKey = 'penghapusan';
+                asset.klasifikasi = 'Penghapusan';
+                asset.detilKlasifikasi = 'Sudah Dihapus';
+              }
+            }
+
             if (e.statusKesimpulanIdle) asset.statusKesimpulanIdle = e.statusKesimpulanIdle;
             if (e.alasanKesimpulanIdle) asset.alasanKesimpulanIdle = e.alasanKesimpulanIdle;
             if (e.fokusPemantauan) asset.fokusPemantauan = e.fokusPemantauan;
@@ -499,6 +514,20 @@ const DataEngine = {
             }
             if (e.geojson !== undefined) asset.geojson = e.geojson;
             if (Array.isArray(e.sertipikatList)) asset.sertipikatList = e.sertipikatList;
+
+            // Restore persistent coordinates if available in custom edits
+            if (e.koordinat || (e.lat !== undefined && e.lng !== undefined)) {
+              const coordStr = e.koordinat || `${e.lat}, ${e.lng}`;
+              const parsed = this.parseCoordinatesFlexible(coordStr);
+              if (parsed) {
+                asset.lat = parsed.lat;
+                asset.lng = parsed.lng;
+                asset.koordinat = `${parsed.lat}, ${parsed.lng}`;
+                asset.hasCoordinates = true;
+                // Pastikan dikeluarkan dari pendingAssets
+                this.pendingAssets = this.pendingAssets.filter(p => p.id !== asset.id);
+              }
+            }
           }
         });
       }
