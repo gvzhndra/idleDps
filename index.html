@@ -1020,9 +1020,34 @@
               </div>
             </div>
 
+            <!-- KLASIFIKASI & DETIL KLASIFIKASI BMN (SINKRON PANEL KIRI) -->
+            <div class="row d-flex gap-2 mb-2 p-2 border rounded" style="background:#f1f5f9;">
+              <div class="form-group flex-1">
+                <label style="font-size:11px; font-weight:700; color:var(--text-main);" class="mb-1">
+                  <i class="fa-solid fa-tag text-primary"></i> Klasifikasi BMN (Pill Panel Kiri):
+                </label>
+                <select class="form-control" id="edit-klasifikasi" style="font-weight:600;" onchange="App.handleKlasifikasiChange(this.value)">
+                  <option value="penggunaan">Penggunaan</option>
+                  <option value="penghapusan">Penghapusan</option>
+                  <option value="pemanfaatan">Pemanfaatan</option>
+                  <option value="pemindahtanganan">Pemindahtanganan</option>
+                  <option value="renovasi">Renovasi</option>
+                  <option value="masalah_pencatatan">Masalah Pencatatan</option>
+                </select>
+              </div>
+              <div class="form-group flex-1">
+                <label style="font-size:11px; font-weight:700; color:var(--text-main);" class="mb-1">
+                  <i class="fa-solid fa-tags text-primary"></i> Detil Klasifikasi:
+                </label>
+                <select class="form-control" id="edit-detil-klasifikasi" style="font-weight:600;">
+                  <option value="Digunakan Satker">Digunakan Satker</option>
+                </select>
+              </div>
+            </div>
+
             <div class="form-group mb-2">
-              <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Rekomendasi Rencana Pengguna Barang (Satker)</label>
-              <textarea class="form-control" id="edit-rekomendasi-user" rows="2" placeholder="Jawaban resmi satker mengenai rencana penggunaan..."></textarea>
+              <label style="font-size:11px; color:var(--text-muted);" class="mb-1">Rekomendasi Rencana Pengguna Barang (Satker) / Keterangan Aset</label>
+              <textarea class="form-control" id="edit-rekomendasi-user" rows="2" placeholder="Jawaban resmi satker mengenai rencana penggunaan / keterangan aset..." oninput="App.handleRekomendasiUserInput(this.value)"></textarea>
             </div>
 
             <div class="form-group mb-2">

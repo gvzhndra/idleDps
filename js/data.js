@@ -302,24 +302,25 @@ const DataEngine = {
 
     let rawK = String(row.klasifikasi || row.KLASIFIKASI || '').toLowerCase().trim();
     let rawD = String(row['detil klasifikasi'] || row.detil_klasifikasi || row['DETIL KLASIFIKASI'] || '').toLowerCase().trim();
+    let rawH = String(row['hasil jawaban'] || row['HASIL JAWABAN'] || row.hasilJawaban || row.rekomendasi_user || row.rekomendasiUser || row.alasanKesimpulanIdle || row.alasan_kesimpulan_idle || row.kondisi || '').toLowerCase().trim();
 
-    // 1. Pemindahtanganan / Hibah
-    if (rawK.includes('pemindahtanganan') || rawK.includes('hibah')) {
-      const isSelesai = rawD.includes('selesai');
-      return {
-        key: 'pemindahtanganan',
-        label: 'Pemindahtanganan',
-        detil: isSelesai ? 'Selesai Hibah' : 'Rencana Hibah Pemkab'
-      };
-    }
-
-    // 2. Penghapusan
-    if (rawK.includes('penghapusan') || rawK.includes('hapus')) {
-      const isRencana = rawD.includes('rencana') || rawD.includes('usul');
+    // 1. Penghapusan (dicek lebih dulu jika ada keterangan resmi dihapus/penghapusan)
+    if (rawK.includes('penghapusan') || rawK.includes('hapus') || rawH.includes('dihapus') || rawH.includes('penghapusan')) {
+      const isRencana = rawD.includes('rencana') || rawD.includes('usul') || (rawH.includes('rencana') && !rawH.includes('telah') && !rawH.includes('sudah'));
       return {
         key: 'penghapusan',
         label: 'Penghapusan',
         detil: isRencana ? 'Rencana Penghapusan' : 'Sudah Dihapus'
+      };
+    }
+
+    // 2. Pemindahtanganan / Hibah
+    if (rawK.includes('pemindahtanganan') || rawK.includes('hibah') || rawH.includes('hibah')) {
+      const isSelesai = rawD.includes('selesai') || rawH.includes('selesai') || rawH.includes('telah');
+      return {
+        key: 'pemindahtanganan',
+        label: 'Pemindahtanganan',
+        detil: isSelesai ? 'Selesai Hibah' : 'Rencana Hibah Pemkab'
       };
     }
 
@@ -485,6 +486,9 @@ const DataEngine = {
             if (e.rekomendasiUser) asset.rekomendasiUser = e.rekomendasiUser;
             if (e.catatanTim) asset.catatanTim = e.catatanTim;
             if (e.tahapBerikut) asset.tahapBerikut = e.tahapBerikut;
+            if (e.klasifikasiKey) asset.klasifikasiKey = e.klasifikasiKey;
+            if (e.klasifikasi) asset.klasifikasi = e.klasifikasi;
+            if (e.detilKlasifikasi) asset.detilKlasifikasi = e.detilKlasifikasi;
             if (e.statusKesimpulanIdle) asset.statusKesimpulanIdle = e.statusKesimpulanIdle;
             if (e.alasanKesimpulanIdle) asset.alasanKesimpulanIdle = e.alasanKesimpulanIdle;
             if (e.fokusPemantauan) asset.fokusPemantauan = e.fokusPemantauan;

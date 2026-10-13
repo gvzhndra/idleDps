@@ -3369,3 +3369,10 @@ body {
   padding: 4px 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
+
+/* Sembunyikan Tombol Buat Laporan Penelitian (PMK 120/2024) */
+.btn-report-pmk,
+#btn-buat-laporan-pmk,
+[data-action="buat-laporan-penelitian"] {
+  display: none !important;
+}

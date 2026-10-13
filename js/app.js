@@ -1646,19 +1646,6 @@ const App = {
           <span class="badge ${recommendation.type ? recommendation.type.badgeClass : 'badge-pastel-blue'}"><i class="fa-solid fa-user-check"></i> REKOMENDASI TIM</span>
         </div>
         <h4 class="rec-title">${recommendation.officialTitle || 'Optimalisasi & Penelitian BMN'}</h4>
-        
-        <div class="mt-2 pt-2 border-top" style="border-top:1px dashed rgba(243, 156, 18, 0.3) !important;">
-          <small style="font-size:11px; font-weight:700; color:var(--text-muted); display:block;" class="mb-1">
-            <i class="fa-solid fa-shield-halved" style="color:var(--pastel-blue); margin-right:4px;"></i> Rekomendasi Sistem (Empirical Rule Engine):
-          </small>
-          <p style="font-size:11.5px; color:var(--text-main); font-weight:600; background:rgba(255,255,255,0.75); padding:6px 10px; border-radius:6px;">
-            ${recommendation.systemSuggestion || 'Lakukan penelitian status hukum dan fisik BMN.'}
-          </p>
-        </div>
-
-        <ul class="rec-rationale mt-2">
-          ${recommendation.rationale ? recommendation.rationale.map(r => `<li><i class="fa-solid fa-circle-check"></i> ${r}</li>`).join('') : ''}
-        </ul>
 
         <div class="mt-2 pt-2 border-top" style="border-top:1px dashed rgba(243, 156, 18, 0.3) !important;">
           <label style="font-size:10.5px; font-weight:700; color:var(--pastel-orange); text-transform:uppercase; margin-bottom:4px; display:block;">
@@ -1686,7 +1673,7 @@ const App = {
             }
 
             return `
-              <button class="btn btn-primary" style="background:${reportBtnBg}; color:#ffffff; border:none; font-weight:700; padding:11px 16px; width:100%; box-shadow: 0 4px 14px rgba(0,0,0,0.15); border-radius:10px; cursor:pointer; font-size:12px;" onclick="App.openLaporanModal('${asset.id}')">
+              <button class="btn btn-primary btn-report-pmk" style="background:${reportBtnBg}; color:#ffffff; border:none; font-weight:700; padding:11px 16px; width:100%; box-shadow: 0 4px 14px rgba(0,0,0,0.15); border-radius:10px; cursor:pointer; font-size:12px;" onclick="App.openLaporanModal('${asset.id}')">
                 <i class="fa-solid ${reportBtnIcon}" style="font-size:14px; margin-right:6px;"></i> ${reportBtnText}
               </button>
             `;
@@ -2846,12 +2833,86 @@ const App = {
 
   handleAlasanIdleChange(alasanVal) {
     const tier3Box = document.getElementById('tier3-pemantauan-box');
-    if (!tier3Box) return;
+    if (tier3Box) {
+      if (alasanVal === 'Rencana Penggunaan' || alasanVal === 'Rencana Pemanfaatan' || String(alasanVal).includes('Rencana')) {
+        tier3Box.style.display = 'block';
+      } else {
+        tier3Box.style.display = 'none';
+      }
+    }
 
-    if (alasanVal === 'Rencana Penggunaan' || alasanVal === 'Rencana Pemanfaatan' || String(alasanVal).includes('Rencana')) {
-      tier3Box.style.display = 'block';
+    // Auto-sync Klasifikasi & Detil Klasifikasi sesuai Alasan Kesimpulan PMK 120
+    const klasSelect = document.getElementById('edit-klasifikasi');
+    if (klasSelect) {
+      if (alasanVal === 'Fisik Tidak Ada / Sudah Dihapus') {
+        klasSelect.value = 'penghapusan';
+        this.handleKlasifikasiChange('penghapusan', 'Sudah Dihapus');
+      } else if (alasanVal === 'Selesai Dihibahkan') {
+        klasSelect.value = 'pemindahtanganan';
+        this.handleKlasifikasiChange('pemindahtanganan', 'Selesai Hibah');
+      } else if (alasanVal === 'Rencana Penggunaan') {
+        klasSelect.value = 'penggunaan';
+        this.handleKlasifikasiChange('penggunaan', 'Rencana Penggunaan Satker');
+      } else if (alasanVal === 'Rencana Pemanfaatan') {
+        klasSelect.value = 'pemanfaatan';
+        this.handleKlasifikasiChange('pemanfaatan', 'Rencana Pemanfaatan');
+      } else if (alasanVal === 'Aktif Digunakan Operasional' || alasanVal === 'Digunakan Rumah Dinas') {
+        klasSelect.value = 'penggunaan';
+        this.handleKlasifikasiChange('penggunaan', 'Digunakan Satker');
+      } else if (alasanVal === 'Sedang Dimanfaatkan Resmi') {
+        klasSelect.value = 'pemanfaatan';
+        this.handleKlasifikasiChange('pemanfaatan', 'Pemanfaatan Berjalan');
+      } else if (alasanVal === 'Sedang Proses Usulan Hibah') {
+        klasSelect.value = 'pemindahtanganan';
+        this.handleKlasifikasiChange('pemindahtanganan', 'Rencana Hibah Pemkab');
+      } else if (alasanVal === 'Sedang Menunggu DIPA Renovasi') {
+        klasSelect.value = 'renovasi';
+        this.handleKlasifikasiChange('renovasi', 'Rencana Renovasi');
+      }
+    }
+  },
+
+  handleRekomendasiUserInput(text) {
+    if (!text) return;
+    const lower = String(text).toLowerCase();
+    const klasSelect = document.getElementById('edit-klasifikasi');
+    if (!klasSelect) return;
+
+    if (lower.includes('dihapus') || lower.includes('penghapusan') || lower.includes('telah dihapus')) {
+      if (klasSelect.value !== 'penghapusan') {
+        klasSelect.value = 'penghapusan';
+        const isRencana = lower.includes('rencana') || lower.includes('usul');
+        this.handleKlasifikasiChange('penghapusan', isRencana ? 'Rencana Penghapusan' : 'Sudah Dihapus');
+      }
+    } else if (lower.includes('hibah')) {
+      if (klasSelect.value !== 'pemindahtanganan') {
+        klasSelect.value = 'pemindahtanganan';
+        const isSelesai = lower.includes('selesai') || lower.includes('telah');
+        this.handleKlasifikasiChange('pemindahtanganan', isSelesai ? 'Selesai Hibah' : 'Rencana Hibah Pemkab');
+      }
+    }
+  },
+
+  handleKlasifikasiChange(klasKey, selectedDetil) {
+    const detilSelect = document.getElementById('edit-detil-klasifikasi');
+    if (!detilSelect) return;
+
+    const taxonomy = {
+      penghapusan: ['Sudah Dihapus', 'Rencana Penghapusan'],
+      penggunaan: ['Digunakan Satker', 'Alih Status ke Satker Lain', 'Rencana Penggunaan Satker'],
+      pemanfaatan: ['Pemanfaatan Berjalan', 'Rencana Pemanfaatan'],
+      pemindahtanganan: ['Selesai Hibah', 'Rencana Hibah Pemkab'],
+      renovasi: ['Rusak Berat Perlu Renovasi', 'Rencana Renovasi'],
+      masalah_pencatatan: ['Reklasifikasi / Koreksi Catat', 'Tidak Ditemukan di Master Aset', 'Dobel Catat', 'Kode Satker Berbeda']
+    };
+
+    const details = taxonomy[klasKey] || ['Umum'];
+    detilSelect.innerHTML = details.map(d => `<option value="${d}">${d}</option>`).join('');
+
+    if (selectedDetil && details.includes(selectedDetil)) {
+      detilSelect.value = selectedDetil;
     } else {
-      tier3Box.style.display = 'none';
+      detilSelect.value = details[0];
     }
   },
 
@@ -2921,6 +2982,13 @@ const App = {
     }
     if (document.getElementById('edit-target-pemantauan') && asset.targetPemantauan) {
       document.getElementById('edit-target-pemantauan').value = asset.targetPemantauan;
+    }
+
+    // Set Klasifikasi & Detil Klasifikasi
+    const klasEl = document.getElementById('edit-klasifikasi');
+    if (klasEl) {
+      klasEl.value = asset.klasifikasiKey || 'penggunaan';
+      this.handleKlasifikasiChange(klasEl.value, asset.detilKlasifikasi);
     }
 
     document.getElementById('edit-rekomendasi-user').value = asset.rekomendasiUser || asset.hasilJawaban || '';
@@ -3023,6 +3091,21 @@ const App = {
     asset.rekomendasi = document.getElementById('edit-rekomendasi').value;
     asset.catatanTim = document.getElementById('edit-catatan-tim').value.trim();
 
+    // Read Klasifikasi & Detil Klasifikasi (Sinkron Langsung ke Panel Kiri)
+    const klasKey = document.getElementById('edit-klasifikasi')?.value || asset.klasifikasiKey || 'penggunaan';
+    const detilVal = document.getElementById('edit-detil-klasifikasi')?.value || asset.detilKlasifikasi || 'Digunakan Satker';
+    const klasLabels = {
+      penghapusan: 'Penghapusan',
+      penggunaan: 'Penggunaan',
+      pemanfaatan: 'Pemanfaatan',
+      pemindahtanganan: 'Pemindahtanganan',
+      renovasi: 'Renovasi',
+      masalah_pencatatan: 'Masalah Pencatatan'
+    };
+    asset.klasifikasiKey = klasKey;
+    asset.klasifikasi = klasLabels[klasKey] || 'Penggunaan';
+    asset.detilKlasifikasi = detilVal;
+
     // Save to DataEngine instance
     const deAsset = DataEngine.activeAssets.find(a => a.id === asset.id) || DataEngine.pendingAssets.find(a => a.id === asset.id);
     if (deAsset) {
@@ -3093,6 +3176,9 @@ const App = {
           pengamananPlang: asset.pengamananPlang,
           pengamananPenjaga: asset.pengamananPenjaga,
           permasalahanSengketa: asset.permasalahanSengketa,
+          klasifikasiKey: asset.klasifikasiKey,
+          klasifikasi: asset.klasifikasi,
+          detilKlasifikasi: asset.detilKlasifikasi,
           tahapBerikut: asset.tahapBerikut,
           statusKesimpulanIdle: asset.statusKesimpulanIdle,
           alasanKesimpulanIdle: asset.alasanKesimpulanIdle,
@@ -3109,7 +3195,8 @@ const App = {
     this.showToast(`✅ Data Aset & Kesimpulan PMK 120 berhasil disimpan!`, 'success');
     this.closeEditAssetModal();
 
-    // Refresh UI
+    // Refresh UI secara instan & reaktif
+    this.renderStatsSummary();
     this.renderClusterAccordion();
     this.renderAllAssetsList();
     if (this.selectedAsset && this.selectedAsset.id === asset.id) {

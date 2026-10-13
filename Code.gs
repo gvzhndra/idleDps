@@ -321,6 +321,8 @@ function handleUpdateAssetInSheet(contents) {
   var alasanIdleCol = getOrAddCol('alasan_kesimpulan_idle');
   var fokusPemantauanCol = getOrAddCol('fokus_pemantauan');
   var targetPemantauanCol = getOrAddCol('target_pemantauan');
+  var klasifikasiCol = lowerHeaders.indexOf('klasifikasi');
+  var detilKlasifikasiCol = lowerHeaders.indexOf('detil klasifikasi') >= 0 ? lowerHeaders.indexOf('detil klasifikasi') : lowerHeaders.indexOf('detil_klasifikasi');
 
   if (pinCol === -1 && contents.isPinned !== undefined) {
     pinCol = getOrAddCol('is_pinned');
@@ -370,6 +372,8 @@ function handleUpdateAssetInSheet(contents) {
       if (contents.fokusPemantauan !== undefined) sheet.getRange(i + 1, fokusPemantauanCol + 1).setValue(contents.fokusPemantauan);
       if (contents.targetPemantauan !== undefined) sheet.getRange(i + 1, targetPemantauanCol + 1).setValue(contents.targetPemantauan);
       if (contents.kabupaten !== undefined) sheet.getRange(i + 1, kabupatenCol + 1).setValue(contents.kabupaten);
+      if (klasifikasiCol >= 0 && contents.klasifikasi) sheet.getRange(i + 1, klasifikasiCol + 1).setValue(contents.klasifikasi);
+      if (detilKlasifikasiCol >= 0 && contents.detilKlasifikasi) sheet.getRange(i + 1, detilKlasifikasiCol + 1).setValue(contents.detilKlasifikasi);
 
       return createJsonResponse({ status: 'success', message: 'Data aset & parameter PMK 120 berhasil diperbarui di Google Sheets.' });
     }
