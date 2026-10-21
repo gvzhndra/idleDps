@@ -113,10 +113,10 @@ const App = {
       }, 150);
     });
 
-    // Background live dataset & photo sync from Google Sheets (auto-pulls new coordinates & edits)
-    setTimeout(() => {
-      this.loadLiveDatasetFromSheet();
-      this.loadPhotosFromSheet();
+    // Background live dataset & photo sync from Google Sheets (auto-pulls new coordinates, edits, and photos)
+    setTimeout(async () => {
+      await this.loadLiveDatasetFromSheet();
+      await this.loadPhotosFromSheet();
     }, 500);
 
     // Asynchronously preload official Pola Ruang GIS polygons & enrich regency boundaries
@@ -197,6 +197,7 @@ const App = {
         });
 
         if (updated) {
+          this.savePhotosToLocalStorage();
           this.renderClusterAccordion();
           this.renderAllAssetsList();
           if (this.selectedAsset) {
@@ -2012,9 +2013,11 @@ const App = {
     const photoMap = {};
     allAssets.forEach(a => {
       if (a && a.id && a.fotoList && a.fotoList.length > 0) {
-        // Only keep non-placeholder Unsplash photos and real URLs/base64
-        // Keep all photos (placeholder + real) - filtering can cause loss
-        photoMap[a.id] = a.fotoList;
+        // Saring hanya foto asli (Google Drive, uploads, base64), buang placeholder Unsplash
+        const cleanList = a.fotoList.filter(u => typeof u === 'string' && u.trim().length > 0 && !u.includes('images.unsplash.com'));
+        if (cleanList.length > 0) {
+          photoMap[a.id] = cleanList;
+        }
       }
     });
     try {
@@ -4025,6 +4028,7 @@ const App = {
       const synced = await DataEngine.syncLiveDatasetFromSheet();
       if (synced) {
         this.activeAssets = DataEngine.activeAssets || [];
+        await this.loadPhotosFromSheet();
         this.populateKabupatenOptions();
         this.updateKPIStats();
         this.renderClusterAccordion();
@@ -4033,8 +4037,9 @@ const App = {
         const mapped = this.activeAssets.filter(a => a.hasCoordinates);
         MapEngine.renderBMNMarkers(mapped, (asset) => this.selectAsset(asset.id, false));
 
-        this.showToast(`✅ Data Google Sheets tersinkron! (${this.activeAssets.length} unit)`, 'success');
+        this.showToast(`✅ Data Google Sheets & Foto tersinkron! (${this.activeAssets.length} unit)`, 'success');
       } else {
+        await this.loadPhotosFromSheet();
         this.showToast('⚠️ Gagal sinkron otomatis. Menggunakan data cache.', 'warning');
       }
     } catch (err) {

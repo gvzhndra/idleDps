@@ -467,11 +467,30 @@ const DataEngine = {
       const storedPhotos = localStorage.getItem('bmn_custom_photos');
       if (storedPhotos) {
         const photoMap = JSON.parse(storedPhotos);
+        let hasCleanedUnsplash = false;
         [...this.activeAssets, ...this.pendingAssets].forEach(asset => {
           if (photoMap[asset.id] && Array.isArray(photoMap[asset.id])) {
-            asset.fotoList = photoMap[asset.id];
+            // Saring URL placeholder Unsplash lama
+            const realPhotos = photoMap[asset.id].filter(u => typeof u === 'string' && u.trim().length > 0 && !u.includes('images.unsplash.com'));
+            if (realPhotos.length !== photoMap[asset.id].length) {
+              photoMap[asset.id] = realPhotos;
+              hasCleanedUnsplash = true;
+            }
+            if (realPhotos.length > 0) {
+              const currentPhotos = (asset.fotoList || []).filter(u => !u.includes('images.unsplash.com'));
+              const combined = [...realPhotos];
+              currentPhotos.forEach(u => {
+                if (!combined.includes(u)) combined.push(u);
+              });
+              asset.fotoList = combined;
+            }
           }
         });
+        if (hasCleanedUnsplash) {
+          try {
+            localStorage.setItem('bmn_custom_photos', JSON.stringify(photoMap));
+          } catch(e) {}
+        }
       }
 
       // 2. Load persistent custom asset edits (catatan, rekomendasi, nama, kondisi, luas, PMK 120 attributes)

@@ -20,7 +20,7 @@ const RAW_BMN_DATASET = [
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
     "id": "BMN-1",
-    "foto_urls": "https://drive.google.com/uc?export=view&id=1hPA2D2xjOzGsR_X3eT2N4_qO7kq9jcoo,https://drive.google.com/uc?export=view&id=1RyuFcS_uVOunsvRU72qO_ZCiYxOkEhuu,https://drive.google.com/uc?export=view&id=1cjSDpyQRa8zqIb7bob7PrS3P7AvTRAmc,https://drive.google.com/uc?export=view&id=1mHSwnFEu_RMguwVxSWp6newDGyMVK5Sv,https://drive.google.com/uc?export=view&id=16sEmCyOW3YjuwOoCJhfAs7OiX_OAfyaw,https://drive.google.com/uc?export=view&id=1jpQTqq5FD4SoNWXJbAbqbXYL-5lYI6te,https://drive.google.com/uc?export=view&id=1vin3rBNDjfkTUe5joA0KeCchtI0OSo0U,https://drive.google.com/uc?export=view&id=1Hs2xjU54Jcb5LArG3lyHgzyNgoxoiPwH",
+    "foto_urls": "https://drive.google.com/uc?export=view&id=16sEmCyOW3YjuwOoCJhfAs7OiX_OAfyaw,https://drive.google.com/uc?export=view&id=1jpQTqq5FD4SoNWXJbAbqbXYL-5lYI6te,https://drive.google.com/uc?export=view&id=1vin3rBNDjfkTUe5joA0KeCchtI0OSo0U,https://drive.google.com/uc?export=view&id=1Hs2xjU54Jcb5LArG3lyHgzyNgoxoiPwH,https://drive.google.com/uc?export=view&id=1hPA2D2xjOzGsR_X3eT2N4_qO7kq9jcoo,https://drive.google.com/uc?export=view&id=1RyuFcS_uVOunsvRU72qO_ZCiYxOkEhuu,https://drive.google.com/uc?export=view&id=1cjSDpyQRa8zqIb7bob7PrS3P7AvTRAmc,https://drive.google.com/uc?export=view&id=1mHSwnFEu_RMguwVxSWp6newDGyMVK5Sv",
     "is_pinned": "",
     "kabupaten": "Kota Denpasar"
   },
@@ -645,7 +645,7 @@ const RAW_BMN_DATASET = [
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
     "id": "BMN-26",
-    "foto_urls": "",
+    "foto_urls": "https://lh3.googleusercontent.com/d/1bYvQUsljNLWrNVoSM_djVw0GySrY9O6U",
     "is_pinned": "",
     "kabupaten": "Kabupaten Klungkung"
   },
@@ -695,7 +695,7 @@ const RAW_BMN_DATASET = [
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "digunakan secara mandiri",
     "id": "BMN-28",
-    "foto_urls": "https://drive.google.com/uc?export=view&id=1-Vt1a8hcZh_9p0zw-9uJKFGDzMSD5URX,https://drive.google.com/uc?export=view&id=1PtMXrHvQ2sy_gWBn7dC_5uHyYRtiA0cl,https://drive.google.com/uc?export=view&id=15CbdsQQsgZ_Edo23hmllxCx9FWtKn7PZ,https://drive.google.com/uc?export=view&id=1AkKi855VS4HjTdw0pJ0J8DNaLU9KX_dk,https://drive.google.com/uc?export=view&id=139VYGloEnaIZ38F7MTOVizthtKABVElm,https://drive.google.com/uc?export=view&id=1JssPMpwRNkSjnXV2JuyKVkOwlMs1N722,https://drive.google.com/uc?export=view&id=1KcenJbno8RQ6He_2HobjqEyT87Z89z8H",
+    "foto_urls": "https://drive.google.com/uc?export=view&id=1AkKi855VS4HjTdw0pJ0J8DNaLU9KX_dk,https://drive.google.com/uc?export=view&id=139VYGloEnaIZ38F7MTOVizthtKABVElm,https://drive.google.com/uc?export=view&id=1JssPMpwRNkSjnXV2JuyKVkOwlMs1N722,https://drive.google.com/uc?export=view&id=1KcenJbno8RQ6He_2HobjqEyT87Z89z8H,https://drive.google.com/uc?export=view&id=1-Vt1a8hcZh_9p0zw-9uJKFGDzMSD5URX,https://drive.google.com/uc?export=view&id=1PtMXrHvQ2sy_gWBn7dC_5uHyYRtiA0cl,https://drive.google.com/uc?export=view&id=15CbdsQQsgZ_Edo23hmllxCx9FWtKn7PZ",
     "is_pinned": "",
     "kabupaten": "Kabupaten Tabanan"
   },
@@ -795,7 +795,7 @@ const RAW_BMN_DATASET = [
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
     "id": "BMN-32",
-    "foto_urls": "",
+    "foto_urls": "https://lh3.googleusercontent.com/d/17mN_8bVC4DHK39h3aMOWKwTJj25UL0xJ",
     "is_pinned": "",
     "kabupaten": "Kabupaten Klungkung"
   },
@@ -895,7 +895,7 @@ const RAW_BMN_DATASET = [
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
     "id": "BMN-36",
-    "foto_urls": "",
+    "foto_urls": "https://lh3.googleusercontent.com/d/1OQ8BZB-mxMr6TCRNIJja2N-nkQ1ikmWA",
     "is_pinned": "",
     "kabupaten": "Kabupaten Klungkung"
   },
@@ -995,7 +995,7 @@ const RAW_BMN_DATASET = [
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
     "id": "BMN-40",
-    "foto_urls": "",
+    "foto_urls": "https://lh3.googleusercontent.com/d/11vjN6Oama_VnrrRISth7wkw-ejNl6CjJ,https://lh3.googleusercontent.com/d/184e5jxNo3lXelRK4ykjx6Kyth33h05fW,https://lh3.googleusercontent.com/d/1veeDuMkw848Ghhdthm5xLmowF5vvKOtU,https://lh3.googleusercontent.com/d/1EIlqqPWAgAigm_nxlkNVDZsTf62V1gBh,https://lh3.googleusercontent.com/d/1SnXw-j7Q-xpIsuDtEXC8lzqukcSfbdXo,https://lh3.googleusercontent.com/d/15_u4ZLMlYNnoE14cicketbsWERe-kPgf,https://lh3.googleusercontent.com/d/1-2j02IwPks2kXrHGoEOXFZZ5p8hvoRmn,https://lh3.googleusercontent.com/d/1eARj8Zy1zwB0M6CFQv8txBH26Bmsuq6Y",
     "is_pinned": "",
     "kabupaten": "Kabupaten Klungkung"
   },
@@ -1120,7 +1120,7 @@ const RAW_BMN_DATASET = [
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
     "id": "BMN-45",
-    "foto_urls": "",
+    "foto_urls": "https://lh3.googleusercontent.com/d/1AiQ_3Fvxml2q5nbkqK1qgXL16IW07d3v,https://lh3.googleusercontent.com/d/1AidPDlnfD3xcf3ilPRCKTN1noZoHBHj7,https://lh3.googleusercontent.com/d/1j52AHzRheEqUjE2XbFk3YTBYKsmTu-Yf",
     "is_pinned": "",
     "kabupaten": "Kabupaten Gianyar"
   },
@@ -1345,7 +1345,7 @@ const RAW_BMN_DATASET = [
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
     "id": "BMN-54",
-    "foto_urls": "",
+    "foto_urls": "https://lh3.googleusercontent.com/d/17Bt3fu8XzkW1GZv343MekoTSLhr_J7ZW,https://lh3.googleusercontent.com/d/1LhxCIycEzm_5zXsd7ABKLyX48irtzSZ8,https://lh3.googleusercontent.com/d/1ymGoH_GTYDasTlzwEgSIYGUlenogsal0,https://lh3.googleusercontent.com/d/1vTUpbzvSGeZORpq9CTd32iAji3vYQ0E3,https://lh3.googleusercontent.com/d/1iixcVH8DB7yA9T9moxpRutm6aIklE_AE",
     "is_pinned": "",
     "kabupaten": "Kabupaten Klungkung"
   },
@@ -1420,7 +1420,7 @@ const RAW_BMN_DATASET = [
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
     "id": "BMN-57",
-    "foto_urls": "",
+    "foto_urls": "https://lh3.googleusercontent.com/d/1OUZOwmxA_ROA4b9Eel8xdkxHe2Q-u15d,https://lh3.googleusercontent.com/d/161SHL0c2KMrmsd8XXL4h96dKqs1o22Q8,https://lh3.googleusercontent.com/d/1lAQdr38RZMElYcfBNojz1v-2urx2qdC7,https://lh3.googleusercontent.com/d/1Ayc_tl7oHiGSF48iS8aSfXpQA3D189fK,https://lh3.googleusercontent.com/d/1nfOUdC-eRWcMtDxA6ca852qAuwR4Rr6D",
     "is_pinned": "",
     "kabupaten": "Kabupaten Klungkung"
   },
@@ -1620,7 +1620,7 @@ const RAW_BMN_DATASET = [
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
     "id": "BMN-65",
-    "foto_urls": "",
+    "foto_urls": "https://lh3.googleusercontent.com/d/1PmIIxYyZ9DOGO7O75qBNfDhLt8_fgnIy,https://lh3.googleusercontent.com/d/1GV_U-dAB8iTd5MZSXb4NABI6fM6Q4yOo,https://lh3.googleusercontent.com/d/1fimsBDBjrTq85um0fhyjen6ufO-DoiR0,https://lh3.googleusercontent.com/d/1ummuN3vG6d71DKoS3GzIEmSD7oD_qQpj",
     "is_pinned": "",
     "kabupaten": "Kabupaten Gianyar"
   },
@@ -1945,7 +1945,7 @@ const RAW_BMN_DATASET = [
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
     "id": "BMN-78",
-    "foto_urls": "",
+    "foto_urls": "https://lh3.googleusercontent.com/d/1PsxlvxismLqeIL2DdMmjGoDS-zJ9d3OQ",
     "is_pinned": "",
     "kabupaten": "Kabupaten Gianyar"
   },
@@ -1970,7 +1970,7 @@ const RAW_BMN_DATASET = [
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
     "id": "BMN-79",
-    "foto_urls": "",
+    "foto_urls": "https://lh3.googleusercontent.com/d/11siG93IPZjVvc4DmXFM5a3uzxbrdwQjQ",
     "is_pinned": "",
     "kabupaten": "Kabupaten Gianyar"
   },
@@ -1995,7 +1995,7 @@ const RAW_BMN_DATASET = [
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
     "id": "BMN-80",
-    "foto_urls": "",
+    "foto_urls": "https://lh3.googleusercontent.com/d/1P7vCzD1hUI5Nt93FGrKymK-8VjU2ZpJ_",
     "is_pinned": "",
     "kabupaten": "Kabupaten Gianyar"
   },
@@ -2245,7 +2245,7 @@ const RAW_BMN_DATASET = [
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
     "id": "BMN-90",
-    "foto_urls": "",
+    "foto_urls": "https://lh3.googleusercontent.com/d/1dJe2wVvOH74DHUCoompBHaWFHm2nWnk8,https://lh3.googleusercontent.com/d/1wiyySZjHevcxhNF06jbk9A60zLWGT55O,https://lh3.googleusercontent.com/d/1jm1kjIr-mJ3uT3f6M5JoS-d9vW3rX21N,https://lh3.googleusercontent.com/d/1avLuc34wg3JSZnYSViYbLUYbsYRpuuya",
     "is_pinned": "",
     "kabupaten": "Kabupaten Gianyar"
   },
@@ -2445,7 +2445,7 @@ const RAW_BMN_DATASET = [
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
     "id": "BMN-98",
-    "foto_urls": "",
+    "foto_urls": "https://lh3.googleusercontent.com/d/1bfxZhHNuAjoW-IuDEzB3grJDQNyQz7fJ,https://lh3.googleusercontent.com/d/1H3XpWbPXFWHRQhoSLqjAcOkylfQhZIM1",
     "is_pinned": "",
     "kabupaten": "Kabupaten Karangasem"
   },
@@ -2520,7 +2520,7 @@ const RAW_BMN_DATASET = [
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
     "id": "BMN-101",
-    "foto_urls": "",
+    "foto_urls": "https://lh3.googleusercontent.com/d/1qC_mOWfweBODbpQe333n6Y8bwqy5XmKU,https://lh3.googleusercontent.com/d/1nIDLHAPYBGN-of9WvyGQscLT_hJ60c9Z,https://lh3.googleusercontent.com/d/1QWGLF-y6krs4Os7FfGxFFAyoWt9fE3ko",
     "is_pinned": "",
     "kabupaten": "Kota Denpasar"
   },
@@ -2595,7 +2595,7 @@ const RAW_BMN_DATASET = [
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
     "id": "BMN-104",
-    "foto_urls": "",
+    "foto_urls": "https://lh3.googleusercontent.com/d/1VqRXe9LWrJq0NzqgB-cDdlrpDR9Z40wd,https://lh3.googleusercontent.com/d/1XnMaZwRbhNxATdfNCrRblzrtZRpXMldO",
     "is_pinned": "",
     "kabupaten": "Kabupaten Tabanan"
   },
@@ -2720,7 +2720,7 @@ const RAW_BMN_DATASET = [
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
     "id": "BMN-109",
-    "foto_urls": "",
+    "foto_urls": "https://lh3.googleusercontent.com/d/1Boo0ekWkdU1Q8AFdeGRB0x2pAXZh3ntP,https://lh3.googleusercontent.com/d/1eFeqFTrIMN8zNez6C2bKEfhpNVVVtd8t",
     "is_pinned": "",
     "kabupaten": "Kabupaten Buleleng"
   },
@@ -2845,7 +2845,7 @@ const RAW_BMN_DATASET = [
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
     "id": "BMN-114",
-    "foto_urls": "",
+    "foto_urls": "https://lh3.googleusercontent.com/d/1cuwQOlj5bULEBe3HivtSJeY9clwqhGM2",
     "is_pinned": "",
     "kabupaten": "Kota Denpasar"
   },
@@ -2870,7 +2870,7 @@ const RAW_BMN_DATASET = [
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
     "id": "BMN-115",
-    "foto_urls": "",
+    "foto_urls": "https://lh3.googleusercontent.com/d/19KS-NC7DGSSGqwOypSlP_Yq2cfw9HE-e,https://lh3.googleusercontent.com/d/1ZdYo-vtWX4WF9OEElUVuAXcaH6ijgtJT,https://lh3.googleusercontent.com/d/1G5V3woF2fUm0_FY9PF939IgZw2h8NDiR,https://lh3.googleusercontent.com/d/1Tg_Nn2EoFK0j9S685XjESeu01tbat1v2",
     "is_pinned": "",
     "kabupaten": "Kabupaten Klungkung"
   },
@@ -3195,7 +3195,7 @@ const RAW_BMN_DATASET = [
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
     "id": "BMN-128",
-    "foto_urls": "",
+    "foto_urls": "https://lh3.googleusercontent.com/d/1F1LJIYAin0d1YVlC3JjgwOh6mubXA-8V,https://lh3.googleusercontent.com/d/1zSvHMzpg_VJmTfLHZ4rj4hLFy_grTqEs,https://lh3.googleusercontent.com/d/1itc0EtDFHI4SEDBI9ngRW5waRdgLv-hV,https://lh3.googleusercontent.com/d/1W-naytrTCRYDKLQj4oe4yuymJ1kV3oS9,https://lh3.googleusercontent.com/d/1SgYeo-WCqHTFa0q8SvcNs31AzfdGx6bi,https://lh3.googleusercontent.com/d/1fCWIRTKoAcqs-vR3qaPL4JFmnjTDMgwP",
     "is_pinned": "",
     "kabupaten": "Kabupaten Karangasem"
   },
@@ -4220,7 +4220,7 @@ const RAW_BMN_DATASET = [
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
     "id": "BMN-169",
-    "foto_urls": "",
+    "foto_urls": "https://lh3.googleusercontent.com/d/1KdCyBnF_UHrXyYg-7IrLSBQ-DOV915Q5",
     "is_pinned": "",
     "kabupaten": "Kabupaten Klungkung"
   },
@@ -6095,7 +6095,7 @@ const RAW_BMN_DATASET = [
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
     "id": "BMN-244",
-    "foto_urls": "",
+    "foto_urls": "https://lh3.googleusercontent.com/d/1F7F7dJ3q6e-xFw-K9aPmnKlBPs6u0MOQ,https://lh3.googleusercontent.com/d/1cgPzv5j_87xrZOTDrv9AFZIutyoH75Yl,https://lh3.googleusercontent.com/d/1ITAp2_fsWPKr97KUpQhm-NuTof39UI5I,https://lh3.googleusercontent.com/d/1K5q6cKgGQ3UWHdxkTKhU0F3FOT6z6GPL,https://lh3.googleusercontent.com/d/1wDKdRJFKXAgfgttI7B5cS2CKJglaAwP2",
     "is_pinned": "",
     "kabupaten": "Kabupaten Klungkung"
   },
@@ -6145,7 +6145,7 @@ const RAW_BMN_DATASET = [
     "FLAG_REKONSILIASI_D_E": "-",
     "CATATAN_REKONSILIASI": "-",
     "id": "BMN-246",
-    "foto_urls": "",
+    "foto_urls": "https://lh3.googleusercontent.com/d/1XLl-1jtq0h6wutzfHKqZBUhGQoQ896k8,https://lh3.googleusercontent.com/d/1zW3gKKZrr9hFPcQORxznEUhCoVRK-520,https://lh3.googleusercontent.com/d/1Gacm1yBtazGg_qGGq3_N9hiyhRqg2yED,https://lh3.googleusercontent.com/d/12-okyKqURZBXdm_2gBgzF0kQPygD4C9L,https://lh3.googleusercontent.com/d/1W094CNRhQbw5vv7jMtRXbeQHgBZ4vq0C",
     "is_pinned": "",
     "kabupaten": "Kabupaten Klungkung"
   },
