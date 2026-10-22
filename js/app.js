@@ -1047,11 +1047,14 @@ const App = {
           const isPenghapusan = asset.klasifikasiKey === 'penghapusan' || 
                                 String(asset.klasifikasi || '').toLowerCase().includes('penghapusan') || 
                                 String(asset.detilKlasifikasi || '').toLowerCase().includes('dihapus');
-          const unmappedClass = (!asset.hasCoordinates && !isPenghapusan) ? 'unmapped-card' : '';
-          const penghapusanClass = isPenghapusan ? 'asset-card-penghapusan' : '';
+          const isAlihStatus = String(asset.detilKlasifikasi || '').toLowerCase().includes('alih status') ||
+                               String(asset.detilKlasifikasi || '').toLowerCase().includes('transfer');
+          const isArchived = isPenghapusan || isAlihStatus;
+          const unmappedClass = (!asset.hasCoordinates && !isArchived) ? 'unmapped-card' : '';
+          const archivedClass = isPenghapusan ? 'asset-card-penghapusan' : (isAlihStatus ? 'asset-card-alih-status' : '');
 
           return `
-            <div class="asset-card ${isSelected} ${unmappedClass} ${penghapusanClass}" data-asset-id="${asset.id}" style="position: relative;">
+            <div class="asset-card ${isSelected} ${unmappedClass} ${archivedClass}" data-asset-id="${asset.id}" style="position: relative;">
               <input type="checkbox" class="custom-checkbox asset-export-cb" data-asset-id="${asset.id}" ${isChecked} onchange="App.toggleSelectAssetForExport('${asset.id}', this.checked)">
               <div class="asset-card-thumb" style="${thumbStyle}" onclick="App.selectAsset('${asset.id}')">
                 ${thumbInner}
@@ -1064,7 +1067,7 @@ const App = {
                   <span class="badge badge-klasifikasi ${this.getKlasifikasiBadgeClass(asset.klasifikasiKey)}" title="${asset.detilKlasifikasi}">
                     <i class="fa-solid ${this.getKlasifikasiIcon(asset.klasifikasiKey)}"></i> ${asset.klasifikasi}: ${asset.detilKlasifikasi}
                   </span>
-                  ${!asset.hasCoordinates && !isPenghapusan ? `<span class="badge-unmapped" title="Belum ada titik koordinat GPS. Perlu disurati."><i class="fa-solid fa-triangle-exclamation"></i> Butuh GPS</span>` : ''}
+                  ${!asset.hasCoordinates && !isArchived ? `<span class="badge-unmapped" title="Belum ada titik koordinat GPS. Perlu disurati."><i class="fa-solid fa-triangle-exclamation"></i> Butuh GPS</span>` : ''}
                 </div>
                 <div class="asset-card-meta">
                   <span><i class="fa-solid fa-barcode"></i> NUP ${asset.nup} &bull; ${asset.kodeBarang}</span>
@@ -1191,11 +1194,14 @@ const App = {
       const isPenghapusan = asset.klasifikasiKey === 'penghapusan' || 
                             String(asset.klasifikasi || '').toLowerCase().includes('penghapusan') || 
                             String(asset.detilKlasifikasi || '').toLowerCase().includes('dihapus');
-      const unmappedClass = (!asset.hasCoordinates && !isPenghapusan) ? 'unmapped-card' : '';
-      const penghapusanClass = isPenghapusan ? 'asset-card-penghapusan' : '';
+      const isAlihStatus = String(asset.detilKlasifikasi || '').toLowerCase().includes('alih status') ||
+                           String(asset.detilKlasifikasi || '').toLowerCase().includes('transfer');
+      const isArchived = isPenghapusan || isAlihStatus;
+      const unmappedClass = (!asset.hasCoordinates && !isArchived) ? 'unmapped-card' : '';
+      const archivedClass = isPenghapusan ? 'asset-card-penghapusan' : (isAlihStatus ? 'asset-card-alih-status' : '');
 
       return `
-        <div class="asset-card ${isSelected} mb-2 ${unmappedClass} ${penghapusanClass}" data-asset-id="${asset.id}" style="position: relative;">
+        <div class="asset-card ${isSelected} mb-2 ${unmappedClass} ${archivedClass}" data-asset-id="${asset.id}" style="position: relative;">
           <input type="checkbox" class="custom-checkbox asset-export-cb" data-asset-id="${asset.id}" ${isChecked} onchange="App.toggleSelectAssetForExport('${asset.id}', this.checked)">
           <div class="asset-card-thumb" style="${thumbStyle}" onclick="App.selectAsset('${asset.id}')">
             ${thumbInner}
@@ -1208,7 +1214,7 @@ const App = {
               <span class="badge badge-klasifikasi ${this.getKlasifikasiBadgeClass(asset.klasifikasiKey)}" title="${asset.detilKlasifikasi}">
                 <i class="fa-solid ${this.getKlasifikasiIcon(asset.klasifikasiKey)}"></i> ${asset.klasifikasi}: ${asset.detilKlasifikasi}
               </span>
-              ${!asset.hasCoordinates && !isPenghapusan ? `<span class="badge-unmapped" title="Belum ada titik koordinat GPS. Perlu disurati."><i class="fa-solid fa-triangle-exclamation"></i> Butuh GPS</span>` : ''}
+              ${!asset.hasCoordinates && !isArchived ? `<span class="badge-unmapped" title="Belum ada titik koordinat GPS. Perlu disurati."><i class="fa-solid fa-triangle-exclamation"></i> Butuh GPS</span>` : ''}
             </div>
             <div class="asset-card-meta">
               <span><i class="fa-solid fa-building-user text-primary"></i> ${asset.namaSatker}</span>
@@ -1333,6 +1339,9 @@ const App = {
     const isPenghapusan = asset.klasifikasiKey === 'penghapusan' || 
                           String(asset.klasifikasi || '').toLowerCase().includes('penghapusan') || 
                           String(asset.detilKlasifikasi || '').toLowerCase().includes('dihapus');
+    const isAlihStatus = String(asset.detilKlasifikasi || '').toLowerCase().includes('alih status') ||
+                         String(asset.detilKlasifikasi || '').toLowerCase().includes('transfer');
+    const isArchived = isPenghapusan || isAlihStatus;
 
     const hasCoords = asset.hasCoordinates && typeof asset.lat === 'number' && typeof asset.lng === 'number';
     const distData = hasCoords ? SpatialEngine.getDistanceToKPKNL(asset.lat, asset.lng) : { distanceKm: '-' };
@@ -1387,7 +1396,7 @@ const App = {
 
     container.innerHTML = `
       ${totalPhotos > 0 && activePhotoUrl ? `
-        <div id="photo-carousel-box" class="photo-carousel-container photo-thumbnail-clickable" onclick="App.openPhotoLightbox('${asset.id}')" title="Klik untuk perbesar foto (Lightbox)" style="background-image: url('${activePhotoUrl}'); background-size: cover; background-position: center; position: relative; height: 190px; border-radius: 10px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+        <div id="photo-carousel-box" class="photo-carousel-container photo-thumbnail-clickable ${isArchived ? 'photo-archived' : ''}" onclick="App.openPhotoLightbox('${asset.id}')" title="Klik untuk perbesar foto (Lightbox)" style="background-image: url('${activePhotoUrl}'); background-size: cover; background-position: center; position: relative; height: 190px; border-radius: 10px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
           <span id="photo-carousel-counter" class="photo-counter">${(this.currentPhotoIndex || 0) + 1} / ${totalPhotos}</span>
           ${canEditOrUpload ? `
             <button class="btn-delete-photo" title="Hapus foto ini" onclick="event.stopPropagation(); App.deletePhoto('${asset.id}')">
@@ -1405,7 +1414,7 @@ const App = {
       `}
 
       <!-- UNMAPPED WARNING CALLOUT BOX (IF NO GPS) -->
-      ${!hasCoords && !isPenghapusan ? `
+      ${!hasCoords && !isArchived ? `
         <div class="unmapped-alert-box">
           <i class="fa-solid fa-triangle-exclamation" style="font-size:20px; color:#d35400; flex-shrink:0; margin-top:2px;"></i>
           <div>
@@ -1436,7 +1445,7 @@ const App = {
         <p style="font-size:11.5px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-id-card text-secondary" style="margin-right:6px;"></i> Kode Satker: <strong style="color:var(--text-main);">${asset.kodeSatker || '-'}</strong> &bull; <i class="fa-solid fa-location-dot text-danger" style="margin-left:4px; margin-right:4px;"></i> <strong>${asset.kabupaten}</strong></p>
       </div>
 
-      ${!hasCoords && !isPenghapusan ? `
+      ${!hasCoords && !isArchived ? `
       <!-- UNMAPPED ASSET GPS & GEOJSON CAPTURE PROMINENT CARD -->
       <div class="p-3 mb-4 rounded" style="background:#fffbeb; border:1.5px solid #fde68a; box-shadow:0 2px 10px rgba(245, 158, 11, 0.1);">
         <div class="d-flex align-items-center gap-2 mb-1" style="font-size:12px; font-weight:700; color:#b45309;">
@@ -1469,12 +1478,12 @@ const App = {
           </button>
         </div>
       </div>
-      ` : (!hasCoords && isPenghapusan ? `
-      <!-- ASET TELAH DIHAPUSKAN: PEMBERITAHUAN ABU-ABU TANPA PERINGATAN GPS -->
+      ` : (!hasCoords && isArchived ? `
+      <!-- ASET TELAH DIHAPUSKAN / ALIH STATUS: PEMBERITAHUAN ABU-ABU TANPA PERINGATAN GPS -->
       <div class="p-3 mb-4 rounded" style="background:#f8fafc; border:1px solid #cbd5e1;">
         <div class="d-flex align-items-center gap-2" style="font-size:11.5px; color:#64748b; font-weight:600;">
           <i class="fa-solid fa-circle-check text-muted" style="font-size:14px;"></i>
-          <span>Status BMN Telah Dihapuskan (Fisik/catatan nihil &mdash; tidak memerlukan survei titik GPS).</span>
+          <span>${isPenghapusan ? 'Status BMN Telah Dihapuskan (Fisik/catatan nihil &mdash; tidak memerlukan survei titik GPS).' : 'Status BMN Alih Status Penggunaan ke Satker Lain (tidak memerlukan survei titik GPS baru).'}</span>
         </div>
       </div>
       ` : `

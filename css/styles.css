@@ -3377,47 +3377,75 @@ body {
   display: none !important;
 }
 
-/* Card Styling untuk Aset Status Penghapusan (Abu-abu / Archived Look) */
-.asset-card.asset-card-penghapusan {
+/* Card Styling untuk Aset Status Penghapusan & Alih Status (Abu-abu / Archived Look) */
+.asset-card.asset-card-penghapusan,
+.asset-card.asset-card-alih-status {
   background: #f1f5f9 !important;
   border: 1.5px solid #cbd5e1 !important;
-  opacity: 0.75;
-  filter: grayscale(50%);
+  opacity: 0.78;
+  filter: grayscale(60%);
   transition: all 0.2s ease;
 }
 
-.asset-card.asset-card-penghapusan:hover {
-  opacity: 0.92;
+.asset-card.asset-card-penghapusan:hover,
+.asset-card.asset-card-alih-status:hover {
+  opacity: 0.95;
   filter: grayscale(20%);
   background: #e2e8f0 !important;
   border-color: #94a3b8 !important;
 }
 
-.asset-card.asset-card-penghapusan.active {
+.asset-card.asset-card-penghapusan.active,
+.asset-card.asset-card-alih-status.active {
   border-color: #64748b !important;
   box-shadow: 0 0 0 2px rgba(100, 116, 139, 0.3) !important;
   opacity: 1;
   filter: grayscale(10%);
 }
 
-.asset-card.asset-card-penghapusan .asset-card-title {
+.asset-card.asset-card-penghapusan .asset-card-title,
+.asset-card.asset-card-alih-status .asset-card-title {
   color: #64748b !important;
 }
 
 .asset-card.asset-card-penghapusan .asset-card-meta,
 .asset-card.asset-card-penghapusan .asset-card-meta span,
-.asset-card.asset-card-penghapusan .asset-card-area {
+.asset-card.asset-card-penghapusan .asset-card-area,
+.asset-card.asset-card-alih-status .asset-card-meta,
+.asset-card.asset-card-alih-status .asset-card-meta span,
+.asset-card.asset-card-alih-status .asset-card-area {
   color: #94a3b8 !important;
 }
 
-.asset-card.asset-card-penghapusan .asset-card-thumb {
-  filter: grayscale(70%);
+.asset-card.asset-card-penghapusan .asset-card-thumb,
+.asset-card.asset-card-alih-status .asset-card-thumb {
+  filter: grayscale(90%) contrast(0.9);
   opacity: 0.8;
+  transition: filter 0.25s ease, opacity 0.25s ease;
 }
 
-.asset-card.asset-card-penghapusan .badge-pastel-purple {
+.asset-card.asset-card-penghapusan:hover .asset-card-thumb,
+.asset-card.asset-card-alih-status:hover .asset-card-thumb {
+  filter: grayscale(30%);
+  opacity: 0.95;
+}
+
+.asset-card.asset-card-penghapusan .badge-pastel-purple,
+.asset-card.asset-card-alih-status .badge-pastel-purple {
   background: #e2e8f0 !important;
   color: #64748b !important;
   border: 1px solid #cbd5e1 !important;
+}
+
+/* Detail Drawer Carousel Grayscale for Archived / Alih Status Assets */
+.photo-carousel-container.photo-archived {
+  filter: grayscale(85%) contrast(0.95);
+  opacity: 0.88;
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.photo-carousel-container.photo-archived:hover {
+  filter: grayscale(20%) contrast(1);
+  opacity: 1;
 }
 
